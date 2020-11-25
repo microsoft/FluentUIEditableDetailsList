@@ -1,14 +1,37 @@
-# Project
+# FluidUI Editable DetailsList
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+## Overview
+FluentUI is a great UI library to with some really cool controls, all adhering to Accessibility Standards.
 
-As the maintainer of this project, please make a few updates:
+DetailsList control of FluidUI is great when your requirement is a read-only grid. However, it does not offer any in-place editability functionality just yet.
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+This component(Editable DetailsList) is a wrapper over the existing DetailsList that makes in-place editability work like a dream(among many other new features).
+
+Some of the features of the Editable Grid are:-
+>- Single Cell Edit (in-place)
+>- Single Row Edit (in-place)
+>- Single Column Edit
+>- Multi-Column, multi-row edit (Bulk Edit)
+>- Full Edit (Edit Mode)
+>- Deleting Rows
+>- Adding Rows
+>- Default Data Export (to Excel, CSV)
+>- Implement Custom Export functionality
+>- Callback hook to recieve grid data in the consuming component(for Save etc.)
+>- Support for various controls in grid in-place edit like TextField, Multiline TextField, DatePicker (Support for Dropdown will be released soon)
+>- Flexibility to implement onChange callback on any cell value change (For cases like calculating summation of a column etc)
+>- Length Validations during edit
+>- Type Validations during edit
+>- The component is completely Accessible
+
+## Installation & Run
+- clone the repository on your local machine.
+- open the project
+- open terminal and change directory to your project path
+- type 'npm install'
+- after the installation is complete, type 'npm start'
+
+This starts the project on port 8080 and you are ready to play around with the Editable DetailsList
 
 ## Contributing
 
@@ -24,10 +47,3 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-## Trademarks
-
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
-trademarks or logos is subject to and must follow 
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
