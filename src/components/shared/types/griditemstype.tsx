@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { Operation } from "./operation";
 
 export interface IGridItemsType {

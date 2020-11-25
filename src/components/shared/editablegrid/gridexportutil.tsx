@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { ExportType } from "../types/exporttype";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
