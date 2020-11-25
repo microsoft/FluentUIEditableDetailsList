@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export const EventType = {
     onSearch: 'onSearch',
     onClick: 'onClick'

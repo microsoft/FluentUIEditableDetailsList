@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { IColumnConfig } from "../shared/types/columnconfigtype";
 import { EditControlType } from "../shared/types/editcontroltype";
 import { IGridItemsType } from "../shared/types/griditemstype";

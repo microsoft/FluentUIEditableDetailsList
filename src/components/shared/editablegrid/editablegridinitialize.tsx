@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { IColumn, ICommandBarItemProps, IconButton, TextField } from "office-ui-fabric-react";
 import React from "react";
 import { IColumnConfig } from "../types/columnconfigtype";
