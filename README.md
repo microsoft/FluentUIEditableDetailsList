@@ -1,7 +1,7 @@
 # FluidUI Editable DetailsList
 
 ## Overview
-FluentUI is a great UI library to with some really cool controls, all adhering to Accessibility Standards.
+FluentUI is a great UI library with some really cool controls, all adhering to Accessibility Standards.
 
 DetailsList control of FluidUI is great when your requirement is a read-only grid. However, it does not offer any in-place editability functionality just yet.
 
