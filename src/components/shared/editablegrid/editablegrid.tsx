@@ -56,6 +56,7 @@ export interface Props extends IDetailsListProps {
     width? : string;
     position?: string;
     constrainMode?:ConstrainMode;
+    enableUnsavedEditIndicator?: boolean;
 }
 
 const EditableGrid = (props: Props) => {
@@ -75,6 +76,7 @@ const EditableGrid = (props: Props) => {
     const [announced, setAnnounced] = React.useState<JSX.Element | undefined>(undefined);
     const [isUpdateColumnClicked, setIsUpdateColumnClicked] = React.useState(false);
     const [showSpinner, setShowSpinner] = useState(false);
+    const [isGridStateEdited, setIsGridStateEdited] = useState(false);
     const [messageDialogProps, setMessageDialogProps] = React.useState({
         visible : false,
         message : '',
@@ -129,8 +131,7 @@ const EditableGrid = (props: Props) => {
         if(props && props.items && props.items.length > 0){
             var data : any[] = InitializeInternalGrid(props.items);
             setGridData(data);
-            // setDefaultGridData(data);
-            // setActivateCellEdit(InitializeInternalGridEditStructure(data));
+            setGridEditState(false);
             SetGridItems(data);
         }
     }, [props.items]);
@@ -148,6 +149,12 @@ const EditableGrid = (props: Props) => {
         //alert('IsGridInEdit: ' + isGridInEdit);
     }, [isGridInEdit]);
 
+    const onGridSave = () : void => {
+        if(props.onGridSave){
+            props.onGridSave(defaultGridData);
+        }
+    };
+    
     const UpdateGridEditStatus = () : void => {
         debugger;
         var gridEditStatus : boolean = false;
@@ -182,6 +189,12 @@ const EditableGrid = (props: Props) => {
         setActivateCellEdit(InitializeInternalGridEditStructure(data));
     }
 
+    const setGridEditState = (editState : boolean) : void => {
+        if(isGridStateEdited != editState){
+            setIsGridStateEdited(editState);
+        }
+    }
+
     /* #region [Grid Bulk Update Functions] */
     const onEditPanelChange = (item: any): void => {
         //setShowSpinner(true);
@@ -213,6 +226,7 @@ const EditableGrid = (props: Props) => {
             }))
         });
 
+        setGridEditState(true);
         return newDefaultGridData;
     };
 
@@ -299,6 +313,7 @@ const EditableGrid = (props: Props) => {
                 console.log(rowCount);
                 var addedRows = GetDefaultRowObject(rowCount);
                 var newGridData = [...defaultGridData, ...addedRows];
+                setGridEditState(true);
                 SetGridItems(newGridData);
             }
         };
@@ -354,6 +369,7 @@ const EditableGrid = (props: Props) => {
         });
 
         console.log(defaultGridDataTmp);
+        setGridEditState(true);
         SetGridItems(defaultGridDataTmp);
     }
     /* #endregion */
@@ -433,6 +449,8 @@ const EditableGrid = (props: Props) => {
             return;
         }
 
+        setGridEditState(true);
+
         let activateCellEditTmp : any[] = [];
         activateCellEdit.forEach((item, index) => {
             if(row == index){
@@ -488,6 +506,8 @@ const EditableGrid = (props: Props) => {
     }
 
     const onCellDateChange = (date: Date | null | undefined, item1 : {}, row : number, column : IColumnConfig): void => {
+        setGridEditState(true);
+        
         let activateCellEditTmp : any[] = [];
         activateCellEdit.forEach((item, index) => {
             if(row == index){
@@ -781,7 +801,7 @@ const EditableGrid = (props: Props) => {
                 ariaLabel: 'Submit',
                 disabled: isGridInEdit,
                 iconProps: { iconName: 'Save' },
-                //onClick: () => onGridSave(),
+                onClick: () => onGridSave(),
             });
         }
     
@@ -838,8 +858,30 @@ const EditableGrid = (props: Props) => {
         return commandBarItems;
     };
 
+    const CreateCommandBarFarItemProps = () : ICommandBarItemProps[] => {
+        debugger;
+        let commandBarItems: ICommandBarItemProps[] = [];
+        if(props.enableUnsavedEditIndicator && (props.enableRowEdit || props.enableCellEdit || props.enableBulkEdit || props.enableColumnEdit
+            || props.enableTextFieldEditMode))
+            {
+                commandBarItems.push({
+                    key: 'info',
+                    text: isGridStateEdited ? 'Grid has unsaved data. Click on \'Submit\' to save' : '',
+                    // This needs an ariaLabel since it's icon-only
+                    ariaLabel: 'Info',
+                    disabled: !isGridStateEdited,
+                    iconOnly: true,
+                    iconProps: { iconName: 'InfoSolid' },
+                    //onClick: () => console.log('Info'),
+                  });    
+            }
+
+            return commandBarItems;
+    };
+
     const GridColumns = CreateColumnConfigs();
-    const CommandBarItemProps = CreateCommandBarItemProps(); 
+    const CommandBarItemProps = CreateCommandBarItemProps();
+    const CommandBarFarItemProps = CreateCommandBarFarItemProps(); 
     function _getSelectionDetails() : string {
         const count = _selection.getSelectedCount();
         setSelectionCount(count);
@@ -897,7 +939,7 @@ const EditableGrid = (props: Props) => {
             <CommandBar
                 items={CommandBarItemProps}
                 ariaLabel="Command Bar"
-                //farItems={_farItems}
+                farItems={CommandBarFarItemProps}
                 />
             {showSpinner ? 
                 <Spinner label="Updating..." ariaLive="assertive" labelPosition="right" size={SpinnerSize.large}/>
