@@ -50,15 +50,10 @@ const Consumer = () => {
         setItems(dummyData);
     }, []);
 
-    // const onDesignationChanged = (callbackRequestParamObj : ICallBackRequestParams): void => {
-    //     var responseObj : ICallBackParams = { 
-    //         data : callbackRequestParamObj.data, 
-    //         rowindex : callbackRequestParamObj.rowindex,
-    //         triggerkey : callbackRequestParamObj.triggerkey,
-    //         activatetriggercell : callbackRequestParamObj.activatetriggercell
-    //     };
-    //     callbackRequestParamObj.callbackhook(responseObj);
-    // }
+    const onGridSave = (data: any[]): void => {
+        alert('Grid Data Saved');
+        setItems([...items]);
+    };
 
     const onDesignationChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
         callbackRequestParamObj.rowindex.forEach((index) => {
@@ -95,7 +90,8 @@ const Consumer = () => {
                 height={'70vh'}
                 width={'140vh'}
                 position={'relative'}
-                //onGridSave={onASNHeaderSave}
+                enableUnsavedEditIndicator={true}
+                onGridSave={onGridSave}
             />
         </Fabric>
     );
