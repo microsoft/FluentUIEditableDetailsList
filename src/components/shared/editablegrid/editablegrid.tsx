@@ -60,7 +60,6 @@ export interface Props extends IDetailsListProps {
 }
 
 const EditableGrid = (props: Props) => {
-
     const [editMode, setEditMode] = React.useState(false);
     const [isOpenForEdit, setIsOpenForEdit] = React.useState(false);
     const dismissPanelForEdit = React.useCallback(() => setIsOpenForEdit(false), []);
@@ -747,7 +746,7 @@ const EditableGrid = (props: Props) => {
                 fieldName: 'action',
                 isResizable: true,
                 minWidth: 50,
-                maxWidth: 250,
+                maxWidth: 50,
                 onRender: (item, index) => (
                     <div>
                         {(activateCellEdit && activateCellEdit[Number(item['_grid_row_id_'])!] && activateCellEdit[Number(item['_grid_row_id_'])!]['isActivated']) 
