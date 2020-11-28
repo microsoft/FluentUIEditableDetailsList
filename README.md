@@ -28,8 +28,8 @@ Some of the features of the Editable Grid are:-
 - clone the repository on your local machine.
 - open the project
 - open terminal and change directory to your project path
-- type 'npm install'
-- after the installation is complete, type 'npm start'
+- type '***npm install***'
+- after the installation is complete, type '***npm start***'
 
 This starts the project on port 8080 and you are ready to play around with the Editable DetailsList
 
