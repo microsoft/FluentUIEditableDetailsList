@@ -71,7 +71,7 @@ const Consumer = () => {
     return (
         <Fabric>
             <div className={classNames.controlWrapper}>
-                <TextField className={mergeStyles({ width: '60vh' })} label="Search:" onChange={(event) => EventEmitter.dispatch(EventType.onSearch, event)}/>
+                <TextField placeholder='Search Grid' className={mergeStyles({ width: '60vh', paddingBottom:'10px' })} onChange={(event) => EventEmitter.dispatch(EventType.onSearch, event)}/>
             </div>
             <EditableGrid
                 enableColumnEdit={true}
