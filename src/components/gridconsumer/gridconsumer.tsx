@@ -52,7 +52,7 @@ const Consumer = () => {
 
     const onGridSave = (data: any[]): void => {
         alert('Grid Data Saved');
-        setItems([...items]);
+        setItems([...data]);
     };
 
     const onDesignationChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
@@ -92,6 +92,7 @@ const Consumer = () => {
                 position={'relative'}
                 enableUnsavedEditIndicator={true}
                 onGridSave={onGridSave}
+                enableGridReset={true}
             />
         </Fabric>
     );
