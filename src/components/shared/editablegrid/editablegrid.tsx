@@ -57,6 +57,7 @@ export interface Props extends IDetailsListProps {
     position?: string;
     constrainMode?:ConstrainMode;
     enableUnsavedEditIndicator?: boolean;
+    enableGridReset?: boolean;
 }
 
 const EditableGrid = (props: Props) => {
@@ -65,6 +66,7 @@ const EditableGrid = (props: Props) => {
     const dismissPanelForEdit = React.useCallback(() => setIsOpenForEdit(false), []);
     const [gridData, setGridData] = useState<any[]>([]);
     const [defaultGridData, setDefaultGridData] = useState<any[]>([]);
+    const [backupDefaultGridData, setBackupDefaultGridData] = useState<any[]>([]);
     const [activateCellEdit, setActivateCellEdit] = useState<any[]>([]);
     const [selectionDetails, setSelectionDetails] = useState('');
     const [selectedItems, setSelectedItems] = useState<any[]>();
@@ -130,10 +132,16 @@ const EditableGrid = (props: Props) => {
         if(props && props.items && props.items.length > 0){
             var data : any[] = InitializeInternalGrid(props.items);
             setGridData(data);
+            setBackupDefaultGridData(data.map(obj => ({...obj})));
             setGridEditState(false);
             SetGridItems(data);
         }
     }, [props.items]);
+
+    useEffect(() => {
+        console.log('Backup Grid Data');
+        console.log(backupDefaultGridData);
+    }, [backupDefaultGridData]);
 
     useEffect(() => {
         console.log('Default Grid Data');
@@ -636,6 +644,12 @@ const EditableGrid = (props: Props) => {
 
         return true;
     }
+
+    const ResetGridData = () : void => {
+        debugger;
+        setGridEditState(false);
+        SetGridItems([...backupDefaultGridData]);
+    };
     
     const CreateColumnConfigs = () : IColumn[] => {
         let columnConfigs: IColumn[] = [];
@@ -851,6 +865,16 @@ const EditableGrid = (props: Props) => {
                 text: !isUpdateColumnClicked ? "Update Column" : "Save Column Update",
                 iconProps: { iconName: "SingleColumnEdit" },
                 onClick: () => RowSelectOperations(EditType.ColumnEdit, {})
+            });
+        }
+
+        if(props.enableGridReset){
+            commandBarItems.push({
+                key: 'resetGrid',
+                disabled: isGridInEdit || editMode,
+                text: "Reset Data",
+                iconProps: { iconName: "Refresh" },
+                onClick: () => ResetGridData()
             });
         }
     
