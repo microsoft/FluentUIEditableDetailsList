@@ -369,7 +369,6 @@ const EditableGrid = (props: Props) => {
     const DeleteSelectedRows = () : void => {
         debugger;
         let defaultGridDataTmp = [...defaultGridData];
-        let selected_grid_row_ids_ : any[] = [];
 
         selectedItems!.forEach((item, index) => {
             defaultGridDataTmp.filter((x => x._grid_row_id_ == item._grid_row_id_)).map((x => x._grid_row_operation_ = Operation.Delete));
@@ -648,7 +647,7 @@ const EditableGrid = (props: Props) => {
     const ResetGridData = () : void => {
         debugger;
         setGridEditState(false);
-        SetGridItems([...backupDefaultGridData]);
+        SetGridItems(backupDefaultGridData.map(obj => ({...obj})));
     };
     
     const CreateColumnConfigs = () : IColumn[] => {
@@ -871,7 +870,7 @@ const EditableGrid = (props: Props) => {
         if(props.enableGridReset){
             commandBarItems.push({
                 key: 'resetGrid',
-                disabled: isGridInEdit || editMode,
+                disabled: (isGridInEdit || editMode) || !isGridStateEdited,
                 text: "Reset Data",
                 iconProps: { iconName: "Refresh" },
                 onClick: () => ResetGridData()
