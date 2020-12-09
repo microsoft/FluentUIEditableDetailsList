@@ -14,8 +14,11 @@ initializeIcons(/* optional base url */);
 
 export const InitializeInternalGrid = (items : any[]) : any[] => {
     return items.map((obj, index) => {
-        obj._grid_row_id_ = index; 
-        obj._grid_row_operation_ = Operation.None;
+        if(Object.keys(obj).indexOf('_grid_row_id_') == -1 && Object.keys(obj).indexOf('_grid_row_operation_') == -1)
+        {
+            obj._grid_row_id_ = index; 
+            obj._grid_row_operation_ = Operation.None;
+        }
         return obj;
     })
 };
