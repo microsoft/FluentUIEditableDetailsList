@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import * as React from 'react';
-import { ConstrainMode, IColumn, IDetailsHeaderProps } from 'office-ui-fabric-react/lib/components/DetailsList/DetailsList.types';
+import { ColumnActionsMode, ConstrainMode, IColumn, IDetailsHeaderProps } from 'office-ui-fabric-react/lib/components/DetailsList/DetailsList.types';
 import { useState, useEffect } from 'react';
 import { DetailsList, IDetailsListProps } from 'office-ui-fabric-react/lib/components/DetailsList/DetailsList';
 import { CommandBar, ICommandBarItemProps } from 'office-ui-fabric-react/lib/CommandBar';
@@ -13,9 +13,9 @@ import { DetailsListLayoutMode,
     IDetailsColumnRenderTooltipProps, } from 'office-ui-fabric-react/lib/DetailsList';
 import { MarqueeSelection } from 'office-ui-fabric-react/lib/MarqueeSelection';
 import { IconButton } from 'office-ui-fabric-react/lib/components/Button/IconButton/IconButton';
-import { PrimaryButton, Panel, PanelType, IStackTokens, Stack, mergeStyleSets, Fabric, Dropdown, IDropdownStyles, IDropdownOption, IButtonStyles, DialogFooter, Announced, Dialog, SpinButton, DefaultButton, DatePicker, IDatePickerStrings, on, ScrollablePane, ScrollbarVisibility, Sticky, StickyPositionType, IRenderFunction, TooltipHost, mergeStyles, Spinner, SpinnerSize } from 'office-ui-fabric-react';
+import { PrimaryButton, Panel, PanelType, IStackTokens, Stack, mergeStyleSets, Fabric, Dropdown, IDropdownStyles, IDropdownOption, IButtonStyles, DialogFooter, Announced, Dialog, SpinButton, DefaultButton, DatePicker, IDatePickerStrings, on, ScrollablePane, ScrollbarVisibility, Sticky, StickyPositionType, IRenderFunction, TooltipHost, mergeStyles, Spinner, SpinnerSize, TagPicker, ITag, IBasePickerSuggestionsProps, IInputProps } from 'office-ui-fabric-react';
 import { TextField, ITextFieldStyles, ITextField } from 'office-ui-fabric-react/lib/TextField';
-import { ContextualMenu } from 'office-ui-fabric-react/lib/ContextualMenu';
+import { ContextualMenu, DirectionalHint, IContextualMenu, IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { useBoolean } from '@uifabric/react-hooks';
 import { IColumnConfig } from '../types/columnconfigtype';
 import { controlClass, textFieldStyles } from './editablegridstyles';
@@ -32,6 +32,9 @@ import ColumnUpdateDialog from './columnupdatedialog';
 import EditPanel from './editpanel';
 import { ICallBackParams, ICallBackRequestParams } from '../types/callbackparams';
 import { EventEmitter, EventType } from '../../eventemitter/EventEmitter';
+import ColumnFilterDialog from './columnfilterdialog/columnfilterdialog';
+import { IFilter } from '../types/filterstype';
+import { filterGridData } from './helper';
 
 export interface Props extends IDetailsListProps {
     items: any[];
@@ -58,6 +61,7 @@ export interface Props extends IDetailsListProps {
     constrainMode?:ConstrainMode;
     enableUnsavedEditIndicator?: boolean;
     enableGridReset?: boolean;
+    enableColumnFilters?: boolean;
 }
 
 const EditableGrid = (props: Props) => {
@@ -76,14 +80,21 @@ const EditableGrid = (props: Props) => {
     const [dialogContent, setDialogContent] = React.useState<JSX.Element | undefined>(undefined);
     const [announced, setAnnounced] = React.useState<JSX.Element | undefined>(undefined);
     const [isUpdateColumnClicked, setIsUpdateColumnClicked] = React.useState(false);
+    const [isColumnFilterClicked, setIsColumnFilterClicked] = React.useState(false);
     const [showSpinner, setShowSpinner] = useState(false);
     const [isGridStateEdited, setIsGridStateEdited] = useState(false);
+    const [isGridFilterEnabled, setIsGridFilterEnabled] = useState(false);
+    //const defaultTag : ITag[] = [{name: 'Designation == \'Designation1\'', key:'kushal'}];
+    const [defaultTag, setDefaultTag] = useState<ITag[]>([]);
+    const [filteredColumns, setFilteredColumns] = useState<IColumnConfig[]>([]);
+    const [filterStore, setFilterStore] = useState<IFilter[]>([]);
     const [messageDialogProps, setMessageDialogProps] = React.useState({
         visible : false,
         message : '',
         subMessage: ''
     });
     let SpinRef: any = React.createRef();
+    let filterStoreRef: any = React.useRef<IFilter[]>([]);
 
     let _selection: Selection = new Selection({
         onSelectionChanged: () => setSelectionDetails(_getSelectionDetails()),
@@ -91,19 +102,23 @@ const EditableGrid = (props: Props) => {
 
     const onSearchHandler = (event: any) => {
         if (event && event.target) {
+            debugger;
             let queryText = event.target.value;
             if (queryText) {
                 let searchableColumns = props.columns.filter(x=> x.includeColumnInSearch == true).map(x => x.key);
                 
-                let searchResult : any[] = [];
-                gridData.filter(
-                    (_gridData) => {
+                let searchResult : any[] = [...defaultGridData];
+                searchResult.filter(
+                    (_gridData, index) => {
                         var BreakException = {};
                         try{
                             searchableColumns.forEach((item2, index2) => {
                                 if(_gridData[item2] && _gridData[item2].toString().toLowerCase() && _gridData[item2].toString().toLowerCase().includes(queryText.trim().toLowerCase())){
-                                    searchResult.push(_gridData);
+                                    _gridData._is_filtered_in_grid_search_ = true;
                                     throw BreakException;
+                                }
+                                else{
+                                    _gridData._is_filtered_in_grid_search_ = false;
                                 }
                             });
                         } catch (e) {
@@ -114,10 +129,14 @@ const EditableGrid = (props: Props) => {
                 
                 setDefaultGridData(searchResult);
             } else {
-                setDefaultGridData(gridData);
+                var gridDataTmp : any[] = [...defaultGridData];
+                gridDataTmp.map((item) => item._is_filtered_in_grid_search_ = true);
+                setDefaultGridData(gridDataTmp);
             }
         } else {
-            setDefaultGridData(gridData);
+            var gridDataTmp : any[] = [...defaultGridData];
+                gridDataTmp.map((item) => item._is_filtered_in_grid_search_ = true);
+                setDefaultGridData(gridDataTmp);
         }
     };
 
@@ -155,6 +174,15 @@ const EditableGrid = (props: Props) => {
     useEffect(() => {
         //alert('IsGridInEdit: ' + isGridInEdit);
     }, [isGridInEdit]);
+
+    useEffect(() => {
+        debugger;
+        var filteredData = filterGridData(defaultGridData, getFilterStoreRef());
+        var activateCellEditTmp = ShallowCopyDefaultGridToEditGrid(defaultGridData, activateCellEdit);
+        setDefaultGridData(filteredData);
+        setActivateCellEdit(activateCellEditTmp);
+        setGridData(filteredData);
+    }, [filteredColumns]);
 
     const onGridSave = () : void => {
         if(props.onGridSave){
@@ -204,14 +232,12 @@ const EditableGrid = (props: Props) => {
 
     /* #region [Grid Bulk Update Functions] */
     const onEditPanelChange = (item: any): void => {
-        //setShowSpinner(true);
         var defaultGridDataTmp = UpdateBulkData(item, defaultGridData);
         dismissPanelForEdit();
 
         defaultGridDataTmp = CheckBulkUpdateOnChangeCallBack(item, defaultGridDataTmp);
 
         SetGridItems(defaultGridDataTmp);
-        //setShowSpinner(false);
     };
     /* #endregion */
 
@@ -304,6 +330,8 @@ const EditableGrid = (props: Props) => {
 
             obj._grid_row_id_ = ++_new_grid_row_id_;
             obj._grid_row_operation_ = Operation.Add;
+            obj._is_filtered_in_ = true;
+            obj._is_filtered_in_grid_search_ = true;
             addedRows.push(obj);
         }
         
@@ -444,7 +472,9 @@ const EditableGrid = (props: Props) => {
     const SaveSingleCellValue = (key : string, rowNum : number, defaultGridDataArr : any[]) : any[] => {
         let defaultGridDataTmp : any[] = [];
         defaultGridDataTmp = [...defaultGridDataArr];
-        defaultGridDataTmp[rowNum][key] = activateCellEdit[rowNum]['properties'][key]['value'];
+        var internalRowNumDefaultGrid = defaultGridDataTmp.findIndex((row) => row._grid_row_id_ == rowNum);
+        var internalRowNumActivateGrid = activateCellEdit.findIndex((row) => row['properties']['_grid_row_id_']['value'] == rowNum);
+        defaultGridDataTmp[internalRowNumDefaultGrid][key] = activateCellEdit[internalRowNumActivateGrid]['properties'][key]['value'];
 
         return defaultGridDataTmp;
     };
@@ -527,7 +557,6 @@ const EditableGrid = (props: Props) => {
     };
 
     const ChangeCellState = (key : string, rowNum : number, activateCurrentCell : boolean, activateCellEditArr : any[]) : any[] => {
-        debugger;
         let activateCellEditTmp : any[] = [];
         activateCellEditTmp = [...activateCellEditArr];
         activateCellEditTmp[rowNum]['properties'][key]['activated'] = activateCurrentCell;
@@ -591,14 +620,14 @@ const EditableGrid = (props: Props) => {
         let defaultGridDataTmp : any[] = [];
 
         defaultGridData.forEach((item, rowNum) => {
-            activateCellEditTmp = ChangeRowState(item, rowNum, newEditModeValue);
+            activateCellEditTmp = ChangeRowState(item, item['_grid_row_id_'], newEditModeValue);
         });
 
         setActivateCellEdit(activateCellEditTmp);
 
         if(!newEditModeValue){
             defaultGridData.forEach((item, rowNum) => {
-                defaultGridDataTmp = SaveRowValue(item, rowNum, defaultGridData);
+                defaultGridDataTmp = SaveRowValue(item, item['_grid_row_id_'], defaultGridData);
             });
             setDefaultGridData(defaultGridDataTmp);
         }
@@ -639,6 +668,9 @@ const EditableGrid = (props: Props) => {
                     ShowMessageDialog('No Rows Selected', 'Please select some rows to perform this operation');
                 }
                 break;
+            case EditType.ColumnFilter:
+                ShowColumnFilterDialog();
+                break;
         }
 
         return true;
@@ -647,8 +679,101 @@ const EditableGrid = (props: Props) => {
     const ResetGridData = () : void => {
         debugger;
         setGridEditState(false);
+        ClearFilters();
         SetGridItems(backupDefaultGridData.map(obj => ({...obj})));
     };
+
+    /* #region [Column Click] */
+    const onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn) => {
+        debugger;
+       
+    }
+    /* #endregion */
+    
+    /* #region [Column Filter] */
+    const getFilterStoreRef = () : IFilter[] => {
+        return filterStoreRef.current;
+    };
+
+    const setFilterStoreRef = (value : IFilter[]) : void => {
+        filterStoreRef.current = value;
+    };
+
+    const clearFilterStoreRef = () : void => {
+        filterStoreRef.current = [];
+    }
+    
+    const CloseColumnFilterDialog = (): void => {
+        debugger;
+        setIsColumnFilterClicked(false);
+    };
+
+    const ShowColumnFilterDialog = (): void => {
+        setIsColumnFilterClicked(s => !s);
+    };
+
+    const onFilterApplied = (filter : IFilter) : void => {
+        debugger;
+        var tags : ITag[] = [...defaultTag];
+        tags.push({ name: '\'' + filter.column.key + '\' ' + filter.operator + ' ' + '\'' + filter.value + '\'', 
+                    key: filter.column.key 
+                })
+        
+        var filterStoreTmp : IFilter[] = getFilterStoreRef();;
+        filterStoreTmp.push(filter);
+        
+        setFilterStoreRef(filterStoreTmp);
+        setFilteredColumns(filteredColumns => [...filteredColumns, filter.column]);
+        setDefaultTag(tags);
+        CloseColumnFilterDialog();
+    }
+
+    const ClearFilters = () : void => {
+        setDefaultTag([]);
+        clearFilterStoreRef();
+        setFilteredColumns([]);
+    }
+
+    const onFilterTagListChanged = React.useCallback((tagList: ITag[] | undefined): void => {
+        debugger;
+        if(tagList != null && tagList.length == 0){
+            ClearFilters();
+            return;
+        }
+
+        var filterStoreTmp : IFilter[] = [];
+        tagList!.forEach((item) => {
+            var storeRow = getFilterStoreRef().filter((val) => val.column.key == item.key);
+            if(storeRow.length > 0){
+                filterStoreTmp.push(storeRow[0]);
+            }
+        });
+
+        setFilterStoreRef(filterStoreTmp);
+        var filteredColumnsTmp : IColumnConfig[] = [];
+        filteredColumnsTmp = props.columns.filter((item) => tagList!.filter((val) => val.key == item.key).length > 0);
+        setFilteredColumns(filteredColumnsTmp);
+        setDefaultTag(tagList!);
+    }, []);
+    
+    const onFilterChanged = React.useCallback((filterText: string, tagList: ITag[] | undefined): ITag[] => {
+        var emptyITag : ITag[] = [];
+        return emptyITag;
+    }, []);
+
+    const getTextFromItem = (item: ITag): string => {
+        return item.name;
+    }
+
+    const pickerSuggestionsProps: IBasePickerSuggestionsProps = {
+        suggestionsHeaderText: 'Suggested tags',
+        noResultsFoundText: 'No item tags found',
+    };
+
+    const inputProps: IInputProps = {
+        'aria-label': 'Tag Picker',
+    };
+    /* #endregion [Column Filter] */
     
     const CreateColumnConfigs = () : IColumn[] => {
         let columnConfigs: IColumn[] = [];
@@ -663,6 +788,7 @@ const EditableGrid = (props: Props) => {
                 isResizable: true,
                 minWidth: column.minWidth,
                 maxWidth: column.maxWidth,
+                onColumnClick: onColumnClick,
                 //data: item.dataType,
                 sortAscendingAriaLabel: 'Sorted A to Z',
                 sortDescendingAriaLabel: 'Sorted Z to A',
@@ -671,9 +797,7 @@ const EditableGrid = (props: Props) => {
                     switch(column.inputType){
                         case EditControlType.MultilineTextField:
                             return <span>{
-                                (
-                                    // (!showTextBoxInGrid || !column.editable) && 
-                                (!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
+                                ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
                                 <span className={controlClass.spanStyles} 
                                     onDoubleClick={() => (props.enableCellEdit == true && column.editable == true) 
@@ -696,9 +820,7 @@ const EditableGrid = (props: Props) => {
                             break;
                         case EditControlType.Date:
                             return <span>{
-                                (
-                                    // (!showTextBoxInGrid || !column.editable) && 
-                                    (!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
+                                ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
                                 <span className={controlClass.spanStyles} 
                                     onDoubleClick={() => (props.enableCellEdit == true && column.editable == true) 
@@ -713,8 +835,6 @@ const EditableGrid = (props: Props) => {
                                     placeholder="Select a date..."
                                     ariaLabel="Select a date"
                                     value={new Date(activateCellEdit[rowNum!].properties[column.key].value)}
-                                    //value={new Date(item[column.key])}
-                                    //disabled={!column.editable}
                                     onSelectDate={(date) => onCellDateChange(date, item, rowNum!, column)}
                                     onDoubleClick = {() => !activateCellEdit[rowNum!].isActivated ? onDoubleClickEvent(column.key, rowNum!, false) : null}
                                 />
@@ -800,6 +920,33 @@ const EditableGrid = (props: Props) => {
                         text: 'CSV Export',
                         iconProps: { iconName: 'CSV' },
                         onClick: () => onExportClick(ExportType.CSV)
+                        }
+                    ],
+                } 
+            });
+        }
+
+        if(props.enableColumnFilters){
+            commandBarItems.push({ 
+                key: 'columnFilters', 
+                text: 'Filter', 
+                ariaLabel: 'Filter',
+                disabled: isGridInEdit || editMode,
+                cacheKey: 'myColumnFilterCacheKey', 
+                iconProps: { iconName: 'Filter' },
+                subMenuProps: {
+                    items: [
+                        {
+                        key: 'columnFilter',
+                        text: 'Column Filter',
+                        iconProps: { iconName: 'Filter' },
+                        onClick: () => RowSelectOperations(EditType.ColumnFilter, {})
+                        },
+                        {
+                        key: 'clearFilters',
+                        text: 'Clear Filters',
+                        iconProps: { iconName: 'ClearFilter' },
+                        onClick: () => ClearFilters()
                         }
                     ],
                 } 
@@ -958,6 +1105,17 @@ const EditableGrid = (props: Props) => {
                     columnConfigurationData={props.columns}
                     />
             </Panel>
+
+            {defaultTag.length > 0 ? 
+                <TagPicker
+                onResolveSuggestions={onFilterChanged}
+                getTextFromItem={getTextFromItem}
+                pickerSuggestionsProps={pickerSuggestionsProps}
+                inputProps={inputProps}
+                selectedItems={defaultTag}
+                onChange={onFilterTagListChanged}
+            /> : null}
+            
             <CommandBar
                 items={CommandBarItemProps}
                 ariaLabel="Command Bar"
@@ -974,7 +1132,7 @@ const EditableGrid = (props: Props) => {
                     <MarqueeSelection selection={_selection}>
                         <DetailsList
                             compact={true}
-                            items={defaultGridData.length > 0 ? defaultGridData.filter((x) => x._grid_row_operation_ != Operation.Delete) : []}
+                            items={defaultGridData.length > 0 ? defaultGridData.filter((x) => (x._grid_row_operation_ != Operation.Delete) && (x._is_filtered_in_ == true) && (x._is_filtered_in_grid_search_ == true)) : []}
                             columns={GridColumns}
                             selectionMode={props.selectionMode}
                             // layoutMode={props.layoutMode}
@@ -1013,7 +1171,17 @@ const EditableGrid = (props: Props) => {
             :
             null
             }
-            
+
+            {props.enableColumnFilters && isColumnFilterClicked ? 
+            <ColumnFilterDialog 
+                columnConfigurationData={props.columns.filter((item) => filteredColumns.indexOf(item) < 0)} 
+                onDialogCancel={CloseColumnFilterDialog} 
+                onDialogSave={onFilterApplied}
+                gridData={defaultGridData}
+                />
+            :
+            null
+            }
         </Fabric>
     );
 };
