@@ -93,6 +93,7 @@ const Consumer = () => {
                 enableUnsavedEditIndicator={true}
                 onGridSave={onGridSave}
                 enableGridReset={true}
+                enableColumnFilters={true}
             />
         </Fabric>
     );

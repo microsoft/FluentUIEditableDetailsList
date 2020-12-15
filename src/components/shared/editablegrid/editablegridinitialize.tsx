@@ -18,6 +18,8 @@ export const InitializeInternalGrid = (items : any[]) : any[] => {
         {
             obj._grid_row_id_ = index; 
             obj._grid_row_operation_ = Operation.None;
+            obj._is_filtered_in_ = true;
+            obj._is_filtered_in_grid_search_ = true;
         }
         return obj;
     })
@@ -39,6 +41,7 @@ export const InitializeInternalGridEditStructure = (items : any[]) : any[] => {
 };
 
 export const ShallowCopyDefaultGridToEditGrid = (defaultGrid : any[], editGrid : any[]) : any[] => {
+    debugger;
     defaultGrid.forEach((item, index) => {
         var objectKeys = Object.keys(item);
         objectKeys.forEach((objKey) => {
@@ -50,11 +53,14 @@ export const ShallowCopyDefaultGridToEditGrid = (defaultGrid : any[], editGrid :
 };
 
 export const ShallowCopyEditGridToDefaultGrid = (defaultGrid : any[], editGrid : any[]) : any[] => {
-    editGrid.forEach((item, index) => {
-        var objectKeys = Object.keys(item.properties);
-        objectKeys.forEach((objKey) => {
-            defaultGrid[index][objKey] = item.properties[objKey].value;
-        })
+    editGrid.forEach((item) => {
+        var index = defaultGrid.findIndex((row) => row._grid_row_id_ == item.properties._grid_row_id_.value);
+        if(index >= 0){
+            var objectKeys = Object.keys(item.properties);
+            objectKeys.forEach((objKey) => {
+                defaultGrid[index][objKey] = item.properties[objKey].value;
+            })
+        }
     });
     
     return defaultGrid;

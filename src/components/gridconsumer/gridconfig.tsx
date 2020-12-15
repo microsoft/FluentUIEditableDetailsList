@@ -74,7 +74,7 @@ export const GridColumnConfig : IColumnConfig[] =
         name: 'Date of Joining',
         text: 'Date of Joining',
         editable: true,
-        dataType: 'string',
+        dataType: 'date',
         minWidth: 150,
         maxWidth: 150,
         isResizable: true,
