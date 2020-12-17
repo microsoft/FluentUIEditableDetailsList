@@ -1145,6 +1145,57 @@ const EditableGrid = (props: Props) => {
                             ariaLabelForSelectAllCheckbox="Toggle selection for all items"
                             ariaLabelForSelectionColumn="Toggle selection"
                             checkButtonAriaLabel="Row checkbox"
+
+                            ariaLabel={props.ariaLabel}
+                            ariaLabelForGrid={props.ariaLabelForGrid}
+                            ariaLabelForListHeader={props.ariaLabelForListHeader}
+                            cellStyleProps={props.cellStyleProps}
+                            checkboxCellClassName={props.checkboxCellClassName}
+                            checkboxVisibility={props.checkboxVisibility}
+                            className={props.className}
+                            columnReorderOptions={props.columnReorderOptions}
+                            componentRef={props.componentRef}
+                            disableSelectionZone={props.disableSelectionZone}
+                            dragDropEvents={props.dragDropEvents}
+                            enableUpdateAnimations={props.enableUpdateAnimations}
+                            enterModalSelectionOnTouch={props.enterModalSelectionOnTouch}
+                            getCellValueKey={props.getCellValueKey}
+                            getGroupHeight={props.getGroupHeight}
+                            getKey={props.getKey}
+                            getRowAriaDescribedBy={props.getRowAriaDescribedBy}
+                            getRowAriaLabel={props.getRowAriaLabel}
+                            groupProps={props.groupProps}
+                            groups={props.groups}
+                            indentWidth={props.indentWidth}
+                            initialFocusedIndex={props.initialFocusedIndex}
+                            isHeaderVisible={props.isHeaderVisible}
+                            isPlaceholderData={props.isPlaceholderData}
+                            listProps={props.listProps}
+                            minimumPixelsForDrag={props.minimumPixelsForDrag}
+                            onActiveItemChanged={props.onActiveItemChanged}
+                            onColumnHeaderClick={props.onColumnHeaderClick}
+                            onColumnHeaderContextMenu={props.onColumnHeaderContextMenu}
+                            onColumnResize={props.onColumnResize}
+                            onDidUpdate={props.onDidUpdate}
+                            onItemContextMenu={props.onItemContextMenu}
+                            onItemInvoked={props.onItemInvoked}
+                            onRenderCheckbox={props.onRenderCheckbox}
+                            onRenderDetailsFooter={props.onRenderDetailsFooter}
+                            onRenderItemColumn={props.onRenderItemColumn}
+                            onRenderMissingItem={props.onRenderMissingItem}
+                            onRenderRow={props.onRenderRow}
+                            onRowDidMount={props.onRowDidMount}
+                            onRowWillUnmount={props.onRowWillUnmount}
+                            onShouldVirtualize={props.onShouldVirtualize}
+                            rowElementEventMap={props.rowElementEventMap}
+                            selectionPreservedOnEmptyClick={props.selectionPreservedOnEmptyClick}
+                            selectionZoneProps={props.selectionZoneProps}
+                            shouldApplyApplicationRole={props.shouldApplyApplicationRole}
+                            styles={props.styles}
+                            useFastIcons={props.useFastIcons}
+                            usePageCache={props.usePageCache}
+                            useReducedRowRenderer={props.useReducedRowRenderer}
+                            viewport={props.viewport}
                         />
                     </MarqueeSelection>
                 </ScrollablePane>

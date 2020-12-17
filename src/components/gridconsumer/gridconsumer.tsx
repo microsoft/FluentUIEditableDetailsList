@@ -36,7 +36,7 @@ const Consumer = () => {
 
     React.useEffect(() => {
         var dummyData : GridItemsType[] = []
-        for(var i = 1; i <= 10; i++){
+        for(var i = 1; i <= 100; i++){
             dummyData.push({
                 id: i,
                 name: 'Name'+i,
