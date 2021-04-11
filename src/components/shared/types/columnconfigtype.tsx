@@ -17,4 +17,5 @@ export interface IColumnConfig extends IColumn {
     calculatedColumn?: { type: CalculationType, fields: any[]  };
     onChange?: any;
     maxLength?: number;
+    applyColumnFilter?: boolean;
 };

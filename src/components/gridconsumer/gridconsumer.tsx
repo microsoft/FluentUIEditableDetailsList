@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { DetailsList, DetailsListLayoutMode, Fabric, mergeStyles, mergeStyleSets, SelectionMode, TextField } from 'office-ui-fabric-react';
+import { DefaultButton, DetailsList, DetailsListLayoutMode, Fabric, mergeStyles, mergeStyleSets, SelectionMode, TextField } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { useState } from 'react';
 import EditableGrid from '../shared/editablegrid/editablegrid';
@@ -34,20 +34,24 @@ const Consumer = () => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-    React.useEffect(() => {
+    const SetDummyData = () : void => {
         var dummyData : GridItemsType[] = []
         for(var i = 1; i <= 100; i++){
             dummyData.push({
                 id: i,
-                name: 'Name'+i,
+                name: 'Name'+ GetRandomInt(1, 10),
                 age: GetRandomInt(20,40),
-                designation: 'Designation' + i,
+                designation: 'Designation' + GetRandomInt(1, 15),
                 salary: GetRandomInt(35000, 75000),
                 dateofjoining: '2010-10-10T14:57:10'
             });
         }
 
         setItems(dummyData);
+    }
+
+    React.useEffect(() => {
+        SetDummyData();
     }, []);
 
     const onGridSave = (data: any[]): void => {
@@ -74,6 +78,7 @@ const Consumer = () => {
                 <TextField placeholder='Search Grid' className={mergeStyles({ width: '60vh', paddingBottom:'10px' })} onChange={(event) => EventEmitter.dispatch(EventType.onSearch, event)}/>
             </div>
             <EditableGrid
+                id={1}
                 enableColumnEdit={true}
                 enableSave={true}
                 columns={attachGridValueChangeCallbacks(GridColumnConfig)}
@@ -94,6 +99,7 @@ const Consumer = () => {
                 onGridSave={onGridSave}
                 enableGridReset={true}
                 enableColumnFilters={true}
+                enableColumnFilterRules={true}
             />
         </Fabric>
     );

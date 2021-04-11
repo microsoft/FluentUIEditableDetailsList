@@ -20,6 +20,7 @@ export const InitializeInternalGrid = (items : any[]) : any[] => {
             obj._grid_row_operation_ = Operation.None;
             obj._is_filtered_in_ = true;
             obj._is_filtered_in_grid_search_ = true;
+            obj._is_filtered_in_column_filter_ = true;
         }
         return obj;
     })

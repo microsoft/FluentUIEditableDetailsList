@@ -18,6 +18,7 @@ export const GridColumnConfig : IColumnConfig[] =
         isResizable: true,
         includeColumnInExport: true,
         includeColumnInSearch: true,
+        applyColumnFilter: true
     },
     {
         key: 'name',
@@ -30,6 +31,7 @@ export const GridColumnConfig : IColumnConfig[] =
         isResizable: true,
         includeColumnInExport: true,
         includeColumnInSearch: true,
+        applyColumnFilter: true
     },
     {
         key: 'age',
@@ -42,6 +44,7 @@ export const GridColumnConfig : IColumnConfig[] =
         isResizable: true,
         includeColumnInExport: true,
         includeColumnInSearch: true,
+        applyColumnFilter: true
     },
     {
         key: 'designation',
@@ -54,7 +57,8 @@ export const GridColumnConfig : IColumnConfig[] =
         isResizable: true,
         includeColumnInExport: true,
         includeColumnInSearch: true,
-        inputType: EditControlType.MultilineTextField
+        inputType: EditControlType.MultilineTextField,
+        applyColumnFilter: true
     },
     {
         key: 'salary',
@@ -67,7 +71,8 @@ export const GridColumnConfig : IColumnConfig[] =
         isResizable: true,
         includeColumnInExport: false,
         includeColumnInSearch: true,
-        maxLength:5
+        maxLength:5,
+        applyColumnFilter: true
     },
     {
         key: 'dateofjoining',
