@@ -34,9 +34,12 @@ import { ICallBackParams, ICallBackRequestParams } from '../types/callbackparams
 import { EventEmitter, EventType } from '../../eventemitter/EventEmitter';
 import ColumnFilterDialog from './columnfilterdialog/columnfilterdialog';
 import { IFilter } from '../types/filterstype';
-import { filterGridData } from './helper';
+import { applyGridColumnFilter, filterGridData, isColumnDataTypeSupportedForFilter } from './helper';
+import { IFilterItem, IFilterListProps, IGridColumnFilter } from '../types/columnfilterstype';
+import FilterCallout from './columnfiltercallout/filtercallout';
 
 export interface Props extends IDetailsListProps {
+    id: number;
     items: any[];
     columns: IColumnConfig[];
     enableExport?: boolean;
@@ -61,6 +64,7 @@ export interface Props extends IDetailsListProps {
     constrainMode?:ConstrainMode;
     enableUnsavedEditIndicator?: boolean;
     enableGridReset?: boolean;
+    enableColumnFilterRules?: boolean;
     enableColumnFilters?: boolean;
 }
 
@@ -88,6 +92,9 @@ const EditableGrid = (props: Props) => {
     const [defaultTag, setDefaultTag] = useState<ITag[]>([]);
     const [filteredColumns, setFilteredColumns] = useState<IColumnConfig[]>([]);
     const [filterStore, setFilterStore] = useState<IFilter[]>([]);
+    const gridColumnFilterArrRef : any = React.useRef<IGridColumnFilter[]>([]);
+    const [filterCalloutComponent, setFilterCalloutComponent] = React.useState<JSX.Element | undefined>(undefined);
+    const [showFilterCallout, setShowFilterCallout] = React.useState(false);
     const [messageDialogProps, setMessageDialogProps] = React.useState({
         visible : false,
         message : '',
@@ -102,7 +109,7 @@ const EditableGrid = (props: Props) => {
 
     const onSearchHandler = (event: any) => {
         if (event && event.target) {
-            debugger;
+            
             let queryText = event.target.value;
             if (queryText) {
                 let searchableColumns = props.columns.filter(x=> x.includeColumnInSearch == true).map(x => x.key);
@@ -176,13 +183,14 @@ const EditableGrid = (props: Props) => {
     }, [isGridInEdit]);
 
     useEffect(() => {
-        debugger;
-        var filteredData = filterGridData(defaultGridData, getFilterStoreRef());
-        var activateCellEditTmp = ShallowCopyDefaultGridToEditGrid(defaultGridData, activateCellEdit);
-        setDefaultGridData(filteredData);
-        setActivateCellEdit(activateCellEditTmp);
-        setGridData(filteredData);
+        SetFilteredGridData(getFilterStoreRef());
     }, [filteredColumns]);
+
+    useEffect(() => {
+        if(filterCalloutComponent){
+            setShowFilterCallout(true);
+        }
+    }, [filterCalloutComponent]);
 
     const onGridSave = () : void => {
         if(props.onGridSave){
@@ -191,7 +199,6 @@ const EditableGrid = (props: Props) => {
     };
     
     const UpdateGridEditStatus = () : void => {
-        debugger;
         var gridEditStatus : boolean = false;
         var BreakException = {};
 
@@ -228,6 +235,14 @@ const EditableGrid = (props: Props) => {
         if(isGridStateEdited != editState){
             setIsGridStateEdited(editState);
         }
+    }
+
+    const SetFilteredGridData = (filters : IFilter[]) : void => {
+        var filteredData = filterGridData(defaultGridData, filters);
+        var activateCellEditTmp = ShallowCopyDefaultGridToEditGrid(defaultGridData, activateCellEdit);
+        setDefaultGridData(filteredData);
+        setActivateCellEdit(activateCellEditTmp);
+        setGridData(filteredData);
     }
 
     /* #region [Grid Bulk Update Functions] */
@@ -280,7 +295,7 @@ const EditableGrid = (props: Props) => {
     };
     
     const UpdateGridColumnData = (data : any) : void => {
-        debugger;
+        
         var defaultGridDataTmp = UpdateBulkData(data, defaultGridData);
         
         CloseColumnUpdateDialog();
@@ -290,7 +305,7 @@ const EditableGrid = (props: Props) => {
     }
 
     const CloseColumnUpdateDialog = (): void => {
-        debugger;
+        
         setIsUpdateColumnClicked(false);
     };
 
@@ -332,6 +347,7 @@ const EditableGrid = (props: Props) => {
             obj._grid_row_operation_ = Operation.Add;
             obj._is_filtered_in_ = true;
             obj._is_filtered_in_grid_search_ = true;
+            obj._is_filtered_in_column_filter_ = true;
             addedRows.push(obj);
         }
         
@@ -395,7 +411,7 @@ const EditableGrid = (props: Props) => {
     };
 
     const DeleteSelectedRows = () : void => {
-        debugger;
+        
         let defaultGridDataTmp = [...defaultGridData];
 
         selectedItems!.forEach((item, index) => {
@@ -480,7 +496,7 @@ const EditableGrid = (props: Props) => {
     };
 
     const onCellValueChange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, item : {}, row : number, key : string, column : IColumnConfig): void => {
-        debugger;
+        
         if(!IsValideDataType(column.dataType, text)){
             return;
         }
@@ -564,7 +580,7 @@ const EditableGrid = (props: Props) => {
     };
 
     const EditCellValue = (key : string, rowNum : number, activateCurrentCell : boolean) : void => {
-        debugger;
+        
         let activateCellEditTmp : any[] = ChangeCellState(key, rowNum, activateCurrentCell, activateCellEdit);
         setActivateCellEdit(activateCellEditTmp);
 
@@ -647,7 +663,7 @@ const EditableGrid = (props: Props) => {
                 }
                 break;
             case EditType.ColumnEdit:
-                debugger;
+                
                 if(selectedIndices.length > 0){
                     ShowColumnUpdate();
                 }
@@ -677,16 +693,16 @@ const EditableGrid = (props: Props) => {
     }
 
     const ResetGridData = () : void => {
-        debugger;
+        
         setGridEditState(false);
         ClearFilters();
         SetGridItems(backupDefaultGridData.map(obj => ({...obj})));
     };
 
     /* #region [Column Click] */
-    const onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn) => {
-        debugger;
-       
+    const onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn, index : number) => {
+        ev.preventDefault();
+        ShowFilterForColumn(column, index);
     }
     /* #endregion */
     
@@ -704,7 +720,7 @@ const EditableGrid = (props: Props) => {
     }
     
     const CloseColumnFilterDialog = (): void => {
-        debugger;
+        
         setIsColumnFilterClicked(false);
     };
 
@@ -713,7 +729,7 @@ const EditableGrid = (props: Props) => {
     };
 
     const onFilterApplied = (filter : IFilter) : void => {
-        debugger;
+        
         var tags : ITag[] = [...defaultTag];
         tags.push({ name: '\'' + filter.column.key + '\' ' + filter.operator + ' ' + '\'' + filter.value + '\'', 
                     key: filter.column.key 
@@ -735,7 +751,7 @@ const EditableGrid = (props: Props) => {
     }
 
     const onFilterTagListChanged = React.useCallback((tagList: ITag[] | undefined): void => {
-        debugger;
+        
         if(tagList != null && tagList.length == 0){
             ClearFilters();
             return;
@@ -774,22 +790,118 @@ const EditableGrid = (props: Props) => {
         'aria-label': 'Tag Picker',
     };
     /* #endregion [Column Filter] */
+
+    /* #region [Grid Column Filter] */
+    const onFilterApply = (filter : IFilterListProps) : void => {
+        UpdateColumnFilterValues(filter);
+        var GridColumnFilterArr : IGridColumnFilter[] = getColumnFiltersRef();
+        var filteredData = applyGridColumnFilter(defaultGridData, GridColumnFilterArr);
+        getColumnFiltersRefForColumnKey(filter.columnKey).isApplied = filter.filterList.filter(i => i.isChecked).length > 0 && filter.filterList.filter(i => i.isChecked).length < filter.filterList.length ? true : false;
+        var activateCellEditTmp = ShallowCopyDefaultGridToEditGrid(defaultGridData, activateCellEdit);
+        setDefaultGridData(filteredData);
+        setActivateCellEdit(activateCellEditTmp);
+        setGridData(filteredData);
+        setFilterCalloutComponent(undefined); 
+    }
+
+    const UpdateColumnFilterValues = (filter : IFilterListProps) : void => {
+        var gridColumnFilter : IGridColumnFilter = getColumnFiltersRefForColumnKey(filter.columnKey);
+        gridColumnFilter.filterCalloutProps!.filterList = filter.filterList;
+        gridColumnFilter.isHidden = true;
+        gridColumnFilter.isApplied = true;
+    }
+    
+    const ShowFilterForColumn = (column: IColumn, index : number) : void => {
+        var filter : IGridColumnFilter = getColumnFiltersRefAtIndex(index);
+        filter.isHidden = !filter.isHidden;
+        if(filter.isHidden){
+            setFilterCalloutComponent(undefined); 
+            return;
+        }
+        
+        var filters : IGridColumnFilter[] = getColumnFiltersRef();
+        filters.filter((item) => item.index != filter.index && item.column.key != filter.column.key)
+                .map((item) => item.isHidden = true);
+                
+        filter.filterCalloutProps!.filterList = GetUniqueColumnValues(column, filter.filterCalloutProps!.filterList);
+        
+        setFilterCalloutComponent(<FilterCallout onCancel={() => {setFilterCalloutComponent(undefined)}} onApply={onFilterApply} columnKey={filter.filterCalloutProps!.columnKey} columnName={filter.filterCalloutProps!.columnName} filterList={filter.filterCalloutProps!.filterList} columnClass={filter.filterCalloutProps!.columnClass} />);
+    }
+
+    const GetUniqueColumnValues = (column: IColumn, prevFilters : IFilterItem[]) : IFilterItem[] => {
+        var uniqueVals : string[] = [...new Set(defaultGridData.filter((x) => (x._grid_row_operation_ != Operation.Delete) && (x._is_filtered_in_column_filter_ == true) && (x._is_filtered_in_grid_search_ == true))
+                                            .map(item => item[column.fieldName!]))];
+        var hiddenUniqueVals : string[] = [...new Set(defaultGridData.filter((x) => (x._grid_row_operation_ != Operation.Delete) && ((x._is_filtered_in_column_filter_ == false) || (x._is_filtered_in_grid_search_ == false)))
+            .map(item => item[column.fieldName!]))];
+
+        var filterItemArr : IFilterItem[] = [];
+        if(!prevFilters || prevFilters.length == 0){
+            filterItemArr = uniqueVals.map((item) => {
+                return {text: item, isChecked: true}
+            })
+        }
+        else{
+            filterItemArr = uniqueVals.map((item) => {
+                var filters : IFilterItem[] = prevFilters.filter((i) => i.text == item);
+                return {text: item, isChecked: filters.length > 0 ? filters[0].isChecked : true}
+            });
+        }
+        
+        return [...filterItemArr, ...hiddenUniqueVals.filter(i => !uniqueVals.includes(i)).map(i => {
+            return {text: i, isChecked: false}
+        })];
+    }
+
+    const getColumnFiltersRef = () : IGridColumnFilter[] => {
+        return gridColumnFilterArrRef.current;
+    };
+
+    const getColumnFiltersRefAtIndex = (index : number) : IGridColumnFilter => {
+        return gridColumnFilterArrRef.current[index];
+    };
+
+    const getColumnFiltersRefForColumnKey = (key : string) : IGridColumnFilter => {
+        var gridColumnFilterArr : IGridColumnFilter[] = [...gridColumnFilterArrRef.current];
+        return gridColumnFilterArr.filter((item) => item.column.key == key)[0];
+    };
+
+    const setColumnFiltersRefAtIndex = (index : number, filter : IGridColumnFilter) : void => {
+        gridColumnFilterArrRef.current[index] = filter;
+        console.log('Filter Column changed at index ' + index);
+        console.log(gridColumnFilterArrRef.current);
+    };
+
+    const setColumnFiltersRef = (value : IGridColumnFilter[]) : void => {
+        gridColumnFilterArrRef.current = value;
+    };
+
+    const clearColumnFiltersRef = () : void => {
+        gridColumnFilterArrRef.current = [];
+    }
+    /* #endregion [Grid Column Filter] */
     
     const CreateColumnConfigs = () : IColumn[] => {
+        
         let columnConfigs: IColumn[] = [];
-        let i = 1;
+        let columnFilterArrTmp : IGridColumnFilter[] = [];
     
         props.columns.forEach((column, index) => {
+            var colHeaderClassName = 'id-' + props.id + '-col-' + index;
+            var colKey = 'col' + index;
+            var isDataTypeSupportedForFilter : boolean = isColumnDataTypeSupportedForFilter(column.dataType);
+
             columnConfigs.push({
-                key: 'col' + i, 
+                key: colKey, 
                 name: column.text, 
+                headerClassName: colHeaderClassName,
                 ariaLabel: column.text,
                 fieldName: column.key,
                 isResizable: true,
                 minWidth: column.minWidth,
                 maxWidth: column.maxWidth,
-                onColumnClick: onColumnClick,
+                onColumnClick: (isDataTypeSupportedForFilter && column.applyColumnFilter &&  props.enableColumnFilters) ? (ev, col) => onColumnClick(ev, col, index) : undefined,
                 //data: item.dataType,
+                isFiltered: (isDataTypeSupportedForFilter && column.applyColumnFilter &&  props.enableColumnFilters && (getColumnFiltersRef() && getColumnFiltersRef().length > 0 && getColumnFiltersRef().filter(i => i.column.key == column.key).length > 0 && getColumnFiltersRef().filter(i => i.column.key == column.key)[0].isApplied)) ? true : false,
                 sortAscendingAriaLabel: 'Sorted A to Z',
                 sortDescendingAriaLabel: 'Sorted Z to A',
                 onRender: (item, rowNum) => {
@@ -867,10 +979,27 @@ const EditableGrid = (props: Props) => {
                     } 
                 }
             });
-    
-            i++;
+
+            if(getColumnFiltersRef().length == 0){
+                columnFilterArrTmp.push({
+                    index: index,
+                    column: column,
+                    isApplied: false,
+                    isHidden: true,
+                    filterCalloutProps: {
+                        columnKey: column.key,
+                        columnClass: colHeaderClassName,
+                        columnName: column.text,
+                        filterList: []
+                    }
+                });
+            }
         });
-    
+
+        if(getColumnFiltersRef().length == 0){
+            setColumnFiltersRef(columnFilterArrTmp);
+        }
+
         if(props.enableRowEdit){
             columnConfigs.push({
                 key: 'action',
@@ -926,7 +1055,7 @@ const EditableGrid = (props: Props) => {
             });
         }
 
-        if(props.enableColumnFilters){
+        if(props.enableColumnFilterRules){
             commandBarItems.push({ 
                 key: 'columnFilters', 
                 text: 'Filter', 
@@ -1028,7 +1157,7 @@ const EditableGrid = (props: Props) => {
     };
 
     const CreateCommandBarFarItemProps = () : ICommandBarItemProps[] => {
-        debugger;
+        
         let commandBarItems: ICommandBarItemProps[] = [];
         if(props.enableUnsavedEditIndicator && (props.enableRowEdit || props.enableCellEdit || props.enableBulkEdit || props.enableColumnEdit
             || props.enableTextFieldEditMode))
@@ -1127,12 +1256,13 @@ const EditableGrid = (props: Props) => {
                 null
             }
             
+            {showFilterCallout && filterCalloutComponent}
             <div className={mergeStyles({ height: props.height != null ? props.height : '70vh', width: props.width != null ? props.width : '130vh', position: 'relative', backgroundColor: 'white', })}>
                 <ScrollablePane scrollbarVisibility={ScrollbarVisibility.auto}>
                     <MarqueeSelection selection={_selection}>
                         <DetailsList
                             compact={true}
-                            items={defaultGridData.length > 0 ? defaultGridData.filter((x) => (x._grid_row_operation_ != Operation.Delete) && (x._is_filtered_in_ == true) && (x._is_filtered_in_grid_search_ == true)) : []}
+                            items={defaultGridData.length > 0 ? defaultGridData.filter((x) => (x._grid_row_operation_ != Operation.Delete) && (x._is_filtered_in_ == true) && (x._is_filtered_in_grid_search_ == true) && (x._is_filtered_in_column_filter_ == true)) : []}
                             columns={GridColumns}
                             selectionMode={props.selectionMode}
                             // layoutMode={props.layoutMode}
@@ -1223,9 +1353,9 @@ const EditableGrid = (props: Props) => {
             null
             }
 
-            {props.enableColumnFilters && isColumnFilterClicked ? 
+            {props.enableColumnFilterRules && isColumnFilterClicked ? 
             <ColumnFilterDialog 
-                columnConfigurationData={props.columns.filter((item) => filteredColumns.indexOf(item) < 0)} 
+                columnConfigurationData={props.columns.filter((item) => filteredColumns.indexOf(item) < 0 && isColumnDataTypeSupportedForFilter(item.dataType))} 
                 onDialogCancel={CloseColumnFilterDialog} 
                 onDialogSave={onFilterApplied}
                 gridData={defaultGridData}
