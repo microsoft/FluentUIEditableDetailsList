@@ -66,6 +66,7 @@ export interface Props extends IDetailsListProps {
     enableGridReset?: boolean;
     enableColumnFilterRules?: boolean;
     enableColumnFilters?: boolean;
+    enableCommandBar?: boolean
 }
 
 const EditableGrid = (props: Props) => {
@@ -1245,11 +1246,11 @@ const EditableGrid = (props: Props) => {
                 onChange={onFilterTagListChanged}
             /> : null}
             
-            <CommandBar
+            {props.enableCommandBar === undefined || props.enableCommandBar === true ? <CommandBar
                 items={CommandBarItemProps}
                 ariaLabel="Command Bar"
                 farItems={CommandBarFarItemProps}
-                />
+                /> : null}
             {showSpinner ? 
                 <Spinner label="Updating..." ariaLive="assertive" labelPosition="right" size={SpinnerSize.large}/>
                 :
