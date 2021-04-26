@@ -899,7 +899,7 @@ const EditableGrid = (props: Props) => {
                 isResizable: true,
                 minWidth: column.minWidth,
                 maxWidth: column.maxWidth,
-                onColumnClick: (isDataTypeSupportedForFilter && column.applyColumnFilter &&  props.enableColumnFilters) ? (ev, col) => onColumnClick(ev, col, index) : undefined,
+                onColumnClick: !(isGridInEdit || editMode) && (isDataTypeSupportedForFilter && column.applyColumnFilter &&  props.enableColumnFilters) ? (ev, col) => onColumnClick(ev, col, index) : undefined,
                 //data: item.dataType,
                 isFiltered: (isDataTypeSupportedForFilter && column.applyColumnFilter &&  props.enableColumnFilters && (getColumnFiltersRef() && getColumnFiltersRef().length > 0 && getColumnFiltersRef().filter(i => i.column.key == column.key).length > 0 && getColumnFiltersRef().filter(i => i.column.key == column.key)[0].isApplied)) ? true : false,
                 sortAscendingAriaLabel: 'Sorted A to Z',
