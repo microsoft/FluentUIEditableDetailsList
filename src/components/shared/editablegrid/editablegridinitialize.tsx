@@ -59,7 +59,13 @@ export const ShallowCopyEditGridToDefaultGrid = (defaultGrid : any[], editGrid :
         if(index >= 0){
             var objectKeys = Object.keys(item.properties);
             objectKeys.forEach((objKey) => {
-                defaultGrid[index][objKey] = item.properties[objKey].value;
+                if(defaultGrid[index][objKey] != item.properties[objKey].value){
+                    defaultGrid[index][objKey] = item.properties[objKey].value;
+
+                    if(defaultGrid[index]['_grid_row_operation_'] != Operation.Add && defaultGrid[index]['_grid_row_operation_'] != Operation.Update){
+                        defaultGrid[index]['_grid_row_operation_'] = Operation.Update;
+                    }
+                }
             })
         }
     });

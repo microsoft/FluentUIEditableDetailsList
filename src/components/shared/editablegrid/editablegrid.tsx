@@ -474,7 +474,7 @@ const EditableGrid = (props: Props) => {
     /* #endregion */
 
     /* #region [Grid Cell Edit Functions] */
-    const IsValideDataType = (type : string | undefined, text : string) : boolean => {
+    const IsValidDataType = (type : string | undefined, text : string) : boolean => {
         var isValid = true;
         switch(type){
             case 'number':
@@ -497,7 +497,7 @@ const EditableGrid = (props: Props) => {
 
     const onCellValueChange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, item : {}, row : number, key : string, column : IColumnConfig): void => {
         
-        if(!IsValideDataType(column.dataType, text)){
+        if(!IsValidDataType(column.dataType, text)){
             return;
         }
 
