@@ -26,6 +26,14 @@ export const InitializeInternalGrid = (items : any[]) : any[] => {
     })
 };
 
+export const ResetGridRowID = (items : any[]) : any[] => {
+    return items.map((obj, index) => {
+        obj._grid_row_id_ = index; 
+        
+        return obj;
+    });
+};
+
 export const InitializeInternalGridEditStructure = (items : any[]) : any[] => {
     let activateCellEditTmp : any[] = [];
     items.forEach((item, index) => {

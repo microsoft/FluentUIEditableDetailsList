@@ -8,5 +8,6 @@ export enum EditType {
     RowEdit,
     DeleteRow,
     AddRow,
-    ColumnFilter
+    ColumnFilter,
+    AddRowWithData
 }

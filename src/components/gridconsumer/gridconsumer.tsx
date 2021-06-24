@@ -100,6 +100,7 @@ const Consumer = () => {
                 enableGridReset={true}
                 enableColumnFilters={true}
                 enableColumnFilterRules={true}
+                enableRowAddWithValues={{enable : true, enableRowsCounterInPanel : true}}
             />
         </Fabric>
     );
