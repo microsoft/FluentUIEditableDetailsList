@@ -7,6 +7,7 @@ import { IColumnConfig } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
 import { DayPickerStrings } from "./datepickerconfig";
 import { controlClass, horizontalGapStackTokens, stackStyles, textFieldStyles, verticalGapStackTokens } from "./editablegridstyles";
+import { IsValidDataType } from "./helper";
 
 interface Props {
     onChange: any;
@@ -16,9 +17,13 @@ interface Props {
 const EditPanel = (props: Props) => {
     const updateObj : any = {};
 
-    const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string): void => {
-        updateObj[ev.target.id] = text;
-        //console.log(updateObj);
+    const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, column : IColumnConfig): void => {
+        debugger;
+        if(!IsValidDataType(column.dataType, text) || text.trim() == ''){
+            return;
+        }
+        
+        updateObj[(ev.target as Element).id] = text;
     };
 
     const onPanelSubmit = (): void => {
@@ -52,7 +57,7 @@ const EditPanel = (props: Props) => {
                             id={item.key}
                             label={item.text}
                             styles={textFieldStyles}
-                            onChange={(ev, text) => onTextUpdate(ev, text!)}
+                            onChange={(ev, text) => onTextUpdate(ev, text!, item)}
                             defaultValue = { '' }
                             />);
                         break;

@@ -21,7 +21,7 @@ import { IColumnConfig } from '../types/columnconfigtype';
 import { controlClass, textFieldStyles } from './editablegridstyles';
 import { IGridItemsType } from '../types/griditemstype';
 import { Operation } from '../types/operation';
-import { InitializeInternalGrid, InitializeInternalGridEditStructure, ShallowCopyDefaultGridToEditGrid, ShallowCopyEditGridToDefaultGrid } from './editablegridinitialize';
+import { InitializeInternalGrid, InitializeInternalGridEditStructure, ResetGridRowID, ShallowCopyDefaultGridToEditGrid, ShallowCopyEditGridToDefaultGrid } from './editablegridinitialize';
 import { EditControlType } from '../types/editcontroltype';
 import { dateToISOLikeButLocal, DayPickerStrings } from './datepickerconfig';
 import { ExportType } from '../types/exporttype';
@@ -34,9 +34,11 @@ import { ICallBackParams, ICallBackRequestParams } from '../types/callbackparams
 import { EventEmitter, EventType } from '../../eventemitter/EventEmitter';
 import ColumnFilterDialog from './columnfilterdialog/columnfilterdialog';
 import { IFilter } from '../types/filterstype';
-import { applyGridColumnFilter, filterGridData, isColumnDataTypeSupportedForFilter } from './helper';
+import { applyGridColumnFilter, filterGridData, isColumnDataTypeSupportedForFilter, IsValidDataType } from './helper';
 import { IFilterItem, IFilterListProps, IGridColumnFilter } from '../types/columnfilterstype';
 import FilterCallout from './columnfiltercallout/filtercallout';
+import { IRowAddWithValues } from '../types/rowaddtype';
+import AddRowPanel from './addrowpanel';
 
 export interface Props extends IDetailsListProps {
     id: number;
@@ -54,6 +56,7 @@ export interface Props extends IDetailsListProps {
     onGridSave?:any
     enableGridRowsDelete? : boolean;
     enableGridRowsAdd?: boolean;
+    enableRowAddWithValues?: IRowAddWithValues;
     enableTextFieldEditMode?: boolean;
     enablePagination?: boolean;
     pageSize?: number;
@@ -66,13 +69,15 @@ export interface Props extends IDetailsListProps {
     enableGridReset?: boolean;
     enableColumnFilterRules?: boolean;
     enableColumnFilters?: boolean;
-    enableCommandBar?: boolean
+    enableCommandBar?: boolean;
 }
 
 const EditableGrid = (props: Props) => {
     const [editMode, setEditMode] = React.useState(false);
     const [isOpenForEdit, setIsOpenForEdit] = React.useState(false);
     const dismissPanelForEdit = React.useCallback(() => setIsOpenForEdit(false), []);
+    const [isOpenForAdd, setIsOpenForAdd] = React.useState(false);
+    const dismissPanelForAdd = React.useCallback(() => setIsOpenForAdd(false), []);
     const [gridData, setGridData] = useState<any[]>([]);
     const [defaultGridData, setDefaultGridData] = useState<any[]>([]);
     const [backupDefaultGridData, setBackupDefaultGridData] = useState<any[]>([]);
@@ -228,6 +233,7 @@ const EditableGrid = (props: Props) => {
     }
 
     const SetGridItems = (data : any[]) : void => {
+        data = ResetGridRowID(data);
         setDefaultGridData(data);
         setActivateCellEdit(InitializeInternalGridEditStructure(data));
     }
@@ -392,6 +398,37 @@ const EditableGrid = (props: Props) => {
             </>,
           );
     }
+
+    const onAddPanelChange = (item: any, noOfRows: number): void => {
+        dismissPanelForAdd();
+        if(noOfRows < 1){
+            return;
+        }
+
+        var addedRows = GetDefaultRowObject(noOfRows);
+        if(Object.keys(item).length == 0){
+            var newGridData = [...defaultGridData, ...addedRows];
+            setGridEditState(true);
+            SetGridItems(newGridData);
+            return;
+        }
+
+        addedRows.map((row) => {
+            var objectKeys = Object.keys(item);
+            objectKeys.forEach((key) => {
+                row[key] = item[key];
+            })
+
+            return row;
+        });
+
+        //var newGridData = [...defaultGridData, ...addedRows];
+
+        var newGridData = [...defaultGridData];
+        addedRows.forEach((row, index) => newGridData.splice(index, 0, row));
+        setGridEditState(true);
+        SetGridItems(newGridData);
+    };    
     /* #endregion */
 
     /* #region [Grid Row Delete Functions] */
@@ -475,17 +512,6 @@ const EditableGrid = (props: Props) => {
     /* #endregion */
 
     /* #region [Grid Cell Edit Functions] */
-    const IsValidDataType = (type : string | undefined, text : string) : boolean => {
-        var isValid = true;
-        switch(type){
-            case 'number':
-                isValid = !isNaN(Number(text));
-                break;
-        }
-
-        return isValid;
-    };
-
     const SaveSingleCellValue = (key : string, rowNum : number, defaultGridDataArr : any[]) : any[] => {
         let defaultGridDataTmp : any[] = [];
         defaultGridDataTmp = [...defaultGridDataArr];
@@ -497,7 +523,7 @@ const EditableGrid = (props: Props) => {
     };
 
     const onCellValueChange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, item : {}, row : number, key : string, column : IColumnConfig): void => {
-        
+        debugger;
         if(!IsValidDataType(column.dataType, text)){
             return;
         }
@@ -687,6 +713,9 @@ const EditableGrid = (props: Props) => {
                 break;
             case EditType.ColumnFilter:
                 ShowColumnFilterDialog();
+                break;
+            case EditType.AddRowWithData:
+                setIsOpenForAdd(true);
                 break;
         }
 
@@ -1123,6 +1152,16 @@ const EditableGrid = (props: Props) => {
                 onClick: () => RowSelectOperations(EditType.AddRow, {})
             });
         }
+
+        if(props.enableRowAddWithValues && props.enableRowAddWithValues.enable){
+            commandBarItems.push({
+                key: 'addrowswithdata',
+                text: "Add Rows with Data",
+                disabled: isGridInEdit || editMode,
+                iconProps: { iconName: "AddToShoppingList" },
+                onClick: () => RowSelectOperations(EditType.AddRowWithData, {})
+            });
+        }
     
         if(props.enableGridRowsDelete){
             commandBarItems.push({
@@ -1235,6 +1274,27 @@ const EditableGrid = (props: Props) => {
                     columnConfigurationData={props.columns}
                     />
             </Panel>
+
+            {props.enableRowAddWithValues && props.enableRowAddWithValues.enable 
+                ?
+                <Panel
+                isOpen={isOpenForAdd}
+                onDismiss={dismissPanelForAdd}
+                isLightDismiss={true}
+                headerText="Add Rows"
+                closeButtonAriaLabel="Close"
+                type={PanelType.smallFixedFar}
+                >
+                    <AddRowPanel 
+                        onChange={onAddPanelChange} 
+                        columnConfigurationData={props.columns}
+                        enableRowsCounterField={props.enableRowAddWithValues.enableRowsCounterInPanel}
+                        />
+                </Panel>
+                : 
+                null
+            }
+            
 
             {defaultTag.length > 0 ? 
                 <TagPicker

@@ -57,9 +57,9 @@ const ColumnUpdateDialog = (props : Props) => {
         setColumnDialogValues({[gridColumn] : date!.toDateString()});
     };
 
-    const onSelectGridColumn = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): void => {
+    const onSelectGridColumn = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined): void => {
         console.log(item)
-        setGridColumn(item.key.toString());
+        setGridColumn(item!.key.toString());
     };
 
     const closeDialog = React.useCallback((): void => {

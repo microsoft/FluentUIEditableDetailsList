@@ -57,3 +57,14 @@ export const isColumnDataTypeSupportedForFilter = (datatype : string | undefined
             return false;
     }
 }
+
+export const IsValidDataType = (type : string | undefined, text : string) : boolean => {
+    var isValid = true;
+    switch(type){
+        case 'number':
+            isValid = !isNaN(Number(text));
+            break;
+    }
+
+    return isValid;
+};
