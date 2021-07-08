@@ -101,6 +101,7 @@ const Consumer = () => {
                 enableColumnFilters={true}
                 enableColumnFilterRules={true}
                 enableRowAddWithValues={{enable : true, enableRowsCounterInPanel : true}}
+                enableSingleClickCellEdit={true}
             />
         </Fabric>
     );
