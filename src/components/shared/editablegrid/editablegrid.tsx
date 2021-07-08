@@ -39,38 +39,7 @@ import { IFilterItem, IFilterListProps, IGridColumnFilter } from '../types/colum
 import FilterCallout from './columnfiltercallout/filtercallout';
 import { IRowAddWithValues } from '../types/rowaddtype';
 import AddRowPanel from './addrowpanel';
-
-export interface Props extends IDetailsListProps {
-    id: number;
-    items: any[];
-    columns: IColumnConfig[];
-    enableExport?: boolean;
-    exportFileName?: string;
-    enableSave?: boolean;
-    enableRowEdit?: boolean;
-    enableColumnEdit?: boolean;
-    enableBulkEdit?: boolean;
-    enableCellEdit?: boolean;
-    onGridSelectionChange?: any;
-    onGridUpdate?:any;
-    onGridSave?:any
-    enableGridRowsDelete? : boolean;
-    enableGridRowsAdd?: boolean;
-    enableRowAddWithValues?: IRowAddWithValues;
-    enableTextFieldEditMode?: boolean;
-    enablePagination?: boolean;
-    pageSize?: number;
-    onExcelExport?: any;
-    height?: string;
-    width? : string;
-    position?: string;
-    constrainMode?:ConstrainMode;
-    enableUnsavedEditIndicator?: boolean;
-    enableGridReset?: boolean;
-    enableColumnFilterRules?: boolean;
-    enableColumnFilters?: boolean;
-    enableCommandBar?: boolean;
-}
+import { Props } from '../types/editabledetailslistprops';
 
 const EditableGrid = (props: Props) => {
     const [editMode, setEditMode] = React.useState(false);
@@ -406,23 +375,16 @@ const EditableGrid = (props: Props) => {
         }
 
         var addedRows = GetDefaultRowObject(noOfRows);
-        if(Object.keys(item).length == 0){
-            var newGridData = [...defaultGridData, ...addedRows];
-            setGridEditState(true);
-            SetGridItems(newGridData);
-            return;
+        if(Object.keys(item).length > 0){
+            addedRows.map((row) => {
+                var objectKeys = Object.keys(item);
+                objectKeys.forEach((key) => {
+                    row[key] = item[key];
+                })
+    
+                return row;
+            });
         }
-
-        addedRows.map((row) => {
-            var objectKeys = Object.keys(item);
-            objectKeys.forEach((key) => {
-                row[key] = item[key];
-            })
-
-            return row;
-        });
-
-        //var newGridData = [...defaultGridData, ...addedRows];
 
         var newGridData = [...defaultGridData];
         addedRows.forEach((row, index) => newGridData.splice(index, 0, row));
@@ -942,7 +904,10 @@ const EditableGrid = (props: Props) => {
                                 ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
                                 <span className={controlClass.spanStyles} 
-                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true) 
+                                    onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
+                                    ? EditCellValue(column.key, rowNum!, true) 
+                                    : null}
+                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
                                     ? EditCellValue(column.key, rowNum!, true) 
                                     : null}
                                     >{item[column.key]}</span> 
@@ -965,7 +930,12 @@ const EditableGrid = (props: Props) => {
                                 ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
                                 <span className={controlClass.spanStyles} 
-                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true) 
+                                    onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
+                                    ? 
+                                    EditCellValue(column.key, rowNum!, true) 
+                                    : 
+                                    null}
+                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
                                     ? EditCellValue(column.key, rowNum!, true) 
                                     : null}
                                     >
@@ -988,7 +958,12 @@ const EditableGrid = (props: Props) => {
                                     (!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
                                 <span className={controlClass.spanStyles} 
-                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true) 
+                                    onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
+                                                    ? 
+                                                    EditCellValue(column.key, rowNum!, true) 
+                                                    : 
+                                                    null}
+                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
                                                         ? 
                                                         EditCellValue(column.key, rowNum!, true) 
                                                         : 
@@ -1071,13 +1046,13 @@ const EditableGrid = (props: Props) => {
                         {
                         key: 'exportToExcel',
                         text: 'Excel Export',
-                        iconProps: { iconName: 'Excel' },
+                        iconProps: { iconName: 'ExcelDocument' },
                         onClick: () => onExportClick(ExportType.XLSX)
                         },
                         {
                         key: 'exportToCSV',
                         text: 'CSV Export',
-                        iconProps: { iconName: 'CSV' },
+                        iconProps: { iconName: 'LandscapeOrientation' },
                         onClick: () => onExportClick(ExportType.CSV)
                         }
                     ],

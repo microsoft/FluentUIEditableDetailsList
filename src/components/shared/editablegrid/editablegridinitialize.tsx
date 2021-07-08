@@ -7,7 +7,6 @@ import { IColumnConfig } from "../types/columnconfigtype";
 import { Operation } from "../types/operation";
 import { controlClass, textFieldStyles } from "./editablegridstyles";
 import { initializeIcons } from 'office-ui-fabric-react';
-import { Props } from "./editablegrid";
 import { EditControlType } from "../types/editcontroltype";
 
 initializeIcons(/* optional base url */);
