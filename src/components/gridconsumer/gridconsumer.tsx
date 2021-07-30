@@ -85,11 +85,13 @@ const Consumer = () => {
                 layoutMode={DetailsListLayoutMode.justified}
                 selectionMode={SelectionMode.multiple}
                 enableRowEdit={true}
+                enableRowEditCancel={true}
                 enableBulkEdit={true}
                 items={items}
                 enableCellEdit={true}
                 enableExport={true}
                 enableTextFieldEditMode={true}
+                enableTextFieldEditModeCancel={true}
                 enableGridRowsDelete={true}
                 enableGridRowsAdd={true}
                 height={'70vh'}

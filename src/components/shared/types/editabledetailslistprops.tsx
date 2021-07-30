@@ -11,6 +11,7 @@ export interface Props extends IDetailsListProps {
     exportFileName?: string;
     enableSave?: boolean;
     enableRowEdit?: boolean;
+    enableRowEditCancel?: boolean;
     enableColumnEdit?: boolean;
     enableBulkEdit?: boolean;
     enableCellEdit?: boolean;
@@ -21,6 +22,7 @@ export interface Props extends IDetailsListProps {
     enableGridRowsAdd?: boolean;
     enableRowAddWithValues?: IRowAddWithValues;
     enableTextFieldEditMode?: boolean;
+    enableTextFieldEditModeCancel?: boolean;
     enablePagination?: boolean;
     pageSize?: number;
     onExcelExport?: any;
