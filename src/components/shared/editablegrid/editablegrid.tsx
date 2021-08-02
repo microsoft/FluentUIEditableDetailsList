@@ -988,7 +988,7 @@ const EditableGrid = (props: Props) => {
                                     onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
                                     ? EditCellValue(column.key, rowNum!, true) 
                                     : null}
-                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
+                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && !props.enableSingleClickCellEdit) 
                                     ? EditCellValue(column.key, rowNum!, true) 
                                     : null}
                                     >{item[column.key]}</span> 
@@ -1018,7 +1018,7 @@ const EditableGrid = (props: Props) => {
                                     EditCellValue(column.key, rowNum!, true) 
                                     : 
                                     null}
-                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
+                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && !props.enableSingleClickCellEdit) 
                                     ? EditCellValue(column.key, rowNum!, true) 
                                     : null}
                                     >
@@ -1046,7 +1046,7 @@ const EditableGrid = (props: Props) => {
                                                     EditCellValue(column.key, rowNum!, true) 
                                                     : 
                                                     null}
-                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
+                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && !props.enableSingleClickCellEdit) 
                                                         ? 
                                                         EditCellValue(column.key, rowNum!, true) 
                                                         : 
