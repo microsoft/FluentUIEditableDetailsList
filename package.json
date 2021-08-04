@@ -18,7 +18,7 @@
     "office-ui-fabric-react": "^7.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "xlsx": "^0.16.6",
+    "xlsx": "^0.17.0",
     "y18n": "^3.2.2"
   },
   "devDependencies": {
