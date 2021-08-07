@@ -3,6 +3,7 @@
 
 import { ConstrainMode, IColumn, IDetailsHeaderProps } from 'office-ui-fabric-react/lib/components/DetailsList/DetailsList.types';
 import { CalculationType } from "./calculationtype";
+import { ICellStyleRulesType } from './cellstyleruletype';
 import { EditControlType } from "./editcontroltype";
 
 export interface IColumnConfig extends IColumn {
@@ -18,4 +19,5 @@ export interface IColumnConfig extends IColumn {
     onChange?: any;
     maxLength?: number;
     applyColumnFilter?: boolean;
+    cellStyleRule?: ICellStyleRulesType;
 };

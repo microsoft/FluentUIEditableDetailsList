@@ -55,6 +55,25 @@ export const numberOperatorEval = (var1 : number, var2 : number, operator : stri
     }
 }
 
+export const dateOperatorEval = (var1 : Date, var2 : Date, operator : string) : boolean => {
+    switch(operator){
+        case '>':
+            return var1 > var2;
+        case '<':
+            return var1 < var2;
+        case '>=':
+            return var1 >= var2;
+        case '<=':
+            return var1 <=  var2;
+        case '=':
+            return var1 == var2;
+        case '!=':
+            return var1 != var2;
+        default:
+            return false;
+    }
+}
+
 export const stringOperatorEval = (var1 : string, var2 : string, operator : string) : boolean => {
     switch(operator){
         case 'equals':

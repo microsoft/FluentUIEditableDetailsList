@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { NumberAndDateOperators, StringOperators } from "../shared/types/cellstyleruletype";
 import { IColumnConfig } from "../shared/types/columnconfigtype";
 import { EditControlType } from "../shared/types/editcontroltype";
 import { IGridItemsType } from "../shared/types/griditemstype";
@@ -72,7 +73,16 @@ export const GridColumnConfig : IColumnConfig[] =
         includeColumnInExport: false,
         includeColumnInSearch: true,
         maxLength:5,
-        applyColumnFilter: true
+        applyColumnFilter: true,
+        cellStyleRule: { 
+            enable: true, 
+            rule: { 
+                operator : NumberAndDateOperators.LESSTHAN, 
+                value: 50000 
+            }, 
+            whenTrue: { textColor: '#EF5350', fontWeight: 'bold' },
+            whenFalse: { textColor: '#9CCC65' }
+        }
     },
     {
         key: 'dateofjoining',
