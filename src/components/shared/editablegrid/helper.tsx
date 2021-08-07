@@ -1,5 +1,6 @@
+import { ICellStyleRulesType } from "../types/cellstyleruletype";
 import { IGridColumnFilter } from "../types/columnfilterstype";
-import { IFilter, numberOperatorEval, stringOperatorEval } from "../types/filterstype";
+import { dateOperatorEval, IFilter, numberOperatorEval, stringOperatorEval } from "../types/filterstype";
 
 export const filterGridData = (data : any[], filters : IFilter[]) : any[] => {
     debugger;
@@ -68,3 +69,20 @@ export const IsValidDataType = (type : string | undefined, text : string) : bool
 
     return isValid;
 };
+
+export const EvaluateRule = (datatType : string, cellValue: string | number | undefined, styleRule: ICellStyleRulesType | undefined): boolean => {
+    if(!styleRule){
+        return false;
+    }
+    
+    switch(datatType){
+        case 'number':
+            return numberOperatorEval(Number(cellValue), styleRule?.rule!.value as number, styleRule?.rule!.operator);
+        case 'string':
+            return stringOperatorEval(String(cellValue), styleRule?.rule!.value as string, styleRule?.rule!.operator)
+        case 'date':
+            return dateOperatorEval(new Date(String(cellValue)), new Date(styleRule?.rule!.value), styleRule?.rule!.operator);
+        default:
+            return false;
+    }
+}

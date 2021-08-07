@@ -2,6 +2,9 @@
 // Licensed under the MIT License.
 
 import { getTheme, IDetailsColumnStyles, IStackStyles, IStackTokens, ITextFieldStyles, mergeStyleSets } from "office-ui-fabric-react";
+import { ICellStyleRulesType } from "../types/cellstyleruletype";
+import { IColumnConfig } from "../types/columnconfigtype";
+import { EvaluateRule } from "./helper";
 
 export const stackStyles: Partial<IStackStyles> = { root: { width: 500 } };
 
@@ -23,12 +26,13 @@ export const controlClass = mergeStyleSets({
     },
     textFieldClass:{
         display: 'block',
-        margin: 10,
+        margin: 10
     },
     spanStyles:{
         display:'inline-block',
         width:'100%',
-        height:'100%'
+        height:'100%',
+        //lineHeight:'250%'
     },
     dialogSubMessageStyles : {
         margin: 10,
@@ -46,6 +50,25 @@ export const controlClass = mergeStyleSets({
         fontWeight: 'bold',
     }
 });
+
+export const GetDynamicSpanStyles = (column : IColumnConfig, cellValue : number | string | undefined) : string => {
+    
+    var styleRule = column.cellStyleRule ?? undefined;
+    var isRuleTrue : boolean = EvaluateRule(column.dataType ?? 'string', cellValue, styleRule); 
+    var styles = mergeStyleSets({
+        dynamicSpanStyle: {
+            display:'inline-block',
+            width:'100%',
+            height:'100%',
+            //textAlign:'center',
+            color:(!column.cellStyleRule || !column.cellStyleRule.enable) ? undefined : (isRuleTrue ? styleRule?.whenTrue?.textColor : styleRule?.whenFalse?.textColor),
+            //backgroundColor: (!column.cellStyleRule || !column.cellStyleRule.enable) ? undefined : (isRuleTrue ? styleRule?.whenTrue?.backgroundColor : styleRule?.whenFalse?.backgroundColor),
+            //lineHeight:'250%',
+            fontWeight:(!column.cellStyleRule || !column.cellStyleRule.enable) ? undefined : (isRuleTrue ? styleRule?.whenTrue?.fontWeight : styleRule?.whenFalse?.fontWeight)
+        }
+    });
+    return styles.dynamicSpanStyle;
+}
 
 export const verticalGapStackTokens: IStackTokens = {
     childrenGap: 15,

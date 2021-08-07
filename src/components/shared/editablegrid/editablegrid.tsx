@@ -18,7 +18,7 @@ import { TextField, ITextFieldStyles, ITextField } from 'office-ui-fabric-react/
 import { ContextualMenu, DirectionalHint, IContextualMenu, IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { useBoolean } from '@uifabric/react-hooks';
 import { IColumnConfig } from '../types/columnconfigtype';
-import { controlClass, textFieldStyles } from './editablegridstyles';
+import { controlClass, GetDynamicSpanStyles, textFieldStyles } from './editablegridstyles';
 import { IGridItemsType } from '../types/griditemstype';
 import { Operation } from '../types/operation';
 import { InitializeInternalGrid, InitializeInternalGridEditStructure, ResetGridRowID, ShallowCopyDefaultGridToEditGrid, ShallowCopyEditGridToDefaultGrid } from './editablegridinitialize';
@@ -984,7 +984,8 @@ const EditableGrid = (props: Props) => {
                             return <span>{
                                 ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
-                                <span className={controlClass.spanStyles} 
+                                <span 
+                                    className={GetDynamicSpanStyles(column, item[column.key])}
                                     onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
                                     ? EditCellValue(column.key, rowNum!, true) 
                                     : null}
@@ -1012,7 +1013,8 @@ const EditableGrid = (props: Props) => {
                             return <span>{
                                 ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
-                                <span className={controlClass.spanStyles} 
+                                <span 
+                                    className={GetDynamicSpanStyles(column, item[column.key])}
                                     onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
                                     ? 
                                     EditCellValue(column.key, rowNum!, true) 
@@ -1040,7 +1042,8 @@ const EditableGrid = (props: Props) => {
                                 (
                                     (!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
-                                <span className={controlClass.spanStyles} 
+                                <span 
+                                    className={GetDynamicSpanStyles(column, item[column.key])}
                                     onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
                                                     ? 
                                                     EditCellValue(column.key, rowNum!, true) 

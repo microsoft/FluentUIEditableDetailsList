@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es5",
     "module": "commonjs",
     "jsx": "react",
     "declaration": true,
@@ -8,6 +8,7 @@
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "downlevelIteration": true,
     "typeRoots": ["node_modules/@types", "node_modules/just-stack-react/node_modules/@types"],
     "allowJs": true,
   },
