@@ -41,7 +41,7 @@
     "typescript": "^4.3.5",
     "web-vitals": "^1.1.2",
     "webpack-cli": "^4.7.2",
-    "xlsx": "^0.16.6",
+    "xlsx": "^0.17.0",
     "y18n": "^3.2.2"
   },
   "devDependencies": {
