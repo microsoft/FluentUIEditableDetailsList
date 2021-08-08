@@ -31,7 +31,7 @@ Some of the features of the Editable Grid are:-
 - type '***npm install***'
 - after the installation is complete, type '***npm start***'
 
-This starts the project on port 8080 and you are ready to play around with the Editable DetailsList
+This starts the project on port 3000 and you are ready to play around with the Editable DetailsList
 
 ## NPM Install
     npm i fluentui-editable-grid
