@@ -37,13 +37,16 @@ const Consumer = () => {
     const SetDummyData = () : void => {
         var dummyData : GridItemsType[] = []
         for(var i = 1; i <= 100; i++){
+            var randomInt = GetRandomInt(1,3);
             dummyData.push({
                 id: i,
                 name: 'Name'+ GetRandomInt(1, 10),
                 age: GetRandomInt(20,40),
                 designation: 'Designation' + GetRandomInt(1, 15),
                 salary: GetRandomInt(35000, 75000),
-                dateofjoining: '2010-10-10T14:57:10'
+                dateofjoining: '2010-10-10T14:57:10',
+                payrolltype: randomInt % 3 == 0 ? 'Weekly' : randomInt % 3 == 1 ? 'Bi-Weekly' : 'Monthly',
+                employmenttype: 'Employment Type' + GetRandomInt(1,12)
             });
         }
 
@@ -95,7 +98,7 @@ const Consumer = () => {
                 enableGridRowsDelete={true}
                 enableGridRowsAdd={true}
                 height={'70vh'}
-                width={'140vh'}
+                width={'160vh'}
                 position={'relative'}
                 enableUnsavedEditIndicator={true}
                 onGridSave={onGridSave}

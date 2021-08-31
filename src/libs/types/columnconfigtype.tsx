@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import { ConstrainMode, IColumn, IDetailsHeaderProps } from 'office-ui-fabric-react/lib/components/DetailsList/DetailsList.types';
+import { IDropdownOption } from "office-ui-fabric-react";
 import { CalculationType } from "./calculationtype";
 import { ICellStyleRulesType } from './cellstyleruletype';
 import { EditControlType } from "./editcontroltype";
@@ -20,4 +21,23 @@ export interface IColumnConfig extends IColumn {
     maxLength?: number;
     applyColumnFilter?: boolean;
     cellStyleRule?: ICellStyleRulesType;
+    dropdownValues?: IDropdownOption[];
+    pickerOptions?: IPickerOptions;
 };
+
+export interface IPickerOptions {
+    tagsLimit?: number;
+    minCharLimitForSuggestions?: number;
+    pickerTags: string[];
+    pickerDescriptionOptions?: IPickerDescriptionOption;
+}
+
+export interface IPickerDescriptionOption {
+    enabled: boolean;
+    values: IPickerTagDescription[];
+}
+
+export interface IPickerTagDescription {
+    key: string;
+    description: string;
+}

@@ -7,5 +7,6 @@ export enum EditControlType {
     DropDown,
     Date,
     MultilineTextField,
-    DateTime
+    DateTime,
+    Picker
 }

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { getTheme, IDetailsColumnStyles, IStackStyles, IStackTokens, ITextFieldStyles, mergeStyleSets } from "office-ui-fabric-react";
+import { getTheme, IDetailsColumnStyles, IDropdownStyles, IStackStyles, IStackTokens, ITextFieldStyles, mergeStyleSets } from "office-ui-fabric-react";
 import { ICellStyleRulesType } from "../types/cellstyleruletype";
 import { IColumnConfig } from "../types/columnconfigtype";
 import { EvaluateRule } from "./helper";
@@ -48,6 +48,12 @@ export const controlClass = mergeStyleSets({
     },
     labelValue: {
         fontWeight: 'bold',
+    },
+    pickerLabel: {
+        color: '#323130',
+        fontWeight:600,
+        padding: '5px 0px',
+        margin: '5px 0px'
     }
 });
 
@@ -81,3 +87,7 @@ export const horizontalGapStackTokens: IStackTokens = {
 };
 
 export const textFieldStyles: Partial<ITextFieldStyles> = { fieldGroup: {} };
+
+export const dropdownStyles: Partial<IDropdownStyles> = {
+    dropdown: { width: '90%' },
+};

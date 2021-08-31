@@ -4,7 +4,6 @@
 import { NumberAndDateOperators, StringOperators } from "../../libs/types/cellstyleruletype";
 import { IColumnConfig } from "../../libs/types/columnconfigtype";
 import { EditControlType } from "../../libs/types/editcontroltype";
-import { IGridItemsType } from "../../libs/types/griditemstype";
 
 export const GridColumnConfig : IColumnConfig[] = 
 [
@@ -96,6 +95,58 @@ export const GridColumnConfig : IColumnConfig[] =
         includeColumnInExport: true,
         includeColumnInSearch: true,
         inputType: EditControlType.Date
+    },
+    {
+        key: 'payrolltype',
+        name: 'Payroll Type',
+        text: 'Payroll Type',
+        editable: true,
+        dataType: 'string',
+        minWidth: 150,
+        maxWidth: 150,
+        isResizable: true,
+        includeColumnInExport: true,
+        includeColumnInSearch: true,
+        inputType: EditControlType.DropDown,
+        dropdownValues: [
+            { key: 'weekly', text: 'Weekly' },
+            { key: 'biweekly', text: 'Bi-Weekly' },
+            { key: 'monthly', text: 'Monthly' }
+        ]
+    },
+    {
+        key: 'employmenttype',
+        name: 'Employment Type',
+        text: 'Employment Type',
+        editable: true,
+        dataType: 'string',
+        minWidth: 200,
+        maxWidth: 200,
+        isResizable: true,
+        includeColumnInExport: true,
+        includeColumnInSearch: true,
+        inputType: EditControlType.Picker,
+        pickerOptions: {
+            pickerTags: ['Employment Type1', 'Employment Type2', 'Employment Type3', 'Employment Type4', 'Employment Type5', 'Employment Type6', 'Employment Type7', 'Employment Type8', 'Employment Type9', 'Employment Type10', 'Employment Type11', 'Employment Type12'],
+            minCharLimitForSuggestions: 2,
+            tagsLimit: 1,
+            pickerDescriptionOptions: { 
+                enabled: true, 
+                values: [
+                    { key: 'Employment Type1', description: 'Employment Type1 Description'},
+                    { key: 'Employment Type2', description: 'Employment Type2 Description'},
+                    { key: 'Employment Type3', description: 'Employment Type3 Description'},
+                    { key: 'Employment Type4', description: 'Employment Type4 Description'},
+                    { key: 'Employment Type5', description: 'Employment Type5 Description'},
+                    { key: 'Employment Type6', description: 'Employment Type6 Description'},
+                    { key: 'Employment Type7', description: 'Employment Type7 Description'},
+                    { key: 'Employment Type8', description: 'Employment Type8 Description'},
+                    { key: 'Employment Type9', description: 'Employment Type9 Description'},
+                    { key: 'Employment Type10', description: 'Employment Type10 Description'},
+                    { key: 'Employment Type11', description: 'Employment Type11 Description'},
+                    { key: 'Employment Type12', description: 'Employment Type12 Description'},
+            ] }
+        }
     }
 ];
 
@@ -106,4 +157,6 @@ export interface GridItemsType {
     designation: string;
     salary: number;
     dateofjoining: string;
+    payrolltype: string;
+    employmenttype: string
 };

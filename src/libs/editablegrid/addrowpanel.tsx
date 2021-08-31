@@ -1,9 +1,10 @@
-import { ConstrainMode, DatePicker, IStackStyles, IStackTokens, ITextFieldStyles, mergeStyleSets, Position, PrimaryButton, SpinButton, Stack, TextField } from "office-ui-fabric-react";
+import { ConstrainMode, DatePicker, Dropdown, IDropdownOption, IStackStyles, IStackTokens, ITag, ITextFieldStyles, mergeStyleSets, Position, PrimaryButton, SpinButton, Stack, TextField } from "office-ui-fabric-react";
 import React, { useState } from "react";
 import { IColumnConfig } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
 import { DayPickerStrings } from "./datepickerconfig";
 import { controlClass, horizontalGapStackTokens, stackStyles, textFieldStyles, verticalGapStackTokens } from "./editablegridstyles";
+import PickerControl from "./pickercontrol/picker";
 
 interface Props {
     onChange: any;
@@ -16,6 +17,10 @@ const AddRowPanel = (props: Props) => {
 
     const updateObj : any = {};
 
+    const onDropDownChange = (event: React.FormEvent<HTMLDivElement>, selectedDropdownItem: IDropdownOption | undefined, item : any): void => {
+        updateObj[item.key] = selectedDropdownItem?.text;
+    }
+
     const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string): void => {
         updateObj[(ev.target as Element).id] = text;
         //console.log(updateObj);
@@ -24,6 +29,15 @@ const AddRowPanel = (props: Props) => {
     const onPanelSubmit = (): void => {
         props.onChange(updateObj, props.enableRowsCounterField ? AddSpinRef.current.value : 1);
     };
+
+    const onCellPickerTagListChanged = (cellPickerTagList: ITag[] | undefined, item : any) : void => {
+        if(cellPickerTagList && cellPickerTagList[0] && cellPickerTagList[0].name){
+            updateObj[item.key] = cellPickerTagList[0].name;
+        }
+        else{
+            updateObj[item.key] = '';
+        }
+    }
 
     const onCellDateChange = (date: Date | null | undefined, item : any): void => {
         updateObj[item.key] = date;
@@ -43,6 +57,26 @@ const AddRowPanel = (props: Props) => {
                         //value={props != null && props.panelValues != null ? new Date(props.panelValues[item.key]) : new Date()}
                         value={new Date()}
                     />);
+                    break;
+                case EditControlType.DropDown:
+                    tmpRenderObj.push(
+                        <Dropdown
+                            label={item.text}
+                            options={item.dropdownValues ?? []}
+                            onChange={(ev, selected) => onDropDownChange(ev, selected, item)}
+                        />
+                    );
+                    break;
+                case EditControlType.Picker:
+                    tmpRenderObj.push(<div>
+                        <span className={controlClass.pickerLabel}>{item.text}</span>
+                        <PickerControl 
+                        selectedItemsLimit={1}
+                        pickerTags={item.pickerOptions?.pickerTags ?? []}
+                        minCharLimitForSuggestions={2}
+                        onTaglistChanged={(selectedItem: ITag[] | undefined) => onCellPickerTagListChanged(selectedItem, item)}
+                        pickerDescriptionOptions={item.pickerOptions?.pickerDescriptionOptions}
+                    /></div>);
                     break;
                 default:
                     tmpRenderObj.push(<TextField
