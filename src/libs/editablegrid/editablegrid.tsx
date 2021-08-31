@@ -18,7 +18,7 @@ import { TextField, ITextFieldStyles, ITextField } from 'office-ui-fabric-react/
 import { ContextualMenu, DirectionalHint, IContextualMenu, IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { useBoolean } from '@uifabric/react-hooks';
 import { IColumnConfig } from '../types/columnconfigtype';
-import { controlClass, GetDynamicSpanStyles, textFieldStyles } from './editablegridstyles';
+import { controlClass, dropdownStyles, GetDynamicSpanStyles, textFieldStyles } from './editablegridstyles';
 import { IGridItemsType } from '../types/griditemstype';
 import { Operation } from '../types/operation';
 import { InitializeInternalGrid, InitializeInternalGridEditStructure, ResetGridRowID, ShallowCopyDefaultGridToEditGrid, ShallowCopyEditGridToDefaultGrid } from './editablegridinitialize';
@@ -40,6 +40,8 @@ import FilterCallout from './columnfiltercallout/filtercallout';
 import { IRowAddWithValues } from '../types/rowaddtype';
 import AddRowPanel from './addrowpanel';
 import { Props } from '../types/editabledetailslistprops';
+import SearchableDropdown from './searchabledropdown/searchabledropdown';
+import PickerControl from './pickercontrol/picker';
 
 const EditableGrid = (props: Props) => {
     const [editMode, setEditMode] = React.useState(false);
@@ -157,8 +159,8 @@ const EditableGrid = (props: Props) => {
 
     useEffect(() => {
         UpdateGridEditStatus();
-        // console.log('activate cell edit');
-        // console.log(activateCellEdit);
+        //console.log('activate cell edit');
+        //console.log(activateCellEdit);
     }, [activateCellEdit]);
 
     useEffect(() => {
@@ -560,6 +562,14 @@ const EditableGrid = (props: Props) => {
         EditCellValue(key, rowNum, activateCurrentCell);
     }
 
+    const onCellPickerDoubleClickEvent = (key : string, rowNum : number, activateCurrentCell : boolean) : void => {
+        EditCellValue(key, rowNum, activateCurrentCell);
+    }
+
+    const onDropdownDoubleClickEvent = (key : string, rowNum : number, activateCurrentCell : boolean) : void => {
+        EditCellValue(key, rowNum, activateCurrentCell);
+    }
+
     const onKeyDownEvent = (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>, column : IColumnConfig, rowNum : number, activateCurrentCell : boolean) : void => {
         if(event.key == "Enter"){
             if(!activateCellEdit[rowNum].isActivated){
@@ -576,6 +586,36 @@ const EditableGrid = (props: Props) => {
         activateCellEdit.forEach((item, index) => {
             if(row == index){
                 item.properties[column.key].value = dateToISOLikeButLocal(date);
+            }
+
+            activateCellEditTmp.push(item);
+        });
+
+        setActivateCellEdit(activateCellEditTmp);
+    };
+
+    const onCellPickerTagListChanged = (cellPickerTagList: ITag[] | undefined, row : number, column : IColumnConfig) : void => {
+        setGridEditState(true);
+
+        let activateCellEditTmp : any[] = [];
+        activateCellEdit.forEach((item, index) => {
+            if(row == index){
+                item.properties[column.key].value = (cellPickerTagList && cellPickerTagList[0] && cellPickerTagList[0].name) ? cellPickerTagList![0].name : '';
+            }
+
+            activateCellEditTmp.push(item);
+        });
+
+        setActivateCellEdit(activateCellEditTmp);
+    }
+
+    const onDropDownChange = (event: React.FormEvent<HTMLDivElement>, selectedDropdownItem: IDropdownOption | undefined, row : number, column : IColumnConfig): void => {
+        setGridEditState(true);
+        
+        let activateCellEditTmp : any[] = [];
+        activateCellEdit.forEach((item, index) => {
+            if(row == index){
+                item.properties[column.key].value = selectedDropdownItem?.text;
             }
 
             activateCellEditTmp.push(item);
@@ -1035,6 +1075,68 @@ const EditableGrid = (props: Props) => {
                                     onSelectDate={(date) => onCellDateChange(date, item, rowNum!, column)}
                                     onDoubleClick = {() => !activateCellEdit[rowNum!].isActivated ? onDoubleClickEvent(column.key, rowNum!, false) : null}
                                 />
+                                }</span>
+                            break;
+                        case EditControlType.DropDown:
+                            return <span className={'row-' + rowNum! + '-col-' + index}>{
+                                (
+                                    (!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
+                                ? 
+                                <span 
+                                    className={GetDynamicSpanStyles(column, item[column.key])}
+                                    onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
+                                                    ? 
+                                                    EditCellValue(column.key, rowNum!, true) 
+                                                    : 
+                                                    null}
+                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && !props.enableSingleClickCellEdit) 
+                                                        ? 
+                                                        EditCellValue(column.key, rowNum!, true) 
+                                                        : 
+                                                        null}
+                                >
+                                    {item[column.key]}
+                                </span> 
+                                : 
+                                <Dropdown
+                                    placeholder={column.dropdownValues?.filter(x => x.text == item[column.key])[0]?.text ?? 'Select an option'}
+                                    options={column.dropdownValues ?? []}
+                                    styles={dropdownStyles}
+                                    onChange={(ev,selectedItem) => onDropDownChange(ev, selectedItem, rowNum!, column)}
+                                    onDoubleClick={() => !activateCellEdit[rowNum!].isActivated ? onDropdownDoubleClickEvent(column.key, rowNum!, false) : null}
+                                />
+                                }</span>
+                            break;
+                        case EditControlType.Picker:
+                            return <span>{
+                                ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
+                                ? 
+                                <span 
+                                    className={GetDynamicSpanStyles(column, item[column.key])}
+                                    onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
+                                                    ? 
+                                                    EditCellValue(column.key, rowNum!, true) 
+                                                    : 
+                                                    null}
+                                    onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && !props.enableSingleClickCellEdit) 
+                                                        ? 
+                                                        EditCellValue(column.key, rowNum!, true) 
+                                                        : 
+                                                        null}
+                                >
+                                    {item[column.key]}
+                                </span> 
+                                : 
+                                <span onDoubleClick = {() => !activateCellEdit[rowNum!].isActivated ? onCellPickerDoubleClickEvent(column.key, rowNum!, false) : null}>
+                                <PickerControl
+                                        selectedItemsLimit={column.pickerOptions?.tagsLimit}
+                                        pickerTags={column.pickerOptions?.pickerTags ?? []}
+                                        defaultTags={item[column.key] ? [item[column.key]] : []}
+                                        minCharLimitForSuggestions={column.pickerOptions?.minCharLimitForSuggestions}
+                                        onTaglistChanged={(selectedItem: ITag[] | undefined) => onCellPickerTagListChanged(selectedItem, rowNum!, column)}
+                                        pickerDescriptionOptions={column.pickerOptions?.pickerDescriptionOptions}
+                                />
+                                </span>
                                 }</span>
                             break;
                         default:

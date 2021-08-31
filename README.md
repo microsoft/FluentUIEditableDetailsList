@@ -22,6 +22,8 @@ Some of the features of the Editable Grid are:-
 >- Flexibility to implement onChange callback on any cell value change (For cases like calculating summation of a column etc)
 >- Length Validations during edit
 >- Type Validations during edit
+>- Rule-Based Cell Styling
+>- In-built support for controls like TextField, Multiline-Textfield, Picker, Dropdown, Calendar 
 >- The component is completely Accessible
 
 ## Clone & Run
@@ -141,6 +143,58 @@ This starts the project on port 3000 and you are ready to play around with the E
             includeColumnInExport: true,
             includeColumnInSearch: true,
             inputType: EditControlType.Date
+        },
+        {
+            key: 'payrolltype',
+            name: 'Payroll Type',
+            text: 'Payroll Type',
+            editable: true,
+            dataType: 'string',
+            minWidth: 150,
+            maxWidth: 150,
+            isResizable: true,
+            includeColumnInExport: true,
+            includeColumnInSearch: true,
+            inputType: EditControlType.DropDown,
+            dropdownValues: [
+                { key: 'weekly', text: 'Weekly' },
+                { key: 'biweekly', text: 'Bi-Weekly' },
+                { key: 'monthly', text: 'Monthly' }
+            ]
+        },
+        {
+            key: 'employmenttype',
+            name: 'Employment Type',
+            text: 'Employment Type',
+            editable: true,
+            dataType: 'string',
+            minWidth: 200,
+            maxWidth: 200,
+            isResizable: true,
+            includeColumnInExport: true,
+            includeColumnInSearch: true,
+            inputType: EditControlType.Picker,
+            pickerOptions: {
+                pickerTags: ['Employment Type1', 'Employment Type2', 'Employment Type3', 'Employment Type4', 'Employment Type5', 'Employment Type6', 'Employment Type7', 'Employment Type8', 'Employment Type9', 'Employment Type10', 'Employment Type11', 'Employment Type12'],
+                minCharLimitForSuggestions: 2,
+                tagsLimit: 1,
+                pickerDescriptionOptions: { 
+                    enabled: true, 
+                    values: [
+                        { key: 'Employment Type1', description: 'Employment Type1 Description'},
+                        { key: 'Employment Type2', description: 'Employment Type2 Description'},
+                        { key: 'Employment Type3', description: 'Employment Type3 Description'},
+                        { key: 'Employment Type4', description: 'Employment Type4 Description'},
+                        { key: 'Employment Type5', description: 'Employment Type5 Description'},
+                        { key: 'Employment Type6', description: 'Employment Type6 Description'},
+                        { key: 'Employment Type7', description: 'Employment Type7 Description'},
+                        { key: 'Employment Type8', description: 'Employment Type8 Description'},
+                        { key: 'Employment Type9', description: 'Employment Type9 Description'},
+                        { key: 'Employment Type10', description: 'Employment Type10 Description'},
+                        { key: 'Employment Type11', description: 'Employment Type11 Description'},
+                        { key: 'Employment Type12', description: 'Employment Type12 Description'},
+                ] }
+            }
         }
     ];
 
@@ -152,7 +206,9 @@ This starts the project on port 3000 and you are ready to play around with the E
                 age:32,
                 designation:'Designation1',
                 salary:57000,
-                dateofjoining:'2010-04-01T14:57:10'
+                dateofjoining:'2010-04-01T14:57:10',
+                payrolltype: 'Weekly',
+                employmenttype: 'Employment Type11'
             },
             {
                 id: "2",
@@ -160,7 +216,9 @@ This starts the project on port 3000 and you are ready to play around with the E
                 age:27,
                 designation:'Designation2',
                 salary:42000,
-                dateofjoining:'2014-06-09T14:57:10'
+                dateofjoining:'2014-06-09T14:57:10',
+                payrolltype: 'Monthly',
+                employmenttype: 'Employment Type4'
             },
             {
                 id: "3",
@@ -168,7 +226,9 @@ This starts the project on port 3000 and you are ready to play around with the E
                 age:35,
                 designation:'Designation3',
                 salary:75000,
-                dateofjoining:'2005-07-02T14:57:10'
+                dateofjoining:'2005-07-02T14:57:10',
+                payrolltype: 'Weekly',
+                employmenttype: 'Employment Type7'
             },
             {
                 id: "4",
@@ -176,7 +236,9 @@ This starts the project on port 3000 and you are ready to play around with the E
                 age:30,
                 designation:'Designation4',
                 salary:49000,
-                dateofjoining:'2019-04-01T14:57:10'
+                dateofjoining:'2019-04-01T14:57:10',
+                payrolltype: 'Bi-Weekly',
+                employmenttype: 'Employment Type2'
             }
         ];
         setItems(dummyData);
