@@ -1,4 +1,4 @@
-# FluidUI Editable DetailsList
+# FluentUI Editable DetailsList
 
 ## Overview
 FluentUI is a great UI library with some really cool controls, all adhering to Accessibility Standards.
