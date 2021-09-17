@@ -505,7 +505,9 @@ const EditableGrid = (props: Props) => {
         var internalRowNumDefaultGrid = defaultGridDataTmp.findIndex((row) => row._grid_row_id_ == rowNum);
         var internalRowNumActivateGrid = activateCellEdit.findIndex((row) => row['properties']['_grid_row_id_']['value'] == rowNum);
         defaultGridDataTmp[internalRowNumDefaultGrid][key] = activateCellEdit[internalRowNumActivateGrid]['properties'][key]['value'];
-
+        if(defaultGridDataTmp[internalRowNumDefaultGrid]['_grid_row_operation_'] != Operation.Add){
+            defaultGridDataTmp[internalRowNumDefaultGrid]['_grid_row_operation_'] = Operation.Update;
+        }
         return defaultGridDataTmp;
     };
 
@@ -527,19 +529,7 @@ const EditableGrid = (props: Props) => {
         });
         
         if(column.onChange){
-            var arr : any[] = [];
-            activateCellEditTmp.forEach((item, index) => {
-                var rowObj : any = {};
-                var objectKeys = Object.keys(item.properties);
-                objectKeys.forEach((objKey) => {
-                    rowObj[objKey] = item.properties[objKey].value;
-                });
-                arr.push(rowObj);
-            });
-
-            var defaultGridDataTmp = CheckCellOnChangeCallBack(arr, [row], column);
-            setDefaultGridData(defaultGridDataTmp);
-            activateCellEditTmp = ShallowCopyDefaultGridToEditGrid(defaultGridDataTmp, activateCellEditTmp);
+            HandleColumnOnChange(activateCellEditTmp, row, column);
         }
         
         //ShallowCopyEditGridToDefaultGrid(defaultGridData, activateCellEditTmp);
@@ -591,6 +581,10 @@ const EditableGrid = (props: Props) => {
             activateCellEditTmp.push(item);
         });
 
+        if(column.onChange){
+            HandleColumnOnChange(activateCellEditTmp, row, column);
+        }
+
         setActivateCellEdit(activateCellEditTmp);
     };
 
@@ -606,6 +600,10 @@ const EditableGrid = (props: Props) => {
             activateCellEditTmp.push(item);
         });
 
+        if(column.onChange){
+            HandleColumnOnChange(activateCellEditTmp, row, column);
+        }
+
         setActivateCellEdit(activateCellEditTmp);
     }
 
@@ -620,6 +618,10 @@ const EditableGrid = (props: Props) => {
 
             activateCellEditTmp.push(item);
         });
+
+        if(column.onChange){
+            HandleColumnOnChange(activateCellEditTmp, row, column);
+        }
 
         setActivateCellEdit(activateCellEditTmp);
     };
@@ -640,6 +642,22 @@ const EditableGrid = (props: Props) => {
             let defaultGridDataTmp : any[] = SaveSingleCellValue(key, rowNum, defaultGridData);
             setDefaultGridData(defaultGridDataTmp);
         }
+    }
+
+    const HandleColumnOnChange = (activateCellEditTmp : any[], row : number, column : IColumnConfig) : void => {
+        var arr : any[] = [];
+        activateCellEditTmp.forEach((item, index) => {
+            var rowObj : any = {};
+            var objectKeys = Object.keys(item.properties);
+            objectKeys.forEach((objKey) => {
+                rowObj[objKey] = item.properties[objKey].value;
+            });
+            arr.push(rowObj);
+        });
+
+        var defaultGridDataTmp = CheckCellOnChangeCallBack(arr, [row], column);
+        setDefaultGridData(defaultGridDataTmp);
+        activateCellEditTmp = ShallowCopyDefaultGridToEditGrid(defaultGridDataTmp, activateCellEditTmp);
     }
     /* #endregion */
 

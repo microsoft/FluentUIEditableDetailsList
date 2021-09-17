@@ -9,6 +9,7 @@ import { ICallBackParams, ICallBackRequestParams } from '../../libs/types/callba
 import { IColumnConfig } from '../../libs/types/columnconfigtype';
 import { GridColumnConfig, GridItemsType } from './gridconfig';
 import { EventEmitter, EventType } from '../../libs/eventemitter/EventEmitter.js';
+import { Operation } from '../../libs/types/operation';
 
 const Consumer = () => {
 
@@ -59,8 +60,33 @@ const Consumer = () => {
 
     const onGridSave = (data: any[]): void => {
         alert('Grid Data Saved');
+        console.log('Updated Rows');
+        console.log(data.filter(item => item._grid_row_operation_ == Operation.Update));
+        console.log('Added Rows');
+        console.log(data.filter(item => item._grid_row_operation_ == Operation.Add));
+        console.log('Deleted Rows');
+        console.log(data.filter(item => item._grid_row_operation_ == Operation.Delete));
+        console.log('Unchanged Rows');
+        console.log(data.filter(item => item._grid_row_operation_ == Operation.None));
         setItems([...data]);
     };
+
+    const onPayrollChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
+        alert('Payroll Changed');
+        return callbackRequestParamObj.data;
+    }
+
+    const onDateChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
+        debugger;
+        alert('Date Changed');
+        return callbackRequestParamObj.data;
+    }
+
+    const onEmploymentTypeChangedChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
+        debugger;
+        alert('Employment Type Changed');
+        return callbackRequestParamObj.data;
+    }
 
     const onDesignationChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
         callbackRequestParamObj.rowindex.forEach((index) => {
@@ -71,7 +97,10 @@ const Consumer = () => {
     }
 
     const attachGridValueChangeCallbacks = (columnConfig : IColumnConfig[]) : IColumnConfig[] => {
-        columnConfig.filter((item) => item.key == 'designation').map((item) => item.onChange = onDesignationChanged);
+        //columnConfig.filter((item) => item.key == 'designation').map((item) => item.onChange = onDesignationChanged);
+        //columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChangedChanged);
+        //columnConfig.filter((item) => item.key == 'payrolltype').map((item) => item.onChange = onPayrollChanged);
+        //columnConfig.filter((item) => item.key == 'dateofjoining').map((item) => item.onChange = onDateChanged);
         return columnConfig;
     };
 

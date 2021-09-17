@@ -44,7 +44,7 @@ export const InitializeInternalGridEditStructure = (items : any[]) : any[] => {
         
         activateCellEditTmp.push(activateCellEditRowTmp);
     });
-    console.log(activateCellEditTmp);
+    
     return activateCellEditTmp;
 };
 
