@@ -26,6 +26,9 @@ Some of the features of the Editable Grid are:-
 >- In-built support for controls like TextField, Multiline-Textfield, Picker, Dropdown, Calendar 
 >- The component is completely Accessible
 
+## Demo
+[Fluent UI Editable DetailsList Demo](https://editabledetailslist.azurewebsites.net)
+
 ## Clone & Run
 - clone the repository on your local machine.
 - open the project
