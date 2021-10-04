@@ -43,6 +43,12 @@ import { Props } from '../types/editabledetailslistprops';
 import SearchableDropdown from './searchabledropdown/searchabledropdown';
 import PickerControl from './pickercontrol/picker';
 
+interface SortOptions {
+    key: string;
+    isAscending: boolean;
+    isEnabled: boolean;
+}
+
 const EditableGrid = (props: Props) => {
     const [editMode, setEditMode] = React.useState(false);
     const [isOpenForEdit, setIsOpenForEdit] = React.useState(false);
@@ -78,6 +84,7 @@ const EditableGrid = (props: Props) => {
         message : '',
         subMessage: ''
     });
+    const [sortColObj, setSortColObj] = React.useState<SortOptions>({ key: '', isAscending: false, isEnabled: false });
     let SpinRef: any = React.createRef();
     let filterStoreRef: any = React.useRef<IFilter[]>([]);
 
@@ -835,6 +842,31 @@ const EditableGrid = (props: Props) => {
         ev.preventDefault();
         ShowFilterForColumn(column, index);
     }
+
+    const onColumnContextMenu = (column: IColumn | undefined, ev: React.MouseEvent<HTMLElement> | undefined) => {
+        //ev!.preventDefault();
+        debugger;
+        var newColumns : IColumn[] = GridColumns.slice();
+        const currColumn: IColumn = newColumns.filter(currCol => column!.key === currCol.key)[0];
+        newColumns.forEach((newCol: IColumn) => {
+            if (newCol === currColumn) {
+              currColumn.isSortedDescending = !currColumn.isSortedDescending;
+              currColumn.isSorted = true;
+            } else {
+              newCol.isSorted = false;
+              newCol.isSortedDescending = true;
+            }
+        });
+
+        const newItems = _copyAndSort(defaultGridData, currColumn.fieldName!, currColumn.isSortedDescending);
+        SetGridItems(newItems);
+        setSortColObj({ key: column!.key, isAscending: !currColumn.isSortedDescending, isEnabled: true });
+    }
+
+    function _copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
+        const key = columnKey as keyof T;
+        return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1));
+    }
     /* #endregion */
     
     /* #region [Column Filter] */
@@ -1030,8 +1062,11 @@ const EditableGrid = (props: Props) => {
                 isResizable: true,
                 minWidth: column.minWidth,
                 maxWidth: column.maxWidth,
+                onColumnContextMenu: !column.disableSort ? (col, ev) => onColumnContextMenu(col, ev) : undefined,
                 onColumnClick: !(isGridInEdit || editMode) && (isDataTypeSupportedForFilter && column.applyColumnFilter &&  props.enableColumnFilters) ? (ev, col) => onColumnClick(ev, col, index) : undefined,
                 //data: item.dataType,
+                isSorted: sortColObj.isEnabled && sortColObj.key == colKey,
+                isSortedDescending: !(sortColObj.isEnabled && sortColObj.key == colKey) || !sortColObj.isAscending,
                 isFiltered: (isDataTypeSupportedForFilter && column.applyColumnFilter &&  props.enableColumnFilters && (getColumnFiltersRef() && getColumnFiltersRef().length > 0 && getColumnFiltersRef().filter(i => i.column.key == column.key).length > 0 && getColumnFiltersRef().filter(i => i.column.key == column.key)[0].isApplied)) ? true : false,
                 sortAscendingAriaLabel: 'Sorted A to Z',
                 sortDescendingAriaLabel: 'Sorted Z to A',

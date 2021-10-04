@@ -23,6 +23,7 @@ export interface IColumnConfig extends IColumn {
     cellStyleRule?: ICellStyleRulesType;
     dropdownValues?: IDropdownOption[];
     pickerOptions?: IPickerOptions;
+    disableSort?: boolean;
 };
 
 export interface IPickerOptions {

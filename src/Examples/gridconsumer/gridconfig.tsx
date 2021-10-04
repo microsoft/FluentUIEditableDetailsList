@@ -18,7 +18,8 @@ export const GridColumnConfig : IColumnConfig[] =
         isResizable: true,
         includeColumnInExport: true,
         includeColumnInSearch: true,
-        applyColumnFilter: true
+        applyColumnFilter: true,
+        disableSort: true
     },
     {
         key: 'name',
