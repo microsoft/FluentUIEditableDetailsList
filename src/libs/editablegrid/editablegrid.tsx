@@ -1066,6 +1066,7 @@ const EditableGrid = (props: Props) => {
                                 ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
                                 <span 
+                                    id={`id-${props.id}-col-${index}-row-${rowNum}`}
                                     className={GetDynamicSpanStyles(column, item[column.key])}
                                     onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
                                     ? EditCellValue(column.key, rowNum!, true) 
@@ -1095,6 +1096,7 @@ const EditableGrid = (props: Props) => {
                                 ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
                                 <span 
+                                    id={`id-${props.id}-col-${index}-row-${rowNum}`}
                                     className={GetDynamicSpanStyles(column, item[column.key])}
                                     onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
                                     ? 
@@ -1124,6 +1126,7 @@ const EditableGrid = (props: Props) => {
                                     (!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
                                 <span 
+                                    id={`id-${props.id}-col-${index}-row-${rowNum}`}
                                     className={GetDynamicSpanStyles(column, item[column.key])}
                                     onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
                                                     ? 
@@ -1153,6 +1156,7 @@ const EditableGrid = (props: Props) => {
                                 ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
                                 <span 
+                                    id={`id-${props.id}-col-${index}-row-${rowNum}`}
                                     className={GetDynamicSpanStyles(column, item[column.key])}
                                     onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
                                                     ? 
@@ -1186,6 +1190,7 @@ const EditableGrid = (props: Props) => {
                                     (!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
                                 ? 
                                 <span 
+                                    id={`id-${props.id}-col-${index}-row-${rowNum}`}
                                     className={GetDynamicSpanStyles(column, item[column.key])}
                                     onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit) 
                                                     ? 
