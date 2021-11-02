@@ -13,7 +13,6 @@ interface Props extends IFilterCalloutProps {
 const FilterCallout = (props : Props) => {
     const labelId: string = useId('callout-label');
     const descriptionId: string = useId('callout-description');
-    console.log(props.columnClass);
     return(
         <>
             <Callout

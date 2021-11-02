@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { DefaultButton, DetailsList, DetailsListLayoutMode, Fabric, mergeStyles, mergeStyleSets, SelectionMode, TextField } from 'office-ui-fabric-react';
+import { DefaultButton, DetailsList, DetailsListLayoutMode, DirectionalHint, Fabric, FontIcon, IButtonProps, Link, mergeStyles, mergeStyleSets, SelectionMode, TeachingBubble, TextField } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { useState } from 'react';
 import EditableGrid from '../../libs/editablegrid/editablegrid';
@@ -10,17 +10,63 @@ import { IColumnConfig } from '../../libs/types/columnconfigtype';
 import { GridColumnConfig, GridItemsType } from './gridconfig';
 import { EventEmitter, EventType } from '../../libs/eventemitter/EventEmitter.js';
 import { Operation } from '../../libs/types/operation';
+import { ITeachingBubbleConfig, ITeachingBubblePropsExtended, teachingBubbleConfig } from './teachingbubbleconfig';
+import { useBoolean } from '@fluentui/react-hooks';
 
 const Consumer = () => {
 
     const [items, setItems] = useState<GridItemsType[]>([]);
+    const [teachingBubbleVisible, { toggle: toggleTeachingBubbleVisible }] = useBoolean(true);
+    const [teachingBubblePropsConfig, setTeachingBubblePropsConfig] = useState<ITeachingBubbleConfig>({ id: 0, config: {...teachingBubbleConfig[0], footerContent: `1 of ${teachingBubbleConfig.length}`}});
 
     const classNames = mergeStyleSets({
         controlWrapper: {
           display: 'flex',
           flexWrap: 'wrap',
         }
-      });
+    });
+
+    const iconClass = mergeStyles({
+        fontSize: 20,
+        margin: "0px 0px 0px 30px"
+    });
+
+    const onTeachingBubbleNavigation = (direction : string)  => {
+        switch(direction) {
+            case 'previous':
+                var TeachingProps = teachingBubbleConfig[teachingBubblePropsConfig.id - 1];
+                var currentId = teachingBubblePropsConfig.id - 1;
+                TeachingProps.footerContent = `${currentId + 1} of ${teachingBubbleConfig.length}`;
+                setTeachingBubblePropsConfig({ id: currentId, config: TeachingProps })
+                break;
+            case 'next':
+                var TeachingProps = teachingBubbleConfig[teachingBubblePropsConfig.id + 1];
+                var currentId = teachingBubblePropsConfig.id + 1;
+                TeachingProps.footerContent = `${currentId + 1} of ${teachingBubbleConfig.length}`;
+                setTeachingBubblePropsConfig({ id: currentId, config: TeachingProps })
+                break;
+            case 'close':
+                var TeachingProps = teachingBubbleConfig[0];
+                TeachingProps.footerContent = `1 of ${teachingBubbleConfig.length}`;
+                setTeachingBubblePropsConfig({ id: 0, config: TeachingProps });
+                toggleTeachingBubbleVisible();
+                break;
+        } 
+    }
+    
+    const nextBubbleProps: IButtonProps = {
+        children: 'Next',
+        onClick: () => onTeachingBubbleNavigation('next'),
+    };
+
+    const previousBubbleProps: IButtonProps = {
+        children: 'Previous',
+        onClick: () => onTeachingBubbleNavigation('previous'),
+    };
+    const closeButtonProps: IButtonProps = {
+        children: 'Close',
+        onClick: () => onTeachingBubbleNavigation('close'),
+    };
 
     const GetRandomDate = (start : Date, end : Date) : Date => {
         var diff =  end.getTime() - start.getTime();
@@ -77,13 +123,11 @@ const Consumer = () => {
     }
 
     const onDateChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
-        debugger;
         alert('Date Changed');
         return callbackRequestParamObj.data;
     }
 
     const onEmploymentTypeChangedChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
-        debugger;
         alert('Employment Type Changed');
         return callbackRequestParamObj.data;
     }
@@ -107,7 +151,16 @@ const Consumer = () => {
     return (
         <Fabric>
             <div className={classNames.controlWrapper}>
-                <TextField placeholder='Search Grid' className={mergeStyles({ width: '60vh', paddingBottom:'10px' })} onChange={(event) => EventEmitter.dispatch(EventType.onSearch, event)}/>
+                <TextField id="searchField" placeholder='Search Grid' className={mergeStyles({ width: '60vh', paddingBottom:'10px' })} onChange={(event) => EventEmitter.dispatch(EventType.onSearch, event)}/>
+                <Link>
+                    <FontIcon 
+                        aria-label="View" 
+                        iconName="View"
+                        className={iconClass}
+                        onClick={toggleTeachingBubbleVisible}
+                        id="tutorialinfo"
+                    />
+                </Link>
             </div>
             <EditableGrid
                 id={1}
@@ -136,6 +189,24 @@ const Consumer = () => {
                 enableColumnFilterRules={true}
                 enableRowAddWithValues={{enable : true, enableRowsCounterInPanel : true}}
             />
+
+            {teachingBubbleVisible && (
+                <TeachingBubble
+                target={teachingBubblePropsConfig?.config.target}
+                primaryButtonProps={teachingBubblePropsConfig?.id < teachingBubbleConfig.length - 1 ? nextBubbleProps : closeButtonProps}
+                secondaryButtonProps={teachingBubblePropsConfig?.id > 0 ? previousBubbleProps : null}
+                onDismiss={toggleTeachingBubbleVisible}
+                footerContent={teachingBubblePropsConfig?.config.footerContent} 
+                headline={teachingBubblePropsConfig?.config.headline}
+                hasCloseButton={true}
+                isWide={teachingBubblePropsConfig?.config.isWide == null ? true : teachingBubblePropsConfig?.config.isWide}
+                calloutProps={{
+                    directionalHint:DirectionalHint.bottomLeftEdge,
+                }}
+                >
+                {teachingBubblePropsConfig?.config.innerText}
+                </TeachingBubble>
+            )}
         </Fabric>
     );
 };

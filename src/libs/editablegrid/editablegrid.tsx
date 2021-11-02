@@ -150,8 +150,6 @@ const EditableGrid = (props: Props) => {
     }, [props.items]);
 
     useEffect(() => {
-        console.log('Backup Grid Data');
-        console.log(backupDefaultGridData);
     }, [backupDefaultGridData]);
 
     // useEffect(() => {
@@ -354,7 +352,6 @@ const EditableGrid = (props: Props) => {
                 setAnnounced(<Announced message="Rows Added" aria-live="assertive" />);
                 
                 let rowCount = parseInt(SpinRef.current.value, 10) ;
-                console.log(rowCount);
                 var addedRows = GetDefaultRowObject(rowCount);
                 var newGridData = [...defaultGridData, ...addedRows];
                 setGridEditState(true);
@@ -435,7 +432,6 @@ const EditableGrid = (props: Props) => {
             defaultGridDataTmp.filter((x => x._grid_row_id_ == item._grid_row_id_)).map((x => x._grid_row_operation_ = Operation.Delete));
         });
 
-        console.log(defaultGridDataTmp);
         setGridEditState(true);
         SetGridItems(defaultGridDataTmp);
     }
@@ -519,7 +515,6 @@ const EditableGrid = (props: Props) => {
     };
 
     const onCellValueChange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, item : {}, row : number, key : string, column : IColumnConfig): void => {
-        debugger;
         if(!IsValidDataType(column.dataType, text)){
             return;
         }
@@ -641,7 +636,6 @@ const EditableGrid = (props: Props) => {
     };
 
     const EditCellValue = (key : string, rowNum : number, activateCurrentCell : boolean) : void => {
-        debugger;
         let activateCellEditTmp : any[] = ChangeCellState(key, rowNum, activateCurrentCell, activateCellEdit);
         setActivateCellEdit(activateCellEditTmp);
 
@@ -723,7 +717,6 @@ const EditableGrid = (props: Props) => {
     // }
 
     const CancelRowEditMode = (item : any, rowNum : number) : void => {
-        debugger;
         // SetGridItems(defaultGridData);
         let activateCellEditTmp : any[] = ChangeRowState(item, rowNum, false);
         activateCellEditTmp = RevertRowEditValues(rowNum, activateCellEditTmp);
@@ -752,7 +745,6 @@ const EditableGrid = (props: Props) => {
     
     /* #region [Grid Edit Mode Functions] */
     const ShowGridEditMode = () : void => {
-        debugger;
         var newEditModeValue = !editMode;
         if(newEditModeValue){
             setCancellableRows(defaultGridData);
@@ -780,7 +772,6 @@ const EditableGrid = (props: Props) => {
     }
 
     const CancelGridEditMode = () : void => {
-        debugger;
         SetGridItems(cancellableRows); 
         setCancellableRows([]);
         setEditMode(false);
@@ -845,7 +836,6 @@ const EditableGrid = (props: Props) => {
 
     const onColumnContextMenu = (column: IColumn | undefined, ev: React.MouseEvent<HTMLElement> | undefined) => {
         //ev!.preventDefault();
-        debugger;
         var newColumns : IColumn[] = GridColumns.slice();
         const currColumn: IColumn = newColumns.filter(currCol => column!.key === currCol.key)[0];
         newColumns.forEach((newCol: IColumn) => {
@@ -1030,8 +1020,6 @@ const EditableGrid = (props: Props) => {
 
     const setColumnFiltersRefAtIndex = (index : number, filter : IGridColumnFilter) : void => {
         gridColumnFilterArrRef.current[index] = filter;
-        console.log('Filter Column changed at index ' + index);
-        console.log(gridColumnFilterArrRef.current);
     };
 
     const setColumnFiltersRef = (value : IGridColumnFilter[]) : void => {
@@ -1286,6 +1274,7 @@ const EditableGrid = (props: Props) => {
         
         if(props.enableExport){
             commandBarItems.push({ 
+                id: 'export',
                 key: 'exportGrid', 
                 text: 'Export', 
                 ariaLabel: 'Export',
@@ -1313,6 +1302,7 @@ const EditableGrid = (props: Props) => {
 
         if(props.enableColumnFilterRules){
             commandBarItems.push({ 
+                id:'columnfilter',
                 key: 'columnFilters', 
                 text: 'Filter', 
                 ariaLabel: 'Filter',
@@ -1340,6 +1330,7 @@ const EditableGrid = (props: Props) => {
     
         if(props.enableSave == true){
             commandBarItems.push({
+                id:'submit',
                 key: 'submit',
                 text: 'Submit',
                 ariaLabel: 'Submit',
@@ -1351,6 +1342,7 @@ const EditableGrid = (props: Props) => {
     
         if(props.enableTextFieldEditMode){
             commandBarItems.push({
+                id:'editmode',
                 key: 'editmode',
                 disabled: isGridInEdit && !editMode,
                 text: !editMode ? "Edit Mode" : "Save Edits",
@@ -1372,6 +1364,7 @@ const EditableGrid = (props: Props) => {
     
         if(props.enableBulkEdit){
             commandBarItems.push({
+                id: 'bulkedit',
                 key: 'bulkedit',
                 text: "Bulk Edit",
                 disabled: isGridInEdit || editMode,
@@ -1382,6 +1375,7 @@ const EditableGrid = (props: Props) => {
     
         if(props.enableGridRowsAdd){
             commandBarItems.push({
+                id: 'addrows',
                 key: 'addrows',
                 text: "Add Rows",
                 disabled: isGridInEdit || editMode,
@@ -1392,6 +1386,7 @@ const EditableGrid = (props: Props) => {
 
         if(props.enableRowAddWithValues && props.enableRowAddWithValues.enable){
             commandBarItems.push({
+                id: 'addrowswithdata',
                 key: 'addrowswithdata',
                 text: "Add Rows with Data",
                 disabled: isGridInEdit || editMode,
@@ -1402,6 +1397,7 @@ const EditableGrid = (props: Props) => {
     
         if(props.enableGridRowsDelete){
             commandBarItems.push({
+                id: 'deleterows',
                 key: 'deleterows',
                 text: "Delete Rows",
                 disabled: isGridInEdit || editMode,
@@ -1412,6 +1408,7 @@ const EditableGrid = (props: Props) => {
     
         if(props.enableColumnEdit){
             commandBarItems.push({
+                id: 'updatecolumn',
                 key: 'updatecolumn',
                 disabled: isGridInEdit || editMode,
                 text: !isUpdateColumnClicked ? "Update Column" : "Save Column Update",
@@ -1422,6 +1419,7 @@ const EditableGrid = (props: Props) => {
 
         if(props.enableGridReset){
             commandBarItems.push({
+                id: 'resetgrid',
                 key: 'resetGrid',
                 disabled: (isGridInEdit || editMode) || !isGridStateEdited,
                 text: "Reset Data",
@@ -1440,6 +1438,7 @@ const EditableGrid = (props: Props) => {
             || props.enableTextFieldEditMode))
             {
                 commandBarItems.push({
+                    id: 'info',
                     key: 'info',
                     text: isGridStateEdited ? 'Grid has unsaved data. Click on \'Submit\' to save' : '',
                     // This needs an ariaLabel since it's icon-only
@@ -1467,13 +1466,10 @@ const EditableGrid = (props: Props) => {
         
         switch (count) {
           case 0:
-              console.log('No items selected');
             return 'No items selected';
           case 1:
-            console.log('1 item selected');
             return '1 item selected: ';
           default:
-              console.log(`${count} items selected`);
             return `${count} items selected`;
         }
     }

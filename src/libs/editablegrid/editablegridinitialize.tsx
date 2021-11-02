@@ -49,7 +49,6 @@ export const InitializeInternalGridEditStructure = (items : any[]) : any[] => {
 };
 
 export const ShallowCopyDefaultGridToEditGrid = (defaultGrid : any[], editGrid : any[]) : any[] => {
-    debugger;
     defaultGrid.forEach((item, index) => {
         var objectKeys = Object.keys(item);
         objectKeys.forEach((objKey) => {

@@ -23,7 +23,6 @@ const AddRowPanel = (props: Props) => {
 
     const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string): void => {
         updateObj[(ev.target as Element).id] = text;
-        //console.log(updateObj);
     };
 
     const onPanelSubmit = (): void => {
@@ -108,7 +107,6 @@ const AddRowPanel = (props: Props) => {
             );
         }
         
-        console.log(tmpRenderObj);
         return tmpRenderObj;
     }
 
