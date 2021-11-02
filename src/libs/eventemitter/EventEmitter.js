@@ -13,7 +13,6 @@ export const EventEmitter = {
         if (!this.events[event]) this.events[event] = [];
         if (this.events[event].some(c => c === callback)) {
             console.warn(event + ' Already subscribed by ');
-            console.log(callback);
             return;
         }
         this.events[event].push(callback);

@@ -19,7 +19,6 @@ const ColumnFilterDialog = (props : Props) => {
     //const [filter, setFilter] = useState<IFilter>({ column:'', operator:'', value: '' });
     
     const onSelectGridColumn = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined, index: number | undefined): void => {
-        console.log(item)
         //setGridColumn(item!.key.toString());
         setGridColumn(props.columnConfigurationData.filter((val) => val.key == item!.key)[0]);
         // var filterTmp : IFilter = {...filter};
@@ -28,8 +27,6 @@ const ColumnFilterDialog = (props : Props) => {
     };
 
     const onSelectOperator = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined, index: number | undefined): void => {
-        debugger;
-        console.log(item)
         setOperator(item!.text.toString());
         //var filterTmp : IFilter = {...filter};
         //filterTmp.operator = item!.text.toString();
@@ -37,7 +34,6 @@ const ColumnFilterDialog = (props : Props) => {
     };
 
     const onSelectValue = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined, index: number | undefined): void => {
-        console.log(item)
         setValue(item!.key.toString());
         // var filterTmp : IFilter = {...filter};
         // filterTmp.value = item!.key.toString();
@@ -45,7 +41,6 @@ const ColumnFilterDialog = (props : Props) => {
     };
 
     const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string): void => {
-        console.log('Text Changed: ' + text);
         setValue(text);
         // var filterTmp : IFilter = {...filter};
         // filterTmp.value = text;
@@ -122,7 +117,6 @@ const ColumnFilterDialog = (props : Props) => {
     const options = createDropDownOptions();
 
     const createCompareOptions = () : IDropdownOption[] => {
-        debugger;
         if(!(gridColumn && gridColumn.key && gridColumn.key.length > 0)){
             return [];
         }
@@ -183,7 +177,6 @@ const ColumnFilterDialog = (props : Props) => {
     }, []);
 
     const saveDialog = (): void => {
-        debugger;
         var filterObj : IFilter = { column: gridColumn!, operator: operator, value: value }
         if(props.onDialogSave){
             props.onDialogSave(filterObj);
@@ -211,7 +204,7 @@ const ColumnFilterDialog = (props : Props) => {
                   text="Save"
                 />
                 <DefaultButton 
-                //onClick={closeDialog} 
+                onClick={closeDialog} 
                 text="Cancel" />
               </DialogFooter>
         </Dialog>

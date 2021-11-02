@@ -40,7 +40,6 @@ const ColumnUpdateDialog = (props : Props) => {
     };
 
     const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string): void => {
-        console.log('Text Changed: ' + text);
         setColumnDialogValues({[gridColumn]: text});
     };
 
@@ -58,7 +57,6 @@ const ColumnUpdateDialog = (props : Props) => {
     };
 
     const onSelectGridColumn = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined): void => {
-        console.log(item)
         setGridColumn(item!.key.toString());
     };
 
@@ -71,7 +69,6 @@ const ColumnUpdateDialog = (props : Props) => {
     }, []);
 
     const saveDialog = (): void => {
-        debugger;
         if(props.onDialogSave){
             props.onDialogSave(columnDialogValues);
         }
@@ -97,7 +94,6 @@ const ColumnUpdateDialog = (props : Props) => {
     },[columnDialogValues]);
 
     useEffect(() => {
-        //debugger;
         setColumnDialogValues({[gridColumn]:''});
         var column = props.columnConfigurationData.filter(x => x.key == gridColumn);
         if(column.length > 0){
