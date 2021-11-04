@@ -1050,7 +1050,7 @@ const EditableGrid = (props: Props) => {
                 isResizable: true,
                 minWidth: column.minWidth,
                 maxWidth: column.maxWidth,
-                onColumnContextMenu: !column.disableSort ? (col, ev) => onColumnContextMenu(col, ev) : undefined,
+                onColumnContextMenu: !column.disableSort && !(isGridInEdit || editMode) ? (col, ev) => onColumnContextMenu(col, ev) : undefined,
                 onColumnClick: !(isGridInEdit || editMode) && (isDataTypeSupportedForFilter && column.applyColumnFilter &&  props.enableColumnFilters) ? (ev, col) => onColumnClick(ev, col, index) : undefined,
                 //data: item.dataType,
                 isSorted: sortColObj.isEnabled && sortColObj.key == colKey,
@@ -1058,7 +1058,7 @@ const EditableGrid = (props: Props) => {
                 isFiltered: (isDataTypeSupportedForFilter && column.applyColumnFilter &&  props.enableColumnFilters && (getColumnFiltersRef() && getColumnFiltersRef().length > 0 && getColumnFiltersRef().filter(i => i.column.key == column.key).length > 0 && getColumnFiltersRef().filter(i => i.column.key == column.key)[0].isApplied)) ? true : false,
                 sortAscendingAriaLabel: 'Sorted A to Z',
                 sortDescendingAriaLabel: 'Sorted Z to A',
-                onRender: (item, rowNum) => {
+                onRender: column.onRender ? column.onRender : (item, rowNum) => {
                     rowNum = Number(item['_grid_row_id_']);
                     switch(column.inputType){
                         case EditControlType.MultilineTextField:
