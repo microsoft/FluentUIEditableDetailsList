@@ -140,7 +140,7 @@ const EditableGrid = (props: Props) => {
     });
 
     useEffect(() => {
-        if(props && props.items && props.items.length > 0){
+        if(props && props.items){
             var data : any[] = InitializeInternalGrid(props.items);
             setGridData(data);
             setBackupDefaultGridData(data.map(obj => ({...obj})));
