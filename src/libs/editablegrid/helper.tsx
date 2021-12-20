@@ -1,4 +1,5 @@
 import { ICellStyleRulesType } from "../types/cellstyleruletype";
+import { IColumnConfig } from "../types/columnconfigtype";
 import { IGridColumnFilter } from "../types/columnfilterstype";
 import { dateOperatorEval, IFilter, numberOperatorEval, stringOperatorEval } from "../types/filterstype";
 
@@ -83,4 +84,14 @@ export const EvaluateRule = (datatType : string, cellValue: string | number | un
         default:
             return false;
     }
+}
+
+export const ConvertObjectToText = (obj : any, columns: IColumnConfig[]) : string => {
+    var text : string = '';
+
+    columns.forEach((col) => {
+        text += (obj[col.key] == null ? '' : obj[col.key]) + "\t";
+    });
+    
+    return text.substring(0, text.lastIndexOf('\t'));
 }

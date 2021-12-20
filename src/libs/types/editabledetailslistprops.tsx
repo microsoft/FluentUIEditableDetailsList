@@ -1,6 +1,7 @@
 import { ConstrainMode } from "office-ui-fabric-react/lib/components/DetailsList";
 import { IDetailsListProps } from "office-ui-fabric-react/lib/components/DetailsList/DetailsList";
 import { IColumnConfig } from "./columnconfigtype";
+import { IGridCopy } from "./gridcopytype";
 import { IRowAddWithValues } from "./rowaddtype";
 
 export interface Props extends IDetailsListProps {
@@ -36,4 +37,6 @@ export interface Props extends IDetailsListProps {
     enableColumnFilters?: boolean;
     enableCommandBar?: boolean;
     enableSingleClickCellEdit?: boolean;
+    onGridStatusMessageCallback?: any;
+    gridCopyOptions?: IGridCopy;
 }

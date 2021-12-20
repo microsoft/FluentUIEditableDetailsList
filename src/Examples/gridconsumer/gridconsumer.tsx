@@ -12,6 +12,8 @@ import { EventEmitter, EventType } from '../../libs/eventemitter/EventEmitter.js
 import { Operation } from '../../libs/types/operation';
 import { ITeachingBubbleConfig, ITeachingBubblePropsExtended, teachingBubbleConfig } from './teachingbubbleconfig';
 import { useBoolean } from '@fluentui/react-hooks';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Consumer = () => {
 
@@ -150,6 +152,7 @@ const Consumer = () => {
 
     return (
         <Fabric>
+            <ToastContainer />
             <div className={classNames.controlWrapper}>
                 <TextField id="searchField" placeholder='Search Grid' className={mergeStyles({ width: '60vh', paddingBottom:'10px' })} onChange={(event) => EventEmitter.dispatch(EventType.onSearch, event)}/>
                 <Link>
@@ -188,6 +191,12 @@ const Consumer = () => {
                 enableColumnFilters={true}
                 enableColumnFilterRules={true}
                 enableRowAddWithValues={{enable : true, enableRowsCounterInPanel : true}}
+                gridCopyOptions={{enableGridCopy: true, enableRowCopy: true}}
+                onGridStatusMessageCallback={(str) => {
+                    toast.info(str, {
+                      position: toast.POSITION.TOP_CENTER
+                    })
+                }}
             />
 
             {teachingBubbleVisible && (

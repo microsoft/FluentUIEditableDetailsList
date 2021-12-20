@@ -34,7 +34,7 @@ import { ICallBackParams, ICallBackRequestParams } from '../types/callbackparams
 import { EventEmitter, EventType } from '../eventemitter/EventEmitter';
 import ColumnFilterDialog from './columnfilterdialog/columnfilterdialog';
 import { IFilter } from '../types/filterstype';
-import { applyGridColumnFilter, filterGridData, isColumnDataTypeSupportedForFilter, IsValidDataType } from './helper';
+import { applyGridColumnFilter, ConvertObjectToText, filterGridData, isColumnDataTypeSupportedForFilter, IsValidDataType } from './helper';
 import { IFilterItem, IFilterListProps, IGridColumnFilter } from '../types/columnfilterstype';
 import FilterCallout from './columnfiltercallout/filtercallout';
 import { IRowAddWithValues } from '../types/rowaddtype';
@@ -778,6 +778,41 @@ const EditableGrid = (props: Props) => {
     }
     /* #endregion */
 
+    /* #region [Grid Copy Functions] */
+    
+    const CopyGridRows = (): void => {
+        if(selectedIndices.length == 0){
+          ShowMessageDialog(
+            "No Rows Selected",
+            "Please select some rows to perform this operation"
+          );
+          return;
+        }
+    
+        var copyText : string = '';
+        selectedItems!.forEach(i => {
+          copyText += ConvertObjectToText(defaultGridData.filter(x => x['_grid_row_id_'] == i['_grid_row_id_'])[0], props.columns) + '\r\n';
+        });
+    
+        navigator.clipboard.writeText(copyText).then(function() {
+            if(props.onGridStatusMessageCallback)
+                props.onGridStatusMessageCallback(selectedIndices.length + ` ${selectedIndices.length == 1 ? 'row' : 'rows' } copied to clipboard`);
+        }, function() {
+          /* clipboard write failed */
+        });
+      }
+    
+      const HandleRowCopy = (rowNum: number): void => {
+        navigator.clipboard.writeText(ConvertObjectToText(defaultGridData[rowNum], props.columns)).then(function() {
+            if(props.onGridStatusMessageCallback)
+                props.onGridStatusMessageCallback('1 row copied to clipboard');
+        }, function() {
+          /* clipboard write failed */
+        });
+      }
+
+    /* #endregion */
+
     const RowSelectOperations = (type : EditType, item : {}): boolean => {
         switch (type){
             case EditType.BulkEdit:
@@ -1264,7 +1299,17 @@ const EditableGrid = (props: Props) => {
                             }
                         </div>
                         :
-                        <IconButton onClick={() => ShowRowEditMode(item, Number(item['_grid_row_id_'])!, true)} iconProps={{ iconName: 'Edit' }} title={'Edit'}></IconButton>
+                        <div>
+                            <IconButton onClick={() => ShowRowEditMode(item, Number(item['_grid_row_id_'])!, true)} iconProps={{ iconName: 'Edit' }} title={'Edit'}></IconButton>
+                            { 
+                                props.gridCopyOptions && props.gridCopyOptions.enableRowCopy && 
+                                <IconButton
+                                    onClick={() => HandleRowCopy(Number(item['_grid_row_id_'])!)}
+                                    iconProps={{ iconName: "Copy" }}
+                                    title={"Copy"}
+                                ></IconButton>
+                            }
+                        </div>
                         }
                     </div>
                 ),
@@ -1375,6 +1420,16 @@ const EditableGrid = (props: Props) => {
                 disabled: isGridInEdit || editMode,
                 iconProps: { iconName: "TripleColumnEdit"},
                 onClick: () => RowSelectOperations(EditType.BulkEdit, {})
+            });
+        }
+
+        if(props.gridCopyOptions && props.gridCopyOptions.enableGridCopy){
+            commandBarItems.push({
+              key: "copy",
+              text: "Copy",
+              disabled: isGridInEdit || editMode,
+              iconProps: { iconName: "Copy" },
+              onClick: () => CopyGridRows(),
             });
         }
     
