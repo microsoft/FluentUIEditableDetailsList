@@ -13,6 +13,8 @@ Some of the features of the Editable Grid are:-
 >- Single Column Edit
 >- Multi-Column, multi-row edit (Bulk Edit)
 >- Full Edit (Edit Mode)
+>- Grid Copy
+>- Row Copy
 >- Sorting
 >- Deleting Rows
 >- Adding Rows
