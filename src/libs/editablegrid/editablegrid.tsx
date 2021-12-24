@@ -34,7 +34,7 @@ import { ICallBackParams, ICallBackRequestParams } from '../types/callbackparams
 import { EventEmitter, EventType } from '../eventemitter/EventEmitter';
 import ColumnFilterDialog from './columnfilterdialog/columnfilterdialog';
 import { IFilter } from '../types/filterstype';
-import { applyGridColumnFilter, ConvertObjectToText, filterGridData, isColumnDataTypeSupportedForFilter, IsValidDataType } from './helper';
+import { applyGridColumnFilter, ConvertObjectToText, filterGridData, isColumnDataTypeSupportedForFilter, IsValidDataType, ParseType } from './helper';
 import { IFilterItem, IFilterListProps, IGridColumnFilter } from '../types/columnfilterstype';
 import FilterCallout from './columnfiltercallout/filtercallout';
 import { IRowAddWithValues } from '../types/rowaddtype';
@@ -524,7 +524,7 @@ const EditableGrid = (props: Props) => {
         let activateCellEditTmp : any[] = [];
         activateCellEdit.forEach((item, index) => {
             if(row == index){
-                item.properties[key].value = text;
+                item.properties[key].value = ParseType(column.dataType, text);
             }
 
             activateCellEditTmp.push(item);
@@ -1113,7 +1113,7 @@ const EditableGrid = (props: Props) => {
                                 : 
                                 <TextField
                                 label={item.text}
-                                ariaLabel="Value"
+                                ariaLabel={column.key}
                                 multiline={true}
                                 rows={1}
                                 styles={textFieldStyles}
@@ -1148,7 +1148,7 @@ const EditableGrid = (props: Props) => {
                                 <DatePicker
                                     strings={DayPickerStrings}
                                     placeholder="Select a date..."
-                                    ariaLabel="Select a date"
+                                    ariaLabel={column.key}
                                     value={new Date(activateCellEdit[rowNum!].properties[column.key].value)}
                                     onSelectDate={(date) => onCellDateChange(date, item, rowNum!, column)}
                                     onDoubleClick = {() => !activateCellEdit[rowNum!].isActivated ? onDoubleClickEvent(column.key, rowNum!, false) : null}
@@ -1178,6 +1178,7 @@ const EditableGrid = (props: Props) => {
                                 </span> 
                                 : 
                                 <Dropdown
+                                    ariaLabel={column.key}
                                     placeholder={column.dropdownValues?.filter(x => x.text == item[column.key])[0]?.text ?? 'Select an option'}
                                     options={column.dropdownValues ?? []}
                                     styles={dropdownStyles}
@@ -1208,14 +1209,15 @@ const EditableGrid = (props: Props) => {
                                 </span> 
                                 : 
                                 <span onDoubleClick = {() => !activateCellEdit[rowNum!].isActivated ? onCellPickerDoubleClickEvent(column.key, rowNum!, false) : null}>
-                                <PickerControl
+                                    <PickerControl
+                                        arialabel={column.key}
                                         selectedItemsLimit={column.pickerOptions?.tagsLimit}
                                         pickerTags={column.pickerOptions?.pickerTags ?? []}
                                         defaultTags={item[column.key] ? [item[column.key]] : []}
                                         minCharLimitForSuggestions={column.pickerOptions?.minCharLimitForSuggestions}
                                         onTaglistChanged={(selectedItem: ITag[] | undefined) => onCellPickerTagListChanged(selectedItem, rowNum!, column)}
                                         pickerDescriptionOptions={column.pickerOptions?.pickerDescriptionOptions}
-                                />
+                                    />
                                 </span>
                                 }</span>
                             break;
@@ -1243,7 +1245,7 @@ const EditableGrid = (props: Props) => {
                                 : 
                                 <TextField
                                     label={item.text}
-                                    ariaLabel="Value"
+                                    ariaLabel={column.key}
                                     styles={textFieldStyles}
                                     onChange={(ev, text) => onCellValueChange(ev, text!, item, rowNum!, column.key, column)}
                                     autoFocus={true && !editMode && !(activateCellEdit && activateCellEdit[Number(item['_grid_row_id_'])!] && activateCellEdit[Number(item['_grid_row_id_'])!]['isActivated'])}
@@ -1509,7 +1511,22 @@ const EditableGrid = (props: Props) => {
                   });    
             }
 
-            return commandBarItems;
+        commandBarItems.push({
+            key: "filteredrecs",
+            text: `${defaultGridData.filter(
+                (x) =>
+                    x._grid_row_operation_ != Operation.Delete &&
+                    x._is_filtered_in_ == true &&
+                    x._is_filtered_in_grid_search_ == true &&
+                    x._is_filtered_in_column_filter_ == true
+                ).length}/${defaultGridData.length}`,
+            // This needs an ariaLabel since it's icon-only
+            ariaLabel: "Filtered Records",
+            iconOnly: false,
+            iconProps: { iconName: "PageListFilter" }
+        });
+
+        return commandBarItems;
     };
 
     const GridColumns = CreateColumnConfigs();

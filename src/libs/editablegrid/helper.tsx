@@ -95,3 +95,27 @@ export const ConvertObjectToText = (obj : any, columns: IColumnConfig[]) : strin
     
     return text.substring(0, text.lastIndexOf('\t'));
 }
+
+export const ParseType = (type : string | undefined, text : string) : any => {
+    if(text.trim().length == 0){
+        return null;
+    }
+
+    switch(type){
+        case 'number':
+            return Number(text);
+        case 'date':
+            return Date.parse(text);
+    }
+
+    return text;
+}
+
+export const GetDefault = (type : string | undefined) : any => {
+    switch(type){
+        case 'date':
+            return new Date();
+        default:
+            return null;
+    }
+}

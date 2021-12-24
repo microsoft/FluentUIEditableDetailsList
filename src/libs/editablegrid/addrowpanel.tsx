@@ -1,9 +1,10 @@
 import { ConstrainMode, DatePicker, Dropdown, IDropdownOption, IStackStyles, IStackTokens, ITag, ITextFieldStyles, mergeStyleSets, Position, PrimaryButton, SpinButton, Stack, TextField } from "office-ui-fabric-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IColumnConfig } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
 import { DayPickerStrings } from "./datepickerconfig";
 import { controlClass, horizontalGapStackTokens, stackStyles, textFieldStyles, verticalGapStackTokens } from "./editablegridstyles";
+import { GetDefault, IsValidDataType, ParseType } from "./helper";
 import PickerControl from "./pickercontrol/picker";
 
 interface Props {
@@ -16,30 +17,52 @@ const AddRowPanel = (props: Props) => {
     let AddSpinRef: any = React.createRef();
 
     const updateObj : any = {};
+    const [columnValuesObj, setColumnValuesObj] = useState<any>(null);
 
-    const onDropDownChange = (event: React.FormEvent<HTMLDivElement>, selectedDropdownItem: IDropdownOption | undefined, item : any): void => {
-        updateObj[item.key] = selectedDropdownItem?.text;
+    useEffect(() => {
+        let tmpColumnValuesObj : any = {};
+        props.columnConfigurationData.forEach((item, index) => {
+            tmpColumnValuesObj[item.key] = { 'value' : GetDefault(item.dataType), 'isChanged' : false };
+        })
+        setColumnValuesObj(tmpColumnValuesObj);
+    }, [props.columnConfigurationData]);
+
+    const SetObjValues = (key: string, value: any) : void => {
+        setColumnValuesObj({...columnValuesObj, [key]: { 'value' :  value, 'isChanged' : true }})
     }
 
-    const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string): void => {
-        updateObj[(ev.target as Element).id] = text;
+    const onDropDownChange = (event: React.FormEvent<HTMLDivElement>, selectedDropdownItem: IDropdownOption | undefined, item : any): void => {
+        SetObjValues(item.key, selectedDropdownItem?.text);
+    }
+
+    const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, column : IColumnConfig): void => {
+        if(!IsValidDataType(column.dataType, text)){
+            return;
+        }
+        
+        SetObjValues((ev.target as Element).id, ParseType(column.dataType, text));
     };
 
     const onPanelSubmit = (): void => {
+        var objectKeys = Object.keys(columnValuesObj);
+        objectKeys.forEach((objKey) => {
+            if(columnValuesObj[objKey]['isChanged']){
+                updateObj[objKey] = columnValuesObj[objKey]['value']
+            }
+        });
+
         props.onChange(updateObj, props.enableRowsCounterField ? AddSpinRef.current.value : 1);
     };
 
     const onCellPickerTagListChanged = (cellPickerTagList: ITag[] | undefined, item : any) : void => {
-        if(cellPickerTagList && cellPickerTagList[0] && cellPickerTagList[0].name){
-            updateObj[item.key] = cellPickerTagList[0].name;
-        }
-        else{
-            updateObj[item.key] = '';
-        }
+        if(cellPickerTagList && cellPickerTagList[0] && cellPickerTagList[0].name)
+            SetObjValues(item.key, cellPickerTagList[0].name);
+        else
+            SetObjValues(item.key, '');
     }
 
     const onCellDateChange = (date: Date | null | undefined, item : any): void => {
-        updateObj[item.key] = date;
+        SetObjValues(item.key, date);
     };
 
     const createTextFields = () : any[] => {
@@ -70,11 +93,12 @@ const AddRowPanel = (props: Props) => {
                     tmpRenderObj.push(<div>
                         <span className={controlClass.pickerLabel}>{item.text}</span>
                         <PickerControl 
-                        selectedItemsLimit={1}
-                        pickerTags={item.pickerOptions?.pickerTags ?? []}
-                        minCharLimitForSuggestions={2}
-                        onTaglistChanged={(selectedItem: ITag[] | undefined) => onCellPickerTagListChanged(selectedItem, item)}
-                        pickerDescriptionOptions={item.pickerOptions?.pickerDescriptionOptions}
+                            arialabel={item.text}
+                            selectedItemsLimit={1}
+                            pickerTags={item.pickerOptions?.pickerTags ?? []}
+                            minCharLimitForSuggestions={2}
+                            onTaglistChanged={(selectedItem: ITag[] | undefined) => onCellPickerTagListChanged(selectedItem, item)}
+                            pickerDescriptionOptions={item.pickerOptions?.pickerDescriptionOptions}
                     /></div>);
                     break;
                 default:
@@ -83,8 +107,8 @@ const AddRowPanel = (props: Props) => {
                         id={item.key}
                         label={item.text}
                         styles={textFieldStyles}
-                        onChange={(ev, text) => onTextUpdate(ev, text!)}
-                        defaultValue = { '' }
+                        onChange={(ev, text) => onTextUpdate(ev, text!, item)}
+                        value={columnValuesObj[item.key].value || ''}
                         />);
                     break;
             }
@@ -96,7 +120,7 @@ const AddRowPanel = (props: Props) => {
                     componentRef = {AddSpinRef}
                     label="# of Rows to Add"
                     labelPosition={Position.top}
-                    defaultValue="0"
+                    defaultValue="1"
                     min={0}
                     max={100}
                     step={1}
@@ -113,7 +137,7 @@ const AddRowPanel = (props: Props) => {
     return (
         <Stack>
             <Stack tokens={verticalGapStackTokens}>
-                {createTextFields()}
+                {columnValuesObj && createTextFields()}
             </Stack>
             <Stack horizontal disableShrink styles={stackStyles} tokens={horizontalGapStackTokens}>
             <PrimaryButton
