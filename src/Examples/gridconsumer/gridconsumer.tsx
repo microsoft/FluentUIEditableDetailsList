@@ -116,7 +116,9 @@ const Consumer = () => {
         console.log(data.filter(item => item._grid_row_operation_ == Operation.Delete));
         console.log('Unchanged Rows');
         console.log(data.filter(item => item._grid_row_operation_ == Operation.None));
-        setItems([...data]);
+        setItems([...data.map(x => {
+            return {...x, '_grid_row_operation_': Operation.None}
+        })]);
     };
 
     const onPayrollChanged = (callbackRequestParamObj : ICallBackParams): any[] => {

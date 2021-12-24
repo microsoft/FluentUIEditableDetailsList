@@ -5,6 +5,7 @@ import { IPickerDescriptionOption, IPickerTagDescription } from "../../types/col
 import { classNames } from "./picker.styles";
 
 interface Props {
+    arialabel?: string;
     selectedItemsLimit? : number;
     pickerTags : string[];
     defaultTags?: string[];
@@ -71,15 +72,15 @@ const PickerControl = (props: Props) => {
     };
 
     const inputProps: IInputProps = {
-        'aria-label': 'Tag picker'
+        'aria-label': `${props.arialabel}`
     };
 
-    const onFilterTagListChanged = React.useCallback((tagList: ITag[] | undefined): void => {
+    const onFilterTagListChanged = (tagList: ITag[] | undefined): void => {
         setdefaultTags(tagList!);
         if(props.onTaglistChanged){
             props.onTaglistChanged(tagList);
         }
-    },[]);
+    };
 
     const onRenderPlainCard = (item : ITag): JSX.Element => {
         return (
