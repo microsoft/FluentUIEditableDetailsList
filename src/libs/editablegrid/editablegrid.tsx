@@ -34,7 +34,7 @@ import { ICallBackParams, ICallBackRequestParams } from '../types/callbackparams
 import { EventEmitter, EventType } from '../eventemitter/EventEmitter';
 import ColumnFilterDialog from './columnfilterdialog/columnfilterdialog';
 import { IFilter } from '../types/filterstype';
-import { applyGridColumnFilter, ConvertObjectToText, filterGridData, isColumnDataTypeSupportedForFilter, IsValidDataType, ParseType } from './helper';
+import { applyGridColumnFilter, ConvertObjectToText, filterGridData, GetDefault, isColumnDataTypeSupportedForFilter, IsValidDataType, ParseType } from './helper';
 import { IFilterItem, IFilterListProps, IGridColumnFilter } from '../types/columnfilterstype';
 import FilterCallout from './columnfiltercallout/filtercallout';
 import { IRowAddWithValues } from '../types/rowaddtype';
@@ -312,26 +312,13 @@ const EditableGrid = (props: Props) => {
 
     const GetDefaultRowObject = (rowCount : number) : any[] => {
         let obj : any = {};
-        let exisitingRowObj : any = {};
         let addedRows : any[] = [];
         let _new_grid_row_id_ = Math.max.apply(Math, defaultGridData.map(function(o) { return o._grid_row_id_; }));
 
-        if(defaultGridData && defaultGridData.length > 0){
-            exisitingRowObj = defaultGridData[0];
-        }
-        else{
-            props.columns.forEach((item, index) => {
-                exisitingRowObj[item.key] = '';
-            });
-        }
-
-        var objectKeys = Object.keys(exisitingRowObj);
-
         for(var i = 1; i <= rowCount; i++){
             obj = {};
-            objectKeys.forEach((item, index) => {
-                //obj[item] = 'NEW';
-                obj[item] = '';
+            props.columns.forEach((item, index) => {
+                obj[item.key] = GetDefault(item.dataType);
             });
 
             obj._grid_row_id_ = ++_new_grid_row_id_;
