@@ -101,6 +101,18 @@ const AddRowPanel = (props: Props) => {
                             pickerDescriptionOptions={item.pickerOptions?.pickerDescriptionOptions}
                     /></div>);
                     break;
+                case EditControlType.MultilineTextField:
+                    tmpRenderObj.push(<TextField
+                        name={item.text}
+                        multiline={true}
+                        rows={1}
+                        id={item.key}
+                        label={item.text}
+                        styles={textFieldStyles}
+                        onChange={(ev, text) => onTextUpdate(ev, text!, item)}
+                        value={columnValuesObj[item.key].value || ''}
+                        />);
+                    break;
                 default:
                     tmpRenderObj.push(<TextField
                         name={item.text}
