@@ -503,6 +503,10 @@ const EditableGrid = (props: Props) => {
 
     const onCellValueChange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, item : {}, row : number, key : string, column : IColumnConfig): void => {
         if(!IsValidDataType(column.dataType, text)){
+            let activateCellEditTmp : any[] = [];
+            activateCellEditTmp = [...activateCellEdit];
+            activateCellEditTmp[row]['properties'][key]['error'] = `Value not '${column.dataType}'`;
+            setActivateCellEdit(activateCellEditTmp);
             return;
         }
 
@@ -512,6 +516,7 @@ const EditableGrid = (props: Props) => {
         activateCellEdit.forEach((item, index) => {
             if(row == index){
                 item.properties[key].value = ParseType(column.dataType, text);
+                item.properties[key].error = null;
             }
 
             activateCellEditTmp.push(item);
@@ -619,6 +624,7 @@ const EditableGrid = (props: Props) => {
         let activateCellEditTmp : any[] = [];
         activateCellEditTmp = [...activateCellEditArr];
         activateCellEditTmp[rowNum]['properties'][key]['activated'] = activateCurrentCell;
+        activateCellEditTmp[rowNum]['properties'][key]['error'] = !activateCurrentCell ? null : activateCellEditTmp[rowNum]['properties'][key]['error'];
         return activateCellEditTmp;
     };
 
@@ -1099,6 +1105,7 @@ const EditableGrid = (props: Props) => {
                                     >{item[column.key]}</span> 
                                 : 
                                 <TextField
+                                errorMessage={activateCellEdit[rowNum!]['properties'][column.key].error}
                                 label={item.text}
                                 ariaLabel={column.key}
                                 multiline={true}
@@ -1231,6 +1238,7 @@ const EditableGrid = (props: Props) => {
                                 </span> 
                                 : 
                                 <TextField
+                                    errorMessage={activateCellEdit[rowNum!]['properties'][column.key].error}
                                     label={item.text}
                                     ariaLabel={column.key}
                                     styles={textFieldStyles}
