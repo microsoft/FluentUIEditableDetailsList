@@ -39,7 +39,7 @@ export const InitializeInternalGridEditStructure = (items : any[]) : any[] => {
         let activateCellEditRowTmp : any = {'isActivated' : false, properties : {}};
         var objectKeys = Object.keys(item);
         objectKeys.forEach((objKey) => {
-            activateCellEditRowTmp.properties[objKey] = {'activated' : false, 'value' : item[objKey]};
+            activateCellEditRowTmp.properties[objKey] = {'activated' : false, 'value' : item[objKey], 'error' : null};
         })
         
         activateCellEditTmp.push(activateCellEditRowTmp);

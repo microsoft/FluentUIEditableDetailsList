@@ -23,13 +23,13 @@ const EditPanel = (props: Props) => {
     useEffect(() => {
         let tmpColumnValuesObj : any = {};
         props.columnConfigurationData.filter(x => x.editable == true).forEach((item, index) => {
-            tmpColumnValuesObj[item.key] = { 'value' : GetDefault(item.dataType), 'isChanged' : false };
+            tmpColumnValuesObj[item.key] = { 'value' : GetDefault(item.dataType), 'isChanged' : false, 'error': null };
         })
         setColumnValuesObj(tmpColumnValuesObj);
     }, [props.columnConfigurationData]);
 
-    const SetObjValues = (key: string, value: any) : void => {
-        setColumnValuesObj({...columnValuesObj, [key]: { 'value' :  value, 'isChanged' : true }})
+    const SetObjValues = (key: string, value: any, isChanged: boolean = true, errorMessage: string | null = null) : void => {
+        setColumnValuesObj({...columnValuesObj, [key]: { 'value' :  value, 'isChanged' : isChanged, 'error': errorMessage }})
     }
 
     const onDropDownChange = (event: React.FormEvent<HTMLDivElement>, selectedDropdownItem: IDropdownOption | undefined, item : any): void => {
@@ -38,6 +38,7 @@ const EditPanel = (props: Props) => {
 
     const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, column : IColumnConfig): void => {
         if(!IsValidDataType(column.dataType, text)){
+            SetObjValues((ev.target as Element).id, ParseType(column.dataType, ''), false, `Data should be of type '${column.dataType}'`);
             return;
         }
         
@@ -104,6 +105,7 @@ const EditPanel = (props: Props) => {
                     break;
                 case EditControlType.MultilineTextField:
                     tmpRenderObj.push(<TextField
+                        errorMessage={columnValuesObj[item.key].error}
                         name={item.text}
                         multiline={true}
                         rows={1}
@@ -116,6 +118,7 @@ const EditPanel = (props: Props) => {
                     break;
                 default:
                     tmpRenderObj.push(<TextField
+                        errorMessage={columnValuesObj[item.key].error}
                         name={item.text}
                         id={item.key}
                         label={item.text}
