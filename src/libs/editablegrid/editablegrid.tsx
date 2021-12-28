@@ -1414,7 +1414,7 @@ const EditableGrid = (props: Props) => {
                 id: 'bulkedit',
                 key: 'bulkedit',
                 text: "Bulk Edit",
-                disabled: isGridInEdit || editMode,
+                disabled: isGridInEdit || editMode || selectionCount == 0,
                 iconProps: { iconName: "TripleColumnEdit"},
                 onClick: () => RowSelectOperations(EditType.BulkEdit, {})
             });
@@ -1424,7 +1424,7 @@ const EditableGrid = (props: Props) => {
             commandBarItems.push({
               key: "copy",
               text: "Copy",
-              disabled: isGridInEdit || editMode,
+              disabled: isGridInEdit || editMode || selectionCount == 0,
               iconProps: { iconName: "Copy" },
               onClick: () => CopyGridRows(),
             });
@@ -1457,7 +1457,7 @@ const EditableGrid = (props: Props) => {
                 id: 'deleterows',
                 key: 'deleterows',
                 text: "Delete Rows",
-                disabled: isGridInEdit || editMode,
+                disabled: isGridInEdit || editMode || selectionCount == 0,
                 iconProps: { iconName: "DeleteRows" },
                 onClick: () => RowSelectOperations(EditType.DeleteRow, {})
             });
@@ -1467,7 +1467,7 @@ const EditableGrid = (props: Props) => {
             commandBarItems.push({
                 id: 'updatecolumn',
                 key: 'updatecolumn',
-                disabled: isGridInEdit || editMode,
+                disabled: isGridInEdit || editMode || selectionCount == 0,
                 text: !isUpdateColumnClicked ? "Update Column" : "Save Column Update",
                 iconProps: { iconName: "SingleColumnEdit" },
                 onClick: () => RowSelectOperations(EditType.ColumnEdit, {})
