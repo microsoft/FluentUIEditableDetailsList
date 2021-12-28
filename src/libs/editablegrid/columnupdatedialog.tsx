@@ -56,7 +56,7 @@ const ColumnUpdateDialog = (props : Props) => {
 
     const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, column : IColumnConfig): void => {
         if(!IsValidDataType(column?.dataType, text)){
-            SetObjValues((ev.target as Element).id, ParseType(column.dataType, ''), false, `Data should be of type '${column.dataType}'`)
+            SetObjValues((ev.target as Element).id, text, false, `Data should be of type '${column.dataType}'`)
             return;
         }
         
@@ -210,6 +210,7 @@ const ColumnUpdateDialog = (props : Props) => {
                         // eslint-disable-next-line react/jsx-no-bind
                         onClick={saveDialog}
                         text="Save"
+                        disabled={(gridColumn) ? (inputValue[gridColumn].error != null && inputValue[gridColumn].error.length > 0) : false}
                         />
                         <DefaultButton onClick={closeDialog} text="Cancel" />
                     </DialogFooter>

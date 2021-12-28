@@ -37,7 +37,7 @@ const AddRowPanel = (props: Props) => {
 
     const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, column : IColumnConfig): void => {
         if(!IsValidDataType(column.dataType, text)){
-            SetObjValues((ev.target as Element).id, ParseType(column.dataType, ''), false, `Data should be of type '${column.dataType}'`);
+            SetObjValues((ev.target as Element).id, text, false, `Data should be of type '${column.dataType}'`);
             return;
         }
         
@@ -160,6 +160,7 @@ const AddRowPanel = (props: Props) => {
                 className={controlClass.submitStylesEditpanel}
                 onClick={onPanelSubmit}
                 allowDisabledFocus
+                disabled={columnValuesObj && Object.keys(columnValuesObj).some(k => columnValuesObj[k] && columnValuesObj[k].error && columnValuesObj[k].error.length > 0) || false}
             />
             </Stack>
         </Stack>
