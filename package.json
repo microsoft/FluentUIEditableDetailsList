@@ -1,6 +1,6 @@
 {
   "name": "fluentui-editable-grid",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "license": "MIT",
   "description": "Wrapper over the existing DetailsList that makes in-place editability work like a dream(among many other new features)",
   "main": "dist/index.js",
