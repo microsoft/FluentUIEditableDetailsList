@@ -166,6 +166,18 @@ const Consumer = () => {
 
     const onGridSave = (data: any[]): void => {
         alert('Grid Data Saved');
+        LogRows(data);
+        setItems([...data.filter(y => y._grid_row_operation_ != Operation.Delete).map(x => {
+            return {...x, '_grid_row_operation_': Operation.None}
+        })]);
+    };
+
+    const onGridUpdate = async (data: any[]): Promise<void> => {
+        console.log('Grid Data Updated');
+        LogRows(data);
+    };
+
+    const LogRows = (data: any[]) : void => {
         console.log('Updated Rows');
         console.log(data.filter(item => item._grid_row_operation_ == Operation.Update));
         console.log('Added Rows');
@@ -174,10 +186,7 @@ const Consumer = () => {
         console.log(data.filter(item => item._grid_row_operation_ == Operation.Delete));
         console.log('Unchanged Rows');
         console.log(data.filter(item => item._grid_row_operation_ == Operation.None));
-        setItems([...data.map(x => {
-            return {...x, '_grid_row_operation_': Operation.None}
-        })]);
-    };
+    }
 
     const onPayrollChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
         alert('Payroll Changed');
@@ -326,6 +335,7 @@ const Consumer = () => {
                       position: toast.POSITION.TOP_CENTER
                     })
                 }}
+                onGridUpdate={onGridUpdate}
             />
 
             {teachingBubbleVisible && (

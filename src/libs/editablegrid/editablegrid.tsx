@@ -157,10 +157,15 @@ const EditableGrid = (props: Props) => {
     //     console.log(cancellableRows);
     // }, [cancellableRows]);
 
-    // useEffect(() => {
-    //     console.log('Default Grid Data');
-    //     console.log(defaultGridData);
-    // }, [defaultGridData]);
+    useEffect(() => {
+        const CheckOnUpdate = async () => {
+            if(defaultGridData.filter(x => x._grid_row_operation_ != Operation.None).length > 0){
+                await onGridUpdate();
+            }
+        };
+
+        CheckOnUpdate();
+    }, [defaultGridData]);
 
     useEffect(() => {
         UpdateGridEditStatus();
@@ -185,6 +190,12 @@ const EditableGrid = (props: Props) => {
     const onGridSave = () : void => {
         if(props.onGridSave){
             props.onGridSave(defaultGridData);
+        }
+    };
+
+    const onGridUpdate = async() : Promise<void> => {
+        if(props.onGridUpdate){
+            await props.onGridUpdate(defaultGridData);
         }
     };
     
