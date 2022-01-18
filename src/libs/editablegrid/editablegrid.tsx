@@ -171,6 +171,9 @@ const EditableGrid = (props: Props) => {
         UpdateGridEditStatus();
         //console.log('activate cell edit');
         //console.log(activateCellEdit);
+        if(props.enableDefaultEditMode){
+            setDefaultGridData(ShallowCopyEditGridToDefaultGrid(defaultGridData, activateCellEdit));
+        }
     }, [activateCellEdit]);
 
     useEffect(() => {
@@ -1102,7 +1105,8 @@ const EditableGrid = (props: Props) => {
                     switch(column.inputType){
                         case EditControlType.MultilineTextField:
                             return <span>{
-                                ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
+                                (   !props.enableDefaultEditMode &&
+                                    ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated))) 
                                 ? 
                                 <span 
                                     id={`id-${props.id}-col-${index}-row-${rowNum}`}
@@ -1123,7 +1127,7 @@ const EditableGrid = (props: Props) => {
                                 rows={1}
                                 styles={textFieldStyles}
                                 onChange={(ev, text) => onCellValueChange(ev, text!, item, rowNum!, column.key, column)}
-                                autoFocus={true && !editMode && !(activateCellEdit && activateCellEdit[Number(item['_grid_row_id_'])!] && activateCellEdit[Number(item['_grid_row_id_'])!]['isActivated'])}
+                                autoFocus={!props.enableDefaultEditMode && !editMode && !(activateCellEdit && activateCellEdit[Number(item['_grid_row_id_'])!] && activateCellEdit[Number(item['_grid_row_id_'])!]['isActivated'])}
                                 //value = {item[column.key]}
                                 value={activateCellEdit[rowNum!]['properties'][column.key].value}
                                 //onKeyDown={(event) => onKeyDownEvent(event, column.key, rowNum, false)}
@@ -1133,7 +1137,8 @@ const EditableGrid = (props: Props) => {
                             break;
                         case EditControlType.Date:
                             return <span>{
-                                ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
+                                (   !props.enableDefaultEditMode &&
+                                    ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated))) 
                                 ? 
                                 <span 
                                     id={`id-${props.id}-col-${index}-row-${rowNum}`}
@@ -1162,8 +1167,8 @@ const EditableGrid = (props: Props) => {
                             break;
                         case EditControlType.DropDown:
                             return <span className={'row-' + rowNum! + '-col-' + index}>{
-                                (
-                                    (!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
+                                (   !props.enableDefaultEditMode &&
+                                    ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated))) 
                                 ? 
                                 <span 
                                     id={`id-${props.id}-col-${index}-row-${rowNum}`}
@@ -1194,7 +1199,8 @@ const EditableGrid = (props: Props) => {
                             break;
                         case EditControlType.Picker:
                             return <span>{
-                                ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
+                                (   !props.enableDefaultEditMode &&
+                                    ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated))) 
                                 ? 
                                 <span 
                                     id={`id-${props.id}-col-${index}-row-${rowNum}`}
@@ -1228,8 +1234,8 @@ const EditableGrid = (props: Props) => {
                             break;
                         default:
                             return <span>{
-                                (
-                                    (!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated)) 
+                                (   !props.enableDefaultEditMode &&
+                                    ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated))) 
                                 ? 
                                 <span 
                                     id={`id-${props.id}-col-${index}-row-${rowNum}`}
@@ -1254,7 +1260,7 @@ const EditableGrid = (props: Props) => {
                                     ariaLabel={column.key}
                                     styles={textFieldStyles}
                                     onChange={(ev, text) => onCellValueChange(ev, text!, item, rowNum!, column.key, column)}
-                                    autoFocus={true && !editMode && !(activateCellEdit && activateCellEdit[Number(item['_grid_row_id_'])!] && activateCellEdit[Number(item['_grid_row_id_'])!]['isActivated'])}
+                                    autoFocus={!props.enableDefaultEditMode && !editMode && !(activateCellEdit && activateCellEdit[Number(item['_grid_row_id_'])!] && activateCellEdit[Number(item['_grid_row_id_'])!]['isActivated'])}
                                     //value = {item[column.key]}
                                     value={activateCellEdit[rowNum!]['properties'][column.key].value}
                                     onKeyDown={(event) => onKeyDownEvent(event, column, rowNum!, false)}
@@ -1308,8 +1314,9 @@ const EditableGrid = (props: Props) => {
                         </div>
                         :
                         <div>
-                            <IconButton onClick={() => ShowRowEditMode(item, Number(item['_grid_row_id_'])!, true)} iconProps={{ iconName: 'Edit' }} title={'Edit'}></IconButton>
-                            { 
+                            {   !props.enableDefaultEditMode &&
+                                <IconButton onClick={() => ShowRowEditMode(item, Number(item['_grid_row_id_'])!, true)} iconProps={{ iconName: 'Edit' }} title={'Edit'}></IconButton>
+                            }{ 
                                 props.gridCopyOptions && props.gridCopyOptions.enableRowCopy && 
                                 <IconButton
                                     onClick={() => HandleRowCopy(Number(item['_grid_row_id_'])!)}
@@ -1329,6 +1336,7 @@ const EditableGrid = (props: Props) => {
 
     const CreateCommandBarItemProps = () : ICommandBarItemProps[] => {
         let commandBarItems: ICommandBarItemProps[] = [];
+        
         
         if(props.enableExport){
             commandBarItems.push({ 
@@ -1385,6 +1393,28 @@ const EditableGrid = (props: Props) => {
                 } 
             });
         }
+
+        if(!props.enableDefaultEditMode && props.enableTextFieldEditMode){
+            commandBarItems.push({
+                id:'editmode',
+                key: 'editmode',
+                disabled: isGridInEdit && !editMode,
+                text: !editMode ? "Edit Mode" : "Save Edits",
+                iconProps: { iconName: !editMode ? "Edit" : "Save" },
+                onClick: () => ShowGridEditMode()
+            });
+        }
+
+        if(!props.enableDefaultEditMode && props.enableTextFieldEditModeCancel && editMode){
+            commandBarItems.push({
+                key: 'editmodecancel',
+                disabled: isGridInEdit && !editMode,
+                text: "Cancel",
+                iconProps: { iconName: "Cancel" },
+                //onClick: () => {SetGridItems(defaultGridData); setEditMode(false)}
+                onClick: () => {CancelGridEditMode()}
+            });
+        }
     
         if(props.enableSave == true){
             commandBarItems.push({
@@ -1397,29 +1427,7 @@ const EditableGrid = (props: Props) => {
                 onClick: () => onGridSave(),
             });
         }
-    
-        if(props.enableTextFieldEditMode){
-            commandBarItems.push({
-                id:'editmode',
-                key: 'editmode',
-                disabled: isGridInEdit && !editMode,
-                text: !editMode ? "Edit Mode" : "Save Edits",
-                iconProps: { iconName: !editMode ? "Edit" : "Save" },
-                onClick: () => ShowGridEditMode()
-            });
-        }
 
-        if(props.enableTextFieldEditModeCancel && editMode){
-            commandBarItems.push({
-                key: 'editmodecancel',
-                disabled: isGridInEdit && !editMode,
-                text: "Cancel",
-                iconProps: { iconName: "Cancel" },
-                //onClick: () => {SetGridItems(defaultGridData); setEditMode(false)}
-                onClick: () => {CancelGridEditMode()}
-            });
-        }
-    
         if(props.enableBulkEdit){
             commandBarItems.push({
                 id: 'bulkedit',
@@ -1433,11 +1441,11 @@ const EditableGrid = (props: Props) => {
 
         if(props.gridCopyOptions && props.gridCopyOptions.enableGridCopy){
             commandBarItems.push({
-              key: "copy",
-              text: "Copy",
-              disabled: isGridInEdit || editMode || selectionCount == 0,
-              iconProps: { iconName: "Copy" },
-              onClick: () => CopyGridRows(),
+                key: "copy",
+                text: "Copy",
+                disabled: isGridInEdit || editMode || selectionCount == 0,
+                iconProps: { iconName: "Copy" },
+                onClick: () => CopyGridRows(),
             });
         }
     

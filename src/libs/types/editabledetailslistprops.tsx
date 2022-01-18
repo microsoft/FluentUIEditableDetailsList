@@ -39,4 +39,5 @@ export interface Props extends IDetailsListProps {
     enableSingleClickCellEdit?: boolean;
     onGridStatusMessageCallback?: any;
     gridCopyOptions?: IGridCopy;
+    enableDefaultEditMode?: boolean;
 }
