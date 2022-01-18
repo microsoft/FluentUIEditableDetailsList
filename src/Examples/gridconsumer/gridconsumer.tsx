@@ -34,6 +34,7 @@ interface GridConfigOptions {
     enableSave: boolean;
     enableGridReset: boolean;
     enableColumnFilters: boolean;
+    enableDefaultEditMode: boolean;
 }
 
 const Consumer = () => {
@@ -59,7 +60,8 @@ const Consumer = () => {
         enableUnsavedEditIndicator: true,
         enableSave: true,
         enableGridReset: true,
-        enableColumnFilters: true
+        enableColumnFilters: true,
+        enableDefaultEditMode: false
     });
 
     const RowSize = 5;
@@ -289,6 +291,9 @@ const Consumer = () => {
                     <Stack.Item className={classNames.checkbox}>
                         <Checkbox id={"enableColumnFilters"} label="Column Filters" onChange={onCheckboxChange} checked={gridConfigOptions.enableColumnFilters} />
                     </Stack.Item>
+                    <Stack.Item className={classNames.checkbox}>
+                        <Checkbox id={"enableDefaultEditMode"} label="Default Edit Mode" onChange={onCheckboxChange} checked={gridConfigOptions.enableDefaultEditMode} />
+                    </Stack.Item>
                 </Stack>
             </fieldset>
             <div className={classNames.controlWrapper}>
@@ -336,6 +341,7 @@ const Consumer = () => {
                     })
                 }}
                 onGridUpdate={onGridUpdate}
+                enableDefaultEditMode={gridConfigOptions.enableDefaultEditMode}
             />
 
             {teachingBubbleVisible && (
