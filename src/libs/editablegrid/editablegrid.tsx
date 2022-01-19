@@ -602,7 +602,15 @@ const EditableGrid = (props: Props) => {
         let activateCellEditTmp : any[] = [];
         activateCellEdit.forEach((item, index) => {
             if(row == index){
-                item.properties[column.key].value = (cellPickerTagList && cellPickerTagList[0] && cellPickerTagList[0].name) ? cellPickerTagList![0].name : '';
+                item.properties[column.key].value = '';
+                if(cellPickerTagList && cellPickerTagList.length > 0){
+                    cellPickerTagList!.forEach((tag) => {
+                        item.properties[column.key].value += tag.name + ';';
+                    });
+                }
+
+                let str : string = item.properties[column.key].value;
+                item.properties[column.key].value = str.length > 0 ? str.substring(0, str.length - 1) : str;
             }
 
             activateCellEditTmp.push(item);
@@ -1224,7 +1232,7 @@ const EditableGrid = (props: Props) => {
                                         arialabel={column.key}
                                         selectedItemsLimit={column.pickerOptions?.tagsLimit}
                                         pickerTags={column.pickerOptions?.pickerTags ?? []}
-                                        defaultTags={item[column.key] ? [item[column.key]] : []}
+                                        defaultTags={item[column.key] ? item[column.key].split(";") : []}
                                         minCharLimitForSuggestions={column.pickerOptions?.minCharLimitForSuggestions}
                                         onTaglistChanged={(selectedItem: ITag[] | undefined) => onCellPickerTagListChanged(selectedItem, rowNum!, column)}
                                         pickerDescriptionOptions={column.pickerOptions?.pickerDescriptionOptions}
