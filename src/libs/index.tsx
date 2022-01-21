@@ -6,3 +6,5 @@ export type { IGridItemsType } from "./types/griditemstype";
 export { EventEmitter, EventType } from "./eventemitter/EventEmitter";
 export { NumberAndDateOperators, StringOperators } from './types/cellstyleruletype';
 export type { ICellStyleRulesType } from './types/cellstyleruletype';
+export type { ICellHoverProps } from './types/cellhoverpropstype';
+export type { Operation } from './types/operation';

@@ -54,7 +54,15 @@ export const controlClass = mergeStyleSets({
         fontWeight:600,
         padding: '5px 0px',
         margin: '5px 0px'
-    }
+    },
+    plainCard: {
+        width: 380,
+        height: 320,
+        display: 'flex',
+        padding: '10px',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 });
 
 export const GetDynamicSpanStyles = (column : IColumnConfig, cellValue : number | string | undefined) : string => {

@@ -149,6 +149,7 @@ const Consumer = () => {
             var randomInt = GetRandomInt(1,3);
             dummyData.push({
                 id: i,
+                customerhovercol: 'Hover Me',
                 name: 'Name'+ GetRandomInt(1, 10),
                 age: GetRandomInt(20,40),
                 designation: 'Designation' + GetRandomInt(1, 15),

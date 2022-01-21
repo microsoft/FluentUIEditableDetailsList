@@ -24,7 +24,13 @@ export interface IColumnConfig extends IColumn {
     dropdownValues?: IDropdownOption[];
     pickerOptions?: IPickerOptions;
     disableSort?: boolean;
+    hoverComponentOptions?: IHoverOptions;
 };
+
+export interface IHoverOptions {
+    enable?: boolean;
+    hoverChildComponent?: JSX.Element;
+}
 
 export interface IPickerOptions {
     tagsLimit?: number;
