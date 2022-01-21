@@ -1113,10 +1113,9 @@ const EditableGrid = (props: Props) => {
                     switch(column.inputType){
                         case EditControlType.MultilineTextField:
                             return <span>{
-                                (   !props.enableDefaultEditMode &&
-                                    ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated))) 
+                                (ShouldRenderSpan()) 
                                 ?
-                                (column && column.hoverComponentOptions && column.hoverComponentOptions.enable ? 
+                                (column?.hoverComponentOptions?.enable ? 
                                     (<HoverCard
                                       type={HoverCardType.plain}
                                       plainCardProps={{
@@ -1140,19 +1139,16 @@ const EditableGrid = (props: Props) => {
                                 styles={textFieldStyles}
                                 onChange={(ev, text) => onCellValueChange(ev, text!, item, rowNum!, column.key, column)}
                                 autoFocus={!props.enableDefaultEditMode && !editMode && !(activateCellEdit && activateCellEdit[Number(item['_grid_row_id_'])!] && activateCellEdit[Number(item['_grid_row_id_'])!]['isActivated'])}
-                                //value = {item[column.key]}
                                 value={activateCellEdit[rowNum!]['properties'][column.key].value}
-                                //onKeyDown={(event) => onKeyDownEvent(event, column.key, rowNum, false)}
                                 onDoubleClick = {() => !activateCellEdit[rowNum!].isActivated ? onDoubleClickEvent(column.key, rowNum!, false) : null}
                                 maxLength={column.maxLength != null ? column.maxLength : 10000}
                                 />)}</span>
                             break;
                         case EditControlType.Date:
                             return <span>{
-                                (   !props.enableDefaultEditMode &&
-                                    ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated))) 
+                                (ShouldRenderSpan()) 
                                 ?
-                                (column && column.hoverComponentOptions && column.hoverComponentOptions.enable ? 
+                                (column?.hoverComponentOptions?.enable ? 
                                     (<HoverCard
                                       type={HoverCardType.plain}
                                       plainCardProps={{
@@ -1178,10 +1174,9 @@ const EditableGrid = (props: Props) => {
                             break;
                         case EditControlType.DropDown:
                             return <span className={'row-' + rowNum! + '-col-' + index}>{
-                                (   !props.enableDefaultEditMode &&
-                                    ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated))) 
+                                (ShouldRenderSpan()) 
                                 ? 
-                                (column && column.hoverComponentOptions && column.hoverComponentOptions.enable ? 
+                                (column?.hoverComponentOptions?.enable ? 
                                     (<HoverCard
                                       type={HoverCardType.plain}
                                       plainCardProps={{
@@ -1208,10 +1203,9 @@ const EditableGrid = (props: Props) => {
                             break;
                         case EditControlType.Picker:
                             return <span>{
-                                (   !props.enableDefaultEditMode &&
-                                    ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated))) 
+                                (ShouldRenderSpan()) 
                                 ? 
-                                (column && column.hoverComponentOptions && column.hoverComponentOptions.enable ? 
+                                (column?.hoverComponentOptions?.enable ? 
                                     (<HoverCard
                                       type={HoverCardType.plain}
                                       plainCardProps={{
@@ -1240,10 +1234,9 @@ const EditableGrid = (props: Props) => {
                             break;
                         default:
                             return <span>{
-                                (   !props.enableDefaultEditMode &&
-                                    ((!column.editable) || !(activateCellEdit && activateCellEdit[rowNum!] && activateCellEdit[rowNum!]['properties'][column.key] && activateCellEdit[rowNum!]['properties'][column.key].activated))) 
+                                (ShouldRenderSpan()) 
                                 ? 
-                                (column && column.hoverComponentOptions && column.hoverComponentOptions.enable ? 
+                                (column?.hoverComponentOptions?.enable ? 
                                     (<HoverCard
                                       type={HoverCardType.plain}
                                       plainCardProps={{
@@ -1263,13 +1256,16 @@ const EditableGrid = (props: Props) => {
                                     ariaLabel={column.key}
                                     styles={textFieldStyles}
                                     onChange={(ev, text) => onCellValueChange(ev, text!, item, rowNum!, column.key, column)}
-                                    autoFocus={!props.enableDefaultEditMode && !editMode && !(activateCellEdit && activateCellEdit[Number(item['_grid_row_id_'])!] && activateCellEdit[Number(item['_grid_row_id_'])!]['isActivated'])}
-                                    //value = {item[column.key]}
+                                    autoFocus={!props.enableDefaultEditMode && !editMode && !(activateCellEdit?.[Number(item['_grid_row_id_'])!]?.['isActivated'])}
                                     value={activateCellEdit[rowNum!]['properties'][column.key].value}
                                     onKeyDown={(event) => onKeyDownEvent(event, column, rowNum!, false)}
                                     maxLength={column.maxLength != null ? column.maxLength : 1000}
                                 />)}</span>
-                    } 
+                    }
+
+                    function ShouldRenderSpan() {
+                        return ((!column.editable) || (!props.enableDefaultEditMode && !(activateCellEdit?.[rowNum!]?.['properties'][column.key]?.activated)));
+                    }
                 }
             });
 
@@ -1598,16 +1594,8 @@ const EditableGrid = (props: Props) => {
         return <span
             id={`id-${props.id}-col-${index}-row-${rowNum}`}
             className={GetDynamicSpanStyles(column, item[column.key])}
-            onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit)
-                ?
-                EditCellValue(column.key, rowNum!, true)
-                :
-                null}
-            onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && !props.enableSingleClickCellEdit)
-                ?
-                EditCellValue(column.key, rowNum!, true)
-                :
-                null}
+            onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
+            onDoubleClick={HandleCellOnDoubleClick(props, column, EditCellValue, rowNum)}
         >
             {item[column.key]}
         </span>;
@@ -1617,16 +1605,8 @@ const EditableGrid = (props: Props) => {
         return <span
             id={`id-${props.id}-col-${index}-row-${rowNum}`}
             className={GetDynamicSpanStyles(column, item[column.key])}
-            onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit)
-                ?
-                EditCellValue(column.key, rowNum!, true)
-                :
-                null}
-            onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && !props.enableSingleClickCellEdit)
-                ?
-                EditCellValue(column.key, rowNum!, true)
-                :
-                null}
+            onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
+            onDoubleClick={HandleCellOnDoubleClick(props, column, EditCellValue, rowNum)}
         >
             {item[column.key]}
         </span>;
@@ -1636,16 +1616,8 @@ const EditableGrid = (props: Props) => {
         return <span
             id={`id-${props.id}-col-${index}-row-${rowNum}`}
             className={GetDynamicSpanStyles(column, item[column.key])}
-            onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit)
-                ?
-                EditCellValue(column.key, rowNum!, true)
-                :
-                null}
-            onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && !props.enableSingleClickCellEdit)
-                ?
-                EditCellValue(column.key, rowNum!, true)
-                :
-                null}
+            onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
+            onDoubleClick={HandleCellOnDoubleClick(props, column, EditCellValue, rowNum)}
         >
             {item[column.key]}
         </span>;
@@ -1655,14 +1627,8 @@ const EditableGrid = (props: Props) => {
         return <span
             id={`id-${props.id}-col-${index}-row-${rowNum}`}
             className={GetDynamicSpanStyles(column, item[column.key])}
-            onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit)
-                ?
-                EditCellValue(column.key, rowNum!, true)
-                :
-                null}
-            onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && !props.enableSingleClickCellEdit)
-                ? EditCellValue(column.key, rowNum!, true)
-                : null}
+            onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
+            onDoubleClick={HandleCellOnDoubleClick(props, column, EditCellValue, rowNum)}
         >
             {item && item[column.key] ? (new Date(item[column.key])).toDateString() : null}
         </span>;
@@ -1672,15 +1638,27 @@ const EditableGrid = (props: Props) => {
         return <span
             id={`id-${props.id}-col-${index}-row-${rowNum}`}
             className={GetDynamicSpanStyles(column, item[column.key])}
-            onClick={() => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit)
-                ? EditCellValue(column.key, rowNum!, true)
-                : null}
-            onDoubleClick={() => (props.enableCellEdit == true && column.editable == true && !props.enableSingleClickCellEdit)
-                ? EditCellValue(column.key, rowNum!, true)
-                : null}
+            onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
+            onDoubleClick={HandleCellOnDoubleClick(props, column, EditCellValue, rowNum)}
         >
             {item[column.key]}
         </span>;
+    }
+    /* #endregion */
+
+    /* #region [Utilities] */
+    function HandleCellOnDoubleClick(props: Props, column: IColumnConfig, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void, rowNum: number): React.MouseEventHandler<HTMLSpanElement> | undefined {
+        return () => (props.enableCellEdit == true && column.editable == true && !props.enableSingleClickCellEdit)
+            ?
+            EditCellValue(column.key, rowNum!, true)
+            :
+            null;
+    }
+    
+    function HandleCellOnClick(props: Props, column: IColumnConfig, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void, rowNum: number): React.MouseEventHandler<HTMLSpanElement> | undefined {
+        return () => (props.enableCellEdit == true && column.editable == true && props.enableSingleClickCellEdit)
+            ? EditCellValue(column.key, rowNum!, true)
+            : null;
     }
     /* #endregion */
 

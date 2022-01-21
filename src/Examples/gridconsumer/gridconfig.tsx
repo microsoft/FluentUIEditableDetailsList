@@ -26,7 +26,7 @@ export const GridColumnConfig : IColumnConfig[] =
         key: 'customerhovercol',
         name: 'Custom Hover Column',
         text: 'Custom Hover Column',
-        editable: true,
+        editable: false,
         dataType: 'string',
         minWidth: 150,
         maxWidth: 150,
