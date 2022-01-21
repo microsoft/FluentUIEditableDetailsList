@@ -1,7 +1,6 @@
-import { DetailsList, DetailsListLayoutMode, IColumn, IDetailsColumnRenderTooltipProps, IDetailsHeaderProps, IRenderFunction, IStackTokens, mergeStyles, ScrollablePane, ScrollbarVisibility, SelectionMode, Stack, Sticky, StickyPositionType, TooltipHost } from "office-ui-fabric-react";
-import React, { useEffect, useState } from "react";
+import { ScrollablePane, ScrollbarVisibility } from "office-ui-fabric-react";
+import React, { useEffect } from "react";
 import { FC } from "react";
-import { toast } from "react-toastify";
 import { ICellHoverProps } from "../../libs/types/cellhoverpropstype";
 
 const CellHoverComponent: FC<ICellHoverProps> = (props) => {

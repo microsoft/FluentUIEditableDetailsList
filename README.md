@@ -47,18 +47,45 @@ This starts the project on port 3000 and you are ready to play around with the E
 
 ## Usage
     import { DetailsListLayoutMode, mergeStyles, mergeStyleSets, SelectionMode, TextField } from '@fluentui/react';
-    import { EditableGrid, EditControlType, IColumnConfig, EventEmitter, EventType, NumberAndDateOperators } from 'fluentui-editable-grid';
+    import { EditableGrid, EditControlType, IColumnConfig, EventEmitter, EventType, NumberAndDateOperators, ICellHoverProps } from 'fluentui-editable-grid';
+    import { Operation } from 'fluentui-editable-grid/dist/types/operation';
     import { Fabric } from 'office-ui-fabric-react';
-    import * as React from 'react';
     import { useState } from 'react';
+    import { ScrollablePane, ScrollbarVisibility } from "office-ui-fabric-react";
+    import React, { useEffect } from "react";
+    import { FC } from "react";
 
     const Consumer = () => {
         const classNames = mergeStyleSets({
-            controlWrapper: {
-            display: 'flex',
-            flexWrap: 'wrap',
-            }
-        });
+        controlWrapper: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        }
+    });
+  
+    const onGridSave = (data: any[]): void => {
+        alert('Grid Data Saved');
+        LogRows(data);
+        setItems([...data.filter(y => y._grid_row_operation_ != Operation.Delete).map(x => {
+            return {...x, '_grid_row_operation_': Operation.None}
+        })]);
+    };
+    
+    const onGridUpdate = async (data: any[]): Promise<void> => {
+        console.log('Grid Data Updated');
+        LogRows(data);
+    };
+    
+    const LogRows = (data: any[]) : void => {
+        console.log('Updated Rows');
+        console.log(data.filter(item => item._grid_row_operation_ == Operation.Update));
+        console.log('Added Rows');
+        console.log(data.filter(item => item._grid_row_operation_ == Operation.Add));
+        console.log('Deleted Rows');
+        console.log(data.filter(item => item._grid_row_operation_ == Operation.Delete));
+        console.log('Unchanged Rows');
+        console.log(data.filter(item => item._grid_row_operation_ == Operation.None));
+    }
       
     const [items, setItems] = useState<any[]>([]);
     const columns: IColumnConfig[] = [
@@ -82,8 +109,8 @@ This starts the project on port 3000 and you are ready to play around with the E
             text: 'Custom Hover Column',
             editable: true,
             dataType: 'string',
-            minWidth: 100,
-            maxWidth: 100,
+            minWidth: 150,
+            maxWidth: 150,
             isResizable: true,
             includeColumnInExport: false,
             includeColumnInSearch: false,
@@ -220,7 +247,7 @@ This starts the project on port 3000 and you are ready to play around with the E
             }
         }
     ];
-
+    
     const SetDummyData = () : void => {
         const dummyData = [
             {
@@ -270,48 +297,78 @@ This starts the project on port 3000 and you are ready to play around with the E
         ];
         setItems(dummyData);
     }
-
+    
     React.useEffect(() => {
         SetDummyData();
     }, []);
 
     return (
-        <Fabric>
-            <div className={classNames.controlWrapper}>
-                <TextField placeholder='Search Grid' className={mergeStyles({ width: '60vh', paddingBottom:'10px' })} onChange={(event) => EventEmitter.dispatch(EventType.onSearch, event)}/>
-            </div>
-            <EditableGrid
-                id={1}
-                columns={columns}
-                items={items}
-                enableCellEdit={true}
-                enableExport={true}
-                enableTextFieldEditMode={true}
-                enableTextFieldEditModeCancel={true}
-                enableGridRowsDelete={true}
-                enableGridRowsAdd={true}
-                height={'70vh'}
-                width={'140vh'}
-                position={'relative'}
-                enableUnsavedEditIndicator={true}
-                //onGridSave={onGridSave}
-                enableGridReset={true}
-                enableColumnFilters={true}
-                enableColumnFilterRules={true}
-                enableRowAddWithValues={{enable : true, enableRowsCounterInPanel : true}}
-                layoutMode={DetailsListLayoutMode.justified}
-                selectionMode={SelectionMode.multiple}
-                enableRowEdit={true}
-                enableRowEditCancel={true}
-                enableBulkEdit={true}
-                enableColumnEdit={true}
-                enableSave={true}
-            />
-        </Fabric>
+    <Fabric>
+        <div className={classNames.controlWrapper}>
+            <TextField placeholder='Search Grid' className={mergeStyles({ width: '60vh', paddingBottom:'10px' })} onChange={(event) => EventEmitter.dispatch(EventType.onSearch, event)}/>
+        </div>
+        <EditableGrid
+            id={1}
+            columns={columns}
+            items={items}
+            enableCellEdit={true}
+            enableExport={true}
+            enableTextFieldEditMode={true}
+            enableTextFieldEditModeCancel={true}
+            enableGridRowsDelete={true}
+            enableGridRowsAdd={true}
+            height={'70vh'}
+            width={'140vh'}
+            position={'relative'}
+            enableUnsavedEditIndicator={true}
+            onGridSave={onGridSave}
+            enableGridReset={true}
+            enableColumnFilters={true}
+            enableColumnFilterRules={true}
+            enableRowAddWithValues={{enable : true, enableRowsCounterInPanel : true}}
+            layoutMode={DetailsListLayoutMode.justified}
+            selectionMode={SelectionMode.multiple}
+            enableRowEdit={true}
+            enableRowEditCancel={true}
+            enableBulkEdit={true}
+            enableColumnEdit={true}
+            enableSave={true}
+            gridCopyOptions={{enableGridCopy: true, enableRowCopy: true}}
+            onGridStatusMessageCallback={(str: any) => {
+                console.log(str);
+            }}
+            onGridUpdate={onGridUpdate}
+            enableDefaultEditMode={false}
+        />
+    </Fabric>
     );
     };
 
     export default Consumer;
+
+    const CellHover: FC<ICellHoverProps> = (props) => {
+    useEffect(() => {
+        //code here
+    }, [props.rowNum]);
+
+    return (
+        <div>
+            <ScrollablePane style={{ margin: '10px' }} scrollbarVisibility={ScrollbarVisibility.auto} id="griddataid">
+                <h2 style={{color:'green'}}>Custom Hover Component</h2>
+                <h6>Row Number: <span style={{ color:'blue' }}>{props.rowNum}</span></h6>
+                <h6>Column: <span style={{ color:'blue' }}>{props.column!.name}</span></h6>
+                <h6>ID: <span style={{ color:'blue' }}>{props.rowData['id']}</span></h6>
+                <h6>Name: <span style={{ color:'blue' }}>{props.rowData['name']}</span></h6>
+                <h6>Age: <span style={{ color:'blue' }}>{props.rowData['age']}</span></h6>
+                <h6>Designation: <span style={{ color:'blue' }}>{props.rowData['designation']}</span></h6>
+                <h6>Salary: <span style={{ color:'blue' }}>{props.rowData['salary']}</span></h6>
+                <h6>Date Of Joining: <span style={{ color:'blue' }}>{props.rowData['dateofjoining']}</span></h6>
+                <h6>Payroll Type: <span style={{ color:'blue' }}>{props.rowData['payrolltype']}</span></h6>
+                <h6>Employment Type: <span style={{ color:'blue' }}>{props.rowData['employmenttype']}</span></h6>
+            </ScrollablePane>
+        </div>
+    );
+};
 
 ## Contributing
 
