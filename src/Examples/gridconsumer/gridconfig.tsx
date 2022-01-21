@@ -4,6 +4,7 @@
 import { NumberAndDateOperators, StringOperators } from "../../libs/types/cellstyleruletype";
 import { IColumnConfig } from "../../libs/types/columnconfigtype";
 import { EditControlType } from "../../libs/types/editcontroltype";
+import { CellHover } from "./hoverComponent";
 
 export const GridColumnConfig : IColumnConfig[] = 
 [
@@ -20,6 +21,21 @@ export const GridColumnConfig : IColumnConfig[] =
         includeColumnInSearch: true,
         applyColumnFilter: true,
         disableSort: true
+    },
+    {
+        key: 'customerhovercol',
+        name: 'Custom Hover Column',
+        text: 'Custom Hover Column',
+        editable: true,
+        dataType: 'string',
+        minWidth: 100,
+        maxWidth: 100,
+        isResizable: true,
+        includeColumnInExport: false,
+        includeColumnInSearch: false,
+        applyColumnFilter: false,
+        disableSort: true,
+        hoverComponentOptions: { enable:true, hoverChildComponent: <CellHover customProps={{ someProp: '' }} /> }
     },
     {
         key: 'name',
@@ -153,6 +169,7 @@ export const GridColumnConfig : IColumnConfig[] =
 
 export interface GridItemsType {
     id: number;
+    customerhovercol: string;
     name: string;
     age: number;
     designation: string;

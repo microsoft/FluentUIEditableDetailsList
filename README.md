@@ -18,6 +18,7 @@ Some of the features of the Editable Grid are:-
 >- Sorting
 >- Deleting Rows
 >- Adding Rows
+>- Ability to Plug In Custom Component for Cell Hover
 >- Default Data Export (to Excel, CSV)
 >- Implement Custom Export functionality
 >- Callback hook to recieve grid data in the consuming component(for Save etc.)
@@ -72,7 +73,23 @@ This starts the project on port 3000 and you are ready to play around with the E
             isResizable: true,
             includeColumnInExport: true,
             includeColumnInSearch: true,
-            applyColumnFilter: true
+            applyColumnFilter: true,
+            disableSort: true
+        },
+        {
+            key: 'customerhovercol',
+            name: 'Custom Hover Column',
+            text: 'Custom Hover Column',
+            editable: true,
+            dataType: 'string',
+            minWidth: 100,
+            maxWidth: 100,
+            isResizable: true,
+            includeColumnInExport: false,
+            includeColumnInSearch: false,
+            applyColumnFilter: false,
+            disableSort: true,
+            hoverComponentOptions: { enable:true, hoverChildComponent: <CellHover customProps={{ someProp: '' }} /> }
         },
         {
             key: 'name',
@@ -130,10 +147,10 @@ This starts the project on port 3000 and you are ready to play around with the E
             cellStyleRule: { 
                 enable: true, 
                 rule: { 
-                    operator : NumberAndDateOperators.LESSTHANOREQUALTO, 
+                    operator : NumberAndDateOperators.LESSTHAN, 
                     value: 50000 
                 }, 
-                whenTrue: { textColor: 'red', fontWeight: 'bold' },
+                whenTrue: { textColor: '#EF5350', fontWeight: 'bold' },
                 whenFalse: { textColor: '#9CCC65' }
             }
         },
