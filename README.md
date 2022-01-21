@@ -225,6 +225,7 @@ This starts the project on port 3000 and you are ready to play around with the E
         const dummyData = [
             {
                 id: "1",
+                customerhovercol: 'Hover Me',
                 name: "Name1",
                 age:32,
                 designation:'Designation1',
@@ -235,6 +236,7 @@ This starts the project on port 3000 and you are ready to play around with the E
             },
             {
                 id: "2",
+                customerhovercol: 'Hover Me',
                 name: "Name2",
                 age:27,
                 designation:'Designation2',
@@ -245,6 +247,7 @@ This starts the project on port 3000 and you are ready to play around with the E
             },
             {
                 id: "3",
+                customerhovercol: 'Hover Me',
                 name: "Name3",
                 age:35,
                 designation:'Designation3',
@@ -255,6 +258,7 @@ This starts the project on port 3000 and you are ready to play around with the E
             },
             {
                 id: "4",
+                customerhovercol: 'Hover Me',
                 name: "Name4",
                 age:30,
                 designation:'Designation4',
