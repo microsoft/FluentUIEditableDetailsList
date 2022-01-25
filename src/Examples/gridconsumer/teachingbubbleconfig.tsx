@@ -14,7 +14,7 @@ export const teachingBubbleConfig : ITeachingBubblePropsExtended[] = [
                     Search is case-insensitive.`
     },
     {
-        target: '#id-1-col-1-row-0',
+        target: '#id-1-col-2-row-0',
         headline: 'Single Cell Edit(TextField)',
         innerText: `Double click on the cell to edit a single cell. 
                     For 'inputType: EditControlType.TextField', 
@@ -23,7 +23,7 @@ export const teachingBubbleConfig : ITeachingBubblePropsExtended[] = [
                     Set 'enableCellEdit={true}' to enable single cell edit on the Grid.`
     },
     {
-        target: '#id-1-col-3-row-0',
+        target: '#id-1-col-4-row-0',
         headline: 'Single Cell Edit(Multiline TextField)',
         innerText: `Double click on the cell to edit a single cell. 
                     For 'inputType: EditControlType.MultilineTextField', 
@@ -32,7 +32,7 @@ export const teachingBubbleConfig : ITeachingBubblePropsExtended[] = [
                     Set 'enableCellEdit={true}' to enable single cell edit on the Grid.`
     },
     {
-        target: '#id-1-col-5-row-0',
+        target: '#id-1-col-6-row-0',
         headline: 'Single Cell Edit(DateTime)',
         innerText: `Double click on the cell to edit a single cell. 
                     For 'inputType: EditControlType.DateTime', 
@@ -41,7 +41,7 @@ export const teachingBubbleConfig : ITeachingBubblePropsExtended[] = [
                     Set 'enableCellEdit={true}' to enable single cell edit on the Grid.`
     },
     {
-        target: '#id-1-col-6-row-0',
+        target: '#id-1-col-7-row-0',
         headline: 'Single Cell Edit(DropDown)',
         innerText: `Double click on the cell to edit a single cell. 
                     For 'inputType: EditControlType.DropDown', 
@@ -50,7 +50,7 @@ export const teachingBubbleConfig : ITeachingBubblePropsExtended[] = [
                     Set 'enableCellEdit={true}' to enable single cell edit on the Grid.`
     },
     {
-        target: '#id-1-col-7-row-0',
+        target: '#id-1-col-8-row-0',
         headline: 'Single Cell Edit(Picker)',
         innerText: `Double click on the cell to edit a single cell. 
                     For 'inputType: EditControlType.Picker', 
@@ -59,20 +59,20 @@ export const teachingBubbleConfig : ITeachingBubblePropsExtended[] = [
                     Set 'enableCellEdit={true}' to enable single cell edit on the Grid.`
     },
     {
-        target: '#id-1-col-4-row-0',
+        target: '#id-1-col-5-row-0',
         headline: 'Rule-Based Cell Styling',
         innerText: `Cells can be styled based on rules on cell content.
                     Data types supported are Number, Date and String. 
                     Use 'cellStyleRule' property in IColumnConfig to define styling rules.`
     },
     {
-        target: '.id-1-col-1',
+        target: '.id-1-col-2',
         headline: 'Header Filter(Left Click)',
         innerText: `Left click(normal click) on Grid column header opens \"Searchable Filter Callout\" for the column. 
                     Set 'enableColumnFilters={true}' to enable this.`
     },
     {
-        target: '.id-1-col-1',
+        target: '.id-1-col-2',
         headline: 'Column Sort Filter(Right Click)',
         innerText: `Right click(normal click) on Grid column header sorts the column in ascending/descending order. 
                     This behaviour is enabled on the grid by default.
