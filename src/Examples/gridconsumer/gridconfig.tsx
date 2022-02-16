@@ -164,6 +164,26 @@ export const GridColumnConfig : IColumnConfig[] =
                     { key: 'Employment Type12', description: 'Employment Type12 Description'},
             ] }
         }
+    },
+    {
+        key: 'employeelink',
+        name: 'Employee Profile Link',
+        text: 'Employee Profile Link',
+        editable: false,
+        dataType: 'string',
+        minWidth: 150,
+        maxWidth: 150,
+        isResizable: true,
+        includeColumnInExport: false,
+        includeColumnInSearch: false,
+        inputType: EditControlType.Link,
+        linkOptions: { 
+            onClick: () => {     // onClick takes higher precedence over href. If both are enabled, the grid will trigger onClick
+                alert('clicked') 
+            },
+            //href: 'https://www.bing.com/', 
+            disabled: false 
+        }
     }
 ];
 
@@ -176,5 +196,6 @@ export interface GridItemsType {
     salary: number;
     dateofjoining: string;
     payrolltype: string;
-    employmenttype: string
+    employmenttype: string;
+    employeelink: string;
 };
