@@ -13,7 +13,7 @@ import { DetailsListLayoutMode,
     IDetailsColumnRenderTooltipProps, } from 'office-ui-fabric-react/lib/DetailsList';
 import { MarqueeSelection } from 'office-ui-fabric-react/lib/MarqueeSelection';
 import { IconButton } from 'office-ui-fabric-react/lib/components/Button/IconButton/IconButton';
-import { PrimaryButton, Panel, PanelType, IStackTokens, Stack, mergeStyleSets, Fabric, Dropdown, IDropdownStyles, IDropdownOption, IButtonStyles, DialogFooter, Announced, Dialog, SpinButton, DefaultButton, DatePicker, IDatePickerStrings, on, ScrollablePane, ScrollbarVisibility, Sticky, StickyPositionType, IRenderFunction, TooltipHost, mergeStyles, Spinner, SpinnerSize, TagPicker, ITag, IBasePickerSuggestionsProps, IInputProps, HoverCard, HoverCardType } from 'office-ui-fabric-react';
+import { PrimaryButton, Panel, PanelType, IStackTokens, Stack, mergeStyleSets, Fabric, Dropdown, IDropdownStyles, IDropdownOption, IButtonStyles, DialogFooter, Announced, Dialog, SpinButton, DefaultButton, DatePicker, IDatePickerStrings, on, ScrollablePane, ScrollbarVisibility, Sticky, StickyPositionType, IRenderFunction, TooltipHost, mergeStyles, Spinner, SpinnerSize, TagPicker, ITag, IBasePickerSuggestionsProps, IInputProps, HoverCard, HoverCardType, Link } from 'office-ui-fabric-react';
 import { TextField, ITextFieldStyles, ITextField } from 'office-ui-fabric-react/lib/TextField';
 import { ContextualMenu, DirectionalHint, IContextualMenu, IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { useBoolean } from '@uifabric/react-hooks';
@@ -552,7 +552,10 @@ const EditableGrid = (props: Props) => {
             activatetriggercell : false
         };
 
+        var defaultGridBck : any[] = [...defaultGridDataTmp];
         defaultGridDataTmp = column.onChange(callbackRequestparams);
+        if(!defaultGridDataTmp)
+            defaultGridDataTmp = defaultGridBck;
         return defaultGridDataTmp;
     };
 
@@ -1232,6 +1235,22 @@ const EditableGrid = (props: Props) => {
                                 </span>)
                                 }</span>
                             break;
+                        case EditControlType.Link:
+                            return <span>{
+                                (column?.hoverComponentOptions?.enable ? 
+                                    (<HoverCard
+                                      type={HoverCardType.plain}
+                                      plainCardProps={{
+                                        onRenderPlainCard: () => onRenderPlainCard(column, rowNum!, item),
+                                    }}
+                                      instantOpenOnClick
+                                    >
+                                      {RenderLinkSpan(props, index, rowNum, column, item, EditCellValue)}
+                                    </HoverCard>) 
+                                    :
+                                    (RenderLinkSpan(props, index, rowNum, column, item, EditCellValue))
+                                )
+                                }</span>
                         default:
                             return <span>{
                                 (ShouldRenderSpan()) 
@@ -1264,7 +1283,7 @@ const EditableGrid = (props: Props) => {
                     }
 
                     function ShouldRenderSpan() {
-                        return ((!column.editable) || (!props.enableDefaultEditMode && !(activateCellEdit?.[rowNum!]?.['properties'][column.key]?.activated)));
+                        return ((!column.editable) || (!props.enableDefaultEditMode && !(activateCellEdit?.[rowNum!]?.isActivated) && !(activateCellEdit?.[rowNum!]?.['properties'][column.key]?.activated)));
                     }
                 }
             });
@@ -1590,37 +1609,36 @@ const EditableGrid = (props: Props) => {
     };
 
     /* #region [Span Renders] */
-    const RenderTextFieldSpan = (props: Props, index: number, rowNum: number, column: IColumnConfig, item: any, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void): React.ReactNode => {
+    const RenderLinkSpan = (props: Props, index: number, rowNum: number, column: IColumnConfig, item: any, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void): React.ReactNode => {
         return <span
             id={`id-${props.id}-col-${index}-row-${rowNum}`}
             className={GetDynamicSpanStyles(column, item[column.key])}
             onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
             onDoubleClick={HandleCellOnDoubleClick(props, column, EditCellValue, rowNum)}
         >
-            {item[column.key]}
+            {
+                column.linkOptions?.onClick 
+                ? 
+                <Link target="_blank" disabled={column.linkOptions?.disabled} underline onClick={() => {
+                    let params : ICallBackParams = { rowindex: [rowNum], data: defaultGridData, triggerkey: column.key, activatetriggercell: false };
+                    column.linkOptions!.onClick(params); 
+                }}>{item[column.key]}</Link>
+                :
+                <Link target="_blank" disabled={column.linkOptions?.disabled} underline href={column.linkOptions?.href}>{item[column.key]}</Link>
+            }
         </span>;
+    }
+
+    const RenderTextFieldSpan = (props: Props, index: number, rowNum: number, column: IColumnConfig, item: any, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void): React.ReactNode => {
+        return RenderSpan(props, index, rowNum, column, item, HandleCellOnClick, EditCellValue, HandleCellOnDoubleClick);
     }
     
     const RenderPickerSpan = (props: Props, index: number, rowNum: number, column: IColumnConfig, item: any, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void): React.ReactNode => {
-        return <span
-            id={`id-${props.id}-col-${index}-row-${rowNum}`}
-            className={GetDynamicSpanStyles(column, item[column.key])}
-            onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
-            onDoubleClick={HandleCellOnDoubleClick(props, column, EditCellValue, rowNum)}
-        >
-            {item[column.key]}
-        </span>;
+        return RenderSpan(props, index, rowNum, column, item, HandleCellOnClick, EditCellValue, HandleCellOnDoubleClick);
     }
     
     const RenderDropdownSpan = (props: Props, index: number, rowNum: number, column: IColumnConfig, item: any, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void): React.ReactNode => {
-        return <span
-            id={`id-${props.id}-col-${index}-row-${rowNum}`}
-            className={GetDynamicSpanStyles(column, item[column.key])}
-            onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
-            onDoubleClick={HandleCellOnDoubleClick(props, column, EditCellValue, rowNum)}
-        >
-            {item[column.key]}
-        </span>;
+        return RenderSpan(props, index, rowNum, column, item, HandleCellOnClick, EditCellValue, HandleCellOnDoubleClick);
     }
     
     const RenderDateSpan = (props: Props, index: number, rowNum: number, column: IColumnConfig, item: any, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void): React.ReactNode => {
@@ -1635,14 +1653,18 @@ const EditableGrid = (props: Props) => {
     }
     
     const RenderMultilineTextFieldSpan = (props: Props, index: number, rowNum: number, column: IColumnConfig, item: any, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void): React.ReactNode => {
+        return RenderSpan(props, index, rowNum, column, item, HandleCellOnClick, EditCellValue, HandleCellOnDoubleClick);
+    }
+
+    const RenderSpan = (props: Props, index: number, rowNum: number, column: IColumnConfig, item: any, HandleCellOnClick: (props: Props, column: IColumnConfig, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void, rowNum: number) => React.MouseEventHandler<HTMLSpanElement> | undefined, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void, HandleCellOnDoubleClick: (props: Props, column: IColumnConfig, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void, rowNum: number) => React.MouseEventHandler<HTMLSpanElement> | undefined): React.ReactNode => {
         return <span
             id={`id-${props.id}-col-${index}-row-${rowNum}`}
             className={GetDynamicSpanStyles(column, item[column.key])}
             onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
             onDoubleClick={HandleCellOnDoubleClick(props, column, EditCellValue, rowNum)}
-        >
-            {item[column.key]}
-        </span>;
+            >
+                {item[column.key]}
+            </span>;
     }
     /* #endregion */
 

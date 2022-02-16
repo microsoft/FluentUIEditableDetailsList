@@ -25,7 +25,14 @@ export interface IColumnConfig extends IColumn {
     pickerOptions?: IPickerOptions;
     disableSort?: boolean;
     hoverComponentOptions?: IHoverOptions;
+    linkOptions?: ILinkOptions;
 };
+
+export interface ILinkOptions {
+    href?: string;
+    onClick?: any;
+    disabled?: boolean
+}
 
 export interface IHoverOptions {
     enable?: boolean;

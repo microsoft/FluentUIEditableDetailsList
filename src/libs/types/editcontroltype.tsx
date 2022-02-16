@@ -8,5 +8,6 @@ export enum EditControlType {
     Date,
     MultilineTextField,
     DateTime,
-    Picker
+    Picker,
+    Link
 }
