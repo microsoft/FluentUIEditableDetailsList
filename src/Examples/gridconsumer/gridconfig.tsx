@@ -162,7 +162,8 @@ export const GridColumnConfig : IColumnConfig[] =
                     { key: 'Employment Type10', description: 'Employment Type10 Description'},
                     { key: 'Employment Type11', description: 'Employment Type11 Description'},
                     { key: 'Employment Type12', description: 'Employment Type12 Description'},
-            ] }
+            ] },
+            suggestionsRule: StringOperators.STARTSWITH
         }
     },
     {

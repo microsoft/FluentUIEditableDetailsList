@@ -1231,6 +1231,7 @@ const EditableGrid = (props: Props) => {
                                         minCharLimitForSuggestions={column.pickerOptions?.minCharLimitForSuggestions}
                                         onTaglistChanged={(selectedItem: ITag[] | undefined) => onCellPickerTagListChanged(selectedItem, rowNum!, column)}
                                         pickerDescriptionOptions={column.pickerOptions?.pickerDescriptionOptions}
+                                        suggestionRule={column.pickerOptions?.suggestionsRule}
                                     />
                                 </span>)
                                 }</span>

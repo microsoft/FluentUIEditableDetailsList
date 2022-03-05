@@ -1,7 +1,9 @@
 import { HoverCard, HoverCardType, IBasePickerSuggestionsProps, IInputProps, IPlainCardProps, ISuggestionItemProps, ITag, TagPicker } from "office-ui-fabric-react"
 import React, { MouseEventHandler } from "react";
 import { useEffect } from "react";
+import { StringOperators } from "../../types/cellstyleruletype";
 import { IPickerDescriptionOption, IPickerTagDescription } from "../../types/columnconfigtype";
+import { stringOperatorEval } from "../../types/filterstype";
 import { classNames } from "./picker.styles";
 
 interface Props {
@@ -12,6 +14,7 @@ interface Props {
     minCharLimitForSuggestions?: number;
     onTaglistChanged?: any;
     pickerDescriptionOptions?: IPickerDescriptionOption;
+    suggestionRule?: StringOperators;
 }
 
 const PickerControl = (props: Props) => {
@@ -51,22 +54,10 @@ const PickerControl = (props: Props) => {
     const filterSuggestedTags = (filterText: string, tagList: ITag[] | undefined): ITag[] => {
         setPickerFilteredText(filterText);
         
-        if(!props.minCharLimitForSuggestions){
-            return filterText
-                    ? pickerTags.filter(
-                        tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) === 0 && !listContainsTagList(tag, tagList),
-                        )
-                    : [];
+        if(!props.minCharLimitForSuggestions || (filterText.length >= props.minCharLimitForSuggestions)){
+            return GetMatchingPickerTags(filterText, pickerTags, props.suggestionRule, listContainsTagList, tagList);
         }
-
-        if(filterText.length >= props.minCharLimitForSuggestions){
-            return filterText
-                    ? pickerTags.filter(
-                        tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) === 0 && !listContainsTagList(tag, tagList),
-                        )
-                    : [];
-        }
-
+        
         return [];
         
     };
@@ -127,3 +118,11 @@ const PickerControl = (props: Props) => {
 }
 
 export default PickerControl
+
+function GetMatchingPickerTags(filterText: string, pickerTags: ITag[], rule: StringOperators | undefined , listContainsTagList: (tag: ITag, tagList?: ITag[] | undefined) => boolean, tagList: ITag[] | undefined): ITag[] {
+    return filterText
+        ? pickerTags.filter(
+            tag => stringOperatorEval(tag.name.toLowerCase(), filterText.toLowerCase(), !rule ? StringOperators.STARTSWITH : rule) && !listContainsTagList(tag, tagList)
+        )
+        : [];
+}
