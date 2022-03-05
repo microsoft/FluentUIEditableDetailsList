@@ -202,7 +202,7 @@ const Consumer = () => {
         return callbackRequestParamObj.data;
     }
 
-    const onEmploymentTypeChangedChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
+    const onEmploymentTypeChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
         alert('Employment Type Changed');
         return callbackRequestParamObj.data;
     }
@@ -217,7 +217,7 @@ const Consumer = () => {
 
     const attachGridValueChangeCallbacks = (columnConfig : IColumnConfig[]) : IColumnConfig[] => {
         //columnConfig.filter((item) => item.key == 'designation').map((item) => item.onChange = onDesignationChanged);
-        //columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChangedChanged);
+        //columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChanged);
         //columnConfig.filter((item) => item.key == 'payrolltype').map((item) => item.onChange = onPayrollChanged);
         //columnConfig.filter((item) => item.key == 'dateofjoining').map((item) => item.onChange = onDateChanged);
         return columnConfig;

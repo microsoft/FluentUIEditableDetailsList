@@ -4,7 +4,7 @@
 import { ConstrainMode, IColumn, IDetailsHeaderProps } from 'office-ui-fabric-react/lib/components/DetailsList/DetailsList.types';
 import { IDropdownOption } from "office-ui-fabric-react";
 import { CalculationType } from "./calculationtype";
-import { ICellStyleRulesType } from './cellstyleruletype';
+import { ICellStyleRulesType, StringOperators } from './cellstyleruletype';
 import { EditControlType } from "./editcontroltype";
 
 export interface IColumnConfig extends IColumn {
@@ -44,6 +44,7 @@ export interface IPickerOptions {
     minCharLimitForSuggestions?: number;
     pickerTags: string[];
     pickerDescriptionOptions?: IPickerDescriptionOption;
+    suggestionsRule?: StringOperators;
 }
 
 export interface IPickerDescriptionOption {
