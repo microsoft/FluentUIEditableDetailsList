@@ -12,39 +12,24 @@ interface Props {
 }
 
 const ColumnFilterDialog = (props : Props) => {
-    //const [gridColumn, setGridColumn] = useState('');
     const [gridColumn, setGridColumn] = useState<IColumnConfig>();
     const [operator, setOperator] = useState('');
     const [value, setValue] = useState('');
-    //const [filter, setFilter] = useState<IFilter>({ column:'', operator:'', value: '' });
     
     const onSelectGridColumn = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined, index: number | undefined): void => {
-        //setGridColumn(item!.key.toString());
         setGridColumn(props.columnConfigurationData.filter((val) => val.key == item!.key)[0]);
-        // var filterTmp : IFilter = {...filter};
-        // filterTmp.column = item!.key.toString();
-        // setFilter(filterTmp);
     };
 
     const onSelectOperator = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined, index: number | undefined): void => {
         setOperator(item!.text.toString());
-        //var filterTmp : IFilter = {...filter};
-        //filterTmp.operator = item!.text.toString();
-        //setFilter(filterTmp);
     };
 
     const onSelectValue = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined, index: number | undefined): void => {
         setValue(item!.key.toString());
-        // var filterTmp : IFilter = {...filter};
-        // filterTmp.value = item!.key.toString();
-        // setFilter(filterTmp);
     };
 
     const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string): void => {
         setValue(text);
-        // var filterTmp : IFilter = {...filter};
-        // filterTmp.value = text;
-        // setFilter(filterTmp);
     };
 
     useEffect(() => {
@@ -187,26 +172,35 @@ const ColumnFilterDialog = (props : Props) => {
 
     return(
         <Dialog modalProps={modelProps} hidden={!inputFieldContent} onDismiss={closeDialog} closeButtonAriaLabel="Close">
-            <Stack verticalAlign="start" tokens={stackTokens}>
-                <Dropdown
-                    placeholder="Select the Column"
-                    options={options}
-                    styles={dropdownStyles}
-                    onChange={onSelectGridColumn}
-                />
-                {operatorDropDownContent}
-                {inputFieldContent}
+            <Stack verticalAlign="space-between" tokens={stackTokens}>
+                <Stack.Item grow={1}>
+                    <Dropdown
+                        placeholder="Select the Column"
+                        options={options}
+                        styles={dropdownStyles}
+                        onChange={onSelectGridColumn}
+                    />
+                </Stack.Item>
+                <Stack.Item grow={1}>
+                    {operatorDropDownContent}
+                </Stack.Item>
+                <Stack.Item grow={1}>
+                    {inputFieldContent}
+                </Stack.Item>
               </Stack>
-              <DialogFooter>
-                <PrimaryButton
-                  // eslint-disable-next-line react/jsx-no-bind
-                  onClick={saveDialog}
-                  text="Save"
-                />
-                <DefaultButton 
-                onClick={closeDialog} 
-                text="Cancel" />
-              </DialogFooter>
+              <Stack.Item>
+                <DialogFooter className={controlClass.dialogFooterStyles}>
+                    <PrimaryButton
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onClick={saveDialog}
+                        text="Save"
+                    />
+                    <DefaultButton 
+                        onClick={closeDialog} 
+                        text="Cancel" />
+                </DialogFooter>
+              </Stack.Item>
+              
         </Dialog>
     );
 }

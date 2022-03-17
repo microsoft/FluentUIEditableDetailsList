@@ -14,6 +14,11 @@ export const controlClass = mergeStyleSets({
         display: 'block',
         margin: 10,
         width: '90%'
+    },
+    dialogFooterStyles: {
+        display: 'block',
+        margin: 10,
+        width: '90%'
     }
 });
 
