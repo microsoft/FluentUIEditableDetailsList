@@ -40,7 +40,7 @@ export const ExportToCSVUtil = (exportData : any[], fileName : string) : void =>
     
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         if (navigator.msSaveBlob) { // IE 10+
-        navigator.msSaveBlob(blob, fileName);
+            navigator.msSaveBlob(blob, fileName);
         } else {
         const link = document.createElement('a');
         if (link.download !== undefined) {
@@ -49,6 +49,7 @@ export const ExportToCSVUtil = (exportData : any[], fileName : string) : void =>
             link.setAttribute('href', url);
             link.setAttribute('download', fileName);
             link.style.visibility = 'hidden';
+            link.dataset.interception = 'off';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
