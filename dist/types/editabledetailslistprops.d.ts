@@ -3,7 +3,6 @@ import { IDetailsListProps } from "office-ui-fabric-react/lib/components/Details
 import { IColumnConfig } from "./columnconfigtype";
 import { IGridCopy } from "./gridcopytype";
 import { IRowAddWithValues } from "./rowaddtype";
-
 export interface Props extends IDetailsListProps {
     id: number;
     items: any[];
@@ -15,13 +14,13 @@ export interface Props extends IDetailsListProps {
     enableRowEdit?: boolean;
     enableRowEditCancel?: boolean;
     enableColumnEdit?: boolean;
-    enablePanelEdit?: boolean; // like bulk edit but for one item only
+    enablePanelEdit?: boolean;
     enableBulkEdit?: boolean;
     enableCellEdit?: boolean;
     onGridSelectionChange?: any;
-    onGridUpdate?:any;
-    onGridSave?:any
-    enableGridRowsDelete? : boolean;
+    onGridUpdate?: any;
+    onGridSave?: any;
+    enableGridRowsDelete?: boolean;
     enableGridRowsAdd?: boolean;
     enableRowAddWithValues?: IRowAddWithValues;
     enableTextFieldEditMode?: boolean;
@@ -30,9 +29,9 @@ export interface Props extends IDetailsListProps {
     pageSize?: number;
     onExcelExport?: any;
     height?: string;
-    width? : string;
+    width?: string;
     position?: string;
-    constrainMode?:ConstrainMode;
+    constrainMode?: ConstrainMode;
     enableUnsavedEditIndicator?: boolean;
     enableGridReset?: boolean;
     enableColumnFilterRules?: boolean;

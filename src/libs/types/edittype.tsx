@@ -4,6 +4,7 @@
 export enum EditType {
     None,
     ColumnEdit,
+    ColumnPanelEdit,
     BulkEdit,
     RowEdit,
     DeleteRow,

@@ -3,14 +3,14 @@ import { IColumnConfig } from "../types/columnconfigtype";
 import { IGridColumnFilter } from "../types/columnfilterstype";
 import { dateOperatorEval, IFilter, numberOperatorEval, stringOperatorEval } from "../types/filterstype";
 
-export const filterGridData = (data : any[], filters : IFilter[]) : any[] => {
-    var dataTmp : any[] = [...data];
+export const filterGridData = (data: any[], filters: IFilter[]): any[] => {
+    var dataTmp: any[] = [...data];
     dataTmp.forEach((row) => {
-        var isRowIncluded : boolean = true;
+        var isRowIncluded: boolean = true;
         filters.forEach((item) => {
-            if(isRowIncluded){
+            if (isRowIncluded) {
                 var columnType = item.column.dataType;
-                switch(columnType){
+                switch (columnType) {
                     case 'number':
                         isRowIncluded = isRowIncluded && numberOperatorEval(row[item.column.key], item.value, item.operator);
                         break;
@@ -21,10 +21,10 @@ export const filterGridData = (data : any[], filters : IFilter[]) : any[] => {
             }
         });
 
-        if(isRowIncluded){
+        if (isRowIncluded) {
             row._is_filtered_in_ = true;
         }
-        else{
+        else {
             row._is_filtered_in_ = false;
         }
     });
@@ -32,9 +32,9 @@ export const filterGridData = (data : any[], filters : IFilter[]) : any[] => {
     return dataTmp;
 }
 
-export const applyGridColumnFilter = (data : any[], gridColumnFilterArr : IGridColumnFilter[]) : any[] => {
-    var dataTmp : any[] = [...data];
-    if(gridColumnFilterArr.filter((item) => item.isApplied == true).length > 0){
+export const applyGridColumnFilter = (data: any[], gridColumnFilterArr: IGridColumnFilter[]): any[] => {
+    var dataTmp: any[] = [...data];
+    if (gridColumnFilterArr.filter((item) => item.isApplied == true).length > 0) {
         dataTmp.map((row) => row._is_filtered_in_column_filter_ = true);
     }
 
@@ -47,8 +47,8 @@ export const applyGridColumnFilter = (data : any[], gridColumnFilterArr : IGridC
     return dataTmp;
 }
 
-export const isColumnDataTypeSupportedForFilter = (datatype : string | undefined) : boolean => {
-    switch(datatype){
+export const isColumnDataTypeSupportedForFilter = (datatype: string | undefined): boolean => {
+    switch (datatype) {
         case 'number':
             return true;
         case 'string':
@@ -58,9 +58,9 @@ export const isColumnDataTypeSupportedForFilter = (datatype : string | undefined
     }
 }
 
-export const IsValidDataType = (type : string | undefined, text : string) : boolean => {
+export const IsValidDataType = (type: string | undefined, text: string): boolean => {
     var isValid = true;
-    switch(type){
+    switch (type) {
         case 'number':
             isValid = !isNaN(Number(text));
             break;
@@ -69,12 +69,12 @@ export const IsValidDataType = (type : string | undefined, text : string) : bool
     return isValid;
 };
 
-export const EvaluateRule = (datatType : string, cellValue: string | number | undefined, styleRule: ICellStyleRulesType | undefined): boolean => {
-    if(!styleRule){
+export const EvaluateRule = (datatType: string, cellValue: string | number | undefined, styleRule: ICellStyleRulesType | undefined): boolean => {
+    if (!styleRule) {
         return false;
     }
-    
-    switch(datatType){
+
+    switch (datatType) {
         case 'number':
             return numberOperatorEval(Number(cellValue), styleRule?.rule!.value as number, styleRule?.rule!.operator);
         case 'string':
@@ -86,22 +86,22 @@ export const EvaluateRule = (datatType : string, cellValue: string | number | un
     }
 }
 
-export const ConvertObjectToText = (obj : any, columns: IColumnConfig[]) : string => {
-    var text : string = '';
+export const ConvertObjectToText = (obj: any, columns: IColumnConfig[]): string => {
+    var text: string = '';
 
     columns.forEach((col) => {
         text += (obj[col.key] == null ? '' : obj[col.key]) + "\t";
     });
-    
+
     return text.substring(0, text.lastIndexOf('\t'));
 }
 
-export const ParseType = (type : string | undefined, text : string) : any => {
-    if(text.trim().length == 0){
+export const ParseType = (type: string | undefined, text: string): any => {
+    if (text.trim().length == 0) {
         return null;
     }
 
-    switch(type){
+    switch (type) {
         case 'number':
             return Number(text);
         case 'date':
@@ -111,11 +111,20 @@ export const ParseType = (type : string | undefined, text : string) : any => {
     return text;
 }
 
-export const GetDefault = (type : string | undefined) : any => {
-    switch(type){
+export const GetDefault = (type: string | undefined): any => {
+    switch (type) {
         case 'date':
             return new Date();
         default:
             return null;
+    }
+}
+
+export const GetValue = (type: string | undefined, value: any): any => {
+    switch (type) {
+        case 'date':
+            return new Date(value);
+        default:
+            return value;
     }
 }
