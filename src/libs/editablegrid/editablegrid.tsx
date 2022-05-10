@@ -1113,7 +1113,8 @@ const EditableGrid = (props: Props) => {
             columnConfigs.push({
                 key: colKey,
                 name: column.text,
-                headerClassName: colHeaderClassName,
+                className: column.className,
+                headerClassName: `${colHeaderClassName} ${column.headerClassName}`,
                 ariaLabel: column.text,
                 fieldName: column.key,
                 isResizable: true,

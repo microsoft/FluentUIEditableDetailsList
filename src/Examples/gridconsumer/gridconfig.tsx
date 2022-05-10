@@ -48,7 +48,9 @@ export const GridColumnConfig: IColumnConfig[] =
             isResizable: true,
             includeColumnInExport: true,
             includeColumnInSearch: true,
-            applyColumnFilter: true
+            applyColumnFilter: true,
+            className: 'tibor',
+            headerClassName: 'tibor2'
         },
         {
             key: 'age',
