@@ -87,7 +87,6 @@ var EditPanel = function (props) {
         var tmpRenderObj = [];
         props.columnConfigurationData.filter(function (x) { return x.editable == true; }).forEach(function (item) {
             var _a, _b, _c, _d, _e;
-            console.log(columnValuesObj[item.key].value);
             switch (item.inputType) {
                 case EditControlType.Date:
                     tmpRenderObj.push(_jsx(DatePicker, { label: item.text, strings: DayPickerStrings, placeholder: "Select a date...", ariaLabel: "Select a date", onSelectDate: function (date) { return onCellDateChange(date, item); }, value: columnValuesObj[item.key].value }, void 0));

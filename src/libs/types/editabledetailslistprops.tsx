@@ -13,16 +13,16 @@ export interface Props extends IDetailsListProps {
     exportFileName?: string;
     enableSave?: boolean;
     enableRowEdit?: boolean;
-    prependRowEditActions?:boolean;
+    prependRowEditActions?: boolean;
     enableRowEditCancel?: boolean;
     enableColumnEdit?: boolean;
     enablePanelEdit?: boolean; // like bulk edit but for one item only
     enableBulkEdit?: boolean;
     enableCellEdit?: boolean;
     onGridSelectionChange?: any;
-    onGridUpdate?:any;
-    onGridSave?:any
-    enableGridRowsDelete? : boolean;
+    onGridUpdate?: any;
+    onGridSave?: any
+    enableGridRowsDelete?: boolean;
     enableGridRowsAdd?: boolean;
     enableRowAddWithValues?: IRowAddWithValues;
     enableTextFieldEditMode?: boolean;
@@ -31,9 +31,9 @@ export interface Props extends IDetailsListProps {
     pageSize?: number;
     onExcelExport?: any;
     height?: string;
-    width? : string;
+    width?: string;
     position?: string;
-    constrainMode?:ConstrainMode;
+    constrainMode?: ConstrainMode;
     enableUnsavedEditIndicator?: boolean;
     enableGridReset?: boolean;
     enableColumnFilterRules?: boolean;
@@ -43,5 +43,7 @@ export interface Props extends IDetailsListProps {
     onGridStatusMessageCallback?: any;
     gridCopyOptions?: IGridCopy;
     enableDefaultEditMode?: boolean;
-    enableMarqueeSelection?:boolean;
+    enableMarqueeSelection?: boolean;
+    aboveStickyContent?: HTMLDivElement;
+    belowStickyContent?: HTMLDivElement;
 }

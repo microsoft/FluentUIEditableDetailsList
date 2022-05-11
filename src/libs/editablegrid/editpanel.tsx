@@ -76,7 +76,6 @@ const EditPanel = (props: Props) => {
     const createTextFields = (): any[] => {
         let tmpRenderObj: any[] = [];
         props.columnConfigurationData.filter(x => x.editable == true).forEach((item) => {
-            console.log(columnValuesObj[item.key].value);
             switch (item.inputType) {
                 case EditControlType.Date:
                     tmpRenderObj.push(<DatePicker

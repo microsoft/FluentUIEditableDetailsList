@@ -43,4 +43,6 @@ export interface Props extends IDetailsListProps {
     gridCopyOptions?: IGridCopy;
     enableDefaultEditMode?: boolean;
     enableMarqueeSelection?: boolean;
+    aboveStickyContent?: HTMLDivElement;
+    belowStickyContent?: HTMLDivElement;
 }

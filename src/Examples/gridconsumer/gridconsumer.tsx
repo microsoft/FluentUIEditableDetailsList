@@ -36,6 +36,7 @@ interface GridConfigOptions {
     enableGridReset: boolean;
     enableColumnFilters: boolean;
     enableDefaultEditMode: boolean;
+    enableMarqueeSelection: boolean;
 }
 
 const Consumer = () => {
@@ -63,7 +64,8 @@ const Consumer = () => {
         enableSave: true,
         enableGridReset: true,
         enableColumnFilters: true,
-        enableDefaultEditMode: false
+        enableDefaultEditMode: false,
+        enableMarqueeSelection: false
     });
 
     const RowSize = 5;
@@ -229,6 +231,30 @@ const Consumer = () => {
         setGridConfigOptions({ ...gridConfigOptions, [(ev.target as Element).id]: !gridConfigOptions[(ev.target as Element).id] })
     };
 
+    const getAboveContentRender = (): HTMLDivElement => {
+        let aboveContent = document.createElement('div');
+
+        aboveContent.innerHTML = `
+            <div class="below-content" style="background: rgba(0,0,0,.05); font-weight:600; padding: 20px 0;">
+                Text here is displaying as sticky content in the "above" area
+            </div>
+        `;
+
+        return aboveContent;
+    }
+
+    const getBelowContentRender = (): HTMLDivElement => {
+        let belowContent = document.createElement('div');
+
+        belowContent.innerHTML = `
+            <div class="below-content" style="background: rgba(255,255,255,.9); font-weight:600; padding: 20px 0;">
+                Text here is displaying as sticky content in the "below" area
+            </div>
+        `;
+
+        return belowContent;
+    }
+
     return (
         <Fabric>
             <ToastContainer />
@@ -302,6 +328,14 @@ const Consumer = () => {
                         <Checkbox id={"enablePanelEdit"} label="Panel Edit" onChange={onCheckboxChange} checked={gridConfigOptions.enablePanelEdit} />
                     </Stack.Item>
                 </Stack>
+                <Stack horizontal tokens={gapStackTokens}>
+                    <Stack.Item className={classNames.checkbox}>
+                        <Checkbox id={"enableSave"} label="Save" onChange={onCheckboxChange} checked={gridConfigOptions.enableSave} />
+                    </Stack.Item>
+                    <Stack.Item className={classNames.checkbox}>
+                        <Checkbox id={"enableGridReset"} label="Grid Reset" onChange={onCheckboxChange} checked={gridConfigOptions.enableGridReset} />
+                    </Stack.Item>
+                </Stack>
             </fieldset>
             <div className={classNames.controlWrapper}>
                 <TextField id="searchField" placeholder='Search Grid' className={mergeStyles({ width: '60vh', paddingBottom: '10px' })} onChange={(event) => EventEmitter.dispatch(EventType.onSearch, event)} />
@@ -352,7 +386,9 @@ const Consumer = () => {
                 }}
                 onGridUpdate={onGridUpdate}
                 enableDefaultEditMode={gridConfigOptions.enableDefaultEditMode}
-                enableMarqueeSelection={false}
+                enableMarqueeSelection={gridConfigOptions.enableMarqueeSelection}
+                aboveStickyContent={getAboveContentRender()}
+                belowStickyContent={getBelowContentRender()}
             />
 
             {teachingBubbleVisible && (
