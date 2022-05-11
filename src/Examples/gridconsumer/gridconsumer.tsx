@@ -324,6 +324,7 @@ const Consumer = () => {
                 layoutMode={DetailsListLayoutMode.justified}
                 selectionMode={SelectionMode.multiple}
                 enableRowEdit={gridConfigOptions.enableRowEdit}
+                //prependRowEditActions={true}
                 enableRowEditCancel={gridConfigOptions.enableRowEditCancel}
                 enablePanelEdit={gridConfigOptions.enablePanelEdit}
                 enableBulkEdit={gridConfigOptions.enableBulkEdit}
@@ -351,6 +352,7 @@ const Consumer = () => {
                 }}
                 onGridUpdate={onGridUpdate}
                 enableDefaultEditMode={gridConfigOptions.enableDefaultEditMode}
+                enableMarqueeSelection={false}
             />
 
             {teachingBubbleVisible && (

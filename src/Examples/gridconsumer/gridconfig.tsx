@@ -20,7 +20,8 @@ export const GridColumnConfig: IColumnConfig[] =
             includeColumnInExport: true,
             includeColumnInSearch: true,
             applyColumnFilter: true,
-            disableSort: true
+            disableSort: false,
+            isSortedByDefault: true
         },
         {
             key: 'customerhovercol',
@@ -48,9 +49,7 @@ export const GridColumnConfig: IColumnConfig[] =
             isResizable: true,
             includeColumnInExport: true,
             includeColumnInSearch: true,
-            applyColumnFilter: true,
-            className: 'tibor',
-            headerClassName: 'tibor2'
+            applyColumnFilter: true
         },
         {
             key: 'age',

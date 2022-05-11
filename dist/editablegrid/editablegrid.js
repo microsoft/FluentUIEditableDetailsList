@@ -982,6 +982,9 @@ var EditableGrid = function (props) {
             var colHeaderClassName = 'id-' + props.id + '-col-' + index;
             var colKey = 'col' + index;
             var isDataTypeSupportedForFilter = isColumnDataTypeSupportedForFilter(column.dataType);
+            if (column.isSortedByDefault && sortColObj.key === '') {
+                setSortColObj({ key: colKey, isAscending: column.isSortedDescending ? !column.isSortedDescending : true, isEnabled: true });
+            }
             columnConfigs.push({
                 key: colKey,
                 name: column.text,
@@ -1095,14 +1098,15 @@ var EditableGrid = function (props) {
             setColumnFiltersRef(columnFilterArrTmp);
         }
         if (props.enableRowEdit) {
-            columnConfigs.push({
+            var actionsColumn = {
                 key: 'action',
+                text: 'Actions',
                 name: 'Actions',
                 ariaLabel: 'Actions',
                 fieldName: 'action',
                 isResizable: true,
                 minWidth: 50,
-                maxWidth: 50,
+                maxWidth: props.prependRowEditActions ? 70 : 50,
                 onRender: function (item, index) { return (_jsx("div", { children: (activateCellEdit && activateCellEdit[Number(item['_grid_row_id_'])] && activateCellEdit[Number(item['_grid_row_id_'])]['isActivated'])
                         ?
                             _jsxs("div", { children: [_jsx(IconButton, { disabled: editMode, onClick: function () { return ShowRowEditMode(item, Number(item['_grid_row_id_']), false); }, iconProps: { iconName: 'Save' }, title: 'Save' }, void 0), props.enableRowEditCancel
@@ -1114,7 +1118,8 @@ var EditableGrid = function (props) {
                             _jsxs("div", { children: [!props.enableDefaultEditMode &&
                                         _jsx(IconButton, { onClick: function () { return ShowRowEditMode(item, Number(item['_grid_row_id_']), true); }, iconProps: { iconName: 'Edit' }, title: 'Edit' }, void 0), props.gridCopyOptions && props.gridCopyOptions.enableRowCopy &&
                                         _jsx(IconButton, { onClick: function () { return HandleRowCopy(Number(item['_grid_row_id_'])); }, iconProps: { iconName: "Copy" }, title: "Copy" }, void 0)] }, void 0) }, void 0)); },
-            });
+            };
+            props.prependRowEditActions ? columnConfigs.unshift(actionsColumn) : columnConfigs.push(actionsColumn);
         }
         return columnConfigs;
     };
@@ -1399,7 +1404,7 @@ var EditableGrid = function (props) {
                 _jsx(TagPicker, { onResolveSuggestions: onFilterChanged, getTextFromItem: getTextFromItem, pickerSuggestionsProps: pickerSuggestionsProps, inputProps: inputProps, selectedItems: defaultTag, onChange: onFilterTagListChanged }, void 0) : null, props.enableCommandBar === undefined || props.enableCommandBar === true ? _jsx(CommandBar, { items: CommandBarItemProps, ariaLabel: "Command Bar", farItems: CommandBarFarItemProps }, void 0) : null, showSpinner ?
                 _jsx(Spinner, { label: "Updating...", ariaLive: "assertive", labelPosition: "right", size: SpinnerSize.large }, void 0)
                 :
-                    null, showFilterCallout && filterCalloutComponent, _jsx("div", __assign({ className: mergeStyles({ height: props.height != null ? props.height : '70vh', width: props.width != null ? props.width : '130vh', position: 'relative', backgroundColor: 'white', }) }, { children: _jsx(ScrollablePane, __assign({ scrollbarVisibility: ScrollbarVisibility.auto }, { children: _jsx(MarqueeSelection, __assign({ selection: _selection }, { children: _jsx(DetailsList, { compact: true, items: defaultGridData.length > 0 ? defaultGridData.filter(function (x) { return (x._grid_row_operation_ != Operation.Delete) && (x._is_filtered_in_ == true) && (x._is_filtered_in_grid_search_ == true) && (x._is_filtered_in_column_filter_ == true); }) : [], columns: GridColumns, selectionMode: props.selectionMode, 
+                    null, showFilterCallout && filterCalloutComponent, _jsx("div", __assign({ className: mergeStyles({ height: props.height != null ? props.height : '70vh', width: props.width != null ? props.width : '130vh', position: 'relative', backgroundColor: 'white', }) }, { children: _jsx(ScrollablePane, __assign({ scrollbarVisibility: ScrollbarVisibility.auto }, { children: _jsx(MarqueeSelection, __assign({ selection: _selection, isEnabled: props.enableMarqueeSelection !== undefined ? props.enableMarqueeSelection : true }, { children: _jsx(DetailsList, { compact: true, items: defaultGridData.length > 0 ? defaultGridData.filter(function (x) { return (x._grid_row_operation_ != Operation.Delete) && (x._is_filtered_in_ == true) && (x._is_filtered_in_grid_search_ == true) && (x._is_filtered_in_column_filter_ == true); }) : [], columns: GridColumns, selectionMode: props.selectionMode, 
                             // layoutMode={props.layoutMode}
                             // constrainMode={props.constrainMode}
                             layoutMode: DetailsListLayoutMode.fixedColumns, constrainMode: ConstrainMode.unconstrained, selection: _selection, setKey: "none", onRenderDetailsHeader: onRenderDetailsHeader, ariaLabelForSelectAllCheckbox: "Toggle selection for all items", ariaLabelForSelectionColumn: "Toggle selection", checkButtonAriaLabel: "Row checkbox", ariaLabel: props.ariaLabel, ariaLabelForGrid: props.ariaLabelForGrid, ariaLabelForListHeader: props.ariaLabelForListHeader, cellStyleProps: props.cellStyleProps, checkboxCellClassName: props.checkboxCellClassName, checkboxVisibility: props.checkboxVisibility, className: props.className, columnReorderOptions: props.columnReorderOptions, componentRef: props.componentRef, disableSelectionZone: props.disableSelectionZone, dragDropEvents: props.dragDropEvents, enableUpdateAnimations: props.enableUpdateAnimations, enterModalSelectionOnTouch: props.enterModalSelectionOnTouch, getCellValueKey: props.getCellValueKey, getGroupHeight: props.getGroupHeight, getKey: props.getKey, getRowAriaDescribedBy: props.getRowAriaDescribedBy, getRowAriaLabel: props.getRowAriaLabel, groupProps: props.groupProps, groups: props.groups, indentWidth: props.indentWidth, initialFocusedIndex: props.initialFocusedIndex, isHeaderVisible: props.isHeaderVisible, isPlaceholderData: props.isPlaceholderData, listProps: props.listProps, minimumPixelsForDrag: props.minimumPixelsForDrag, onActiveItemChanged: props.onActiveItemChanged, onColumnHeaderClick: props.onColumnHeaderClick, onColumnHeaderContextMenu: props.onColumnHeaderContextMenu, onColumnResize: props.onColumnResize, onDidUpdate: props.onDidUpdate, onItemContextMenu: props.onItemContextMenu, onItemInvoked: props.onItemInvoked, onRenderCheckbox: props.onRenderCheckbox, onRenderDetailsFooter: props.onRenderDetailsFooter, onRenderItemColumn: props.onRenderItemColumn, onRenderMissingItem: props.onRenderMissingItem, onRenderRow: props.onRenderRow, onRowDidMount: props.onRowDidMount, onRowWillUnmount: props.onRowWillUnmount, onShouldVirtualize: props.onShouldVirtualize, rowElementEventMap: props.rowElementEventMap, selectionPreservedOnEmptyClick: props.selectionPreservedOnEmptyClick, selectionZoneProps: props.selectionZoneProps, shouldApplyApplicationRole: props.shouldApplyApplicationRole, styles: props.styles, useFastIcons: props.useFastIcons, usePageCache: props.usePageCache, useReducedRowRenderer: props.useReducedRowRenderer, viewport: props.viewport }, void 0) }), void 0) }), void 0) }), void 0), _jsx(Dialog, __assign({ hidden: !dialogContent, onDismiss: CloseRenameDialog, closeButtonAriaLabel: "Close" }, { children: dialogContent }), void 0), messageDialogProps.visible

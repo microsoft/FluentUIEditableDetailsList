@@ -12,6 +12,7 @@ export interface Props extends IDetailsListProps {
     exportFileName?: string;
     enableSave?: boolean;
     enableRowEdit?: boolean;
+    prependRowEditActions?: boolean;
     enableRowEditCancel?: boolean;
     enableColumnEdit?: boolean;
     enablePanelEdit?: boolean;
@@ -41,4 +42,5 @@ export interface Props extends IDetailsListProps {
     onGridStatusMessageCallback?: any;
     gridCopyOptions?: IGridCopy;
     enableDefaultEditMode?: boolean;
+    enableMarqueeSelection?: boolean;
 }

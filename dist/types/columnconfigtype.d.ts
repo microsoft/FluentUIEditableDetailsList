@@ -27,6 +27,7 @@ export interface IColumnConfig extends IColumn {
     hoverComponentOptions?: IHoverOptions;
     linkOptions?: ILinkOptions;
     onCustomRender?: (item?: any, index?: number, column?: IColumn) => any;
+    isSortedByDefault?: boolean;
 }
 export interface ILinkOptions {
     href?: string;

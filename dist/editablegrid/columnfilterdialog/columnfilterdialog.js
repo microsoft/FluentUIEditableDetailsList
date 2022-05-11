@@ -54,15 +54,15 @@ var ColumnFilterDialog = function (props) {
                 switch (column[0].dataType) {
                     case 'number':
                         setInputFieldContent(_jsx(TextField, { className: controlClass.textFieldClass, placeholder: "Value", onChange: function (ev, text) { return onTextUpdate(ev, text); }, styles: textFieldStyles }, void 0));
-                        setOperatorDropDownContent(_jsx(Dropdown, { placeholder: "Select the Column", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator }, void 0));
+                        setOperatorDropDownContent(_jsx(Dropdown, { placeholder: "Select Operator", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator }, void 0));
                         break;
                     case 'string':
                         setInputFieldContent(_jsx(TextField, { className: controlClass.textFieldClass, placeholder: "Value", onChange: function (ev, text) { return onTextUpdate(ev, text); }, styles: textFieldStyles }, void 0));
-                        setOperatorDropDownContent(_jsx(Dropdown, { placeholder: "Select the Column", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator }, void 0));
+                        setOperatorDropDownContent(_jsx(Dropdown, { placeholder: "Select Operator", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator }, void 0));
                         break;
                     case 'date':
                         setInputFieldContent(_jsx(Dropdown, { placeholder: "Select the Column", options: valueOptions, styles: dropdownStyles, onChange: onSelectValue }, void 0));
-                        setOperatorDropDownContent(_jsx(Dropdown, { placeholder: "Select the Column", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator }, void 0));
+                        setOperatorDropDownContent(_jsx(Dropdown, { placeholder: "Select Operator", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator }, void 0));
                         break;
                 }
             }
@@ -106,7 +106,7 @@ var ColumnFilterDialog = function (props) {
     };
     //const compareOptions = createCompareOptions();
     var _d = __read(React.useState(_jsx(Dropdown, { placeholder: "Select the Column", options: options, styles: dropdownStyles, onChange: onSelectValue }, void 0)), 2), inputFieldContent = _d[0], setInputFieldContent = _d[1];
-    var _e = __read(React.useState(_jsx(Dropdown, { placeholder: "Select the Column", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectValue }, void 0)), 2), operatorDropDownContent = _e[0], setOperatorDropDownContent = _e[1];
+    var _e = __read(React.useState(_jsx(Dropdown, { placeholder: "Select Operator", disabled: true, options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectValue }, void 0)), 2), operatorDropDownContent = _e[0], setOperatorDropDownContent = _e[1];
     var closeDialog = React.useCallback(function () {
         if (props.onDialogCancel) {
             props.onDialogCancel();
@@ -120,7 +120,7 @@ var ColumnFilterDialog = function (props) {
         }
         setInputFieldContent(undefined);
     };
-    return (_jsxs(Dialog, __assign({ modalProps: modelProps, hidden: !inputFieldContent, onDismiss: closeDialog, closeButtonAriaLabel: "Close" }, { children: [_jsxs(Stack, __assign({ verticalAlign: "space-between", tokens: stackTokens }, { children: [_jsx(Stack.Item, __assign({ grow: 1 }, { children: _jsx(Dropdown, { placeholder: "Select the Column", options: options, styles: dropdownStyles, onChange: onSelectGridColumn }, void 0) }), void 0), _jsx(Stack.Item, __assign({ grow: 1 }, { children: operatorDropDownContent }), void 0), _jsx(Stack.Item, __assign({ grow: 1 }, { children: inputFieldContent }), void 0)] }), void 0), _jsx(Stack.Item, { children: _jsxs(DialogFooter, __assign({ className: controlClass.dialogFooterStyles }, { children: [_jsx(PrimaryButton
+    return (_jsxs(Dialog, __assign({ modalProps: modelProps, hidden: !inputFieldContent, onDismiss: closeDialog, closeButtonAriaLabel: "Close" }, { children: [_jsxs(Stack, __assign({ verticalAlign: "space-between", tokens: stackTokens }, { children: [_jsx(Stack.Item, __assign({ grow: 1 }, { children: _jsx(Dropdown, { placeholder: "Select the Column", options: options, styles: dropdownStyles, onChange: onSelectGridColumn }, void 0) }), void 0), _jsx(Stack.Item, __assign({ grow: 1 }, { children: operatorDropDownContent }), void 0), _jsx(Stack.Item, __assign({ grow: 1 }, { children: gridColumn ? inputFieldContent : null }), void 0)] }), void 0), _jsx(Stack.Item, { children: _jsxs(DialogFooter, __assign({ className: controlClass.dialogFooterStyles }, { children: [_jsx(PrimaryButton
                         // eslint-disable-next-line react/jsx-no-bind
                         , { 
                             // eslint-disable-next-line react/jsx-no-bind

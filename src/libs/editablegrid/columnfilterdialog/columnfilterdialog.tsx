@@ -48,7 +48,7 @@ const ColumnFilterDialog = (props : Props) => {
                             />
                         );
                         setOperatorDropDownContent(<Dropdown
-                            placeholder="Select the Column"
+                            placeholder="Select Operator"
                             options={createCompareOptions()}
                             styles={dropdownStyles}
                             onChange={onSelectOperator}
@@ -64,7 +64,7 @@ const ColumnFilterDialog = (props : Props) => {
                             />
                         );
                         setOperatorDropDownContent(<Dropdown
-                            placeholder="Select the Column"
+                            placeholder="Select Operator"
                             options={createCompareOptions()}
                             styles={dropdownStyles}
                             onChange={onSelectOperator}
@@ -78,7 +78,7 @@ const ColumnFilterDialog = (props : Props) => {
                             onChange={onSelectValue}
                         />)
                         setOperatorDropDownContent(<Dropdown
-                            placeholder="Select the Column"
+                            placeholder="Select Operator"
                             options={createCompareOptions()}
                             styles={dropdownStyles}
                             onChange={onSelectOperator}
@@ -146,7 +146,8 @@ const ColumnFilterDialog = (props : Props) => {
 
     const [operatorDropDownContent, setOperatorDropDownContent] = React.useState<JSX.Element | undefined>(
         <Dropdown
-                    placeholder="Select the Column"
+                    placeholder="Select Operator"
+                    disabled={true}
                     options={createCompareOptions()}
                     styles={dropdownStyles}
                     onChange={onSelectValue}
@@ -185,7 +186,7 @@ const ColumnFilterDialog = (props : Props) => {
                     {operatorDropDownContent}
                 </Stack.Item>
                 <Stack.Item grow={1}>
-                    {inputFieldContent}
+                    {gridColumn ? inputFieldContent : null}
                 </Stack.Item>
               </Stack>
               <Stack.Item>

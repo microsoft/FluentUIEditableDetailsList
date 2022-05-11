@@ -58,18 +58,21 @@ export var dateOperatorEval = function (var1, var2, operator) {
     }
 };
 export var stringOperatorEval = function (var1, var2, operator) {
-    switch (operator) {
-        case 'equals':
-            return var1 == var2;
-        case 'contains':
-            return var1.indexOf(var2) >= 0;
-        case 'starts with':
-            return var1.startsWith(var2);
-        case 'ends with':
-            return var1.endsWith(var2);
-        case 'not equal to':
-            return var1 != var2;
-        default:
-            return false;
+    if (var1) { // null check
+        switch (operator) {
+            case 'equals':
+                return var1.toLowerCase() == var2.toLowerCase();
+            case 'contains':
+                return var1.toLowerCase().indexOf(var2.toLowerCase()) >= 0;
+            case 'starts with':
+                return var1.toLowerCase().startsWith(var2.toLowerCase());
+            case 'ends with':
+                return var1.toLowerCase().endsWith(var2.toLowerCase());
+            case 'not equal to':
+                return var1.toLowerCase() != var2.toLowerCase();
+            default:
+                return false;
+        }
     }
+    return false;
 };

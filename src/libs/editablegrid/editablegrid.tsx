@@ -1110,6 +1110,10 @@ const EditableGrid = (props: Props) => {
             var colKey = 'col' + index;
             var isDataTypeSupportedForFilter: boolean = isColumnDataTypeSupportedForFilter(column.dataType);
 
+            if (column.isSortedByDefault && sortColObj.key === '') {
+                setSortColObj({ key: colKey, isAscending: column.isSortedDescending ? !column.isSortedDescending : true, isEnabled: true });
+            }
+
             columnConfigs.push({
                 key: colKey,
                 name: column.text,
@@ -1327,14 +1331,15 @@ const EditableGrid = (props: Props) => {
         }
 
         if (props.enableRowEdit) {
-            columnConfigs.push({
+            let actionsColumn: IColumnConfig = {
                 key: 'action',
+                text: 'Actions',
                 name: 'Actions',
                 ariaLabel: 'Actions',
                 fieldName: 'action',
                 isResizable: true,
                 minWidth: 50,
-                maxWidth: 50,
+                maxWidth: props.prependRowEditActions ? 70 : 50,
                 onRender: (item, index) => (
                     <div>
                         {(activateCellEdit && activateCellEdit[Number(item['_grid_row_id_'])!] && activateCellEdit[Number(item['_grid_row_id_'])!]['isActivated'])
@@ -1364,7 +1369,9 @@ const EditableGrid = (props: Props) => {
                         }
                     </div>
                 ),
-            });
+            };
+
+            props.prependRowEditActions ? columnConfigs.unshift(actionsColumn) : columnConfigs.push(actionsColumn);
         }
 
         return columnConfigs;
@@ -1779,7 +1786,7 @@ const EditableGrid = (props: Props) => {
             {showFilterCallout && filterCalloutComponent}
             <div className={mergeStyles({ height: props.height != null ? props.height : '70vh', width: props.width != null ? props.width : '130vh', position: 'relative', backgroundColor: 'white', })}>
                 <ScrollablePane scrollbarVisibility={ScrollbarVisibility.auto}>
-                    <MarqueeSelection selection={_selection}>
+                    <MarqueeSelection selection={_selection} isEnabled={props.enableMarqueeSelection !== undefined ? props.enableMarqueeSelection : true} >
                         <DetailsList
                             compact={true}
                             items={defaultGridData.length > 0 ? defaultGridData.filter((x) => (x._grid_row_operation_ != Operation.Delete) && (x._is_filtered_in_ == true) && (x._is_filtered_in_grid_search_ == true) && (x._is_filtered_in_column_filter_ == true)) : []}
@@ -1795,7 +1802,6 @@ const EditableGrid = (props: Props) => {
                             ariaLabelForSelectAllCheckbox="Toggle selection for all items"
                             ariaLabelForSelectionColumn="Toggle selection"
                             checkButtonAriaLabel="Row checkbox"
-
                             ariaLabel={props.ariaLabel}
                             ariaLabelForGrid={props.ariaLabelForGrid}
                             ariaLabelForListHeader={props.ariaLabelForListHeader}
