@@ -1412,18 +1412,44 @@ var EditableGrid = function (props) {
     /* #endregion */
     var scrollablePaneRef = React.createRef();
     useEffect(function () {
-        if ((scrollablePaneRef === null || scrollablePaneRef === void 0 ? void 0 : scrollablePaneRef.current) && !hasRenderedStickyContent) {
-            var sticky = scrollablePaneRef.current._stickies.entries().next().value[0];
-            if (sticky) {
-                if (props.aboveStickyContent) {
-                    scrollablePaneRef.current._addToStickyContainer(sticky, scrollablePaneRef.current._stickyAboveRef.current, props.aboveStickyContent);
-                    setAboveContentHeight(props.aboveStickyContent.offsetHeight);
+        if (scrollablePaneRef === null || scrollablePaneRef === void 0 ? void 0 : scrollablePaneRef.current) {
+            if (!hasRenderedStickyContent) {
+                var sticky = scrollablePaneRef.current._stickies.entries().next().value[0];
+                if (sticky) {
+                    if (props.aboveStickyContent) {
+                        var aboveStickyContent = props.aboveStickyContent;
+                        aboveStickyContent.classList.add("grid-above-sticky-content");
+                        if (!hasRenderedStickyContent) {
+                            scrollablePaneRef.current._addToStickyContainer(sticky, scrollablePaneRef.current._stickyAboveRef.current, aboveStickyContent);
+                        }
+                        // oportunistic height set if element is seen in DOM
+                        setAboveContentHeight(aboveStickyContent.offsetHeight);
+                    }
+                    if (props.belowStickyContent) {
+                        var belowStickyContent = props.belowStickyContent;
+                        belowStickyContent.classList.add("grid-below-sticky-content");
+                        if (!hasRenderedStickyContent) {
+                            scrollablePaneRef.current._addToStickyContainer(sticky, scrollablePaneRef.current._stickyBelowRef.current, belowStickyContent);
+                        }
+                        // oportunistic height set if element is seen in DOM
+                        setBelowContentHeight(belowStickyContent.offsetHeight);
+                    }
+                    setHasRenderedStickyContent(true);
                 }
-                if (props.belowStickyContent) {
-                    scrollablePaneRef.current._addToStickyContainer(sticky, scrollablePaneRef.current._stickyBelowRef.current, props.belowStickyContent);
-                    setBelowContentHeight(props.belowStickyContent.offsetHeight);
+            }
+            else if (props.aboveStickyContent || props.belowStickyContent) {
+                if (props.aboveStickyContent && !aboveContentHeight) {
+                    var aboveStickyElement = document.querySelector(".grid-above-sticky-content");
+                    if (aboveStickyElement) {
+                        setAboveContentHeight(aboveStickyElement.getBoundingClientRect().height);
+                    }
                 }
-                setHasRenderedStickyContent(true);
+                if (props.belowStickyContent && !belowContentHeight) {
+                    var belowStickyElement = document.querySelector(".grid-below-sticky-content");
+                    if (belowStickyElement) {
+                        setBelowContentHeight(belowStickyElement.getBoundingClientRect().height);
+                    }
+                }
             }
         }
     }, [scrollablePaneRef]);
