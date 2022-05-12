@@ -72,7 +72,10 @@ export var IsValidDataType = function (type, text) {
     var isValid = true;
     switch (type) {
         case 'number':
-            isValid = !isNaN(Number(text));
+            var regex = new RegExp(/^\d*(\.\d{0,2})?$/, 'g');
+            if (!regex.test(text)) {
+                isValid = false;
+            }
             break;
     }
     return isValid;
@@ -105,7 +108,7 @@ export var ParseType = function (type, text) {
     }
     switch (type) {
         case 'number':
-            return Number(text);
+            return text;
         case 'date':
             return Date.parse(text);
     }

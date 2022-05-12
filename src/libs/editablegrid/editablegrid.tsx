@@ -89,6 +89,8 @@ const EditableGrid = (props: Props) => {
     });
     const [sortColObj, setSortColObj] = React.useState<SortOptions>({ key: '', isAscending: false, isEnabled: false });
     const [hasRenderedStickyContent, setHasRenderedStickyContent] = React.useState<boolean>(false);
+    const [aboveContentHeight, setAboveContentHeight] = React.useState<number>();
+    const [belowContentHeight, setBelowContentHeight] = React.useState<number>();
     let SpinRef: any = React.createRef();
     let filterStoreRef: any = React.useRef<IFilter[]>([]);
 
@@ -314,6 +316,7 @@ const EditableGrid = (props: Props) => {
 
         defaultGridDataTmp = CheckBulkUpdateOnChangeCallBack(data, defaultGridDataTmp);
         SetGridItems(defaultGridDataTmp);
+        UpdateSelectedItems(defaultGridDataTmp);
     }
 
     const CloseColumnUpdateDialog = (): void => {
@@ -858,7 +861,6 @@ const EditableGrid = (props: Props) => {
                 }
                 break;
             case EditType.ColumnEdit:
-
                 if (selectedIndices.length > 0) {
                     ShowColumnUpdate();
                 }
@@ -890,11 +892,23 @@ const EditableGrid = (props: Props) => {
         return true;
     }
 
-    const ResetGridData = (): void => {
+    const UpdateSelectedItems = (items: Array<any>): void => {
+        if (selectedIndices.length) {
+            let itemsSelected: Array<any> = [];
 
+            setSelectedItems(selectedIndices.map((index) => {
+                itemsSelected.push(items[index]);
+            }));
+
+            setSelectedItems(itemsSelected);
+        }
+    }
+
+    const ResetGridData = (): void => {
         setGridEditState(false);
         ClearFilters();
         SetGridItems(backupDefaultGridData.map(obj => ({ ...obj })));
+        UpdateSelectedItems(backupDefaultGridData);
     };
 
     /* #region [Column Click] */
@@ -1464,8 +1478,8 @@ const EditableGrid = (props: Props) => {
             commandBarItems.push({
                 id: 'submit',
                 key: 'submit',
-                text: "Save to SharePoint",
-                ariaLabel: 'Save to SharePoint',
+                text: props.enableSaveText ? props.enableSaveText : "Submit",
+                ariaLabel: props.enableSaveText ? props.enableSaveText : "Submit",
                 disabled: isGridInEdit || !isGridStateEdited,
                 iconProps: { iconName: 'Save' },
                 onClick: () => onGridSave(),
@@ -1735,10 +1749,12 @@ const EditableGrid = (props: Props) => {
             if (sticky) {
                 if (props.aboveStickyContent) {
                     scrollablePaneRef.current._addToStickyContainer(sticky, scrollablePaneRef.current._stickyAboveRef.current, props.aboveStickyContent);
+                    setAboveContentHeight(props.aboveStickyContent.offsetHeight);
                 }
 
                 if (props.belowStickyContent) {
                     scrollablePaneRef.current._addToStickyContainer(sticky, scrollablePaneRef.current._stickyBelowRef.current, props.belowStickyContent);
+                    setBelowContentHeight(props.belowStickyContent.offsetHeight);
                 }
 
                 setHasRenderedStickyContent(true);
@@ -1808,7 +1824,7 @@ const EditableGrid = (props: Props) => {
 
             {showFilterCallout && filterCalloutComponent}
             <div className={mergeStyles({ height: props.height != null ? props.height : '70vh', width: props.width != null ? props.width : '130vh', position: 'relative', backgroundColor: 'white', })}>
-                <ScrollablePane componentRef={scrollablePaneRef} scrollbarVisibility={ScrollbarVisibility.auto}>
+                <ScrollablePane styles={{ contentContainer: { paddingTop: aboveContentHeight, paddingBottom: belowContentHeight } }} componentRef={scrollablePaneRef} scrollbarVisibility={ScrollbarVisibility.auto}>
                     <MarqueeSelection selection={_selection} isEnabled={props.enableMarqueeSelection !== undefined ? props.enableMarqueeSelection : true} >
                         <DetailsList
                             compact={true}

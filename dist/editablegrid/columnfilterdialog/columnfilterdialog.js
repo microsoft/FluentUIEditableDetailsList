@@ -28,17 +28,39 @@ var __read = (this && this.__read) || function (o, n) {
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { DefaultButton, Dialog, DialogFooter, Dropdown, PrimaryButton, Stack, TextField } from "office-ui-fabric-react";
 import React, { useEffect, useState } from "react";
+import { useRef } from "react";
 import { operatorsArr } from "../../types/filterstype";
 import { controlClass, dropdownStyles, modelProps, stackTokens, textFieldStyles } from "./columnfilterdialogStyles";
 var ColumnFilterDialog = function (props) {
     var _a = __read(useState(), 2), gridColumn = _a[0], setGridColumn = _a[1];
-    var _b = __read(useState(''), 2), operator = _b[0], setOperator = _b[1];
+    var _b = __read(useState(), 2), operator = _b[0], setOperator = _b[1];
     var _c = __read(useState(''), 2), value = _c[0], setValue = _c[1];
+    var operatorType = useRef('');
+    var operatorTypePrevious = useRef('');
     var onSelectGridColumn = function (event, item, index) {
-        setGridColumn(props.columnConfigurationData.filter(function (val) { return val.key == item.key; })[0]);
+        var gridColumn = props.columnConfigurationData.filter(function (val) { return val.key == item.key; })[0];
+        setGridColumn(gridColumn);
+        switch (gridColumn === null || gridColumn === void 0 ? void 0 : gridColumn.dataType) {
+            case "number":
+                doOperatorTypeChange("number");
+                break;
+            case "string":
+                doOperatorTypeChange("string");
+                break;
+            case "date":
+                doOperatorTypeChange("date");
+                break;
+        }
+        if (operatorType.current !== operatorTypePrevious.current) {
+            setOperator(undefined);
+        }
+    };
+    var doOperatorTypeChange = function (dataType) {
+        operatorTypePrevious.current = operatorType.current;
+        operatorType.current = dataType;
     };
     var onSelectOperator = function (event, item, index) {
-        setOperator(item.text.toString());
+        setOperator(item);
     };
     var onSelectValue = function (event, item, index) {
         setValue(item.key.toString());
@@ -54,20 +76,20 @@ var ColumnFilterDialog = function (props) {
                 switch (column[0].dataType) {
                     case 'number':
                         setInputFieldContent(_jsx(TextField, { className: controlClass.textFieldClass, placeholder: "Value", onChange: function (ev, text) { return onTextUpdate(ev, text); }, styles: textFieldStyles }, void 0));
-                        setOperatorDropDownContent(_jsx(Dropdown, { placeholder: "Select Operator", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator }, void 0));
+                        setOperatorDropDownContent(_jsx(Dropdown, { placeholder: "Select Operator", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator, selectedKey: operator ? operator.key : null }, void 0));
                         break;
                     case 'string':
                         setInputFieldContent(_jsx(TextField, { className: controlClass.textFieldClass, placeholder: "Value", onChange: function (ev, text) { return onTextUpdate(ev, text); }, styles: textFieldStyles }, void 0));
-                        setOperatorDropDownContent(_jsx(Dropdown, { placeholder: "Select Operator", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator }, void 0));
+                        setOperatorDropDownContent(_jsx(Dropdown, { placeholder: "Select Operator", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator, selectedKey: operator ? operator.key : null }, void 0));
                         break;
                     case 'date':
                         setInputFieldContent(_jsx(Dropdown, { placeholder: "Select the Column", options: valueOptions, styles: dropdownStyles, onChange: onSelectValue }, void 0));
-                        setOperatorDropDownContent(_jsx(Dropdown, { placeholder: "Select Operator", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator }, void 0));
+                        setOperatorDropDownContent(_jsx(Dropdown, { placeholder: "Select Operator", options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator, selectedKey: operator ? operator.key : null }, void 0));
                         break;
                 }
             }
         }
-    }, [gridColumn]);
+    }, [gridColumn, operator]);
     var createDropDownOptions = function () {
         var dropdownOptions = [];
         props.columnConfigurationData.forEach(function (item, index) {
@@ -106,7 +128,7 @@ var ColumnFilterDialog = function (props) {
     };
     //const compareOptions = createCompareOptions();
     var _d = __read(React.useState(_jsx(Dropdown, { placeholder: "Select the Column", options: options, styles: dropdownStyles, onChange: onSelectValue }, void 0)), 2), inputFieldContent = _d[0], setInputFieldContent = _d[1];
-    var _e = __read(React.useState(_jsx(Dropdown, { placeholder: "Select Operator", disabled: true, options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectValue }, void 0)), 2), operatorDropDownContent = _e[0], setOperatorDropDownContent = _e[1];
+    var _e = __read(React.useState(_jsx(Dropdown, { placeholder: "Select Operator", disabled: true, options: createCompareOptions(), styles: dropdownStyles, onChange: onSelectOperator }, void 0)), 2), operatorDropDownContent = _e[0], setOperatorDropDownContent = _e[1];
     var closeDialog = React.useCallback(function () {
         if (props.onDialogCancel) {
             props.onDialogCancel();
@@ -114,7 +136,7 @@ var ColumnFilterDialog = function (props) {
         setInputFieldContent(undefined);
     }, []);
     var saveDialog = function () {
-        var filterObj = { column: gridColumn, operator: operator, value: value };
+        var filterObj = { column: gridColumn, operator: operator ? operator.text.toString() : '', value: value };
         if (props.onDialogSave) {
             props.onDialogSave(filterObj);
         }
@@ -124,6 +146,6 @@ var ColumnFilterDialog = function (props) {
                         // eslint-disable-next-line react/jsx-no-bind
                         , { 
                             // eslint-disable-next-line react/jsx-no-bind
-                            onClick: saveDialog, text: "Save" }, void 0), _jsx(DefaultButton, { onClick: closeDialog, text: "Cancel" }, void 0)] }), void 0) }, void 0)] }), void 0));
+                            onClick: saveDialog, text: "Save", disabled: gridColumn === undefined || value === '' }, void 0), _jsx(DefaultButton, { onClick: closeDialog, text: "Cancel" }, void 0)] }), void 0) }, void 0)] }), void 0));
 };
 export default ColumnFilterDialog;

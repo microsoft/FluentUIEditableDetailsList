@@ -134,6 +134,8 @@ var EditableGrid = function (props) {
     }), 2), messageDialogProps = _2[0], setMessageDialogProps = _2[1];
     var _3 = __read(React.useState({ key: '', isAscending: false, isEnabled: false }), 2), sortColObj = _3[0], setSortColObj = _3[1];
     var _4 = __read(React.useState(false), 2), hasRenderedStickyContent = _4[0], setHasRenderedStickyContent = _4[1];
+    var _5 = __read(React.useState(), 2), aboveContentHeight = _5[0], setAboveContentHeight = _5[1];
+    var _6 = __read(React.useState(), 2), belowContentHeight = _6[0], setBelowContentHeight = _6[1];
     var SpinRef = React.createRef();
     var filterStoreRef = React.useRef([]);
     var _selection = new Selection({
@@ -339,6 +341,7 @@ var EditableGrid = function (props) {
         CloseColumnUpdateDialog();
         defaultGridDataTmp = CheckBulkUpdateOnChangeCallBack(data, defaultGridDataTmp);
         SetGridItems(defaultGridDataTmp);
+        UpdateSelectedItems(defaultGridDataTmp);
     };
     var CloseColumnUpdateDialog = function () {
         setIsUpdateColumnClicked(false);
@@ -803,10 +806,20 @@ var EditableGrid = function (props) {
         }
         return true;
     };
+    var UpdateSelectedItems = function (items) {
+        if (selectedIndices.length) {
+            var itemsSelected_1 = [];
+            setSelectedItems(selectedIndices.map(function (index) {
+                itemsSelected_1.push(items[index]);
+            }));
+            setSelectedItems(itemsSelected_1);
+        }
+    };
     var ResetGridData = function () {
         setGridEditState(false);
         ClearFilters();
         SetGridItems(backupDefaultGridData.map(function (obj) { return (__assign({}, obj)); }));
+        UpdateSelectedItems(backupDefaultGridData);
     };
     /* #region [Column Click] */
     var onColumnClick = function (ev, column, index) {
@@ -1204,8 +1217,8 @@ var EditableGrid = function (props) {
             commandBarItems.push({
                 id: 'submit',
                 key: 'submit',
-                text: "Save to SharePoint",
-                ariaLabel: 'Save to SharePoint',
+                text: props.enableSaveText ? props.enableSaveText : "Submit",
+                ariaLabel: props.enableSaveText ? props.enableSaveText : "Submit",
                 disabled: isGridInEdit || !isGridStateEdited,
                 iconProps: { iconName: 'Save' },
                 onClick: function () { return onGridSave(); },
@@ -1404,9 +1417,11 @@ var EditableGrid = function (props) {
             if (sticky) {
                 if (props.aboveStickyContent) {
                     scrollablePaneRef.current._addToStickyContainer(sticky, scrollablePaneRef.current._stickyAboveRef.current, props.aboveStickyContent);
+                    setAboveContentHeight(props.aboveStickyContent.offsetHeight);
                 }
                 if (props.belowStickyContent) {
                     scrollablePaneRef.current._addToStickyContainer(sticky, scrollablePaneRef.current._stickyBelowRef.current, props.belowStickyContent);
+                    setBelowContentHeight(props.belowStickyContent.offsetHeight);
                 }
                 setHasRenderedStickyContent(true);
             }
@@ -1420,7 +1435,7 @@ var EditableGrid = function (props) {
                 _jsx(TagPicker, { onResolveSuggestions: onFilterChanged, getTextFromItem: getTextFromItem, pickerSuggestionsProps: pickerSuggestionsProps, inputProps: inputProps, selectedItems: defaultTag, onChange: onFilterTagListChanged }, void 0) : null, props.enableCommandBar === undefined || props.enableCommandBar === true ? _jsx(CommandBar, { items: CommandBarItemProps, ariaLabel: "Command Bar", farItems: CommandBarFarItemProps }, void 0) : null, showSpinner ?
                 _jsx(Spinner, { label: "Updating...", ariaLive: "assertive", labelPosition: "right", size: SpinnerSize.large }, void 0)
                 :
-                    null, showFilterCallout && filterCalloutComponent, _jsx("div", __assign({ className: mergeStyles({ height: props.height != null ? props.height : '70vh', width: props.width != null ? props.width : '130vh', position: 'relative', backgroundColor: 'white', }) }, { children: _jsx(ScrollablePane, __assign({ componentRef: scrollablePaneRef, scrollbarVisibility: ScrollbarVisibility.auto }, { children: _jsx(MarqueeSelection, __assign({ selection: _selection, isEnabled: props.enableMarqueeSelection !== undefined ? props.enableMarqueeSelection : true }, { children: _jsx(DetailsList, { compact: true, items: defaultGridData.length > 0 ? defaultGridData.filter(function (x) { return (x._grid_row_operation_ != Operation.Delete) && (x._is_filtered_in_ == true) && (x._is_filtered_in_grid_search_ == true) && (x._is_filtered_in_column_filter_ == true); }) : [], columns: GridColumns, selectionMode: props.selectionMode, 
+                    null, showFilterCallout && filterCalloutComponent, _jsx("div", __assign({ className: mergeStyles({ height: props.height != null ? props.height : '70vh', width: props.width != null ? props.width : '130vh', position: 'relative', backgroundColor: 'white', }) }, { children: _jsx(ScrollablePane, __assign({ styles: { contentContainer: { paddingTop: aboveContentHeight, paddingBottom: belowContentHeight } }, componentRef: scrollablePaneRef, scrollbarVisibility: ScrollbarVisibility.auto }, { children: _jsx(MarqueeSelection, __assign({ selection: _selection, isEnabled: props.enableMarqueeSelection !== undefined ? props.enableMarqueeSelection : true }, { children: _jsx(DetailsList, { compact: true, items: defaultGridData.length > 0 ? defaultGridData.filter(function (x) { return (x._grid_row_operation_ != Operation.Delete) && (x._is_filtered_in_ == true) && (x._is_filtered_in_grid_search_ == true) && (x._is_filtered_in_column_filter_ == true); }) : [], columns: GridColumns, selectionMode: props.selectionMode, 
                             // layoutMode={props.layoutMode}
                             // constrainMode={props.constrainMode}
                             layoutMode: DetailsListLayoutMode.fixedColumns, constrainMode: ConstrainMode.unconstrained, selection: _selection, setKey: "none", onRenderDetailsHeader: onRenderDetailsHeader, ariaLabelForSelectAllCheckbox: "Toggle selection for all items", ariaLabelForSelectionColumn: "Toggle selection", checkButtonAriaLabel: "Row checkbox", ariaLabel: props.ariaLabel, ariaLabelForGrid: props.ariaLabelForGrid, ariaLabelForListHeader: props.ariaLabelForListHeader, cellStyleProps: props.cellStyleProps, checkboxCellClassName: props.checkboxCellClassName, checkboxVisibility: props.checkboxVisibility, className: props.className, columnReorderOptions: props.columnReorderOptions, componentRef: props.componentRef, disableSelectionZone: props.disableSelectionZone, dragDropEvents: props.dragDropEvents, enableUpdateAnimations: props.enableUpdateAnimations, enterModalSelectionOnTouch: props.enterModalSelectionOnTouch, getCellValueKey: props.getCellValueKey, getGroupHeight: props.getGroupHeight, getKey: props.getKey, getRowAriaDescribedBy: props.getRowAriaDescribedBy, getRowAriaLabel: props.getRowAriaLabel, groupProps: props.groupProps, groups: props.groups, indentWidth: props.indentWidth, initialFocusedIndex: props.initialFocusedIndex, isHeaderVisible: props.isHeaderVisible, isPlaceholderData: props.isPlaceholderData, listProps: props.listProps, minimumPixelsForDrag: props.minimumPixelsForDrag, onActiveItemChanged: props.onActiveItemChanged, onColumnHeaderClick: props.onColumnHeaderClick, onColumnHeaderContextMenu: props.onColumnHeaderContextMenu, onColumnResize: props.onColumnResize, onDidUpdate: props.onDidUpdate, onItemContextMenu: props.onItemContextMenu, onItemInvoked: props.onItemInvoked, onRenderCheckbox: props.onRenderCheckbox, onRenderDetailsFooter: props.onRenderDetailsFooter, onRenderItemColumn: props.onRenderItemColumn, onRenderMissingItem: props.onRenderMissingItem, onRenderRow: props.onRenderRow, onRowDidMount: props.onRowDidMount, onRowWillUnmount: props.onRowWillUnmount, onShouldVirtualize: props.onShouldVirtualize, rowElementEventMap: props.rowElementEventMap, selectionPreservedOnEmptyClick: props.selectionPreservedOnEmptyClick, selectionZoneProps: props.selectionZoneProps, shouldApplyApplicationRole: props.shouldApplyApplicationRole, styles: props.styles, useFastIcons: props.useFastIcons, usePageCache: props.usePageCache, useReducedRowRenderer: props.useReducedRowRenderer, viewport: props.viewport }, void 0) }), void 0) }), void 0) }), void 0), _jsx(Dialog, __assign({ hidden: !dialogContent, onDismiss: CloseRenameDialog, closeButtonAriaLabel: "Close" }, { children: dialogContent }), void 0), messageDialogProps.visible

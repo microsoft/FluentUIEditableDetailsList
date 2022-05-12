@@ -353,6 +353,7 @@ const Consumer = () => {
                 id={1}
                 enableColumnEdit={gridConfigOptions.enableColumnEdit}
                 enableSave={gridConfigOptions.enableSave}
+                //enableSaveText="Save to List"
                 columns={attachGridValueChangeCallbacks(GridColumnConfig)}
                 //customEditPanelColumns={GridColumnConfigCustomPanelEdit}
                 layoutMode={DetailsListLayoutMode.justified}

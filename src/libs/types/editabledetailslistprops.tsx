@@ -12,6 +12,7 @@ export interface Props extends IDetailsListProps {
     enableExport?: boolean;
     exportFileName?: string;
     enableSave?: boolean;
+    enableSaveText?: string;
     enableRowEdit?: boolean;
     prependRowEditActions?: boolean;
     enableRowEditCancel?: boolean;

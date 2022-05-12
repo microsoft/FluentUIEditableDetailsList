@@ -89,7 +89,6 @@ export const GridColumnConfig: IColumnConfig[] =
             isResizable: true,
             includeColumnInExport: false,
             includeColumnInSearch: true,
-            maxLength: 5,
             applyColumnFilter: true,
             cellStyleRule: {
                 enable: true,
