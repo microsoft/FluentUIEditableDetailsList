@@ -1438,21 +1438,50 @@ var EditableGrid = function (props) {
                 }
             }
             else if (props.aboveStickyContent || props.belowStickyContent) {
-                if (props.aboveStickyContent && !aboveContentHeight) {
+                var sticky = scrollablePaneRef.current._stickies.entries().next().value[0];
+                if (props.aboveStickyContent) {
+                    var isSameNode = true;
                     var aboveStickyElement = document.querySelector(".grid-above-sticky-content");
-                    if (aboveStickyElement) {
-                        setAboveContentHeight(aboveStickyElement.getBoundingClientRect().height);
+                    if (!props.aboveStickyContent.isEqualNode(aboveStickyElement)) {
+                        isSameNode = false;
+                        var aboveStickyContent = props.aboveStickyContent;
+                        aboveStickyContent.classList.add("grid-above-sticky-content");
+                        if (!aboveStickyElement) {
+                            scrollablePaneRef.current._addToStickyContainer(sticky, scrollablePaneRef.current._stickyAboveRef.current, aboveStickyContent);
+                        }
+                        else {
+                            aboveStickyElement.replaceWith(aboveStickyContent);
+                        }
+                    }
+                    if (!aboveContentHeight || !isSameNode) {
+                        if (aboveStickyElement) {
+                            setAboveContentHeight(aboveStickyElement.getBoundingClientRect().height);
+                        }
                     }
                 }
-                if (props.belowStickyContent && !belowContentHeight) {
+                if (props.belowStickyContent) {
+                    var isSameNode = true;
                     var belowStickyElement = document.querySelector(".grid-below-sticky-content");
-                    if (belowStickyElement) {
-                        setBelowContentHeight(belowStickyElement.getBoundingClientRect().height);
+                    if (!props.belowStickyContent.isEqualNode(belowStickyElement)) {
+                        isSameNode = false;
+                        var belowStickyContent = props.belowStickyContent;
+                        belowStickyContent.classList.add("grid-below-sticky-content");
+                        if (!belowStickyElement) {
+                            scrollablePaneRef.current._addToStickyContainer(sticky, scrollablePaneRef.current._stickyBelowRef.current, belowStickyContent);
+                        }
+                        else {
+                            belowStickyElement.replaceWith(belowStickyContent);
+                        }
+                    }
+                    if (!belowContentHeight || !isSameNode) {
+                        if (belowStickyElement) {
+                            setBelowContentHeight(belowStickyElement.getBoundingClientRect().height);
+                        }
                     }
                 }
             }
         }
-    }, [scrollablePaneRef]);
+    }, [scrollablePaneRef, props.aboveStickyContent, props.belowStickyContent]);
     return (_jsxs(Fabric, { children: [_jsx(Panel, __assign({ isOpen: isOpenForEdit, onDismiss: dismissPanelForEdit, isLightDismiss: true, headerText: "Edit Grid Data", closeButtonAriaLabel: "Close", type: PanelType.smallFixedFar }, { children: _jsx(EditPanel, { onChange: onEditPanelChange, columnConfigurationData: props.customEditPanelColumns ? props.customEditPanelColumns : props.columns, isBulk: isBulkPanelEdit, selectedItem: selectedItems && selectedItems.length === 1 ? selectedItems[0] : null }, void 0) }), void 0), props.enableRowAddWithValues && props.enableRowAddWithValues.enable
                 ?
                     _jsx(Panel, __assign({ isOpen: isOpenForAdd, onDismiss: dismissPanelForAdd, isLightDismiss: true, headerText: "Add Rows", closeButtonAriaLabel: "Close", type: PanelType.smallFixedFar }, { children: _jsx(AddRowPanel, { onChange: onAddPanelChange, columnConfigurationData: props.columns, enableRowsCounterField: props.enableRowAddWithValues.enableRowsCounterInPanel }, void 0) }), void 0)

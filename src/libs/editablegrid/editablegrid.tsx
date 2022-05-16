@@ -1773,24 +1773,56 @@ const EditableGrid = (props: Props) => {
                     setHasRenderedStickyContent(true);
                 }
             } else if (props.aboveStickyContent || props.belowStickyContent) {
-                if (props.aboveStickyContent && !aboveContentHeight) {
-                    const aboveStickyElement = document.querySelector(".grid-above-sticky-content");
+                let sticky: Sticky = scrollablePaneRef.current._stickies.entries().next().value[0];
 
-                    if (aboveStickyElement) {
-                        setAboveContentHeight(aboveStickyElement.getBoundingClientRect().height);
+                if (props.aboveStickyContent) {
+                    let isSameNode: boolean = true;
+                    let aboveStickyElement = document.querySelector(".grid-above-sticky-content");
+
+                    if (!props.aboveStickyContent.isEqualNode(aboveStickyElement)) {
+                        isSameNode = false;
+                        let aboveStickyContent = props.aboveStickyContent;
+                        aboveStickyContent.classList.add("grid-above-sticky-content");
+
+                        if (!aboveStickyElement) {
+                            scrollablePaneRef.current._addToStickyContainer(sticky, scrollablePaneRef.current._stickyAboveRef.current, aboveStickyContent);
+                        } else {
+                            aboveStickyElement.replaceWith(aboveStickyContent);
+                        }
+                    }
+
+                    if (!aboveContentHeight || !isSameNode) {
+                        if (aboveStickyElement) {
+                            setAboveContentHeight(aboveStickyElement.getBoundingClientRect().height);
+                        }
                     }
                 }
 
-                if (props.belowStickyContent && !belowContentHeight) {
-                    const belowStickyElement = document.querySelector(".grid-below-sticky-content");
+                if (props.belowStickyContent) {
+                    let isSameNode: boolean = true;
+                    let belowStickyElement = document.querySelector(".grid-below-sticky-content");
 
-                    if (belowStickyElement) {
-                        setBelowContentHeight(belowStickyElement.getBoundingClientRect().height);
+                    if (!props.belowStickyContent.isEqualNode(belowStickyElement)) {
+                        isSameNode = false;
+                        let belowStickyContent = props.belowStickyContent;
+                        belowStickyContent.classList.add("grid-below-sticky-content");
+
+                        if (!belowStickyElement) {
+                            scrollablePaneRef.current._addToStickyContainer(sticky, scrollablePaneRef.current._stickyBelowRef.current, belowStickyContent);
+                        } else {
+                            belowStickyElement.replaceWith(belowStickyContent);
+                        }
+                    }
+
+                    if (!belowContentHeight || !isSameNode) {
+                        if (belowStickyElement) {
+                            setBelowContentHeight(belowStickyElement.getBoundingClientRect().height);
+                        }
                     }
                 }
             }
         }
-    }, [scrollablePaneRef])
+    }, [scrollablePaneRef, props.aboveStickyContent, props.belowStickyContent])
 
     return (
         <Fabric>

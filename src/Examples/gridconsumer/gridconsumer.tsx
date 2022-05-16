@@ -231,11 +231,68 @@ const Consumer = () => {
         setGridConfigOptions({ ...gridConfigOptions, [(ev.target as Element).id]: !gridConfigOptions[(ev.target as Element).id] })
     };
 
+    const [aboveContent, setAboveContent] = React.useState<HTMLDivElement>();
+    const [belowContent, setBelowContent] = React.useState<HTMLDivElement>();
+
+    React.useEffect(() => {
+        setTimeout(() => {
+            let aboveContent = document.createElement('div');
+
+            aboveContent.innerHTML = `
+                <div class="above-content" style="background: rgba(0,0,0,.05); font-weight:600; padding: 20px 0;">
+                    Text here is displaying as sticky content in the "above" area that is not only delayed, but changed!
+                </div>
+            `;
+
+            setAboveContent(aboveContent);
+
+        }, 5000);
+
+        setTimeout(() => {
+            let aboveContent = document.createElement('div');
+
+            aboveContent.innerHTML = `
+                <div class="above-content" style="background: rgba(0,0,0,.05); font-weight:600; padding: 20px 0;">
+                    Text here is displaying as sticky content in the "above" area but now it has changed!
+                </div>
+            `;
+
+            setAboveContent(aboveContent);
+
+        }, 10000);
+    }, []);
+
+    React.useEffect(() => {
+        let belowContent = document.createElement('div');
+
+        belowContent.innerHTML = `
+                <div class="below-content" style="background: rgba(255,255,255,.9); font-weight:600; padding: 20px 0;">
+                    Text here is displaying as sticky content in the "below" area
+                </div>
+            `;
+
+        setBelowContent(belowContent);
+
+
+        setTimeout(() => {
+            let belowContent = document.createElement('div');
+
+            belowContent.innerHTML = `
+                <div class="below-content" style="background: rgba(255,255,255,.9); font-weight:600; padding: 20px 0;">
+                    Text here is displaying as sticky content in the "below" area but now it has changed!
+                </div>
+            `;
+
+            setBelowContent(belowContent);
+
+        }, 10000);
+    }, []);
+
     const getAboveContentRender = (): HTMLDivElement => {
         let aboveContent = document.createElement('div');
 
         aboveContent.innerHTML = `
-            <div class="below-content" style="background: rgba(0,0,0,.05); font-weight:600; padding: 20px 0;">
+            <div class="above-content" style="background: rgba(0,0,0,.05); font-weight:600; padding: 20px 0;">
                 Text here is displaying as sticky content in the "above" area
             </div>
         `;
@@ -388,8 +445,9 @@ const Consumer = () => {
                 onGridUpdate={onGridUpdate}
                 enableDefaultEditMode={gridConfigOptions.enableDefaultEditMode}
                 enableMarqueeSelection={gridConfigOptions.enableMarqueeSelection}
-                aboveStickyContent={getAboveContentRender()}
-                belowStickyContent={getBelowContentRender()}
+                //aboveStickyContent={getAboveContentRender()}
+                aboveStickyContent={aboveContent}
+                belowStickyContent={belowContent}
             />
 
             {teachingBubbleVisible && (
