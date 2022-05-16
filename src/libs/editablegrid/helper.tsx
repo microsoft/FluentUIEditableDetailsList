@@ -106,7 +106,13 @@ export const ParseType = (type: string | undefined, text: string): any => {
 
     switch (type) {
         case 'number':
-            return text;
+            var regex = new RegExp(/^\d*(\.\d{0,0})?$/, 'g');
+            if (regex.test(text)) {
+                return text;
+            } else {
+                return parseFloat(parseFloat(text).toFixed(2));
+            }
+
         case 'date':
             return Date.parse(text);
     }
