@@ -151,6 +151,7 @@ const Consumer = () => {
                 id: i,
                 customerhovercol: 'Hover Me',
                 name: 'Name'+ GetRandomInt(1, 10),
+                password: "somepassword",
                 age: GetRandomInt(20,40),
                 designation: 'Designation' + GetRandomInt(1, 15),
                 salary: GetRandomInt(35000, 75000),
@@ -224,7 +225,7 @@ const Consumer = () => {
     };
 
     const onCheckboxChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean): void => {
-        setGridConfigOptions({...gridConfigOptions, [(ev.target as Element).id]: !gridConfigOptions[(ev.target as Element).id] })
+        setGridConfigOptions({...gridConfigOptions, [(ev!.target as Element).id]: !gridConfigOptions[(ev!.target as Element).id] })
     };
 
     return (
@@ -350,7 +351,7 @@ const Consumer = () => {
                 <TeachingBubble
                 target={teachingBubblePropsConfig?.config.target}
                 primaryButtonProps={teachingBubblePropsConfig?.id < teachingBubbleConfig.length - 1 ? nextBubbleProps : closeButtonProps}
-                secondaryButtonProps={teachingBubblePropsConfig?.id > 0 ? previousBubbleProps : null}
+                secondaryButtonProps={teachingBubblePropsConfig?.id > 0 ? previousBubbleProps : undefined}
                 onDismiss={toggleTeachingBubbleVisible}
                 footerContent={teachingBubblePropsConfig?.config.footerContent} 
                 headline={teachingBubblePropsConfig?.config.headline}
