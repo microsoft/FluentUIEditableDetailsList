@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import React from "react";
 import { NumberAndDateOperators, StringOperators } from "../../libs/types/cellstyleruletype";
 import { IColumnConfig } from "../../libs/types/columnconfigtype";
 import { EditControlType } from "../../libs/types/editcontroltype";
@@ -49,6 +50,20 @@ export const GridColumnConfig : IColumnConfig[] =
         includeColumnInExport: true,
         includeColumnInSearch: true,
         applyColumnFilter: true
+    },
+    {
+        key: 'password',
+        name: 'Password',
+        text: 'Password',
+        editable: true,
+        dataType: 'string',
+        minWidth: 100,
+        maxWidth: 100,
+        isResizable: true,
+        includeColumnInExport: true,
+        includeColumnInSearch: true,
+        applyColumnFilter: true,
+        inputType: EditControlType.Password
     },
     {
         key: 'age',
@@ -192,6 +207,7 @@ export interface GridItemsType {
     id: number;
     customerhovercol: string;
     name: string;
+    password: string;
     age: number;
     designation: string;
     salary: number;

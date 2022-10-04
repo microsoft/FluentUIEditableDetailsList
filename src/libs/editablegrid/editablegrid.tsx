@@ -1252,6 +1252,37 @@ const EditableGrid = (props: Props) => {
                                     (RenderLinkSpan(props, index, rowNum, column, item, EditCellValue))
                                 )
                                 }</span>
+                        case EditControlType.Password:
+                            return <span>{
+                                (ShouldRenderSpan()) 
+                                ? 
+                                (column?.hoverComponentOptions?.enable ? 
+                                    (<HoverCard
+                                      type={HoverCardType.plain}
+                                      plainCardProps={{
+                                        onRenderPlainCard: () => onRenderPlainCard(column, rowNum!, item),
+                                    }}
+                                      instantOpenOnClick
+                                    >
+                                      {RenderPasswordFieldSpan(props, index, rowNum, column, item, EditCellValue)}
+                                    </HoverCard>) 
+                                    :
+                                    (RenderPasswordFieldSpan(props, index, rowNum, column, item, EditCellValue))
+                                )
+                                : 
+                                (<TextField
+                                    errorMessage={activateCellEdit[rowNum!]['properties'][column.key].error}
+                                    label={item.text}
+                                    ariaLabel={column.key}
+                                    styles={textFieldStyles}
+                                    onChange={(ev, text) => onCellValueChange(ev, text!, item, rowNum!, column.key, column)}
+                                    autoFocus={!props.enableDefaultEditMode && !editMode && !(activateCellEdit?.[Number(item['_grid_row_id_'])!]?.['isActivated'])}
+                                    value={activateCellEdit[rowNum!]['properties'][column.key].value}
+                                    onKeyDown={(event) => onKeyDownEvent(event, column, rowNum!, false)}
+                                    maxLength={column.maxLength != null ? column.maxLength : 1000}
+                                    type="password"
+                                    canRevealPassword
+                                />)}</span>
                         default:
                             return <span>{
                                 (ShouldRenderSpan()) 
@@ -1632,6 +1663,17 @@ const EditableGrid = (props: Props) => {
 
     const RenderTextFieldSpan = (props: Props, index: number, rowNum: number, column: IColumnConfig, item: any, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void): React.ReactNode => {
         return RenderSpan(props, index, rowNum, column, item, HandleCellOnClick, EditCellValue, HandleCellOnDoubleClick);
+    }
+
+    const RenderPasswordFieldSpan = (props: Props, index: number, rowNum: number, column: IColumnConfig, item: any, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void): React.ReactNode => {
+        return <span
+            id={`id-${props.id}-col-${index}-row-${rowNum}`}
+            className={GetDynamicSpanStyles(column, item[column.key])}
+            onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
+            onDoubleClick={HandleCellOnDoubleClick(props, column, EditCellValue, rowNum)}
+            >
+                {item[column.key].replace(/./g, '*')}
+            </span>;
     }
     
     const RenderPickerSpan = (props: Props, index: number, rowNum: number, column: IColumnConfig, item: any, EditCellValue: (key: string, rowNum: number, activateCurrentCell: boolean) => void): React.ReactNode => {
