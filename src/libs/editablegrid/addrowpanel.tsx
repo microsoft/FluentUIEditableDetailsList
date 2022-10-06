@@ -115,6 +115,19 @@ const AddRowPanel = (props: Props) => {
                         value={columnValuesObj[item.key].value || ''}
                         />);
                     break;
+                case EditControlType.Password:
+                    tmpRenderObj.push(<TextField
+                        errorMessage={columnValuesObj[item.key].error}
+                        name={item.text}
+                        id={item.key}
+                        label={item.text}
+                        styles={textFieldStyles}
+                        onChange={(ev, text) => onTextUpdate(ev, text!, item)}
+                        value={columnValuesObj[item.key].value || ''}
+                        type="password"
+                        canRevealPassword
+                        />);
+                    break;
                 default:
                     tmpRenderObj.push(<TextField
                         errorMessage={columnValuesObj[item.key].error}
