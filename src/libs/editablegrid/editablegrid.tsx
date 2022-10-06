@@ -1672,7 +1672,7 @@ const EditableGrid = (props: Props) => {
             onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
             onDoubleClick={HandleCellOnDoubleClick(props, column, EditCellValue, rowNum)}
             >
-                {item[column.key].replace(/./g, '*')}
+                {item[column.key]?.replace(/./g, '*')}
             </span>;
     }
     
