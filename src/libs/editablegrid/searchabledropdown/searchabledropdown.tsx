@@ -16,12 +16,12 @@ const SearchableDropdown = (props: Props) => {
     const [placeholder, setPlaceHolder] = React.useState<string>();
     
     useEffect(() => {
-        setDropdownOptions(props.options);
+        setDropdownOptions(props.options as IDropdownOption[]);
         setPlaceHolder(props.placeholder);
     }, [props.options]);
 
     const onFilterTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, searchText: string | undefined): void => {
-        var dropdownOptionsTmp : IDropdownOption[] = [...props.options.filter(x => x.itemType != DropdownMenuItemType.Header)];
+        var dropdownOptionsTmp : IDropdownOption[] = [...(props.options as IDropdownOption[]).filter(x => x.itemType != DropdownMenuItemType.Header)];
         var matches : IDropdownOption[] = dropdownOptionsTmp.filter(x => x.text.toLowerCase().indexOf(searchText?.toLowerCase() ?? '') > -1);
         setPlaceHolder(`[${matches.length.toString()} match${matches.length != 1 ? 'es' : ''} found]`);
         setDropdownOptions(matches);

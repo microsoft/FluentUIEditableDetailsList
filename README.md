@@ -307,6 +307,16 @@ This starts the project on port 3000 and you are ready to play around with the E
                 enableBulkEdit={true}
                 enableColumnEdit={true}
                 enableSave={true}
+                customCommandBarItems={[
+                    {
+                        key: "CustomCommandBarItem1",
+                        name: "Custom Command Bar Item1",
+                        iconProps: { iconName: "Download" },
+                        onClick: () => {
+                          alert('Clicked');
+                        },
+                    }
+                ]}
             />
         </Fabric>
     );

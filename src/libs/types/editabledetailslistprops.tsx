@@ -1,3 +1,4 @@
+import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
 import { ConstrainMode } from "office-ui-fabric-react/lib/components/DetailsList";
 import { IDetailsListProps } from "office-ui-fabric-react/lib/components/DetailsList/DetailsList";
 import { IColumnConfig } from "./columnconfigtype";
@@ -40,4 +41,6 @@ export interface Props extends IDetailsListProps {
     onGridStatusMessageCallback?: any;
     gridCopyOptions?: IGridCopy;
     enableDefaultEditMode?: boolean;
+    customCommandBarItems?: ICommandBarItemProps[];
+    customCommandBarOverflowItems?: ICommandBarItemProps[];
 }

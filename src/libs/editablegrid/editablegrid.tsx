@@ -1553,6 +1553,10 @@ const EditableGrid = (props: Props) => {
                 onClick: () => ResetGridData()
             });
         }
+
+        if(props.customCommandBarItems && props.customCommandBarItems.length > 0){
+            return [...commandBarItems, ...props.customCommandBarItems];
+        }
     
         return commandBarItems;
     };
@@ -1593,9 +1597,18 @@ const EditableGrid = (props: Props) => {
         return commandBarItems;
     };
 
+    const CreateCommandBarOverflowItemsProps = () : ICommandBarItemProps[] => {
+        if(props.customCommandBarOverflowItems && props.customCommandBarOverflowItems.length > 0){
+            return [...props.customCommandBarOverflowItems];
+        };
+
+        return [];
+    };
+
     const GridColumns = CreateColumnConfigs();
     const CommandBarItemProps = CreateCommandBarItemProps();
     const CommandBarFarItemProps = CreateCommandBarFarItemProps(); 
+    const CommandBarOverflowItemsProps = CreateCommandBarOverflowItemsProps();
     function _getSelectionDetails() : string {
         const count = _selection.getSelectedCount();
         setSelectionCount(count);
@@ -1777,6 +1790,7 @@ const EditableGrid = (props: Props) => {
             {props.enableCommandBar === undefined || props.enableCommandBar === true ? <CommandBar
                 items={CommandBarItemProps}
                 ariaLabel="Command Bar"
+                overflowItems={CommandBarOverflowItemsProps}
                 farItems={CommandBarFarItemProps}
                 /> : null}
             {showSpinner ? 

@@ -345,6 +345,16 @@ const Consumer = () => {
                 }}
                 onGridUpdate={onGridUpdate}
                 enableDefaultEditMode={gridConfigOptions.enableDefaultEditMode}
+                customCommandBarItems={[
+                    {
+                        key: "CustomCommandBarItem1",
+                        name: "Custom Command Bar Item1",
+                        iconProps: { iconName: "Download" },
+                        onClick: () => {
+                          alert('Clicked');
+                        },
+                    }
+                ]}
             />
 
             {teachingBubbleVisible && (
