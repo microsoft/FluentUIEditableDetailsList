@@ -4,6 +4,11 @@
 import { ExportType } from "../types/exporttype";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
+declare global {
+    interface Navigator {
+        msSaveBlob?: (blob: any, defaultName?: string) => boolean
+    }
+}
 
 export const ExportToExcelUtil = (exportData : any[], fileName : string): void => 
 {

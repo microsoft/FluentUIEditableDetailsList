@@ -38,7 +38,7 @@
     "office-ui-fabric-react": "^7.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-scripts": "^4.0.3",
+    "react-scripts": "5.0.0",
     "react-toastify": "^7.0.4",
     "typescript": "^4.3.5",
     "web-vitals": "^1.1.2",
@@ -47,12 +47,12 @@
     "y18n": "^3.2.2"
   },
   "devDependencies": {
+    "immer": ">=9.0.6",
     "just-scripts": "^0.27.0",
     "just-stack-react": "^1.0.0",
-    "immer": ">=9.0.6",
-    "tar": ">=6.1.9",
     "marked": ">=4.0.10",
-    "nth-check": ">=2.0.1"
+    "nth-check": ">=2.0.1",
+    "tar": ">=6.1.9"
   },
   "scripts": {
     "start": "react-scripts start",
