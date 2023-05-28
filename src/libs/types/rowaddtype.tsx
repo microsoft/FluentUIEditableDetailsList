@@ -1,4 +1,4 @@
 export interface IRowAddWithValues {
-    enable? : boolean;
-    enableRowsCounterInPanel? : boolean;
+  enable?: boolean;
+  enableRowsCounterInPanel?: boolean;
 }

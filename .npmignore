@@ -4,13 +4,13 @@
 /node_modules
 /.pnp
 .pnp.js
-/dist
 
 # testing
 /coverage
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -31,5 +31,6 @@ yarn-error.log*
 /src/index.css
 /src/App.test.tsx
 /.npmrc
+/index.html
 /package-lock.json
 /tsconfig.json

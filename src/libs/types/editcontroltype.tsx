@@ -2,13 +2,13 @@
 // Licensed under the MIT License.
 
 export enum EditControlType {
-    None,
-    TextField,
-    DropDown,
-    Date,
-    MultilineTextField,
-    DateTime,
-    Picker,
-    Link,
-    Password
+  None,
+  TextField,
+  DropDown,
+  Date,
+  MultilineTextField,
+  DateTime,
+  Picker,
+  Link,
+  Password,
 }

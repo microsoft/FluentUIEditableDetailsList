@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES5",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
+    "types": ["vite/client", "node"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -13,17 +14,20 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": false,
-    "jsx": "react-jsx",
     "downlevelIteration": true,
     "declaration": true,
-    "outDir": "dist"
+    "noEmit": true,
+    "jsx": "react-jsx"
   },
+  "exclude": ["node_modules"],
+  
   "include": [
     "src/libs"
-  ]
+  ],
+  "references": [{ "path": "./tsconfig.vite.json" }]
+
 }

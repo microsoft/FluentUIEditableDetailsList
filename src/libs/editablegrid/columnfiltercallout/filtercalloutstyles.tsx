@@ -1,8 +1,8 @@
-import { mergeStyleSets } from "office-ui-fabric-react";
+import { mergeStyleSets } from "@fluentui/react";
 
 export const styles = mergeStyleSets({
   callout: {
     maxWidth: 500,
-    padding: 30
-  }
+    padding: 30,
+  },
 });

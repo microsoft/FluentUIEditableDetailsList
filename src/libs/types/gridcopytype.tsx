@@ -1,4 +1,4 @@
 export interface IGridCopy {
-    enableRowCopy? : boolean;
-    enableGridCopy? : boolean;
+  enableRowCopy?: boolean;
+  enableGridCopy?: boolean;
 }
