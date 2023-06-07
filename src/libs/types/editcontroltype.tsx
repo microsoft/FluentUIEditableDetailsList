@@ -11,4 +11,5 @@ export enum EditControlType {
   Picker,
   Link,
   Password,
+    CheckBox,
 }

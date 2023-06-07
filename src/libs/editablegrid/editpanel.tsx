@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import {
+    Checkbox,
   DatePicker,
   Dropdown,
   IDropdownOption,
@@ -18,11 +19,7 @@ import {
   textFieldStyles,
   verticalGapStackTokens,
 } from "../editablegrid/editablegridstyles";
-import {
-  GetDefault,
-  IsValidDataType,
-  ParseType,
-} from "../editablegrid/helper";
+import { GetDefault, IsValidDataType, ParseType } from "../editablegrid/helper";
 import PickerControl from "../editablegrid/pickercontrol/picker";
 import SearchableDropdown from "../editablegrid/searchabledropdown/searchabledropdown";
 import { IColumnConfig } from "../types/columnconfigtype";
@@ -71,6 +68,10 @@ const EditPanel = (props: Props) => {
   ): void => {
     SetObjValues(item.key, selectedDropdownItem?.text);
   };
+
+  const onCheckBoxChange = (ev: React.FormEvent<HTMLElement | HTMLInputElement>, isChecked: boolean, item : any): void => {
+    SetObjValues(item.key, isChecked ? item?.text : '');
+}
 
   const onTextUpdate = (
     ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -160,6 +161,15 @@ const EditPanel = (props: Props) => {
                 onChange={(ev, selected) =>
                   onDropDownChange(ev, selected, item)
                 }
+              />
+            );
+            break;
+          case EditControlType.CheckBox:
+            tmpRenderObj.push(
+              <Checkbox
+                label={item.text}
+                onChange={(ev, isChecked) => { if(ev && isChecked) onCheckBoxChange(ev, isChecked, item)}}
+
               />
             );
             break;
