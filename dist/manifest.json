@@ -1,7 +1,0 @@
-{
-  "src/libs/index.ts": {
-    "file": "fluentui-editable-grid.cjs",
-    "isEntry": true,
-    "src": "src/libs/index.ts"
-  }
-}
