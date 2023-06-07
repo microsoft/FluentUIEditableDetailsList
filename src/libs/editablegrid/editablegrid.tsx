@@ -830,6 +830,29 @@ const EditableGrid = (props: Props) => {
     setActivateCellEdit(activateCellEditTmp);
   };
 
+  const onCheckBoxChange = (
+    ev: React.FormEvent<HTMLElement | HTMLInputElement>, isChecked: boolean,
+    row: number,
+    column: IColumnConfig
+  ): void => {
+    setGridEditState(true);
+
+    let activateCellEditTmp: any[] = [];
+    activateCellEdit.forEach((item, index) => {
+      if (row == index) {
+        item.properties[column.key].value = [];
+      }
+
+      activateCellEditTmp.push(item);
+    });
+
+    if (column.onChange) {
+      HandleColumnOnChange(activateCellEditTmp, row, column);
+    }
+
+    setActivateCellEdit(activateCellEditTmp);
+  };
+
   const ChangeCellState = (
     key: string,
     rowNum: number,
@@ -1674,7 +1697,50 @@ const EditableGrid = (props: Props) => {
                       )}
                     </span>
                   );
-                  break;
+                case EditControlType.CheckBox:
+                  return (
+                    <span className={"row-" + rowNum! + "-col-" + index}>
+                      {ShouldRenderSpan() ? (
+                        column?.hoverComponentOptions?.enable ? (
+                          <HoverCard
+                            type={HoverCardType.plain}
+                            plainCardProps={{
+                              onRenderPlainCard: () =>
+                                onRenderPlainCard(column, rowNum!, item),
+                            }}
+                            instantOpenOnClick
+                          >
+                            {RenderDropdownSpan(
+                              props,
+                              index,
+                              rowNum,
+                              column,
+                              item,
+                              EditCellValue
+                            )}
+                          </HoverCard>
+                        ) : (
+                          RenderDropdownSpan(
+                            props,
+                            index,
+                            rowNum,
+                            column,
+                            item,
+                            EditCellValue
+                          )
+                        )
+                      ) : (
+                        <Checkbox
+                        //   label={column.text}
+                          ariaLabel={column.key}
+                          onChange={(ev, isChecked) => {
+                            if (ev && isChecked)
+                              onCheckBoxChange(ev, isChecked, rowNum!, column);
+                          }}
+                        />
+                      )}
+                    </span>
+                  );
                 case EditControlType.DropDown:
                   return (
                     <span className={"row-" + rowNum! + "-col-" + index}>

@@ -69,7 +69,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInExport: true,
     includeColumnInSearch: true,
     applyColumnFilter: true,
-    inputType: EditControlType.Password,
+    inputType: EditControlType.CheckBox,
   },
   {
     key: "age",
