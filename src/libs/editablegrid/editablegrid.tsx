@@ -831,7 +831,8 @@ const EditableGrid = (props: Props) => {
   };
 
   const onCheckBoxChange = (
-    ev: React.FormEvent<HTMLElement | HTMLInputElement>, isChecked: boolean,
+    ev: React.FormEvent<HTMLElement | HTMLInputElement>,
+    isChecked: boolean,
     row: number,
     column: IColumnConfig
   ): void => {
@@ -1731,7 +1732,7 @@ const EditableGrid = (props: Props) => {
                         )
                       ) : (
                         <Checkbox
-                        //   label={column.text}
+                          //   label={column.text}
                           ariaLabel={column.key}
                           onChange={(ev, isChecked) => {
                             if (ev && isChecked)
@@ -2827,7 +2828,7 @@ const EditableGrid = (props: Props) => {
           height: props.height != null ? props.height : "70vh",
           width: props.width != null ? props.width : "130vh",
           position: "relative",
-          backgroundColor: "white",
+          //backgroundColor: "white",
         })}
       >
         <ScrollablePane scrollbarVisibility={ScrollbarVisibility.auto}>
@@ -2904,7 +2905,7 @@ const EditableGrid = (props: Props) => {
               }
               selectionZoneProps={props.selectionZoneProps}
               shouldApplyApplicationRole={props.shouldApplyApplicationRole}
-              styles={props.styles}
+              styles={{ root: { backgroundColor: "#DBE5E6" } }}
               useFastIcons={props.useFastIcons}
               usePageCache={props.usePageCache}
               useReducedRowRenderer={props.useReducedRowRenderer}

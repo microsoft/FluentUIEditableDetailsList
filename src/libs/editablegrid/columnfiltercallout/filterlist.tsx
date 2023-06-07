@@ -202,7 +202,7 @@ const FilterList = (props: Props) => {
             height: "25vh",
             width: "30vh",
             position: "relative",
-            backgroundColor: "white",
+           // backgroundColor: "white",
           })}
         >
           <ScrollablePane scrollbarVisibility={ScrollbarVisibility.auto}>
