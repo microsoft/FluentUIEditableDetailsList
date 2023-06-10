@@ -207,7 +207,6 @@ const EditableGrid = (props: Props) => {
 
   useEffect(() => {
     if (props && props.items) {
-      console.log('ddj')
       var data: any[] = InitializeInternalGrid(props.items);
       setGridData(data);
       setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
@@ -317,7 +316,6 @@ const EditableGrid = (props: Props) => {
   };
 
   const SetGridItems = (data: any[]): void => {
-    console.log('ddj - seti')
     data = ResetGridRowID(data);
     setDefaultGridData(data);
     setEditChangeCompareData(data)
