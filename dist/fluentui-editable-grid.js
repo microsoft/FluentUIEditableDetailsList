@@ -43747,6 +43747,7 @@ export {
   ep as EventEmitter,
   Qm as EventType,
   RI as NumberAndDateOperators,
+  Tr as Operation,
   Nv as StringOperators
 };
 //# sourceMappingURL=fluentui-editable-grid.js.map
