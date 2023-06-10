@@ -86,7 +86,8 @@ export const GetDynamicSpanStyles = (
       display: "inline-block",
       width: "100%",
       height: "100%",
-      //textAlign:'center',
+      textAlign: "center",
+      justifyContent: "center",
       color:
         !column.cellStyleRule || !column.cellStyleRule.enable
           ? undefined
@@ -116,8 +117,22 @@ export const horizontalGapStackTokens: IStackTokens = {
   padding: 10,
 };
 
-export const textFieldStyles: Partial<ITextFieldStyles> = { fieldGroup: {} };
+export const textFieldStyles: Partial<ITextFieldStyles> = {
+  fieldGroup: {},
+  field: {
+    alignContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    justifyContent: "center",
+  },
+};
 
 export const dropdownStyles: Partial<IDropdownStyles> = {
   dropdown: { width: "90%" },
+  root: {
+    alignContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    justifyContent: "center",
+  },
 };

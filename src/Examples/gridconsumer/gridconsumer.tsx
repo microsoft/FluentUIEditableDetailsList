@@ -3,11 +3,24 @@
 
 import {
   Checkbox,
+  CheckboxVisibility,
   DetailsListLayoutMode,
+  DetailsRow,
   DirectionalHint,
   Fabric,
   FontIcon,
+  FontSizes,
+  FontWeights,
   IButtonProps,
+  ICalloutContentStyles,
+  IColumn,
+  IDetailsColumnRenderTooltipProps,
+  IDetailsHeaderProps,
+  IDetailsHeaderStyleProps,
+  IDetailsHeaderStyles,
+  IDetailsRowProps,
+  IDetailsRowStyles,
+  IRenderFunction,
   IStackTokens,
   Link,
   mergeStyles,
@@ -15,8 +28,11 @@ import {
   SelectionMode,
   Stack,
   StackItem,
+  Sticky,
+  StickyPositionType,
   TeachingBubble,
   TextField,
+  TooltipHost,
 } from "@fluentui/react";
 
 import {
@@ -36,11 +52,14 @@ import React from "react";
 
 interface GridConfigOptions {
   enableCellEdit: boolean;
+  enableRowEditCopy: boolean;
+  enableRowEditDelete: boolean;
   enableRowEdit: boolean;
   enableRowEditCancel: boolean;
   enableBulkEdit: boolean;
   enableColumnEdit: boolean;
-  enableExport: boolean;
+  enableCSVExport: boolean;
+  enableExcelExport: boolean;
   enableTextFieldEditMode: boolean;
   enableTextFieldEditModeCancel: boolean;
   enableGridRowsDelete: boolean;
@@ -71,11 +90,14 @@ const Consumer = () => {
   const [gridConfigOptions, setGridConfigOptions] = useState<GridConfigOptions>(
     {
       enableCellEdit: true,
+      enableRowEditCopy: true,
+      enableRowEditDelete: true,
       enableRowEdit: true,
       enableRowEditCancel: true,
       enableBulkEdit: true,
       enableColumnEdit: true,
-      enableExport: true,
+      enableExcelExport: true,
+      enableCSVExport: true,
       enableTextFieldEditMode: true,
       enableTextFieldEditModeCancel: true,
       enableGridRowsDelete: true,
@@ -296,6 +318,85 @@ const Consumer = () => {
     });
   };
 
+  const tableHeaderStyles = (): Partial<IDetailsHeaderStyles> => {
+    return {
+      root: {
+        fontWeight: 200,
+        paddingTop: 0,
+        ".ms-DetailsHeader-cell": {
+          whiteSpace: "normal",
+          textOverflow: "clip",
+          lineHeight: "normal",
+          textAlign: "center",
+          backgroundColor: "#DBE5E6",
+          borderWidth: "0px 0px 1px 1px",
+          borderColor: "rgba(0,0,0,0.35)",
+          borderStyle: "solid",
+        },
+        ".ms-DetailsHeader-cellTitle": {
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        ".ms-DetailsHeader-cellName": {
+          fontFamily: "Segoe UI",
+          alignItems: "center",
+          fontSize: "16px",
+          fontWeight: 400,
+        },
+      },
+    };
+  };
+
+  const tableDetailsRowsStyles = () => (): Partial<IDetailsRowStyles> => {
+    return {
+      root: [
+        {
+          fontSize: "14px",
+          backgroundColor: "white",
+        },
+      ],
+      cell: {
+        borderWidth: "0px 0px 1px 1px",
+        borderColor: "rgba(0,0,0,0.35)",
+        borderStyle: "solid",
+        alignItems: "center",
+      },
+      isMultiline: {
+        alignItems: "center",
+      },
+    };
+  };
+
+  const onRenderDetailsHeader: IRenderFunction<IDetailsHeaderProps> = (
+    props,
+    defaultRender
+  ) => {
+    if (!props || !defaultRender) return null;
+
+    const onRenderColumnHeaderTooltip: IRenderFunction<
+      IDetailsColumnRenderTooltipProps
+    > = (tooltipHostProps) => <TooltipHost {...tooltipHostProps} />;
+
+    return (
+      <Sticky stickyPosition={StickyPositionType.Header} isScrollSynced={true}>
+        {defaultRender!({
+          ...props,
+          onRenderColumnHeaderTooltip,
+          styles: tableHeaderStyles,
+        })}
+      </Sticky>
+    );
+  };
+
+  const onRenderRow = (
+    props?: IDetailsRowProps,
+    defaultRender?: IRenderFunction<IDetailsRowProps>
+  ) => {
+    if (!props || !defaultRender) return null;
+    return <DetailsRow {...props} styles={tableDetailsRowsStyles()} />;
+  };
+
   return (
     <Stack grow horizontalAlign="center">
       <ToastContainer />
@@ -328,6 +429,22 @@ const Consumer = () => {
           </StackItem>
           <StackItem className={classNames.checkbox}>
             <Checkbox
+              id={"enableRowEditCopy"}
+              label="Row Single Copy"
+              onChange={onCheckboxChange}
+              checked={gridConfigOptions.enableRowEditCopy}
+            />
+          </StackItem>
+          <StackItem className={classNames.checkbox}>
+            <Checkbox
+              id={"enableRowEditDelete"}
+              label="Row Single Delete"
+              onChange={onCheckboxChange}
+              checked={gridConfigOptions.enableRowEditDelete}
+            />
+          </StackItem>
+          <StackItem className={classNames.checkbox}>
+            <Checkbox
               id={"enableRowEditCancel"}
               label="Row Edit Cancel"
               onChange={onCheckboxChange}
@@ -352,10 +469,18 @@ const Consumer = () => {
           </StackItem>
           <StackItem className={classNames.checkbox}>
             <Checkbox
-              id={"enableExport"}
-              label="Export"
+              id={"enableCSVExport"}
+              label="Export CSV"
               onChange={onCheckboxChange}
-              checked={gridConfigOptions.enableExport}
+              checked={gridConfigOptions.enableCSVExport}
+            />
+          </StackItem>
+          <StackItem className={classNames.checkbox}>
+            <Checkbox
+              id={"enableExcelExport"}
+              label="Export Excel"
+              onChange={onCheckboxChange}
+              checked={gridConfigOptions.enableExcelExport}
             />
           </StackItem>
           <StackItem className={classNames.checkbox}>
@@ -481,61 +606,98 @@ const Consumer = () => {
           />
         </Link>
       </div>
-      <EditableGrid
-        id={1}
-        enableColumnEdit={gridConfigOptions.enableColumnEdit}
-        enableSave={gridConfigOptions.enableSave}
-        columns={attachGridValueChangeCallbacks(GridColumnConfig)}
-        layoutMode={DetailsListLayoutMode.justified}
-        selectionMode={SelectionMode.multiple}
-        enableRowEdit={gridConfigOptions.enableRowEdit}
-        enableRowEditCancel={gridConfigOptions.enableRowEditCancel}
-        enableBulkEdit={gridConfigOptions.enableBulkEdit}
-        items={items}
-        enableCellEdit={gridConfigOptions.enableCellEdit}
-        enableExport={gridConfigOptions.enableExport}
-        enableTextFieldEditMode={gridConfigOptions.enableTextFieldEditMode}
-        enableTextFieldEditModeCancel={
-          gridConfigOptions.enableTextFieldEditModeCancel
-        }
-        enableGridRowsDelete={gridConfigOptions.enableGridRowsDelete}
-        enableGridRowsAdd={gridConfigOptions.enableGridRowsAdd}
-        height={"70vh"}
-        width={"160vh"}
-        position={"relative"}
-        enableUnsavedEditIndicator={
-          gridConfigOptions.enableUnsavedEditIndicator
-        }
-        onGridSave={onGridSave}
-        enableGridReset={gridConfigOptions.enableGridReset}
-        enableColumnFilters={gridConfigOptions.enableColumnFilters}
-        enableColumnFilterRules={gridConfigOptions.enableColumnFilterRules}
-        enableRowAddWithValues={{
-          enable: gridConfigOptions.enableRowAddWithValues,
-          enableRowsCounterInPanel: true,
+      <div
+        style={{
+          marginBottom: 25,
+          width: "75%",
+          backgroundColor: "white",
         }}
-        gridCopyOptions={{
-          enableGridCopy: gridConfigOptions.enableGridCopy,
-          enableRowCopy: gridConfigOptions.enableRowCopy,
-        }}
-        onGridStatusMessageCallback={(str: string) => {
-          toast.info(str, {
-            position: toast.POSITION.TOP_CENTER,
-          });
-        }}
-        onGridUpdate={onGridUpdate}
-        enableDefaultEditMode={gridConfigOptions.enableDefaultEditMode}
-        customCommandBarItems={[
-          {
-            key: "CustomCommandBarItem1",
-            name: "Custom Command Bar Item1",
-            iconProps: { iconName: "Download" },
-            onClick: () => {
-              alert("Clicked");
+      >
+        <EditableGrid
+          checkboxVisibility={CheckboxVisibility.hidden}
+          id={1}
+          commandBarStyles={{
+            root: {
+              borderWidth: "1px 1px 1px 1px",
+              borderColor: "rgba(0,0,0,0.35)",
+              borderStyle: "solid",
             },
-          },
-        ]}
-      />
+          }}
+          scrollablePaneStyles={{
+            root: {
+              borderWidth: "0px 1px 1px 0px",
+              borderColor: "rgba(0,0,0,0.35)",
+              borderStyle: "solid",
+            },
+            contentContainer: "custom-scrollbar",
+            stickyAbove: {
+              selectors: {
+                ".ms-FocusZone": {
+                  paddingTop: 0,
+                },
+              },
+            },
+          }}
+          actionIconStylesInGrid={{ icon: { color: "black" } }}
+          enableColumnEdit={gridConfigOptions.enableColumnEdit}
+          enableSave={gridConfigOptions.enableSave}
+          columns={attachGridValueChangeCallbacks(GridColumnConfig)}
+          onRenderDetailsHeader={onRenderDetailsHeader}
+          onRenderRow={onRenderRow}
+          layoutMode={DetailsListLayoutMode.justified}
+          selectionMode={SelectionMode.multiple}
+          enableRowEditCopy={gridConfigOptions.enableRowEditCopy}
+          enableRowEditDelete={gridConfigOptions.enableRowEditDelete}
+          enableRowEdit={gridConfigOptions.enableRowEdit}
+          enableRowEditCancel={gridConfigOptions.enableRowEditCancel}
+          enableBulkEdit={gridConfigOptions.enableBulkEdit}
+          items={items}
+          enableCellEdit={gridConfigOptions.enableCellEdit}
+          enableCSVExport={gridConfigOptions.enableCSVExport}
+          enableExcelExport={gridConfigOptions.enableExcelExport}
+          enableTextFieldEditMode={gridConfigOptions.enableTextFieldEditMode}
+          enableTextFieldEditModeCancel={
+            gridConfigOptions.enableTextFieldEditModeCancel
+          }
+          enableGridRowsDelete={gridConfigOptions.enableGridRowsDelete}
+          enableGridRowsAdd={gridConfigOptions.enableGridRowsAdd}
+          height={"250px"}
+          width={"100%"}
+          position={"relative"}
+          enableUnsavedEditIndicator={
+            gridConfigOptions.enableUnsavedEditIndicator
+          }
+          onGridSave={onGridSave}
+          enableGridReset={gridConfigOptions.enableGridReset}
+          enableColumnFilters={gridConfigOptions.enableColumnFilters}
+          enableColumnFilterRules={gridConfigOptions.enableColumnFilterRules}
+          enableRowAddWithValues={{
+            enable: gridConfigOptions.enableRowAddWithValues,
+            enableRowsCounterInPanel: true,
+          }}
+          gridCopyOptions={{
+            enableGridCopy: gridConfigOptions.enableGridCopy,
+            enableRowCopy: gridConfigOptions.enableRowCopy,
+          }}
+          onGridStatusMessageCallback={(str: string) => {
+            toast.info(str, {
+              position: toast.POSITION.TOP_CENTER,
+            });
+          }}
+          onGridUpdate={onGridUpdate}
+          enableDefaultEditMode={gridConfigOptions.enableDefaultEditMode}
+          customCommandBarItems={[
+            {
+              key: "CustomCommandBarItem1",
+              name: "Custom Command Bar Item1",
+              iconProps: { iconName: "Download" },
+              onClick: () => {
+                alert("Clicked");
+              },
+            },
+          ]}
+        />
+      </div>
 
       {teachingBubbleVisible && (
         <TeachingBubble

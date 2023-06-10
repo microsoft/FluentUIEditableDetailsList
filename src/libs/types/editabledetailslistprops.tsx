@@ -1,20 +1,35 @@
 import {
   ConstrainMode,
+  IButtonStyles,
   IColumn,
   ICommandBarItemProps,
+  ICommandBarStyleProps,
+  ICommandBarStyles,
   IDetailsListProps,
+  IScrollablePaneStyleProps,
+  IScrollablePaneStyles,
+  IStyleFunctionOrObject,
 } from "@fluentui/react";
 import { IColumnConfig } from "./columnconfigtype";
 import { IGridCopy } from "./gridcopytype";
 import { IRowAddWithValues } from "./rowaddtype";
 
+export type IContentScrollablePaneStyleProps = Partial<IScrollablePaneStyleProps> & {
+  scrollablePaneOffsetHeight?: number;
+  scrollablePaneContentOffsetHeight?: number;
+};
 export interface Props extends IDetailsListProps {
   id: number;
+  actionIconStylesInGrid?: IButtonStyles;
   items: any[];
   columns: IColumnConfig[];
-  enableExport?: boolean;
+  commandBarStyles?: IStyleFunctionOrObject<ICommandBarStyleProps, ICommandBarStyles>;
+  enableCSVExport?: boolean;
+  enableExcelExport?: boolean;
   exportFileName?: string;
   enableSave?: boolean;
+  enableRowEditCopy?: boolean;
+  enableRowEditDelete?: boolean;
   enableRowEdit?: boolean;
   enableRowEditCancel?: boolean;
   enableColumnEdit?: boolean;
@@ -32,6 +47,7 @@ export interface Props extends IDetailsListProps {
   pageSize?: number;
   onExcelExport?: any;
   height?: string;
+  scrollablePaneStyles?: IStyleFunctionOrObject<IContentScrollablePaneStyleProps, IScrollablePaneStyles>;
   width?: string;
   position?: string;
   constrainMode?: ConstrainMode;

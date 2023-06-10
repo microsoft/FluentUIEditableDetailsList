@@ -20,13 +20,8 @@ import {
   IBasePickerSuggestionsProps,
   IColumn,
   ICommandBarItemProps,
-  IconButton,
-  IDetailsColumnRenderTooltipProps,
-  IDetailsHeaderProps,
-  IDropdownOption,
-  IInputProps,
-  IRenderFunction,
-  ITag,
+  IconButton, IDropdownOption,
+  IInputProps, ITag,
   Link,
   MarqueeSelection,
   mergeStyles,
@@ -39,12 +34,8 @@ import {
   SpinButton,
   Spinner,
   SpinnerSize,
-  Stack,
-  Sticky,
-  StickyPositionType,
-  TagPicker,
-  TextField,
-  TooltipHost,
+  Stack, TagPicker,
+  TextField
 } from "@fluentui/react";
 import AddRowPanel from "../editablegrid/addrowpanel";
 import FilterCallout from "../editablegrid/columnfiltercallout/filtercallout";
@@ -83,11 +74,9 @@ import {
 } from "../editablegrid/helper";
 import MessageDialog from "../editablegrid/messagedialog";
 import PickerControl from "../editablegrid/pickercontrol/picker";
-import SearchableDropdown from "../editablegrid/searchabledropdown/searchabledropdown";
 import { EventEmitter, EventType } from "../eventemitter/EventEmitter";
 import {
-  ICallBackParams,
-  ICallBackRequestParams,
+  ICallBackParams
 } from "../types/callbackparams";
 import { IColumnConfig } from "../types/columnconfigtype";
 import {
@@ -100,9 +89,7 @@ import { EditControlType } from "../types/editcontroltype";
 import { EditType } from "../types/edittype";
 import { ExportType } from "../types/exporttype";
 import { IFilter } from "../types/filterstype";
-import { IGridItemsType } from "../types/griditemstype";
 import { Operation } from "../types/operation";
-import { IRowAddWithValues } from "../types/rowaddtype";
 
 interface SortOptions {
   key: string;
@@ -1136,6 +1123,17 @@ const EditableGrid = (props: Props) => {
       );
   };
 
+  const HandleRowSingleDelete = (rowNum: number): void => {
+    let defaultGridDataTmp = [...defaultGridData];
+
+    defaultGridDataTmp
+      .filter((x) => x._grid_row_id_ == rowNum)
+      .map((x) => (x._grid_row_operation_ = Operation.Delete));
+
+    setGridEditState(true);
+    SetGridItems(defaultGridDataTmp);
+  };
+
   /* #endregion */
 
   const RowSelectOperations = (type: EditType, item: {}): boolean => {
@@ -2093,11 +2091,12 @@ const EditableGrid = (props: Props) => {
 
     if (props.enableRowEdit) {
       columnConfigs.push({
-        key: "action",
-        name: "Actions",
-        ariaLabel: "Actions",
-        fieldName: "action",
-        isResizable: true,
+        key: "edit",
+        name: "Edit Row",
+        isIconOnly: true,
+        ariaLabel: "Edit Row",
+        fieldName: "Edit",
+        isResizable: false,
         minWidth: 50,
         maxWidth: 50,
         onRender: (item, index) => (
@@ -2111,8 +2110,9 @@ const EditableGrid = (props: Props) => {
                   onClick={() =>
                     ShowRowEditMode(item, Number(item["_grid_row_id_"])!, false)
                   }
-                  iconProps={{ iconName: "Save" }}
+                  iconProps={{ iconName: "Save"}}
                   title={"Save"}
+                  styles={props.actionIconStylesInGrid}
                 ></IconButton>
                 {props.enableRowEditCancel ? (
                   <IconButton
@@ -2120,8 +2120,9 @@ const EditableGrid = (props: Props) => {
                     onClick={() =>
                       CancelRowEditMode(item, Number(item["_grid_row_id_"])!)
                     }
-                    iconProps={{ iconName: "RemoveFilter" }}
+                    iconProps={{ iconName: "RemoveFilter"}}
                     title={"Cancel"}
+                    styles={props.actionIconStylesInGrid}
                   ></IconButton>
                 ) : null}
               </div>
@@ -2136,21 +2137,79 @@ const EditableGrid = (props: Props) => {
                         true
                       )
                     }
-                    iconProps={{ iconName: "Edit" }}
-                    title={"Edit"}
+                    iconProps={{ iconName: "EditSolid12" }}
+                    title={"Edit Row"}
+                    styles={props.actionIconStylesInGrid}
                   ></IconButton>
                 )}
-                {props.gridCopyOptions &&
-                  props.gridCopyOptions.enableRowCopy && (
-                    <IconButton
-                      onClick={() =>
-                        HandleRowCopy(Number(item["_grid_row_id_"])!)
-                      }
-                      iconProps={{ iconName: "Copy" }}
-                      title={"Copy"}
-                    ></IconButton>
-                  )}
               </div>
+            )}
+          </div>
+        ),
+      });
+    }
+
+    if (props.enableRowEditCopy) {
+      columnConfigs.push({
+        key: "copy",
+        name: "Copy Row",
+        ariaLabel: "Copy Row",
+        fieldName: "Copy",
+        isResizable: false,
+        isIconOnly: true,
+        minWidth: 50,
+        maxWidth: 50,
+        onRender: (item, index) => (
+          <div>
+            {props.gridCopyOptions && props.gridCopyOptions.enableRowCopy && (
+              <IconButton
+                onClick={() => HandleRowCopy(Number(item["_grid_row_id_"])!)}
+                disabled={
+                  activateCellEdit &&
+                  activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                  activateCellEdit[Number(item["_grid_row_id_"])!][
+                    "isActivated"
+                  ]
+                }
+                iconProps={{ iconName: "Copy"}}
+                styles={props.actionIconStylesInGrid}
+                title={"Copy Row"}
+              ></IconButton>
+            )}
+          </div>
+        ),
+      });
+    }
+
+    if (props.enableRowEditDelete) {
+      columnConfigs.push({
+        key: "delete",
+        name: "Delete Row",
+        ariaLabel: "Delete Row",
+        fieldName: "Delete",
+        isResizable: false,
+        isIconOnly: true,
+        minWidth: 50,
+        maxWidth: 50,
+        onRender: (item, index) => (
+          <div>
+            {props.gridCopyOptions && props.gridCopyOptions.enableRowCopy && (
+              <IconButton
+                onClick={() =>
+                  HandleRowSingleDelete(Number(item["_grid_row_id_"])!)
+                }
+                disabled={
+                  activateCellEdit &&
+                  activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                  activateCellEdit[Number(item["_grid_row_id_"])!][
+                    "isActivated"
+                  ]
+                }
+                iconProps={{ iconName: "ErrorBadge" }}
+                title={"Delete Row"}
+                styles={props.actionIconStylesInGrid}
+
+              ></IconButton>
             )}
           </div>
         ),
@@ -2163,7 +2222,29 @@ const EditableGrid = (props: Props) => {
   const CreateCommandBarItemProps = (): ICommandBarItemProps[] => {
     let commandBarItems: ICommandBarItemProps[] = [];
 
-    if (props.enableExport) {
+    if (props.enableExcelExport && !props.enableCSVExport) {
+      commandBarItems.push({
+        id: "export",
+        key: "exportToExcel",
+        text: "Excel To Export",
+        ariaLabel: "Export To Excel",
+        disabled: isGridInEdit || editMode,
+        cacheKey: "myCacheKey",
+        iconProps: { iconName: "ExcelDocument" },
+        onClick: () => onExportClick(ExportType.XLSX),
+      });
+    } else if (props.enableCSVExport && !props.enableExcelExport) {
+      commandBarItems.push({
+        id: "export",
+        key: "exportToCSV",
+        text: "CSV Export",
+        ariaLabel: "CSV Export",
+        disabled: isGridInEdit || editMode,
+        cacheKey: "myCacheKey",
+        iconProps: { iconName: "LandscapeOrientation" },
+        onClick: () => onExportClick(ExportType.CSV),
+      });
+    } else if (props.enableExcelExport && props.enableCSVExport) {
       commandBarItems.push({
         id: "export",
         key: "exportGrid",
@@ -2191,6 +2272,46 @@ const EditableGrid = (props: Props) => {
       });
     }
 
+    if (props.gridCopyOptions && props.gridCopyOptions.enableGridCopy) {
+      commandBarItems.push({
+        key: "copy",
+        text: "Copy Grid",
+        disabled: isGridInEdit || editMode || selectionCount == 0,
+        ariaLabel:
+          isGridInEdit || editMode || selectionCount == 0
+            ? "Make A Selection In The Grid To Copy"
+            : "Copy Selected Grid Row",
+        title:
+          isGridInEdit || editMode || selectionCount == 0
+            ? "Make A Selection In The Grid To Copy"
+            : "Copy Selected Grid Row",
+        iconProps: { iconName: "Documentation" },
+        onClick: () => CopyGridRows(),
+      });
+    }
+
+    if (props.enableRowAddWithValues && props.enableRowAddWithValues.enable) {
+      commandBarItems.push({
+        id: "addrowswithdata",
+        key: "addrowswithdata",
+        text: "Add Rows With Data",
+        disabled: isGridInEdit || editMode,
+        iconProps: { iconName: "Add" },
+        onClick: () => RowSelectOperations(EditType.AddRowWithData, {}),
+      });
+    }
+
+    if (props.enableGridRowsDelete) {
+      commandBarItems.push({
+        id: "deleterows",
+        key: "deleterows",
+        text: selectionCount > 1 ? "Delete Rows" : "Delete Row",
+        disabled: isGridInEdit || editMode || selectionCount == 0,
+        iconProps: { iconName: "trash" },
+        onClick: () => RowSelectOperations(EditType.DeleteRow, {}),
+      });
+    }
+
     if (props.enableColumnFilterRules) {
       commandBarItems.push({
         id: "columnfilter",
@@ -2199,7 +2320,7 @@ const EditableGrid = (props: Props) => {
         ariaLabel: "Filter",
         disabled: isGridInEdit || editMode,
         cacheKey: "myColumnFilterCacheKey",
-        iconProps: { iconName: "Filter" },
+        iconProps: { iconName: "QueryList" },
         subMenuProps: {
           items: [
             {
@@ -2270,16 +2391,6 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.gridCopyOptions && props.gridCopyOptions.enableGridCopy) {
-      commandBarItems.push({
-        key: "copy",
-        text: "Copy",
-        disabled: isGridInEdit || editMode || selectionCount == 0,
-        iconProps: { iconName: "Copy" },
-        onClick: () => CopyGridRows(),
-      });
-    }
-
     if (props.enableGridRowsAdd) {
       commandBarItems.push({
         id: "addrows",
@@ -2288,28 +2399,6 @@ const EditableGrid = (props: Props) => {
         disabled: isGridInEdit || editMode,
         iconProps: { iconName: "AddTo" },
         onClick: () => RowSelectOperations(EditType.AddRow, {}),
-      });
-    }
-
-    if (props.enableRowAddWithValues && props.enableRowAddWithValues.enable) {
-      commandBarItems.push({
-        id: "addrowswithdata",
-        key: "addrowswithdata",
-        text: "Add Rows with Data",
-        disabled: isGridInEdit || editMode,
-        iconProps: { iconName: "AddToShoppingList" },
-        onClick: () => RowSelectOperations(EditType.AddRowWithData, {}),
-      });
-    }
-
-    if (props.enableGridRowsDelete) {
-      commandBarItems.push({
-        id: "deleterows",
-        key: "deleterows",
-        text: "Delete Rows",
-        disabled: isGridInEdit || editMode || selectionCount == 0,
-        iconProps: { iconName: "DeleteRows" },
-        onClick: () => RowSelectOperations(EditType.DeleteRow, {}),
       });
     }
 
@@ -2419,26 +2508,6 @@ const EditableGrid = (props: Props) => {
         return `${count} items selected`;
     }
   }
-
-  const onRenderDetailsHeader: IRenderFunction<IDetailsHeaderProps> = (
-    props,
-    defaultRender
-  ) => {
-    if (!props) {
-      return null;
-    }
-    const onRenderColumnHeaderTooltip: IRenderFunction<
-      IDetailsColumnRenderTooltipProps
-    > = (tooltipHostProps) => <TooltipHost {...tooltipHostProps} />;
-    return (
-      <Sticky stickyPosition={StickyPositionType.Header} isScrollSynced>
-        {defaultRender!({
-          ...props,
-          onRenderColumnHeaderTooltip,
-        })}
-      </Sticky>
-    );
-  };
 
   const onRenderPlainCard = (
     column: IColumnConfig,
@@ -2811,6 +2880,7 @@ const EditableGrid = (props: Props) => {
           ariaLabel="Command Bar"
           overflowItems={CommandBarOverflowItemsProps}
           farItems={CommandBarFarItemProps}
+          styles={props.commandBarStyles}
         />
       ) : null}
       {showSpinner ? (
@@ -2825,13 +2895,12 @@ const EditableGrid = (props: Props) => {
       {showFilterCallout && filterCalloutComponent}
       <div
         className={mergeStyles({
-          height: props.height != null ? props.height : "70vh",
-          width: props.width != null ? props.width : "130vh",
+          height: props.height != null ? props.height : "250px",
+          width: props.width != null ? props.width : "100%",
           position: "relative",
-          //backgroundColor: "white",
         })}
       >
-        <ScrollablePane scrollbarVisibility={ScrollbarVisibility.auto}>
+        <ScrollablePane styles={props.scrollablePaneStyles} scrollbarVisibility={ScrollbarVisibility.auto}>
           <MarqueeSelection selection={_selection}>
             <DetailsList
               compact={true}
@@ -2854,7 +2923,7 @@ const EditableGrid = (props: Props) => {
               constrainMode={ConstrainMode.unconstrained}
               selection={_selection}
               setKey="none"
-              onRenderDetailsHeader={onRenderDetailsHeader}
+              onRenderDetailsHeader={props.onRenderDetailsHeader}
               ariaLabelForSelectAllCheckbox="Toggle selection for all items"
               ariaLabelForSelectionColumn="Toggle selection"
               checkButtonAriaLabel="Row checkbox"
@@ -2905,7 +2974,7 @@ const EditableGrid = (props: Props) => {
               }
               selectionZoneProps={props.selectionZoneProps}
               shouldApplyApplicationRole={props.shouldApplyApplicationRole}
-              styles={{ root: { backgroundColor: "#DBE5E6" } }}
+              styles={props.styles}
               useFastIcons={props.useFastIcons}
               usePageCache={props.usePageCache}
               useReducedRowRenderer={props.useReducedRowRenderer}

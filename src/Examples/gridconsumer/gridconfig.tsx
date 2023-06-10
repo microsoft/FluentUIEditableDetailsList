@@ -10,6 +10,13 @@ import { EditControlType } from "../../libs/types/editcontroltype";
 import { CellHover } from "../../libs/editablegrid/hoverComponent";
 
 import React from "react";
+import {
+  Checkbox,
+  IColumn,
+  IDetailsColumnStyleProps,
+  IDetailsColumnStyles,
+  Stack,
+} from "@fluentui/react";
 
 export const GridColumnConfig: IColumnConfig[] = [
   {
@@ -18,8 +25,8 @@ export const GridColumnConfig: IColumnConfig[] = [
     text: "ID",
     editable: false,
     dataType: "number",
-    minWidth: 100,
-    maxWidth: 100,
+    minWidth: 50,
+    maxWidth: 50,
     isResizable: true,
     includeColumnInExport: true,
     includeColumnInSearch: true,
@@ -56,6 +63,30 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInExport: true,
     includeColumnInSearch: true,
     applyColumnFilter: true,
+  },
+  {
+    key: "checkbox",
+    name: "Checkbox",
+    text: "Checkbox",
+    editable: true,
+    dataType: "boolean",
+    minWidth: 100,
+    maxWidth: 100,
+    isResizable: true,
+    includeColumnInExport: true,
+    includeColumnInSearch: false,
+    applyColumnFilter: true,
+    onRender: (item: {
+      selected: boolean | undefined;
+      onCheckboxChange: (arg0: any) => void;
+    }) => {
+      return (
+        <Stack horizontalAlign="center">
+          <Checkbox checked={item.selected} />
+        </Stack>
+      );
+    },
+    inputType: EditControlType.CheckBox,
   },
   {
     key: "password",
