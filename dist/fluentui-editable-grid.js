@@ -42106,7 +42106,6 @@ const lL = (e) => {
     ep.unsubscribe(Qm.onSearch, _t);
   })), Ir(() => {
     if (e && e.items) {
-      console.log("ddj");
       var H = GI(e.items);
       c(H), m(H.map((re) => ({ ...re }))), wt(!1), Ft(H);
     }
@@ -42147,7 +42146,7 @@ const lL = (e) => {
     }
     (!j && H || j && !H) && K(H);
   }, Ft = (H) => {
-    console.log("ddj - seti"), H = zI(H), f(H), _(H), x(KI(H));
+    H = zI(H), f(H), _(H), x(KI(H));
   }, wt = (H) => {
     q != H && V(H);
   }, pr = (H) => {
