@@ -20,8 +20,10 @@ import {
   IBasePickerSuggestionsProps,
   IColumn,
   ICommandBarItemProps,
-  IconButton, IDropdownOption,
-  IInputProps, ITag,
+  IconButton,
+  IDropdownOption,
+  IInputProps,
+  ITag,
   Link,
   MarqueeSelection,
   mergeStyles,
@@ -34,8 +36,9 @@ import {
   SpinButton,
   Spinner,
   SpinnerSize,
-  Stack, TagPicker,
-  TextField
+  Stack,
+  TagPicker,
+  TextField,
 } from "@fluentui/react";
 import AddRowPanel from "../editablegrid/addrowpanel";
 import FilterCallout from "../editablegrid/columnfiltercallout/filtercallout";
@@ -75,9 +78,7 @@ import {
 import MessageDialog from "../editablegrid/messagedialog";
 import PickerControl from "../editablegrid/pickercontrol/picker";
 import { EventEmitter, EventType } from "../eventemitter/EventEmitter";
-import {
-  ICallBackParams
-} from "../types/callbackparams";
+import { ICallBackParams } from "../types/callbackparams";
 import { IColumnConfig } from "../types/columnconfigtype";
 import {
   IFilterItem,
@@ -106,6 +107,8 @@ const EditableGrid = (props: Props) => {
   const [gridData, setGridData] = useState<any[]>([]);
   const [defaultGridData, setDefaultGridData] = useState<any[]>([]);
   const [backupDefaultGridData, setBackupDefaultGridData] = useState<any[]>([]);
+  const [editChangeCompareData, setEditChangeCompareData] = useState<any[]>([]);
+
   const [activateCellEdit, setActivateCellEdit] = useState<any[]>([]);
   const [selectionDetails, setSelectionDetails] = useState("");
   const [selectedItems, setSelectedItems] = useState<any[]>();
@@ -204,6 +207,7 @@ const EditableGrid = (props: Props) => {
 
   useEffect(() => {
     if (props && props.items) {
+      console.log('ddj')
       var data: any[] = InitializeInternalGrid(props.items);
       setGridData(data);
       setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
@@ -267,6 +271,13 @@ const EditableGrid = (props: Props) => {
     if (props.onGridUpdate) {
       await props.onGridUpdate(defaultGridData);
     }
+    if (
+      JSON.stringify(editChangeCompareData) === JSON.stringify(defaultGridData)
+    ) {
+      setGridEditState(false);
+    } else {
+      setGridEditState(true);
+    }
   };
 
   const UpdateGridEditStatus = (): void => {
@@ -306,8 +317,10 @@ const EditableGrid = (props: Props) => {
   };
 
   const SetGridItems = (data: any[]): void => {
+    console.log('ddj - seti')
     data = ResetGridRowID(data);
     setDefaultGridData(data);
+    setEditChangeCompareData(data)
     setActivateCellEdit(InitializeInternalGridEditStructure(data));
   };
 
@@ -661,8 +674,6 @@ const EditableGrid = (props: Props) => {
       return;
     }
 
-    setGridEditState(true);
-
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
@@ -743,8 +754,6 @@ const EditableGrid = (props: Props) => {
     row: number,
     column: IColumnConfig
   ): void => {
-    setGridEditState(true);
-
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
@@ -766,7 +775,7 @@ const EditableGrid = (props: Props) => {
     row: number,
     column: IColumnConfig
   ): void => {
-    setGridEditState(true);
+    //setGridEditState(true);
 
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
@@ -799,8 +808,6 @@ const EditableGrid = (props: Props) => {
     row: number,
     column: IColumnConfig
   ): void => {
-    setGridEditState(true);
-
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
@@ -823,8 +830,6 @@ const EditableGrid = (props: Props) => {
     row: number,
     column: IColumnConfig
   ): void => {
-    setGridEditState(true);
-
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
@@ -971,15 +976,17 @@ const EditableGrid = (props: Props) => {
       enableTextField
     );
 
-    setActivateCellEdit(activateCellEditTmp);
-
+    setActivateCellEdit(activateCellEditTmp);    
     if (!enableTextField) {
+
       let defaultGridDataTmp: any[] = SaveRowValue(
         item,
         rowNum,
         defaultGridData
       );
       setDefaultGridData(defaultGridDataTmp);
+      
+      
     }
   };
 
@@ -2107,10 +2114,14 @@ const EditableGrid = (props: Props) => {
               <div>
                 <IconButton
                   disabled={editMode}
-                  onClick={() =>
-                    ShowRowEditMode(item, Number(item["_grid_row_id_"])!, false)
-                  }
-                  iconProps={{ iconName: "Save"}}
+                  onClick={() => {
+                    ShowRowEditMode(
+                      item,
+                      Number(item["_grid_row_id_"])!,
+                      false
+                    );
+                  }}
+                  iconProps={{ iconName: "Save" }}
                   title={"Save"}
                   styles={props.actionIconStylesInGrid}
                 ></IconButton>
@@ -2120,7 +2131,7 @@ const EditableGrid = (props: Props) => {
                     onClick={() =>
                       CancelRowEditMode(item, Number(item["_grid_row_id_"])!)
                     }
-                    iconProps={{ iconName: "RemoveFilter"}}
+                    iconProps={{ iconName: "RemoveFilter" }}
                     title={"Cancel"}
                     styles={props.actionIconStylesInGrid}
                   ></IconButton>
@@ -2171,7 +2182,7 @@ const EditableGrid = (props: Props) => {
                     "isActivated"
                   ]
                 }
-                iconProps={{ iconName: "Copy"}}
+                iconProps={{ iconName: "Copy" }}
                 styles={props.actionIconStylesInGrid}
                 title={"Copy Row"}
               ></IconButton>
@@ -2208,7 +2219,6 @@ const EditableGrid = (props: Props) => {
                 iconProps={{ iconName: "ErrorBadge" }}
                 title={"Delete Row"}
                 styles={props.actionIconStylesInGrid}
-
               ></IconButton>
             )}
           </div>
@@ -2272,7 +2282,11 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.gridCopyOptions && props.gridCopyOptions.enableGridCopy) {
+    if (
+      props.gridCopyOptions &&
+      props.gridCopyOptions.enableGridCopy &&
+      !editMode
+    ) {
       commandBarItems.push({
         key: "copy",
         text: "Copy Grid",
@@ -2290,7 +2304,11 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.enableRowAddWithValues && props.enableRowAddWithValues.enable) {
+    if (
+      props.enableRowAddWithValues &&
+      props.enableRowAddWithValues.enable &&
+      !editMode
+    ) {
       commandBarItems.push({
         id: "addrowswithdata",
         key: "addrowswithdata",
@@ -2301,7 +2319,7 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.enableGridRowsDelete) {
+    if (props.enableGridRowsDelete && !editMode) {
       commandBarItems.push({
         id: "deleterows",
         key: "deleterows",
@@ -2312,7 +2330,7 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.enableColumnFilterRules) {
+    if (props.enableColumnFilterRules && !editMode) {
       commandBarItems.push({
         id: "columnfilter",
         key: "columnFilters",
@@ -2340,12 +2358,17 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (!props.enableDefaultEditMode && props.enableTextFieldEditMode) {
+    if (!props.enableDefaultEditMode && props.enableEditMode) {
       commandBarItems.push({
         id: "editmode",
         key: "editmode",
-        disabled: isGridInEdit && !editMode,
-        text: !editMode ? "Edit Mode" : "Save Edits",
+        disabled:
+          isGridInEdit && editMode && !props.enableSaveChangesOnlyOnSubmit,
+        text: !editMode
+          ? "Edit Mode"
+          : props.enableSaveChangesOnlyOnSubmit
+          ? "Save Edits"
+          : "Editing",
         iconProps: { iconName: !editMode ? "Edit" : "Save" },
         onClick: () => ShowGridEditMode(),
       });
@@ -2353,7 +2376,24 @@ const EditableGrid = (props: Props) => {
 
     if (
       !props.enableDefaultEditMode &&
-      props.enableTextFieldEditModeCancel &&
+      !props.enableSaveChangesOnlyOnSubmit &&
+      editMode
+    ) {
+      commandBarItems.push({
+        key: "saveEdits",
+        disabled: isGridInEdit && !editMode,
+        text: "Save Edits",
+        iconProps: { iconName: "Save" },
+        onClick: () => {
+          ShowGridEditMode();
+          onGridSave();
+        },
+      });
+    }
+
+    if (
+      !props.enableDefaultEditMode &&
+      props.enableEditModeCancel &&
       editMode
     ) {
       commandBarItems.push({
@@ -2368,7 +2408,7 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.enableSave == true) {
+    if (props.enableSaveChangesOnlyOnSubmit) {
       commandBarItems.push({
         id: "submit",
         key: "submit",
@@ -2380,7 +2420,7 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.enableBulkEdit) {
+    if (props.enableBulkEdit && !editMode) {
       commandBarItems.push({
         id: "bulkedit",
         key: "bulkedit",
@@ -2391,7 +2431,7 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.enableGridRowsAdd) {
+    if (props.enableGridRowsAdd && !editMode) {
       commandBarItems.push({
         id: "addrows",
         key: "addrows",
@@ -2402,7 +2442,7 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.enableColumnEdit) {
+    if (props.enableColumnEdit && !editMode) {
       commandBarItems.push({
         id: "updatecolumn",
         key: "updatecolumn",
@@ -2413,7 +2453,7 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.enableGridReset) {
+    if (props.enableGridReset && !editMode) {
       commandBarItems.push({
         id: "resetgrid",
         key: "resetGrid",
@@ -2424,7 +2464,11 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.customCommandBarItems && props.customCommandBarItems.length > 0) {
+    if (
+      props.customCommandBarItems &&
+      props.customCommandBarItems.length > 0 &&
+      !editMode
+    ) {
       return [...commandBarItems, ...props.customCommandBarItems];
     }
 
@@ -2433,27 +2477,6 @@ const EditableGrid = (props: Props) => {
 
   const CreateCommandBarFarItemProps = (): ICommandBarItemProps[] => {
     let commandBarItems: ICommandBarItemProps[] = [];
-    if (
-      props.enableUnsavedEditIndicator &&
-      (props.enableRowEdit ||
-        props.enableCellEdit ||
-        props.enableBulkEdit ||
-        props.enableColumnEdit ||
-        props.enableTextFieldEditMode)
-    ) {
-      commandBarItems.push({
-        id: "info",
-        key: "info",
-        text: isGridStateEdited
-          ? "Grid has unsaved data. Click on 'Submit' to save"
-          : "",
-        // This needs an ariaLabel since it's icon-only
-        ariaLabel: "Info",
-        disabled: !isGridStateEdited,
-        iconOnly: true,
-        iconProps: { iconName: "InfoSolid" },
-      });
-    }
 
     commandBarItems.push({
       key: "filteredrecs",
@@ -2471,6 +2494,44 @@ const EditableGrid = (props: Props) => {
       iconOnly: false,
       iconProps: { iconName: "PageListFilter" },
     });
+
+    if (
+      props.enableUnsavedEditIndicator &&
+      !editMode &&
+      (props.enableRowEdit ||
+        props.enableSingleCellEditOnDoubleClick ||
+        props.enableBulkEdit ||
+        props.enableColumnEdit ||
+        props.enableEditMode)
+    ) {
+      commandBarItems.push({
+        id: "info",
+        key: "info",
+        text: isGridStateEdited
+          ? "Grid has unsaved data. Click on 'Submit' to save"
+          : "",
+        ariaLabel: "Commit Changes",
+        disabled: !isGridStateEdited,
+        onClick: () => {
+          onGridSave();
+        },
+        onRender: (item, index) => (
+          <PrimaryButton
+            style={{ marginTop: 5 }}
+            disabled={!isGridStateEdited}
+            text={isGridStateEdited ? "Commit Changes" : "No Changes"}
+            title={
+              isGridStateEdited
+                ? "Grid has unsaved data. Click on 'Commit' to save"
+                : "No Changes To Commit"
+            }
+            onClick={() => {
+              onGridSave();
+            }}
+          />
+        ),
+      });
+    }
 
     return commandBarItems;
   };
@@ -2801,7 +2862,7 @@ const EditableGrid = (props: Props) => {
     rowNum: number
   ): React.MouseEventHandler<HTMLSpanElement> | undefined {
     return () =>
-      props.enableCellEdit == true &&
+      props.enableSingleCellEditOnDoubleClick == true &&
       column.editable == true &&
       !props.enableSingleClickCellEdit
         ? EditCellValue(column.key, rowNum!, true)
@@ -2819,7 +2880,7 @@ const EditableGrid = (props: Props) => {
     rowNum: number
   ): React.MouseEventHandler<HTMLSpanElement> | undefined {
     return () =>
-      props.enableCellEdit == true &&
+      props.enableSingleCellEditOnDoubleClick == true &&
       column.editable == true &&
       props.enableSingleClickCellEdit
         ? EditCellValue(column.key, rowNum!, true)
@@ -2900,7 +2961,10 @@ const EditableGrid = (props: Props) => {
           position: "relative",
         })}
       >
-        <ScrollablePane styles={props.scrollablePaneStyles} scrollbarVisibility={ScrollbarVisibility.auto}>
+        <ScrollablePane
+          styles={props.scrollablePaneStyles}
+          scrollbarVisibility={ScrollbarVisibility.auto}
+        >
           <MarqueeSelection selection={_selection}>
             <DetailsList
               compact={true}

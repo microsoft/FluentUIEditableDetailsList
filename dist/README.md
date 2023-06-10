@@ -1,6 +1,7 @@
 # FluentUI Editable DetailsList
 
 ## Overview
+
 FluentUI is a great UI library with some really cool controls, all adhering to Accessibility Standards.
 
 DetailsList control of FluidUI is great when your requirement is a read-only grid. However, it does not offer any in-place editability functionality just yet.
@@ -8,44 +9,49 @@ DetailsList control of FluidUI is great when your requirement is a read-only gri
 This component(Editable DetailsList) is a wrapper over the existing DetailsList that makes in-place editability work like a dream(among many other new features).
 
 Some of the features of the Editable Grid are:-
->- Single Cell Edit (in-place)
->- Single Row Edit (in-place)
->- Single Column Edit
->- Multi-Column, multi-row edit (Bulk Edit)
->- Full Edit (Edit Mode)
->- Grid Copy
->- Row Copy
->- Sorting
->- Deleting Rows
->- Adding Rows
->- Ability to Plug In Custom Component for Cell Hover
->- Default Data Export (to Excel, CSV)
->- Implement Custom Export functionality
->- Callback hook to recieve grid data in the consuming component(for Save etc.)
->- Support for various controls in grid in-place edit like TextField, Multiline TextField, DatePicker (Support for Dropdown will be released soon)
->- Flexibility to implement onChange callback on any cell value change (For cases like calculating summation of a column etc)
->- Length Validations during edit
->- Type Validations during edit
->- Rule-Based Cell Styling
->- In-built support for controls like TextField, Multiline-Textfield, Picker, Dropdown, Calendar 
->- The component is completely Accessible
+
+> - Single Cell Edit (in-place)
+> - Single Row Edit (in-place)
+> - Single Column Edit
+> - Multi-Column, multi-row edit (Bulk Edit)
+> - Full Edit (Edit Mode)
+> - Grid Copy
+> - Row Copy
+> - Sorting
+> - Deleting Rows
+> - Adding Rows
+> - Ability to Plug In Custom Component for Cell Hover
+> - Default Data Export (to Excel, CSV)
+> - Implement Custom Export functionality
+> - Callback hook to recieve grid data in the consuming component(for Save etc.)
+> - Support for various controls in grid in-place edit like TextField, Multiline TextField, DatePicker (Support for Dropdown will be released soon)
+> - Flexibility to implement onChange callback on any cell value change (For cases like calculating summation of a column etc)
+> - Length Validations during edit
+> - Type Validations during edit
+> - Rule-Based Cell Styling
+> - In-built support for controls like TextField, Multiline-Textfield, Picker, Dropdown, Calendar
+> - The component is completely Accessible
 
 ## Demo
+
 [Fluent UI Editable DetailsList Demo](https://editabledetailslist.azurewebsites.net)
 
 ## Clone & Run
+
 - clone the repository on your local machine.
 - open the project
 - open terminal and change directory to your project path
-- type '***npm install***'
-- after the installation is complete, type '***npm start***'
+- type '**_npm install_**'
+- after the installation is complete, type '**_npm start_**'
 
 This starts the project on port 3000 and you are ready to play around with the Editable DetailsList
 
 ## NPM Install
+
     npm i fluentui-editable-grid
 
 ## Usage
+
     import { DetailsListLayoutMode, mergeStyles, mergeStyleSets, SelectionMode, TextField } from '@fluentui/react';
     import { EditableGrid, EditControlType, IColumnConfig, EventEmitter, EventType, NumberAndDateOperators } from 'fluentui-editable-grid';
     import { Fabric } from 'office-ui-fabric-react';
@@ -59,7 +65,7 @@ This starts the project on port 3000 and you are ready to play around with the E
             flexWrap: 'wrap',
             }
         });
-      
+
     const [items, setItems] = useState<any[]>([]);
     const columns: IColumnConfig[] = [
         {
@@ -144,12 +150,12 @@ This starts the project on port 3000 and you are ready to play around with the E
             includeColumnInSearch: true,
             maxLength:5,
             applyColumnFilter: true,
-            cellStyleRule: { 
-                enable: true, 
-                rule: { 
-                    operator : NumberAndDateOperators.LESSTHAN, 
-                    value: 50000 
-                }, 
+            cellStyleRule: {
+                enable: true,
+                rule: {
+                    operator : NumberAndDateOperators.LESSTHAN,
+                    value: 50000
+                },
                 whenTrue: { textColor: '#EF5350', fontWeight: 'bold' },
                 whenFalse: { textColor: '#9CCC65' }
             }
@@ -201,8 +207,8 @@ This starts the project on port 3000 and you are ready to play around with the E
                 pickerTags: ['Employment Type1', 'Employment Type2', 'Employment Type3', 'Employment Type4', 'Employment Type5', 'Employment Type6', 'Employment Type7', 'Employment Type8', 'Employment Type9', 'Employment Type10', 'Employment Type11', 'Employment Type12'],
                 minCharLimitForSuggestions: 2,
                 tagsLimit: 1,
-                pickerDescriptionOptions: { 
-                    enabled: true, 
+                pickerDescriptionOptions: {
+                    enabled: true,
                     values: [
                         { key: 'Employment Type1', description: 'Employment Type1 Description'},
                         { key: 'Employment Type2', description: 'Employment Type2 Description'},
@@ -285,10 +291,10 @@ This starts the project on port 3000 and you are ready to play around with the E
                 id={1}
                 columns={columns}
                 items={items}
-                enableCellEdit={true}
+                enableSingleCellEditOnDoubleClick={true}
                 enableExport={true}
-                enableTextFieldEditMode={true}
-                enableTextFieldEditModeCancel={true}
+                enableEditMode={true}
+                enableEditModeCancel={true}
                 enableGridRowsDelete={true}
                 enableGridRowsAdd={true}
                 height={'70vh'}
@@ -306,7 +312,7 @@ This starts the project on port 3000 and you are ready to play around with the E
                 enableRowEditCancel={true}
                 enableBulkEdit={true}
                 enableColumnEdit={true}
-                enableSave={true}
+                enableSaveChangesOnlyOnSubmit={true}
                 customCommandBarItems={[
                     {
                         key: "CustomCommandBarItem1",
@@ -326,7 +332,7 @@ This starts the project on port 3000 and you are ready to play around with the E
 
 ## Contributing
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
 

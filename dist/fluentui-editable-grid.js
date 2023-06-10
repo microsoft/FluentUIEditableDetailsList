@@ -43245,14 +43245,14 @@ const oL = (e) => {
           }
         ]
       }
-    }), !e.enableDefaultEditMode && e.enableTextFieldEditMode && H.push({
+    }), !e.enableDefaultEditMode && e.enableEditMode && H.push({
       id: "editmode",
       key: "editmode",
       disabled: P && !n,
       text: n ? "Save Edits" : "Edit Mode",
       iconProps: { iconName: n ? "Save" : "Edit" },
       onClick: () => j()
-    }), !e.enableDefaultEditMode && e.enableTextFieldEditModeCancel && n && H.push({
+    }), !e.enableDefaultEditMode && e.enableEditModeCancel && n && H.push({
       key: "editmodecancel",
       disabled: P && !n,
       text: "Cancel",
@@ -43261,7 +43261,7 @@ const oL = (e) => {
       onClick: () => {
         Y();
       }
-    }), e.enableSave == !0 && H.push({
+    }), e.enableSaveChangesOnlyOnSubmit == !0 && H.push({
       id: "submit",
       key: "submit",
       text: "Submit",
@@ -43300,7 +43300,7 @@ const oL = (e) => {
     }), e.customCommandBarItems && e.customCommandBarItems.length > 0 ? [...H, ...e.customCommandBarItems] : H;
   }, u1 = () => {
     let H = [];
-    return e.enableUnsavedEditIndicator && (e.enableRowEdit || e.enableCellEdit || e.enableBulkEdit || e.enableColumnEdit || e.enableTextFieldEditMode) && H.push({
+    return e.enableUnsavedEditIndicator && (e.enableRowEdit || e.enableSingleCellEditOnDoubleClick || e.enableBulkEdit || e.enableColumnEdit || e.enableEditMode) && H.push({
       id: "info",
       key: "info",
       text: Fe ? "Grid has unsaved data. Click on 'Submit' to save" : "",
@@ -43461,10 +43461,10 @@ const oL = (e) => {
     }
   );
   function Wa(H, re, B, Z) {
-    return () => H.enableCellEdit == !0 && re.editable == !0 && !H.enableSingleClickCellEdit ? B(re.key, Z, !0) : null;
+    return () => H.enableSingleCellEditOnDoubleClick == !0 && re.editable == !0 && !H.enableSingleClickCellEdit ? B(re.key, Z, !0) : null;
   }
   function Ua(H, re, B, Z) {
-    return () => H.enableCellEdit == !0 && re.editable == !0 && H.enableSingleClickCellEdit ? B(re.key, Z, !0) : null;
+    return () => H.enableSingleCellEditOnDoubleClick == !0 && re.editable == !0 && H.enableSingleClickCellEdit ? B(re.key, Z, !0) : null;
   }
   return /* @__PURE__ */ Q.jsxs(Vr, { children: [
     /* @__PURE__ */ Q.jsx(

@@ -20,7 +20,7 @@ export const teachingBubbleConfig: ITeachingBubblePropsExtended[] = [
                     For 'inputType: EditControlType.TextField', 
                     once the cell is in edit state, 
                     pressing enter in the cell shall bring it back to non-editable state.
-                    Set 'enableCellEdit={true}' to enable single cell edit on the Grid.`,
+                    Set 'enableSingleCellEditOnDoubleClick={true}' to enable single cell edit on the Grid.`,
   },
   {
     target: "#id-1-col-4-row-0",
@@ -29,7 +29,7 @@ export const teachingBubbleConfig: ITeachingBubblePropsExtended[] = [
                     For 'inputType: EditControlType.MultilineTextField', 
                     once the cell is in edit state, 
                     double-clicking inside the cell shall bring it back to non-editable state.
-                    Set 'enableCellEdit={true}' to enable single cell edit on the Grid.`,
+                    Set 'enableSingleCellEditOnDoubleClick={true}' to enable single cell edit on the Grid.`,
   },
   {
     target: "#id-1-col-6-row-0",
@@ -38,7 +38,7 @@ export const teachingBubbleConfig: ITeachingBubblePropsExtended[] = [
                     For 'inputType: EditControlType.DateTime', 
                     once the cell is in edit state, 
                     double-clicking inside the cell shall bring it back to non-editable state.
-                    Set 'enableCellEdit={true}' to enable single cell edit on the Grid.`,
+                    Set 'enableSingleCellEditOnDoubleClick={true}' to enable single cell edit on the Grid.`,
   },
   {
     target: "#id-1-col-7-row-0",
@@ -47,7 +47,7 @@ export const teachingBubbleConfig: ITeachingBubblePropsExtended[] = [
                     For 'inputType: EditControlType.DropDown', 
                     once the cell is in edit state, 
                     double-clicking inside the cell shall bring it back to non-editable state.
-                    Set 'enableCellEdit={true}' to enable single cell edit on the Grid.`,
+                    Set 'enableSingleCellEditOnDoubleClick={true}' to enable single cell edit on the Grid.`,
   },
   {
     target: "#id-1-col-8-row-0",
@@ -56,7 +56,7 @@ export const teachingBubbleConfig: ITeachingBubblePropsExtended[] = [
                     For 'inputType: EditControlType.Picker', 
                     once the cell is in edit state, 
                     double-clicking inside the cell shall bring it back to non-editable state.
-                    Set 'enableCellEdit={true}' to enable single cell edit on the Grid.`,
+                    Set 'enableSingleCellEditOnDoubleClick={true}' to enable single cell edit on the Grid.`,
   },
   {
     target: "#id-1-col-5-row-0",

@@ -51,7 +51,7 @@ import { EventEmitter, EventType } from "../../libs/eventemitter/EventEmitter";
 import React from "react";
 
 interface GridConfigOptions {
-  enableCellEdit: boolean;
+  enableSingleCellEditOnDoubleClick: boolean;
   enableRowEditCopy: boolean;
   enableRowEditDelete: boolean;
   enableRowEdit: boolean;
@@ -60,8 +60,8 @@ interface GridConfigOptions {
   enableColumnEdit: boolean;
   enableCSVExport: boolean;
   enableExcelExport: boolean;
-  enableTextFieldEditMode: boolean;
-  enableTextFieldEditModeCancel: boolean;
+  enableEditMode: boolean;
+  enableEditModeCancel: boolean;
   enableGridRowsDelete: boolean;
   enableGridRowsAdd: boolean;
   enableColumnFilterRules: boolean;
@@ -69,7 +69,7 @@ interface GridConfigOptions {
   enableGridCopy: boolean;
   enableRowCopy: boolean;
   enableUnsavedEditIndicator: boolean;
-  enableSave: boolean;
+  enableSaveChangesOnlyOnSubmit: boolean;
   enableGridReset: boolean;
   enableColumnFilters: boolean;
   enableDefaultEditMode: boolean;
@@ -89,7 +89,7 @@ const Consumer = () => {
     });
   const [gridConfigOptions, setGridConfigOptions] = useState<GridConfigOptions>(
     {
-      enableCellEdit: true,
+      enableSingleCellEditOnDoubleClick: true,
       enableRowEditCopy: true,
       enableRowEditDelete: true,
       enableRowEdit: true,
@@ -98,8 +98,8 @@ const Consumer = () => {
       enableColumnEdit: true,
       enableExcelExport: true,
       enableCSVExport: true,
-      enableTextFieldEditMode: true,
-      enableTextFieldEditModeCancel: true,
+      enableEditMode: true,
+      enableEditModeCancel: true,
       enableGridRowsDelete: true,
       enableGridRowsAdd: true,
       enableColumnFilterRules: true,
@@ -107,7 +107,7 @@ const Consumer = () => {
       enableGridCopy: true,
       enableRowCopy: true,
       enableUnsavedEditIndicator: true,
-      enableSave: true,
+      enableSaveChangesOnlyOnSubmit: false,
       enableGridReset: true,
       enableColumnFilters: true,
       enableDefaultEditMode: false,
@@ -200,7 +200,7 @@ const Consumer = () => {
 
   const SetDummyData = (): void => {
     var dummyData: GridItemsType[] = [];
-    for (var i = 1; i <= 100; i++) {
+    for (var i = 1; i <= 1; i++) {
       var randomInt = GetRandomInt(1, 3);
       dummyData.push({
         id: i,
@@ -413,10 +413,10 @@ const Consumer = () => {
         >
           <StackItem className={classNames.checkbox}>
             <Checkbox
-              id={"enableCellEdit"}
-              label="Cell Edit"
+              id={"enableSingleCellEditOnDoubleClick"}
+              label="Edit Cell On Double Click"
               onChange={onCheckboxChange}
-              checked={gridConfigOptions.enableCellEdit}
+              checked={gridConfigOptions.enableSingleCellEditOnDoubleClick}
             />
           </StackItem>
           <StackItem className={classNames.checkbox}>
@@ -485,18 +485,18 @@ const Consumer = () => {
           </StackItem>
           <StackItem className={classNames.checkbox}>
             <Checkbox
-              id={"enableTextFieldEditMode"}
+              id={"enableEditMode"}
               label="TextField Edit Mode"
               onChange={onCheckboxChange}
-              checked={gridConfigOptions.enableTextFieldEditMode}
+              checked={gridConfigOptions.enableEditMode}
             />
           </StackItem>
           <StackItem className={classNames.checkbox}>
             <Checkbox
-              id={"enableTextFieldEditModeCancel"}
+              id={"enableEditModeCancel"}
               label="TextField Edit Mode Cancel"
               onChange={onCheckboxChange}
-              checked={gridConfigOptions.enableTextFieldEditModeCancel}
+              checked={gridConfigOptions.enableEditModeCancel}
             />
           </StackItem>
           <StackItem className={classNames.checkbox}>
@@ -557,10 +557,10 @@ const Consumer = () => {
           </StackItem>
           <StackItem className={classNames.checkbox}>
             <Checkbox
-              id={"enableSave"}
+              id={"enableSaveChangesOnlyOnSubmit"}
               label="Save"
               onChange={onCheckboxChange}
-              checked={gridConfigOptions.enableSave}
+              checked={gridConfigOptions.enableSaveChangesOnlyOnSubmit}
             />
           </StackItem>
           <StackItem className={classNames.checkbox}>
@@ -615,7 +615,7 @@ const Consumer = () => {
       >
         <EditableGrid
           checkboxVisibility={CheckboxVisibility.hidden}
-          id={1}
+          id={100}
           commandBarStyles={{
             root: {
               borderWidth: "1px 1px 1px 1px",
@@ -640,7 +640,9 @@ const Consumer = () => {
           }}
           actionIconStylesInGrid={{ icon: { color: "black" } }}
           enableColumnEdit={gridConfigOptions.enableColumnEdit}
-          enableSave={gridConfigOptions.enableSave}
+          enableSaveChangesOnlyOnSubmit={
+            gridConfigOptions.enableSaveChangesOnlyOnSubmit
+          }
           columns={attachGridValueChangeCallbacks(GridColumnConfig)}
           onRenderDetailsHeader={onRenderDetailsHeader}
           onRenderRow={onRenderRow}
@@ -652,13 +654,13 @@ const Consumer = () => {
           enableRowEditCancel={gridConfigOptions.enableRowEditCancel}
           enableBulkEdit={gridConfigOptions.enableBulkEdit}
           items={items}
-          enableCellEdit={gridConfigOptions.enableCellEdit}
+          enableSingleCellEditOnDoubleClick={
+            gridConfigOptions.enableSingleCellEditOnDoubleClick
+          }
           enableCSVExport={gridConfigOptions.enableCSVExport}
           enableExcelExport={gridConfigOptions.enableExcelExport}
-          enableTextFieldEditMode={gridConfigOptions.enableTextFieldEditMode}
-          enableTextFieldEditModeCancel={
-            gridConfigOptions.enableTextFieldEditModeCancel
-          }
+          enableEditMode={gridConfigOptions.enableEditMode}
+          enableEditModeCancel={gridConfigOptions.enableEditModeCancel}
           enableGridRowsDelete={gridConfigOptions.enableGridRowsDelete}
           enableGridRowsAdd={gridConfigOptions.enableGridRowsAdd}
           height={"250px"}

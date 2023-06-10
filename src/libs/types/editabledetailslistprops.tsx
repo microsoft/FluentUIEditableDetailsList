@@ -14,41 +14,48 @@ import { IColumnConfig } from "./columnconfigtype";
 import { IGridCopy } from "./gridcopytype";
 import { IRowAddWithValues } from "./rowaddtype";
 
-export type IContentScrollablePaneStyleProps = Partial<IScrollablePaneStyleProps> & {
-  scrollablePaneOffsetHeight?: number;
-  scrollablePaneContentOffsetHeight?: number;
-};
+export type IContentScrollablePaneStyleProps =
+  Partial<IScrollablePaneStyleProps> & {
+    scrollablePaneOffsetHeight?: number;
+    scrollablePaneContentOffsetHeight?: number;
+  };
 export interface Props extends IDetailsListProps {
   id: number;
   actionIconStylesInGrid?: IButtonStyles;
   items: any[];
   columns: IColumnConfig[];
-  commandBarStyles?: IStyleFunctionOrObject<ICommandBarStyleProps, ICommandBarStyles>;
+  commandBarStyles?: IStyleFunctionOrObject<
+    ICommandBarStyleProps,
+    ICommandBarStyles
+  >;
   enableCSVExport?: boolean;
   enableExcelExport?: boolean;
   exportFileName?: string;
-  enableSave?: boolean;
+  enableSaveChangesOnlyOnSubmit?: boolean;
   enableRowEditCopy?: boolean;
   enableRowEditDelete?: boolean;
   enableRowEdit?: boolean;
   enableRowEditCancel?: boolean;
   enableColumnEdit?: boolean;
   enableBulkEdit?: boolean;
-  enableCellEdit?: boolean;
+  enableSingleCellEditOnDoubleClick?: boolean;
   onGridSelectionChange?: any;
   onGridUpdate?: any;
   onGridSave?: any;
   enableGridRowsDelete?: boolean;
   enableGridRowsAdd?: boolean;
   enableRowAddWithValues?: IRowAddWithValues;
-  enableTextFieldEditMode?: boolean;
-  enableTextFieldEditModeCancel?: boolean;
+  enableEditMode?: boolean;
+  enableEditModeCancel?: boolean;
   enablePagination?: boolean;
   pageSize?: number;
   onExcelExport?: any;
-  height?: string;
-  scrollablePaneStyles?: IStyleFunctionOrObject<IContentScrollablePaneStyleProps, IScrollablePaneStyles>;
-  width?: string;
+  height?: string | number;
+  scrollablePaneStyles?: IStyleFunctionOrObject<
+    IContentScrollablePaneStyleProps,
+    IScrollablePaneStyles
+  >;
+  width?: string | number;
   position?: string;
   constrainMode?: ConstrainMode;
   enableUnsavedEditIndicator?: boolean;
