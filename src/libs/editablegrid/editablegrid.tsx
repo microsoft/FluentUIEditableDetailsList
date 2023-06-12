@@ -86,7 +86,7 @@ import {
   IFilterListProps,
   IGridColumnFilter,
 } from "../types/columnfilterstype";
-import {  Props } from "../types/editabledetailslistprops";
+import { Props } from "../types/editabledetailslistprops";
 import { EditControlType } from "../types/editcontroltype";
 import { EditType } from "../types/edittype";
 import { ExportType } from "../types/exporttype";
@@ -103,6 +103,8 @@ interface SortOptions {
 
 const EditableGrid = (props: Props) => {
   const [editMode, setEditMode] = useState(false);
+  const [importingStarted, setImportingStarted] = useState(false);
+
   const [isOpenForEdit, setIsOpenForEdit] = useState(false);
   const dismissPanelForEdit = useCallback(() => setIsOpenForEdit(false), []);
   const [isOpenForAdd, setIsOpenForAdd] = useState(false);
@@ -654,7 +656,10 @@ const EditableGrid = (props: Props) => {
           name="file"
           className="custom-file-input"
           id="inputGroupFile"
-          onChange={(ev) => onImportClick(ImportType.XLSX, ev)}
+          onChange={(ev) => {
+            setImportingStarted(true);
+            onImportClick(ImportType.XLSX, ev);
+          }}
           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
         />
       </Stack>
@@ -693,8 +698,6 @@ const EditableGrid = (props: Props) => {
     var ImportedHeader = Object.keys(excelKeys);
     var CurrentHeaders = Object.keys(columnValuesObj);
 
-
-
     const unImportableCol = props.columns.filter(
       (x) => x.columnNeededInImport === false
     );
@@ -707,21 +710,25 @@ const EditableGrid = (props: Props) => {
     for (let index = 0; index < ImportedHeader.length; index++) {
       const header = ImportedHeader[index];
       if (
-        !(CurrentHeaders.includes(header) ||
-        (CurrentHeaders.includes(header.toLowerCase()) &&
-          (CurrentHeaders.length === ImportedHeader.length ||
-            CurrentHeaders.length ===
-              ImportedHeader.length - unImportableCol.length ||
-            CurrentHeaders.length ===
-              ImportedHeader.length + unImportableCol.length)))
+        !(
+          CurrentHeaders.includes(header) ||
+          (CurrentHeaders.includes(header.toLowerCase()) &&
+            (CurrentHeaders.length === ImportedHeader.length ||
+              CurrentHeaders.length ===
+                ImportedHeader.length - unImportableCol.length ||
+              CurrentHeaders.length ===
+                ImportedHeader.length + unImportableCol.length))
+        )
       ) {
-        
         if (props.onGridStatusMessageCallback)
           props.onGridStatusMessageCallback(
-            ("Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Rename / Add  " +
-            "`" + header + "`"+
-            " column"), GridToastTypes.ERROR
-        );
+            "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Rename / Add  " +
+              "`" +
+              header +
+              "`" +
+              " column",
+            GridToastTypes.ERROR
+          );
         console.warn("Your imported file is missing columns");
         return false;
       }
@@ -803,15 +810,20 @@ const EditableGrid = (props: Props) => {
         if (sheets.length) {
           const excelJSON = XLSX.utils.sheet_to_json(wb.Sheets[sheets[0]]);
 
-          if (excelJSON.length <= 0 ){
+          if (excelJSON.length <= 0) {
             if (props.onGridStatusMessageCallback)
-            props.onGridStatusMessageCallback(
-              "Selected file has 0 rows of data. Please try again.", GridToastTypes.INFO
-          );
-            return
+              props.onGridStatusMessageCallback(
+                "Selected file has 0 rows of data. Please try again.",
+                GridToastTypes.INFO
+              );
+            setImportingStarted(false);
+            return;
           }
           for (let index = 0; index < 1; index++) {
-            if (!verifyColumnsOnImport(excelJSON[index])) return;
+            if (!verifyColumnsOnImport(excelJSON[index])) {
+              setImportingStarted(false);
+              return;
+            }
           }
           //verifyColumnsDataOnImport
           for (let index = 0; index < excelJSON.length; index++) {
@@ -822,12 +834,14 @@ const EditableGrid = (props: Props) => {
               );
             else {
               verifyDataTypes.forEach((str) => {
-                console.warn(`Import Error: ${str}`)
+                console.warn(`Import Error: ${str}`);
                 if (props.onGridStatusMessageCallback)
-                props.onGridStatusMessageCallback(
-                  `Import Error: ${str}`, GridToastTypes.ERROR
-              );
+                  props.onGridStatusMessageCallback(
+                    `Import Error: ${str}`,
+                    GridToastTypes.ERROR
+                  );
               });
+              setImportingStarted(false);
               return;
             }
           }
@@ -836,19 +850,23 @@ const EditableGrid = (props: Props) => {
             newGridData.splice(0, 0, i[0]);
           });
           if (props.onGridStatusMessageCallback)
-          props.onGridStatusMessageCallback(
-            `Imported ${ui.length} Rows From File`, GridToastTypes.SUCCESS
-        );
+            props.onGridStatusMessageCallback(
+              `Imported ${ui.length} Rows From File`,
+              GridToastTypes.SUCCESS
+            );
           SetGridItems(newGridData);
           setGridEditState(true);
+          setImportingStarted(false);
         }
       };
       reader.readAsArrayBuffer(file);
-    }else{
+    } else {
       if (props.onGridStatusMessageCallback)
-      props.onGridStatusMessageCallback(
-        `Error Processing File`, GridToastTypes.ERROR
-    );
+        props.onGridStatusMessageCallback(
+          `Error Processing File`,
+          GridToastTypes.ERROR
+        );
+      setImportingStarted(false);
     }
     event.target.value = null;
   };
@@ -1349,10 +1367,11 @@ const EditableGrid = (props: Props) => {
       function () {
         if (props.onGridStatusMessageCallback)
           props.onGridStatusMessageCallback(
-            (selectedIndices.length +
+            selectedIndices.length +
               ` ${
                 selectedIndices.length == 1 ? "row" : "rows"
-              } copied to clipboard`), GridToastTypes.INFO
+              } copied to clipboard`,
+            GridToastTypes.INFO
           );
       },
       function () {
@@ -3283,91 +3302,100 @@ const EditableGrid = (props: Props) => {
           position: "relative",
         })}
       >
-        <ScrollablePane
-          styles={props.scrollablePaneStyles}
-          scrollbarVisibility={ScrollbarVisibility.auto}
-        >
-          <MarqueeSelection selection={_selection}>
-            <DetailsList
-              compact={true}
-              items={
-                defaultGridData.length > 0
-                  ? defaultGridData.filter(
-                      (x) =>
-                        x._grid_row_operation_ != Operation.Delete &&
-                        x._is_filtered_in_ == true &&
-                        x._is_filtered_in_grid_search_ == true &&
-                        x._is_filtered_in_column_filter_ == true
-                    )
-                  : []
-              }
-              columns={GridColumns}
-              selectionMode={props.selectionMode}
-              // layoutMode={props.layoutMode}
-              // constrainMode={props.constrainMode}
-              layoutMode={DetailsListLayoutMode.fixedColumns}
-              constrainMode={ConstrainMode.unconstrained}
-              selection={_selection}
-              setKey="none"
-              onRenderDetailsHeader={props.onRenderDetailsHeader}
-              ariaLabelForSelectAllCheckbox="Toggle selection for all items"
-              ariaLabelForSelectionColumn="Toggle selection"
-              checkButtonAriaLabel="Row checkbox"
-              ariaLabel={props.ariaLabel}
-              ariaLabelForGrid={props.ariaLabelForGrid}
-              ariaLabelForListHeader={props.ariaLabelForListHeader}
-              cellStyleProps={props.cellStyleProps}
-              checkboxCellClassName={props.checkboxCellClassName}
-              checkboxVisibility={props.checkboxVisibility}
-              className={props.className}
-              columnReorderOptions={props.columnReorderOptions}
-              componentRef={props.componentRef}
-              disableSelectionZone={props.disableSelectionZone}
-              dragDropEvents={props.dragDropEvents}
-              enableUpdateAnimations={props.enableUpdateAnimations}
-              enterModalSelectionOnTouch={props.enterModalSelectionOnTouch}
-              getCellValueKey={props.getCellValueKey}
-              getGroupHeight={props.getGroupHeight}
-              getKey={props.getKey}
-              getRowAriaDescribedBy={props.getRowAriaDescribedBy}
-              getRowAriaLabel={props.getRowAriaLabel}
-              groupProps={props.groupProps}
-              groups={props.groups}
-              indentWidth={props.indentWidth}
-              initialFocusedIndex={props.initialFocusedIndex}
-              isHeaderVisible={props.isHeaderVisible}
-              isPlaceholderData={props.isPlaceholderData}
-              listProps={props.listProps}
-              minimumPixelsForDrag={props.minimumPixelsForDrag}
-              onActiveItemChanged={props.onActiveItemChanged}
-              onColumnHeaderClick={props.onColumnHeaderClick}
-              onColumnHeaderContextMenu={props.onColumnHeaderContextMenu}
-              onColumnResize={props.onColumnResize}
-              onDidUpdate={props.onDidUpdate}
-              onItemContextMenu={props.onItemContextMenu}
-              onItemInvoked={props.onItemInvoked}
-              onRenderCheckbox={props.onRenderCheckbox}
-              onRenderDetailsFooter={props.onRenderDetailsFooter}
-              onRenderItemColumn={props.onRenderItemColumn}
-              onRenderMissingItem={props.onRenderMissingItem}
-              onRenderRow={props.onRenderRow}
-              onRowDidMount={props.onRowDidMount}
-              onRowWillUnmount={props.onRowWillUnmount}
-              onShouldVirtualize={props.onShouldVirtualize}
-              rowElementEventMap={props.rowElementEventMap}
-              selectionPreservedOnEmptyClick={
-                props.selectionPreservedOnEmptyClick
-              }
-              selectionZoneProps={props.selectionZoneProps}
-              shouldApplyApplicationRole={props.shouldApplyApplicationRole}
-              styles={props.styles}
-              useFastIcons={props.useFastIcons}
-              usePageCache={props.usePageCache}
-              useReducedRowRenderer={props.useReducedRowRenderer}
-              viewport={props.viewport}
-            />
-          </MarqueeSelection>
-        </ScrollablePane>
+        {importingStarted ? (
+          <Spinner
+            label="Updating..."
+            ariaLive="assertive"
+            labelPosition="right"
+            size={SpinnerSize.large}
+          />
+        ) : (
+          <ScrollablePane
+            styles={props.scrollablePaneStyles}
+            scrollbarVisibility={ScrollbarVisibility.auto}
+          >
+            <MarqueeSelection selection={_selection}>
+              <DetailsList
+                compact={true}
+                items={
+                  defaultGridData.length > 0
+                    ? defaultGridData.filter(
+                        (x) =>
+                          x._grid_row_operation_ != Operation.Delete &&
+                          x._is_filtered_in_ == true &&
+                          x._is_filtered_in_grid_search_ == true &&
+                          x._is_filtered_in_column_filter_ == true
+                      )
+                    : []
+                }
+                columns={GridColumns}
+                selectionMode={props.selectionMode}
+                // layoutMode={props.layoutMode}
+                // constrainMode={props.constrainMode}
+                layoutMode={DetailsListLayoutMode.fixedColumns}
+                constrainMode={ConstrainMode.unconstrained}
+                selection={_selection}
+                setKey="none"
+                onRenderDetailsHeader={props.onRenderDetailsHeader}
+                ariaLabelForSelectAllCheckbox="Toggle selection for all items"
+                ariaLabelForSelectionColumn="Toggle selection"
+                checkButtonAriaLabel="Row checkbox"
+                ariaLabel={props.ariaLabel}
+                ariaLabelForGrid={props.ariaLabelForGrid}
+                ariaLabelForListHeader={props.ariaLabelForListHeader}
+                cellStyleProps={props.cellStyleProps}
+                checkboxCellClassName={props.checkboxCellClassName}
+                checkboxVisibility={props.checkboxVisibility}
+                className={props.className}
+                columnReorderOptions={props.columnReorderOptions}
+                componentRef={props.componentRef}
+                disableSelectionZone={props.disableSelectionZone}
+                dragDropEvents={props.dragDropEvents}
+                enableUpdateAnimations={props.enableUpdateAnimations}
+                enterModalSelectionOnTouch={props.enterModalSelectionOnTouch}
+                getCellValueKey={props.getCellValueKey}
+                getGroupHeight={props.getGroupHeight}
+                getKey={props.getKey}
+                getRowAriaDescribedBy={props.getRowAriaDescribedBy}
+                getRowAriaLabel={props.getRowAriaLabel}
+                groupProps={props.groupProps}
+                groups={props.groups}
+                indentWidth={props.indentWidth}
+                initialFocusedIndex={props.initialFocusedIndex}
+                isHeaderVisible={props.isHeaderVisible}
+                isPlaceholderData={props.isPlaceholderData}
+                listProps={props.listProps}
+                minimumPixelsForDrag={props.minimumPixelsForDrag}
+                onActiveItemChanged={props.onActiveItemChanged}
+                onColumnHeaderClick={props.onColumnHeaderClick}
+                onColumnHeaderContextMenu={props.onColumnHeaderContextMenu}
+                onColumnResize={props.onColumnResize}
+                onDidUpdate={props.onDidUpdate}
+                onItemContextMenu={props.onItemContextMenu}
+                onItemInvoked={props.onItemInvoked}
+                onRenderCheckbox={props.onRenderCheckbox}
+                onRenderDetailsFooter={props.onRenderDetailsFooter}
+                onRenderItemColumn={props.onRenderItemColumn}
+                onRenderMissingItem={props.onRenderMissingItem}
+                onRenderRow={props.onRenderRow}
+                onRowDidMount={props.onRowDidMount}
+                onRowWillUnmount={props.onRowWillUnmount}
+                onShouldVirtualize={props.onShouldVirtualize}
+                rowElementEventMap={props.rowElementEventMap}
+                selectionPreservedOnEmptyClick={
+                  props.selectionPreservedOnEmptyClick
+                }
+                selectionZoneProps={props.selectionZoneProps}
+                shouldApplyApplicationRole={props.shouldApplyApplicationRole}
+                styles={props.styles}
+                useFastIcons={props.useFastIcons}
+                usePageCache={props.usePageCache}
+                useReducedRowRenderer={props.useReducedRowRenderer}
+                viewport={props.viewport}
+              />
+            </MarqueeSelection>
+          </ScrollablePane>
+        )}
       </div>
       <Dialog
         hidden={!dialogContent}
