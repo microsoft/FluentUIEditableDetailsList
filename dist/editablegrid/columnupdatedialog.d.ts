@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { IColumnConfig } from "../types/columnconfigtype";
 interface Props {
     columnConfigurationData: IColumnConfig[];

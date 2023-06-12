@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { IFilterListProps } from "../../types/columnfilterstype";
 interface Props extends IFilterListProps {
     onApply: any;

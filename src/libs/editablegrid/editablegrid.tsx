@@ -93,7 +93,7 @@ import { ExportType } from "../types/exporttype";
 import { IFilter } from "../types/filterstype";
 import { Operation } from "../types/operation";
 import { ImportType } from "../types/importtype";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 interface SortOptions {
   key: string;
@@ -716,12 +716,12 @@ const EditableGrid = (props: Props) => {
       ) {
         return true;
       } else {
-        toast.error(
-          "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Add / Rename " +
-            header +
-            " column",
-          {}
-        );
+        // toast.error(
+        //   "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Add / Rename " +
+        //     header +
+        //     " column",
+        //   {}
+        // );
         console.warn("Your imported file is missing columns");
         return false;
       }
@@ -814,7 +814,8 @@ const EditableGrid = (props: Props) => {
               );
             else {
               verifyDataTypes.forEach((str) => {
-                toast.error(`Import Error: ${str}`, {});
+                console.warn(`Import Error: ${str}`)
+                // toast.error(`Import Error: ${str}`, {});
               });
               return;
             }
@@ -823,7 +824,8 @@ const EditableGrid = (props: Props) => {
           ui.forEach((i) => {
             newGridData.splice(0, 0, i[0]);
           });
-          toast.success(`Imported ${ui.length} Rows From File`, {});
+          console.log(`Imported ${ui.length} Rows From File`)
+          // toast.success(`Imported ${ui.length} Rows From File`, {});
           SetGridItems(newGridData);
           setGridEditState(true);
         }
