@@ -1,4 +1,3 @@
-/// <reference types="react" />
 interface Props {
     message?: string;
     subMessage?: string;

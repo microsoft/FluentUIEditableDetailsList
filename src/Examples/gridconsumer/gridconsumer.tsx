@@ -43,6 +43,7 @@ import EditableGrid from "../../libs/editablegrid/editablegrid";
 import { ICallBackParams } from "../../libs/types/callbackparams";
 import { IColumnConfig } from "../../libs/types/columnconfigtype";
 import { Operation } from "../../libs/types/operation";
+import { GridToastTypes } from "../../libs/types/gridToastTypes";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -60,7 +61,7 @@ interface GridConfigOptions {
   enableColumnEdit: boolean;
   enableCSVExport: boolean;
   enableExcelExport: boolean;
-  enableExcelImport: boolean
+  enableExcelImport: boolean;
   enableEditMode: boolean;
   enableEditModeCancel: boolean;
   enableGridRowsDelete: boolean;
@@ -202,14 +203,12 @@ const Consumer = () => {
 
   const SetDummyData = (): void => {
     var dummyData: GridItemsType[] = [];
-    
+
     for (var i = 1; i <= 2; i++) {
       var randomInt = GetRandomInt(1, 3);
       dummyData.push({
         id: i,
-        excluded:  randomInt % 2 == 0
-        ? true
-        : false,
+        excluded: randomInt % 2 == 0 ? true : false,
         customerhovercol: "Hover Me",
         name: "Name" + GetRandomInt(1, 10),
         password: "somepassword",
@@ -709,10 +708,41 @@ const Consumer = () => {
             enableGridCopy: gridConfigOptions.enableGridCopy,
             enableRowCopy: gridConfigOptions.enableRowCopy,
           }}
-          onGridStatusMessageCallback={(str: string) => {
-            toast.info(str, {
-              position: toast.POSITION.TOP_CENTER,
-            });
+          onGridStatusMessageCallback={(str: string, type: GridToastTypes) => {
+            switch (type) {
+              case GridToastTypes.INFO:
+                toast.info(str, {
+                  position: toast.POSITION.TOP_CENTER,
+                });
+                break;
+              case GridToastTypes.SUCCESS:
+                toast.success(str, {
+                  position: toast.POSITION.TOP_CENTER,
+                });
+                break;
+              case GridToastTypes.ERROR:
+                toast.error(str, {
+                  position: toast.POSITION.TOP_CENTER,
+                });
+                break;
+              case GridToastTypes.WARNING:
+                toast.warning(str, {
+                  position: toast.POSITION.TOP_CENTER,
+                });
+                break;
+              case GridToastTypes.DARK:
+                toast.dark(str, {
+                  position: toast.POSITION.TOP_CENTER,
+                });
+                break;
+              case GridToastTypes.WARN:
+                toast.warn(str, {
+                  position: toast.POSITION.TOP_CENTER,
+                });
+                break;
+              default:
+                break;
+            }
           }}
           onGridUpdate={onGridUpdate}
           enableDefaultEditMode={gridConfigOptions.enableDefaultEditMode}
