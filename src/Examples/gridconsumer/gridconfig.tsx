@@ -18,7 +18,7 @@ import {
   Stack,
 } from "@fluentui/react";
 
-export const GridColumnConfig2: IColumnConfig[] = [
+export const GridColumnConfig: IColumnConfig[] = [
   {
     key: "id",
     name: "ID",
@@ -283,7 +283,7 @@ export const GridColumnConfig2: IColumnConfig[] = [
   },
 ];
 
-export const GridColumnConfig: IColumnConfig[] = [
+export const GridColumnConfig2: IColumnConfig[] = [
   {
     key: 'id',
     name: 'ID',
@@ -361,14 +361,14 @@ export const GridColumnConfig: IColumnConfig[] = [
   }
 ];
 
-export interface GridItemsType {
+export interface GridItemsType2 {
   id: number,
   CompanyTypeDescription: string,
   CompanyCode: string,
   CompanyName: string
 }
 
-export interface GridItemsType2 {
+export interface GridItemsType {
   id: number;
   customerhovercol: string;
   excluded: boolean;

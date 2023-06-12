@@ -203,44 +203,44 @@ const Consumer = () => {
   const SetDummyData = (): void => {
     var dummyData: GridItemsType[] = [];
     
-    // for (var i = 1; i <= 2; i++) {
-    //   var randomInt = GetRandomInt(1, 3);
-    //   dummyData.push({
-    //     id: i,
-    //     excluded:  randomInt % 2 == 0
-    //     ? true
-    //     : false,
-    //     customerhovercol: "Hover Me",
-    //     name: "Name" + GetRandomInt(1, 10),
-    //     password: "somepassword",
-    //     age: GetRandomInt(20, 40),
-    //     designation: "Designation" + GetRandomInt(1, 15),
-    //     salary: GetRandomInt(35000, 75000),
-    //     dateofjoining: "2010-10-10T14:57:10",
-    //     payrolltype:
-    //       randomInt % 3 == 0
-    //         ? "Weekly"
-    //         : randomInt % 3 == 1
-    //         ? "Bi-Weekly"
-    //         : "Monthly",
-    //     employmenttype: "Employment Type" + GetRandomInt(1, 12),
-    //     employeelink: "Link",
-    //   });
-    // }
-     dummyData = [
-      {
-        id: 1,
-        CompanyTypeDescription: 'Consolidating',
-        CompanyCode: '1001',
-        CompanyName: 'Microsoft Federal'
-      },
-      {
-        id: 2,
-        CompanyTypeDescription: 'Joint Venture',
-        CompanyCode: '1930',
-        CompanyName: 'Skype Federal US'
-      }
-    ];
+    for (var i = 1; i <= 2; i++) {
+      var randomInt = GetRandomInt(1, 3);
+      dummyData.push({
+        id: i,
+        excluded:  randomInt % 2 == 0
+        ? true
+        : false,
+        customerhovercol: "Hover Me",
+        name: "Name" + GetRandomInt(1, 10),
+        password: "somepassword",
+        age: GetRandomInt(20, 40),
+        designation: "Designation" + GetRandomInt(1, 15),
+        salary: GetRandomInt(35000, 75000),
+        dateofjoining: "2010-10-10T14:57:10",
+        payrolltype:
+          randomInt % 3 == 0
+            ? "Weekly"
+            : randomInt % 3 == 1
+            ? "Bi-Weekly"
+            : "Monthly",
+        employmenttype: "Employment Type" + GetRandomInt(1, 12),
+        employeelink: "Link",
+      });
+    }
+    //  dummyData = [
+    //   {
+    //     id: 1,
+    //     CompanyTypeDescription: 'Consolidating',
+    //     CompanyCode: '1999',
+    //     CompanyName: 'Microsoft X'
+    //   },
+    //   {
+    //     id: 2,
+    //     CompanyTypeDescription: 'Joint Venture',
+    //     CompanyCode: '1111',
+    //     CompanyName: 'Skype IO'
+    //   }
+    // ];
     setItems(dummyData);
   };
 
