@@ -14,6 +14,7 @@ export interface Props extends IDetailsListProps {
     commandBarStyles?: IStyleFunctionOrObject<ICommandBarStyleProps, ICommandBarStyles>;
     enableCSVExport?: boolean;
     enableExcelExport?: boolean;
+    enableExcelImport?: boolean;
     exportFileName?: string;
     enableSaveChangesOnlyOnSubmit?: boolean;
     enableRowEditCopy?: boolean;
@@ -34,6 +35,7 @@ export interface Props extends IDetailsListProps {
     enablePagination?: boolean;
     pageSize?: number;
     onExcelExport?: any;
+    onExcelImport?: any;
     height?: string | number;
     scrollablePaneStyles?: IStyleFunctionOrObject<IContentScrollablePaneStyleProps, IScrollablePaneStyles>;
     width?: string | number;

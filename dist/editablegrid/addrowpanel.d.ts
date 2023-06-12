@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { IColumnConfig } from "../types/columnconfigtype";
 interface Props {
     onChange: any;

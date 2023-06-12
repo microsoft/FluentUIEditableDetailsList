@@ -65,9 +65,9 @@ export const GridColumnConfig: IColumnConfig[] = [
     applyColumnFilter: true,
   },
   {
-    key: "checkbox",
-    name: "Checkbox",
-    text: "Checkbox",
+    key: "excluded",
+    name: "Exclued",
+    text: "Excluded",
     editable: true,
     dataType: "boolean",
     minWidth: 100,
@@ -76,16 +76,6 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInExport: true,
     includeColumnInSearch: false,
     applyColumnFilter: true,
-    onRender: (item: {
-      selected: boolean | undefined;
-      onCheckboxChange: (arg0: any) => void;
-    }) => {
-      return (
-        <Stack horizontalAlign="center">
-          <Checkbox checked={item.selected} />
-        </Stack>
-      );
-    },
     inputType: EditControlType.CheckBox,
   },
   {
@@ -192,6 +182,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     minWidth: 200,
     maxWidth: 200,
     isResizable: true,
+    columnNeededInImport: false,
     includeColumnInExport: true,
     includeColumnInSearch: true,
     inputType: EditControlType.Picker,
@@ -277,6 +268,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     minWidth: 150,
     maxWidth: 150,
     isResizable: true,
+    columnNeededInImport: false,
     includeColumnInExport: false,
     includeColumnInSearch: false,
     inputType: EditControlType.Link,
@@ -294,6 +286,7 @@ export const GridColumnConfig: IColumnConfig[] = [
 export interface GridItemsType {
   id: number;
   customerhovercol: string;
+  excluded: boolean;
   name: string;
   password: string;
   age: number;

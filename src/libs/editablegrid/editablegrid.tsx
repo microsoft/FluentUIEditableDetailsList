@@ -3,6 +3,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import * as XLSX from "xlsx";
 
 import {
   Announced,
@@ -91,6 +92,8 @@ import { EditType } from "../types/edittype";
 import { ExportType } from "../types/exporttype";
 import { IFilter } from "../types/filterstype";
 import { Operation } from "../types/operation";
+import { ImportType } from "../types/importtype";
+import { toast } from "react-toastify";
 
 interface SortOptions {
   key: string;
@@ -107,7 +110,7 @@ const EditableGrid = (props: Props) => {
   const [gridData, setGridData] = useState<any[]>([]);
   const [defaultGridData, setDefaultGridData] = useState<any[]>([]);
   const [backupDefaultGridData, setBackupDefaultGridData] = useState<any[]>([]);
-  const [editChangeCompareData, setEditChangeCompareData] = useState<any[]>([]);
+  const [editChangeCompareData, setEditChangeCompareData] = useState<any>([]);
 
   const [activateCellEdit, setActivateCellEdit] = useState<any[]>([]);
   const [selectionDetails, setSelectionDetails] = useState("");
@@ -270,13 +273,6 @@ const EditableGrid = (props: Props) => {
     if (props.onGridUpdate) {
       await props.onGridUpdate(defaultGridData);
     }
-    if (
-      JSON.stringify(editChangeCompareData) === JSON.stringify(defaultGridData)
-    ) {
-      setGridEditState(false);
-    } else {
-      setGridEditState(true);
-    }
   };
 
   const UpdateGridEditStatus = (): void => {
@@ -317,8 +313,8 @@ const EditableGrid = (props: Props) => {
 
   const SetGridItems = (data: any[]): void => {
     data = ResetGridRowID(data);
+    setEditChangeCompareData(data.map((obj) => ({ ...obj })));
     setDefaultGridData(data);
-    setEditChangeCompareData(data)
     setActivateCellEdit(InitializeInternalGridEditStructure(data));
   };
 
@@ -493,7 +489,7 @@ const EditableGrid = (props: Props) => {
 
   const onAddPanelChange = (item: any, noOfRows: number): void => {
     dismissPanelForAdd();
-    if (noOfRows < 1) {
+    if (noOfRows < 0) {
       return;
     }
 
@@ -628,6 +624,231 @@ const EditableGrid = (props: Props) => {
   };
   /* #endregion */
 
+  /* #region [Grid Import Functions] */
+  const hiddenFileInput = React.useRef(null);
+  const renderItem = () => {
+    const handleClick = (event: any) => {
+      //@ts-ignore
+      hiddenFileInput.current?.click();
+    };
+    return (
+      <Stack horizontal horizontalAlign="center" verticalAlign="center">
+        <IconButton
+          onClick={handleClick}
+          label="Import From Excel"
+          aria-label="Import From Excel"
+          iconProps={{ iconName: "PageCheckedOut" }}
+        />
+        <label
+          onClick={handleClick}
+          aria-label="Import From Excel"
+          style={{ cursor: "pointer" }}
+        >
+          Import From Excel
+        </label>
+        <input
+          aria-hidden={true}
+          ref={hiddenFileInput}
+          style={{ display: "none" }}
+          type="file"
+          name="file"
+          className="custom-file-input"
+          id="inputGroupFile"
+          onChange={(ev) => onImportClick(ImportType.XLSX, ev)}
+          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+        />
+      </Stack>
+    );
+
+    // Default rendering for other items
+    // return defaultRender ? defaultRender(props) : null;
+  };
+
+  const [columnValuesObj, setColumnValuesObj] = useState<any>(null);
+  useEffect(() => {
+    let tmpColumnValuesObj: any = {};
+    props.columns.forEach((item, index) => {
+      tmpColumnValuesObj[item.key] = {
+        value: GetDefault(item.dataType),
+        isChanged: false,
+        error: null,
+      };
+    });
+    setColumnValuesObj(tmpColumnValuesObj);
+  }, [props.columns]);
+
+  const setupImportedData = (excelKeys: any, addedRows: any) => {
+    addedRows.map((row: any) => {
+      var objectKeys = Object.keys(excelKeys);
+      objectKeys.forEach((key) => {
+        row[key] = excelKeys[key];
+      });
+      return row;
+    });
+
+    return addedRows;
+  };
+
+  const verifyColumnsOnImport = (excelKeys: any): boolean => {
+    var ImportedHeader = Object.keys(excelKeys);
+    var CurrentHeaders = Object.keys(columnValuesObj);
+
+    const unImportableCol = props.columns.filter(
+      (x) => x.columnNeededInImport === false
+    );
+
+    for (let index = 0; index < unImportableCol.length; index++) {
+      const header = unImportableCol[index];
+      CurrentHeaders = CurrentHeaders.filter((x) => x !== header.key);
+    }
+
+    for (let index = 0; index < ImportedHeader.length; index++) {
+      const header = ImportedHeader[index];
+
+      if (
+        CurrentHeaders.includes(header) ||
+        (CurrentHeaders.includes(header.toLowerCase()) &&
+          (CurrentHeaders.length === ImportedHeader.length ||
+            CurrentHeaders.length ===
+              ImportedHeader.length - unImportableCol.length ||
+            CurrentHeaders.length ===
+              ImportedHeader.length + unImportableCol.length))
+      ) {
+        return true;
+      } else {
+        toast.error(
+          "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Add / Rename " +
+            header +
+            " column",
+          {}
+        );
+        console.warn("Your imported file is missing columns");
+        return false;
+      }
+    }
+    return false;
+  };
+
+  const verifyColumnsDataOnImport = (excelData: any) => {
+    let errMsg: string[] = [];
+    var ImportedHeader = Object.keys(excelData);
+
+    for (let index = 0; index < ImportedHeader.length; index++) {
+      const header = ImportedHeader[index];
+      const rowCol = excelData[ImportedHeader[index]];
+
+      const currentCol = props.columns.filter((x) => x.key === header);
+      for (let j = 0; j < currentCol.length; j++) {
+        const element = currentCol[j];
+        if (typeof rowCol !== element.dataType) {
+          if (element.dataType === "number") {
+            if (isNaN(parseInt(rowCol))) {
+              errMsg.push(
+                `Data type error, Column: ${element.key}. Expected ${
+                  element.dataType
+                }. Got ${typeof rowCol}`
+              );
+            }
+          } else if (element.dataType === "boolean") {
+            try {
+              Boolean(rowCol);
+            } catch (error) {
+              errMsg.push(
+                `Data type error, Column: ${element.key}. Expected ${
+                  element.dataType
+                }. Got ${typeof rowCol}`
+              );
+            }
+          } else if (element.dataType === "date") {
+            try {
+              new Date(rowCol).toDateString();
+            } catch (error) {
+              errMsg.push(
+                `Data type error, Column: ${element.key}. Expected ${
+                  element.dataType
+                }. Got ${typeof rowCol}`
+              );
+            }
+          } else if (typeof rowCol !== element.dataType) {
+            errMsg.push(
+              `Data type error, Column: ${element.key}. Expected ${
+                element.dataType
+              }. Got ${typeof rowCol}`
+            );
+          } else {
+            errMsg.push(
+              `Data type error, Column: ${element.key}. Expected ${
+                element.dataType
+              }. Got ${typeof rowCol}`
+            );
+          }
+        }
+      }
+    }
+
+    return errMsg;
+  };
+
+  const ImportFromExcelUtil = (event: any): any[] => {
+    const files = event.target.files;
+    if (files.length) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const wb = XLSX.read(event.target?.result);
+        const sheets = wb.SheetNames;
+        let ui: any[] = [];
+        let errorMsg: string[] = [];
+
+        if (sheets.length) {
+          const excelJSON = XLSX.utils.sheet_to_json(wb.Sheets[sheets[0]]);
+          for (let index = 0; index < 1; index++) {
+            if (!verifyColumnsOnImport(excelJSON[index])) return;
+          }
+          //verifyColumnsDataOnImport
+          for (let index = 0; index < excelJSON.length; index++) {
+            const verifyDataTypes = verifyColumnsDataOnImport(excelJSON[index]);
+            if (verifyDataTypes.length <= 0)
+              ui.push(
+                setupImportedData(excelJSON[index], GetDefaultRowObject(1))
+              );
+            else {
+              verifyDataTypes.forEach((str) => {
+                toast.error(`Import Error: ${str}`, {});
+              });
+              return;
+            }
+          }
+          var newGridData = [...defaultGridData];
+          ui.forEach((i) => {
+            newGridData.splice(0, 0, i[0]);
+          });
+          toast.success(`Imported ${ui.length} Rows From File`, {});
+          SetGridItems(newGridData);
+          setGridEditState(true);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+    return [];
+  };
+  const ImportFromExcel = (event: any, dataRows?: any[]): void => {
+    if (!props.onExcelImport) {
+      ImportFromExcelUtil(event);
+    } else {
+      props.onExcelImport(ImportType.XLSX);
+    }
+  };
+
+  const onImportClick = (type: ImportType, event: any): void => {
+    switch (type) {
+      case ImportType.XLSX:
+        ImportFromExcel(event);
+        break;
+    }
+  };
+  /* #endregion */
+
   /* #region [Grid Cell Edit Functions] */
   const SaveSingleCellValue = (
     key: string,
@@ -648,8 +869,17 @@ const EditableGrid = (props: Props) => {
       defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] !=
       Operation.Add
     ) {
-      defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
-        Operation.Update;
+      if (
+        JSON.stringify(defaultGridDataTmp) ===
+        JSON.stringify(editChangeCompareData)
+      )
+        defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
+          Operation.None;
+      else {
+        defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
+          Operation.Update;
+        setGridEditState(true);
+      }
     }
     return defaultGridDataTmp;
   };
@@ -824,14 +1054,14 @@ const EditableGrid = (props: Props) => {
 
   const onCheckBoxChange = (
     ev: React.FormEvent<HTMLElement | HTMLInputElement>,
-    isChecked: boolean,
     row: number,
-    column: IColumnConfig
+    column: IColumnConfig,
+    isChecked?: boolean
   ): void => {
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
-        item.properties[column.key].value = [];
+        item.properties[column.key].value = isChecked;
       }
 
       activateCellEditTmp.push(item);
@@ -974,17 +1204,14 @@ const EditableGrid = (props: Props) => {
       enableTextField
     );
 
-    setActivateCellEdit(activateCellEditTmp);    
+    setActivateCellEdit(activateCellEditTmp);
     if (!enableTextField) {
-
       let defaultGridDataTmp: any[] = SaveRowValue(
         item,
         rowNum,
         defaultGridData
       );
       setDefaultGridData(defaultGridDataTmp);
-      
-      
     }
   };
 
@@ -1135,8 +1362,8 @@ const EditableGrid = (props: Props) => {
       .filter((x) => x._grid_row_id_ == rowNum)
       .map((x) => (x._grid_row_operation_ = Operation.Delete));
 
-    setGridEditState(true);
     SetGridItems(defaultGridDataTmp);
+    setGridEditState(true);
   };
 
   /* #endregion */
@@ -1714,7 +1941,7 @@ const EditableGrid = (props: Props) => {
                             }}
                             instantOpenOnClick
                           >
-                            {RenderDropdownSpan(
+                            {RenderCheckboxSpan(
                               props,
                               index,
                               rowNum,
@@ -1724,7 +1951,7 @@ const EditableGrid = (props: Props) => {
                             )}
                           </HoverCard>
                         ) : (
-                          RenderDropdownSpan(
+                          RenderCheckboxSpan(
                             props,
                             index,
                             rowNum,
@@ -1735,11 +1962,15 @@ const EditableGrid = (props: Props) => {
                         )
                       ) : (
                         <Checkbox
-                          //   label={column.text}
+                          styles={{ root: { justifyContent: "center" } }}
                           ariaLabel={column.key}
+                          defaultChecked={
+                            activateCellEdit[rowNum!]["properties"][column.key]
+                              .value
+                          }
                           onChange={(ev, isChecked) => {
-                            if (ev && isChecked)
-                              onCheckBoxChange(ev, isChecked, rowNum!, column);
+                            if (ev)
+                              onCheckBoxChange(ev, rowNum!, column, isChecked);
                           }}
                         />
                       )}
@@ -2280,6 +2511,20 @@ const EditableGrid = (props: Props) => {
       });
     }
 
+    if (props.enableExcelImport) {
+      commandBarItems.push({
+        id: "importExcel",
+        key: "importFroExcel",
+        text: "Import From Excel",
+        ariaLabel: "Import From Excel",
+        disabled: isGridInEdit || editMode,
+        cacheKey: "myCacheKey",
+        //iconProps: { iconName: "PageCheckedOut" },
+        onRender: renderItem,
+        // onClick: (ev) => onImportClick(ImportType.XLSX, ev),
+      });
+    }
+
     if (
       props.gridCopyOptions &&
       props.gridCopyOptions.enableGridCopy &&
@@ -2412,9 +2657,12 @@ const EditableGrid = (props: Props) => {
         key: "submit",
         text: "Submit",
         ariaLabel: "Submit",
-        disabled: isGridInEdit,
+        disabled: isGridInEdit && !editMode,
         iconProps: { iconName: "Save" },
-        onClick: () => onGridSave(),
+        onClick: () => {
+          ShowGridEditMode();
+          onGridSave();
+        },
       });
     }
 
@@ -2740,6 +2988,62 @@ const EditableGrid = (props: Props) => {
       HandleCellOnClick,
       EditCellValue,
       HandleCellOnDoubleClick
+    );
+  };
+
+  const RenderCheckboxSpan = (
+    props: Props,
+    index: number,
+    rowNum: number,
+    column: IColumnConfig,
+    item: any,
+    EditCellValue: (
+      key: string,
+      rowNum: number,
+      activateCurrentCell: boolean
+    ) => void
+  ): React.ReactNode => {
+    return (
+      <Stack
+        horizontalAlign="center"
+        id={`id-${props.id}-col-${index}-row-${rowNum}`}
+        onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
+        onDoubleClick={HandleCellOnDoubleClick(
+          props,
+          column,
+          EditCellValue,
+          rowNum
+        )}
+      >
+        {item[column.key] === true ? (
+          <Checkbox
+            ariaLabel={column.key}
+            styles={{
+              root: {
+                selectors: {
+                  ".ms-Checkbox": {
+                    backgroundColor: "rgb(0, 120, 212)",
+                  },
+                  ".ms-Checkbox-checkbox": {
+                    backgroundColor: "rgb(0, 120, 212)",
+                  },
+                  ".ms-Checkbox-checkmark": {
+                    color: "white",
+                  },
+                },
+              },
+            }}
+            checked={item[column.key]}
+            disabled
+          />
+        ) : (
+          <Checkbox
+            ariaLabel={column.key}
+            checked={item[column.key]}
+            disabled
+          />
+        )}
+      </Stack>
     );
   };
 

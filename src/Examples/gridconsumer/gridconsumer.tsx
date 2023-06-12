@@ -60,6 +60,7 @@ interface GridConfigOptions {
   enableColumnEdit: boolean;
   enableCSVExport: boolean;
   enableExcelExport: boolean;
+  enableExcelImport: boolean
   enableEditMode: boolean;
   enableEditModeCancel: boolean;
   enableGridRowsDelete: boolean;
@@ -97,6 +98,7 @@ const Consumer = () => {
       enableBulkEdit: true,
       enableColumnEdit: true,
       enableExcelExport: true,
+      enableExcelImport: true,
       enableCSVExport: true,
       enableEditMode: true,
       enableEditModeCancel: true,
@@ -200,10 +202,14 @@ const Consumer = () => {
 
   const SetDummyData = (): void => {
     var dummyData: GridItemsType[] = [];
-    for (var i = 1; i <= 1; i++) {
+    
+    for (var i = 1; i <= 2; i++) {
       var randomInt = GetRandomInt(1, 3);
       dummyData.push({
         id: i,
+        excluded:  randomInt % 2 == 0
+        ? true
+        : false,
         customerhovercol: "Hover Me",
         name: "Name" + GetRandomInt(1, 10),
         password: "somepassword",
@@ -485,6 +491,14 @@ const Consumer = () => {
           </StackItem>
           <StackItem className={classNames.checkbox}>
             <Checkbox
+              id={"enableExcelImport"}
+              label="Import From Excel"
+              onChange={onCheckboxChange}
+              checked={gridConfigOptions.enableExcelImport}
+            />
+          </StackItem>
+          <StackItem className={classNames.checkbox}>
+            <Checkbox
               id={"enableEditMode"}
               label="TextField Edit Mode"
               onChange={onCheckboxChange}
@@ -658,6 +672,7 @@ const Consumer = () => {
             gridConfigOptions.enableSingleCellEditOnDoubleClick
           }
           enableCSVExport={gridConfigOptions.enableCSVExport}
+          enableExcelImport={gridConfigOptions.enableExcelImport}
           enableExcelExport={gridConfigOptions.enableExcelExport}
           enableEditMode={gridConfigOptions.enableEditMode}
           enableEditModeCancel={gridConfigOptions.enableEditModeCancel}

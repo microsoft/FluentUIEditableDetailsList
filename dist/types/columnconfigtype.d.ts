@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { IColumn, IDropdownOption } from "@fluentui/react";
 import { CalculationType } from "./calculationtype";
 import { ICellStyleRulesType, StringOperators } from "./cellstyleruletype";
@@ -9,6 +10,7 @@ export interface IColumnConfig extends IColumn {
     editable?: boolean;
     dataType?: string;
     isResizable?: boolean;
+    columnNeededInImport?: boolean;
     includeColumnInExport?: boolean;
     includeColumnInSearch?: boolean;
     inputType?: EditControlType;
@@ -21,6 +23,7 @@ export interface IColumnConfig extends IColumn {
     applyColumnFilter?: boolean;
     cellStyleRule?: ICellStyleRulesType;
     dropdownValues?: IDropdownOption[];
+    checked?: boolean;
     pickerOptions?: IPickerOptions;
     disableSort?: boolean;
     hoverComponentOptions?: IHoverOptions;
