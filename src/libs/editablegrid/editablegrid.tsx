@@ -692,6 +692,9 @@ const EditableGrid = (props: Props) => {
   const verifyColumnsOnImport = (excelKeys: any): boolean => {
     var ImportedHeader = Object.keys(excelKeys);
     var CurrentHeaders = Object.keys(columnValuesObj);
+    console.log(CurrentHeaders)
+    console.log(ImportedHeader)
+
 
     const unImportableCol = props.columns.filter(
       (x) => x.columnNeededInImport === false
