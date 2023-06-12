@@ -53170,7 +53170,7 @@ const pW = (e) => {
     return e.enableExcelExport && !e.enableCSVExport ? W.push({
       id: "export",
       key: "exportToExcel",
-      text: "Excel To Export",
+      text: "Export To Excel",
       ariaLabel: "Export To Excel",
       disabled: K || n,
       cacheKey: "myCacheKey",

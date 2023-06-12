@@ -2465,7 +2465,7 @@ const EditableGrid = (props: Props) => {
       commandBarItems.push({
         id: "export",
         key: "exportToExcel",
-        text: "Excel To Export",
+        text: "Export To Excel",
         ariaLabel: "Export To Excel",
         disabled: isGridInEdit || editMode,
         cacheKey: "myCacheKey",
