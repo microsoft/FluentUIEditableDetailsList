@@ -93,7 +93,7 @@ import { ExportType } from "../types/exporttype";
 import { IFilter } from "../types/filterstype";
 import { Operation } from "../types/operation";
 import { ImportType } from "../types/importtype";
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 interface SortOptions {
   key: string;
@@ -692,44 +692,40 @@ const EditableGrid = (props: Props) => {
   const verifyColumnsOnImport = (excelKeys: any): boolean => {
     var ImportedHeader = Object.keys(excelKeys);
     var CurrentHeaders = Object.keys(columnValuesObj);
-    console.log(CurrentHeaders)
-    console.log(ImportedHeader)
+
 
 
     const unImportableCol = props.columns.filter(
       (x) => x.columnNeededInImport === false
     );
 
-    for (let index = 0; index < unImportableCol.length; index++) {
-      const header = unImportableCol[index];
-      CurrentHeaders = CurrentHeaders.filter((x) => x !== header.key);
-    }
+    // for (let index = 0; index < unImportableCol.length; index++) {
+    //   const header = unImportableCol[index];
+    //   CurrentHeaders = CurrentHeaders.filter((x) => x !== header.key);
+    // }
 
     for (let index = 0; index < ImportedHeader.length; index++) {
       const header = ImportedHeader[index];
-
       if (
-        CurrentHeaders.includes(header) ||
+        !(CurrentHeaders.includes(header) ||
         (CurrentHeaders.includes(header.toLowerCase()) &&
           (CurrentHeaders.length === ImportedHeader.length ||
             CurrentHeaders.length ===
               ImportedHeader.length - unImportableCol.length ||
             CurrentHeaders.length ===
-              ImportedHeader.length + unImportableCol.length))
+              ImportedHeader.length + unImportableCol.length)))
       ) {
-        return true;
-      } else {
-        // toast.error(
-        //   "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Add / Rename " +
-        //     header +
-        //     " column",
-        //   {}
-        // );
+          toast.error(
+          "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Rename / Add  " +
+            "`" + header + "`"+
+            " column",
+          {}
+        );
         console.warn("Your imported file is missing columns");
         return false;
       }
     }
-    return false;
+    return true;
   };
 
   const verifyColumnsDataOnImport = (excelData: any) => {
@@ -792,7 +788,7 @@ const EditableGrid = (props: Props) => {
     return errMsg;
   };
 
-  const ImportFromExcelUtil = (event: any): any[] => {
+  const ImportFromExcelUtil = (event: any) => {
     const files = event.target.files;
     if (files.length) {
       const file = files[0];
@@ -805,6 +801,11 @@ const EditableGrid = (props: Props) => {
 
         if (sheets.length) {
           const excelJSON = XLSX.utils.sheet_to_json(wb.Sheets[sheets[0]]);
+
+          if (excelJSON.length <= 0 ){
+            toast.info(`Selected file has 0 rows of data. Please try again. `, {});
+            return
+          }
           for (let index = 0; index < 1; index++) {
             if (!verifyColumnsOnImport(excelJSON[index])) return;
           }
@@ -818,7 +819,7 @@ const EditableGrid = (props: Props) => {
             else {
               verifyDataTypes.forEach((str) => {
                 console.warn(`Import Error: ${str}`)
-                // toast.error(`Import Error: ${str}`, {});
+                toast.error(`Import Error: ${str}`, {});
               });
               return;
             }
@@ -827,15 +828,16 @@ const EditableGrid = (props: Props) => {
           ui.forEach((i) => {
             newGridData.splice(0, 0, i[0]);
           });
-          console.log(`Imported ${ui.length} Rows From File`)
-          // toast.success(`Imported ${ui.length} Rows From File`, {});
+          toast.success(`Imported ${ui.length} Rows From File`, {});
           SetGridItems(newGridData);
           setGridEditState(true);
         }
       };
       reader.readAsArrayBuffer(file);
+    }else{
+      toast.error(`Error Processing File`)
     }
-    return [];
+    event.target.value = null;
   };
   const ImportFromExcel = (event: any, dataRows?: any[]): void => {
     if (!props.onExcelImport) {

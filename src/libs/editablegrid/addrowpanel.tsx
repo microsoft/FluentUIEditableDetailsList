@@ -63,7 +63,6 @@ const AddRowPanel = (props: Props) => {
     isChanged: boolean = true,
     errorMessage: string | null = null
   ): void => {
-    console.log(key)
     setColumnValuesObj({
       ...columnValuesObj,
       [key]: { value: value, isChanged: isChanged, error: errorMessage },

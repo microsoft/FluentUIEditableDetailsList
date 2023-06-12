@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { StringOperators } from "../../types/cellstyleruletype";
 import { IPickerDescriptionOption } from "../../types/columnconfigtype";
 interface Props {

@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { IColumn, IDropdownOption } from "@fluentui/react";
 import { CalculationType } from "./calculationtype";
 import { ICellStyleRulesType, StringOperators } from "./cellstyleruletype";
