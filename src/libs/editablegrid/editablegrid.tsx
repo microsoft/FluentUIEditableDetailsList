@@ -1386,7 +1386,10 @@ const EditableGrid = (props: Props) => {
       .then(
         function () {
           if (props.onGridStatusMessageCallback)
-            props.onGridStatusMessageCallback("1 row copied to clipboard");
+            props.onGridStatusMessageCallback(
+              "1 row copied to clipboard",
+              GridToastTypes.INFO
+            );
         },
         function () {
           /* clipboard write failed */
@@ -2428,7 +2431,7 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.enableRowEditCopy) {
+    if (props.gridCopyOptions && props.gridCopyOptions.enableRowCopy) {
       columnConfigs.push({
         key: "copy",
         name: "Copy Row",
@@ -2472,7 +2475,7 @@ const EditableGrid = (props: Props) => {
         maxWidth: 50,
         onRender: (item, index) => (
           <div>
-            {props.gridCopyOptions && props.gridCopyOptions.enableRowCopy && (
+            {props.enableRowEditDelete && (
               <IconButton
                 onClick={() =>
                   HandleRowSingleDelete(Number(item["_grid_row_id_"])!)
