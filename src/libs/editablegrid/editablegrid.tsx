@@ -3315,8 +3315,6 @@ const EditableGrid = (props: Props) => {
             disabled
           />
         )}
-                  {console.log(defaultGridData)}
-
       </Stack>
     );
   };

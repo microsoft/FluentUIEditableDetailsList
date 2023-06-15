@@ -52917,7 +52917,7 @@ const F7 = (e) => {
     Yi,
     ie,
     $i
-  ), Xh = (H, Z, N, Q, fe, ie) => /* @__PURE__ */ ae.jsxs(
+  ), Xh = (H, Z, N, Q, fe, ie) => /* @__PURE__ */ ae.jsx(
     Gr,
     {
       horizontalAlign: "center",
@@ -52929,39 +52929,36 @@ const F7 = (e) => {
         ie,
         N
       ),
-      children: [
-        fe && fe[Q.key] ? /* @__PURE__ */ ae.jsx(
-          Pi,
-          {
-            ariaLabel: Q.key,
-            styles: {
-              root: {
-                selectors: {
-                  ".ms-Checkbox": {
-                    backgroundColor: "rgb(0, 120, 212)"
-                  },
-                  ".ms-Checkbox-checkbox": {
-                    backgroundColor: "rgb(0, 120, 212)"
-                  },
-                  ".ms-Checkbox-checkmark": {
-                    color: "white"
-                  }
+      children: fe && fe[Q.key] ? /* @__PURE__ */ ae.jsx(
+        Pi,
+        {
+          ariaLabel: Q.key,
+          styles: {
+            root: {
+              selectors: {
+                ".ms-Checkbox": {
+                  backgroundColor: "rgb(0, 120, 212)"
+                },
+                ".ms-Checkbox-checkbox": {
+                  backgroundColor: "rgb(0, 120, 212)"
+                },
+                ".ms-Checkbox-checkmark": {
+                  color: "white"
                 }
               }
-            },
-            checked: fe[Q.key],
-            disabled: !0
-          }
-        ) : /* @__PURE__ */ ae.jsx(
-          Pi,
-          {
-            ariaLabel: Q.key,
-            checked: fe[Q.key],
-            disabled: !0
-          }
-        ),
-        console.log(h)
-      ]
+            }
+          },
+          checked: fe[Q.key],
+          disabled: !0
+        }
+      ) : /* @__PURE__ */ ae.jsx(
+        Pi,
+        {
+          ariaLabel: Q.key,
+          checked: fe[Q.key],
+          disabled: !0
+        }
+      )
     }
   ), qh = (H, Z, N, Q, fe, ie) => /* @__PURE__ */ ae.jsx(
     "span",
