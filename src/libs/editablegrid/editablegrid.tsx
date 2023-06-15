@@ -1797,6 +1797,7 @@ const EditableGrid = (props: Props) => {
         minWidth: column.minWidth,
         maxWidth: column.maxWidth,
         flexGrow: column.flexGrow,
+        targetWidthProportion: column.targetWidthProportion,
         onColumnContextMenu:
           !column.disableSort && !(isGridInEdit || editMode)
             ? (col, ev) => onColumnContextMenu(col, ev)
