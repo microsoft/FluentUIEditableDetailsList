@@ -1793,9 +1793,10 @@ const EditableGrid = (props: Props) => {
         headerClassName: colHeaderClassName,
         ariaLabel: column.text,
         fieldName: column.key,
-        isResizable: true,
+        isResizable: column.isResizable,
         minWidth: column.minWidth,
         maxWidth: column.maxWidth,
+        flexGrow: column.flexGrow,
         onColumnContextMenu:
           !column.disableSort && !(isGridInEdit || editMode)
             ? (col, ev) => onColumnContextMenu(col, ev)
