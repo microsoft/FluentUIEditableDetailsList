@@ -52028,6 +52028,7 @@ const C7 = (e) => {
         maxWidth: B.maxWidth,
         flexGrow: B.flexGrow,
         targetWidthProportion: B.targetWidthProportion,
+        calculatedWidth: B.calculatedWidth,
         onColumnContextMenu: !B.disableSort && !(H || n) ? (Me, Re) => Nr(Me) : void 0,
         onColumnClick: !(H || n) && Xe && B.applyColumnFilter && e.enableColumnFilters ? (Me, Re) => Rt(Me, Re, Q) : void 0,
         //data: item.dataType,
