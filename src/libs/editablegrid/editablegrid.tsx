@@ -127,6 +127,7 @@ const EditableGrid = (props: Props) => {
   const [announced, setAnnounced] = useState<JSX.Element | undefined>(
     undefined
   );
+  const [clipboardIsEmpty, setClipboardIsEmpty] = useState(true);
   const [isUpdateColumnClicked, setIsUpdateColumnClicked] = useState(false);
   const [isColumnFilterClicked, setIsColumnFilterClicked] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
@@ -736,6 +737,11 @@ const EditableGrid = (props: Props) => {
     return true;
   };
 
+  function isValidDate(value: any) {
+    const date: any = new Date(value);
+    return !isNaN(date);
+  }
+
   const verifyColumnsDataOnImport = (excelData: any) => {
     let errMsg: string[] = [];
     var ImportedHeader = Object.keys(excelData);
@@ -768,7 +774,11 @@ const EditableGrid = (props: Props) => {
             }
           } else if (element.dataType === "date") {
             try {
-              new Date(rowCol).toDateString();
+              if (!isValidDate(rowCol)) {
+                throw {};
+              }else{
+                continue
+              }
             } catch (error) {
               errMsg.push(
                 `Data type error, Column: ${element.key}. Expected ${
@@ -783,11 +793,7 @@ const EditableGrid = (props: Props) => {
               }. Got ${typeof rowCol}`
             );
           } else {
-            errMsg.push(
-              `Data type error, Column: ${element.key}. Expected ${
-                element.dataType
-              }. Got ${typeof rowCol}`
-            );
+            errMsg.push(`Data type error, Column: ${element.key}.`);
           }
         }
       }
@@ -1395,6 +1401,210 @@ const EditableGrid = (props: Props) => {
           /* clipboard write failed */
         }
       );
+  };
+
+  const isClipboardEmpty = async () => {
+    try {
+      const clipboardItems = await navigator.clipboard.read();
+      return clipboardItems.length === 0;
+    } catch (error) {
+      if (props.onGridStatusMessageCallback)
+        props.onGridStatusMessageCallback(
+          `Failed To Get Clipboard. Make sure permissions have been given.`,
+          GridToastTypes.ERROR
+        );
+      return true;
+    }
+  };
+
+  const verifyColumnsDataOnPaste = (rowData: any, newObj: any) => {
+    let errMsg: string[] = [];
+    var pastedHeaders = Object.keys(newObj);
+
+    for (let index = 0; index < pastedHeaders.length; index++) {
+      const element = props.columns[index];
+      const rowCol = newObj[pastedHeaders[index]];
+
+      if (typeof rowCol !== element.dataType) {
+        if (element.dataType === "number") {
+          if (isNaN(parseInt(rowCol))) {
+            errMsg.push(
+              `Data type error, Column: ${element.key}. Expected ${
+                element.dataType
+              }. Got ${typeof rowCol}`
+            );
+          }
+        } else if (element.dataType === "boolean") {
+          try {
+            if (
+              rowCol.toString().toLowerCase() === "false" ||
+              rowCol.toString().toLowerCase() === "true"
+            )
+              continue;
+            else {
+              throw {};
+            }
+          } catch (error) {
+            errMsg.push(
+              `Data type error, Column: ${element.key}. Expected ${
+                element.dataType
+              }. Got ${typeof rowCol}`
+            );
+          }
+        } else if (element.dataType === "date") {
+          try {
+            if (!isValidDate(rowCol)) {
+              throw {};
+            } else {
+              continue;
+            }
+          } catch (error) {
+            errMsg.push(
+              `Data type error, Column: ${element.key}. Expected ${
+                element.dataType
+              }. Got ${typeof rowCol}`
+            );
+          }
+        } else if (typeof rowCol !== element.dataType) {
+          errMsg.push(
+            `Data type error, Column: ${element.key}. Expected ${
+              element.dataType
+            }. Got ${typeof rowCol}`
+          );
+        } else {
+          errMsg.push(`Data type error, Column: ${element.key}.`);
+        }
+      }
+    }
+
+    return errMsg;
+  };
+
+  const setupPastedData = (rowData: string[], addedRows: any) => {
+    const newColObj: any = {};
+    var colKeys = Object.keys(columnValuesObj);
+
+    // var CurrentHeaders = Object.keys(columnValuesObj);
+    // const unImportableCol = props.columns.filter(
+    //   (x) => x.columnNeededInImport === false
+    // );
+
+    //  for (let index = 0; index < unImportableCol.length; index++) {
+    //    const header = unImportableCol[index];
+    //    CurrentHeaders = CurrentHeaders.filter((x) => x !== header.key);
+    //  }
+
+    for (let index = 0; index < rowData.length; index++) {
+      const currentVal = rowData[index];
+      const colKeysVal = colKeys[index];
+      if(currentVal.toLowerCase() === 'false'){
+        newColObj[colKeysVal] = false;
+      }else if(currentVal.toLowerCase() === 'true'){
+        newColObj[colKeysVal] = true;
+      }else{
+        newColObj[colKeysVal] = currentVal;
+      }
+    }
+
+    const verifyDataTypes = verifyColumnsDataOnPaste(rowData, newColObj);
+    if (verifyDataTypes.length <= 0) {
+      addedRows.map((row: any) => {
+        var objectKeys = Object.keys(newColObj);
+        objectKeys.forEach((key) => {
+          row[key] = newColObj[key];
+        });
+        return row;
+      });
+    } else {
+      verifyDataTypes.forEach((str) => {
+        console.warn(`Import Error: ${str}`);
+        if (props.onGridStatusMessageCallback)
+          props.onGridStatusMessageCallback(
+            `Paste Error: ${str}`,
+            GridToastTypes.ERROR
+          );
+      });
+      setImportingStarted(false);
+      return null;
+    }
+
+    return addedRows;
+  };
+
+  const PasteGridRows = (): void => {
+    isClipboardEmpty().then((empty) => {
+      if (empty) {
+        ShowMessageDialog(
+          "Nothing In Clipboard",
+          "Please copy this grid or an excel with the same columns and try again."
+        );
+        return;
+      }
+    });
+    let ui: any[] = [];
+    let pastedData = "";
+    let lines: string[] = [];
+
+    navigator.clipboard
+      .readText()
+      .then((text) => {
+        pastedData = text;
+        lines = text.split("\n");
+        if (lines.length <= 0) {
+          ShowMessageDialog(
+            "Unable To Add This Data",
+            "Please try again. Data is not sufficient "
+          );
+          return;
+        }
+        setImportingStarted(true);
+
+        var colKeys = Object.keys(columnValuesObj);
+        for (let index = 0; index < lines.length; index++) {
+          const row = lines[index];
+          if (row.length <= 0) continue;
+          const rowData = row.split("\t");
+          if (rowData.length < colKeys.length) {
+            if (props.onGridStatusMessageCallback)
+              props.onGridStatusMessageCallback(
+                `Cancelled. Looks Like Data Is Missing Columns. Approx ${
+                  colKeys.length - rowData.length
+                } Columns Missing.`,
+                GridToastTypes.ERROR
+              );
+            setImportingStarted(false);
+            return;
+          }
+          const startPush = setupPastedData(rowData, GetDefaultRowObject(1));
+          if (startPush !== null) {
+            ui.push(startPush);
+          } else {
+            return;
+          }
+        }
+        var newGridData = [...defaultGridData];
+        ui.forEach((i) => {
+          newGridData.splice(0, 0, i[0]);
+        });
+
+        if (props.onGridStatusMessageCallback)
+          props.onGridStatusMessageCallback(
+            `Pasted ${ui.length} Rows From Clipboard`,
+            GridToastTypes.SUCCESS
+          );
+        SetGridItems(newGridData);
+        setGridEditState(true);
+        setImportingStarted(false);
+      })
+      .catch((error) => {
+        setImportingStarted(false);
+        setGridEditState(false);
+        if (props.onGridStatusMessageCallback)
+          props.onGridStatusMessageCallback(
+            `Failed To Paste Rows From Clipboard`,
+            GridToastTypes.ERROR
+          );
+      });
   };
 
   const HandleRowSingleDelete = (rowNum: number): void => {
@@ -2443,7 +2653,7 @@ const EditableGrid = (props: Props) => {
         isResizable: false,
         isIconOnly: true,
         minWidth: 50,
-        maxWidth: 50,
+        //maxWidth: 50,
         onRender: (item, index) => (
           <div>
             {props.gridCopyOptions && props.gridCopyOptions.enableRowCopy && (
@@ -2589,6 +2799,22 @@ const EditableGrid = (props: Props) => {
             : "Copy Selected Grid Row",
         iconProps: { iconName: "Documentation" },
         onClick: () => CopyGridRows(),
+      });
+    }
+
+    if (
+      props.gridCopyOptions &&
+      props.gridCopyOptions.enableGridPaste &&
+      !editMode
+    ) {
+      commandBarItems.push({
+        key: "paste",
+        text: "Paste Into Grid",
+        disabled: isGridInEdit || editMode,
+        ariaLabel: "Pasted Copied Grid Rows",
+        title: "Pasted Copied Grid Rows",
+        iconProps: { iconName: "Paste" },
+        onClick: () => PasteGridRows(),
       });
     }
 
@@ -3060,7 +3286,8 @@ const EditableGrid = (props: Props) => {
           rowNum
         )}
       >
-        {item[column.key] === true ? (
+        {item && item[column.key] ? (
+      
           <Checkbox
             ariaLabel={column.key}
             styles={{
@@ -3078,16 +3305,18 @@ const EditableGrid = (props: Props) => {
                 },
               },
             }}
-            checked={item[column.key]}
+            checked={(item[column.key])}
             disabled
           />
         ) : (
           <Checkbox
             ariaLabel={column.key}
-            checked={item[column.key]}
+            checked={(item[column.key])}
             disabled
           />
         )}
+                  {console.log(defaultGridData)}
+
       </Stack>
     );
   };
@@ -3339,7 +3568,9 @@ const EditableGrid = (props: Props) => {
                 // layoutMode={props.layoutMode}
                 // constrainMode={props.constrainMode}
                 layoutMode={props.layoutMode ?? DetailsListLayoutMode.justified}
-                constrainMode={props.constrainMode ?? ConstrainMode.unconstrained}
+                constrainMode={
+                  props.constrainMode ?? ConstrainMode.unconstrained
+                }
                 selection={_selection}
                 setKey="none"
                 onRenderDetailsHeader={props.onRenderDetailsHeader}

@@ -69,6 +69,7 @@ interface GridConfigOptions {
   enableColumnFilterRules: boolean;
   enableRowAddWithValues: boolean;
   enableGridCopy: boolean;
+  enableGridPaste: boolean;
   enableRowCopy: boolean;
   enableUnsavedEditIndicator: boolean;
   enableSaveChangesOnlyOnSubmit: boolean;
@@ -108,6 +109,7 @@ const Consumer = () => {
       enableColumnFilterRules: true,
       enableRowAddWithValues: true,
       enableGridCopy: true,
+      enableGridPaste: true,
       enableRowCopy: true,
       enableUnsavedEditIndicator: true,
       enableSaveChangesOnlyOnSubmit: false,
@@ -204,7 +206,7 @@ const Consumer = () => {
   const SetDummyData = (): void => {
     var dummyData: GridItemsType[] = [];
 
-    for (var i = 1; i <= 2; i++) {
+    for (var i = 1; i <= 1; i++) {
       var randomInt = GetRandomInt(1, 3);
       dummyData.push({
         id: i,
@@ -567,6 +569,14 @@ const Consumer = () => {
           </StackItem>
           <StackItem className={classNames.checkbox}>
             <Checkbox
+              id={"enableGridPaste"}
+              label="Grid Paste"
+              onChange={onCheckboxChange}
+              checked={gridConfigOptions.enableGridPaste}
+            />
+          </StackItem>
+          <StackItem className={classNames.checkbox}>
+            <Checkbox
               id={"enableRowCopy"}
               label="Row Copy"
               onChange={onCheckboxChange}
@@ -707,6 +717,7 @@ const Consumer = () => {
           gridCopyOptions={{
             enableGridCopy: gridConfigOptions.enableGridCopy,
             enableRowCopy: gridConfigOptions.enableRowCopy,
+            enableGridPaste: gridConfigOptions.enableGridPaste,
           }}
           onGridStatusMessageCallback={(str: string, type: GridToastTypes) => {
             switch (type) {
