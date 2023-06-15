@@ -3335,8 +3335,8 @@ const EditableGrid = (props: Props) => {
                 selectionMode={props.selectionMode}
                 // layoutMode={props.layoutMode}
                 // constrainMode={props.constrainMode}
-                layoutMode={DetailsListLayoutMode.fixedColumns}
-                constrainMode={ConstrainMode.unconstrained}
+                layoutMode={props.layoutMode ?? DetailsListLayoutMode.justified}
+                constrainMode={props.constrainMode ?? ConstrainMode.unconstrained}
                 selection={_selection}
                 setKey="none"
                 onRenderDetailsHeader={props.onRenderDetailsHeader}
