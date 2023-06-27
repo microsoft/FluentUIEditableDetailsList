@@ -2,9 +2,12 @@
 // Licensed under the MIT License.
 
 import {
-    Checkbox,
+  Checkbox,
+  ComboBox,
   DatePicker,
   Dropdown,
+  IComboBox,
+  IComboBoxOption,
   IDropdownOption,
   ITag,
   PrimaryButton,
@@ -69,9 +72,21 @@ const EditPanel = (props: Props) => {
     SetObjValues(item.key, selectedDropdownItem?.text);
   };
 
-  const onCheckBoxChange = (ev: React.FormEvent<HTMLElement | HTMLInputElement>, isChecked: boolean, item : any): void => {
-    SetObjValues(item.key, isChecked ? item?.text : '');
-}
+  const onComboBoxChange = (
+    event: React.FormEvent<IComboBox>,
+    selectedOption: IComboBoxOption | undefined,
+    item: any
+  ): void => {
+    SetObjValues(item.key, selectedOption?.text);
+  };
+
+  const onCheckBoxChange = (
+    ev: React.FormEvent<HTMLElement | HTMLInputElement>,
+    isChecked: boolean,
+    item: any
+  ): void => {
+    SetObjValues(item.key, isChecked ? item?.text : "");
+  };
 
   const onTextUpdate = (
     ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -115,11 +130,15 @@ const EditPanel = (props: Props) => {
     else SetObjValues(item.key, "");
   };
 
+  const [comboOptions, setComboOptions] = useState<IComboBoxOption[]>([]);
+
   const createTextFields = (): any[] => {
     let tmpRenderObj: any[] = [];
     props.columnConfigurationData
       .filter((x) => x.editable == true)
       .forEach((item) => {
+     
+
         switch (item.inputType) {
           case EditControlType.Date:
             tmpRenderObj.push(
@@ -164,12 +183,40 @@ const EditPanel = (props: Props) => {
               />
             );
             break;
+          case EditControlType.ComboBox:
+            console.log(item.comboBoxOptions)
+            setComboOptions(item.comboBoxOptions ?? []);
+            tmpRenderObj.push(
+              <ComboBox
+                label={item.text}
+                options={comboOptions}
+                onInputValueChange={(text) => {
+                  if (
+                    comboOptions.filter((obj) => obj.text.startsWith(text))
+                      .length > 0
+                  )
+                    setComboOptions(
+                      comboOptions.filter((obj) => obj.text.startsWith(text))
+                    );
+                  else if (text === "") {
+                    setComboOptions(comboOptions);
+                  } else {
+                    setComboOptions([]);
+                  }
+                }}
+                onChange={(ev, option) => onComboBoxChange(ev, option, item)}
+                allowFreeInput
+                autoComplete="on"
+              />
+            );
+            break;
           case EditControlType.CheckBox:
             tmpRenderObj.push(
               <Checkbox
                 label={item.text}
-                onChange={(ev, isChecked) => { if(ev && isChecked) onCheckBoxChange(ev, isChecked, item)}}
-
+                onChange={(ev, isChecked) => {
+                  if (ev && isChecked) onCheckBoxChange(ev, isChecked, item);
+                }}
               />
             );
             break;

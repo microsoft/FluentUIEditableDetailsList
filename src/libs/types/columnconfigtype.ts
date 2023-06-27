@@ -1,11 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { IColumn, IDropdownOption } from "@fluentui/react";
+import { IColumn, IComboBoxOption, IDropdownOption } from "@fluentui/react";
 import { CalculationType } from "./calculationtype";
 import { ICellStyleRulesType, StringOperators } from "./cellstyleruletype";
 import { EditControlType } from "./editcontroltype";
-
 
 export interface IColumnConfig extends IColumn {
   key: string;
@@ -24,6 +23,7 @@ export interface IColumnConfig extends IColumn {
   applyColumnFilter?: boolean;
   cellStyleRule?: ICellStyleRulesType;
   dropdownValues?: IDropdownOption[];
+  comboBoxOptions?: IComboBoxOption[];
   checked?: boolean;
   pickerOptions?: IPickerOptions;
   disableSort?: boolean;

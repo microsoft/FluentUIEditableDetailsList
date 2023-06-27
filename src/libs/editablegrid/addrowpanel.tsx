@@ -1,37 +1,37 @@
 import {
-    Checkbox,
-    ConstrainMode,
-    DatePicker,
-    Dropdown,
-    IDropdownOption,
-    IStackStyles,
-    IStackTokens,
-    ITag,
-    ITextFieldStyles,
-    mergeStyleSets,
-    Position,
-    PrimaryButton,
-    SpinButton,
-    Stack,
-    TextField,
+  Checkbox,
+  ComboBox,
+  ConstrainMode,
+  DatePicker,
+  Dropdown,
+  IComboBox,
+  IComboBoxOption,
+  IDropdownOption,
+  IStackStyles,
+  IStackTokens,
+  ITag,
+  ITextFieldStyles,
+  mergeStyleSets,
+  Position,
+  PrimaryButton,
+  SpinButton,
+  Stack,
+  TextField,
 } from "@fluentui/react";
 import { DayPickerStrings } from "../editablegrid/datepickerconfig";
 import {
-    controlClass,
-    horizontalGapStackTokens,
-    stackStyles,
-    textFieldStyles,
-    verticalGapStackTokens,
+  controlClass,
+  horizontalGapStackTokens,
+  stackStyles,
+  textFieldStyles,
+  verticalGapStackTokens,
 } from "../editablegrid/editablegridstyles";
-import {
-    GetDefault,
-    IsValidDataType,
-    ParseType,
-} from "../editablegrid/helper";
+import { GetDefault, IsValidDataType, ParseType } from "../editablegrid/helper";
 import PickerControl from "../editablegrid/pickercontrol/picker";
 import { IColumnConfig } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
 import { createRef, useEffect, useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
   onChange: any;
@@ -77,18 +77,39 @@ const AddRowPanel = (props: Props) => {
     SetObjValues(item.key, selectedDropdownItem?.text);
   };
 
-    const onCheckBoxChange = (ev: React.FormEvent<HTMLElement | HTMLInputElement>, isChecked: boolean, item : any): void => {
-        SetObjValues(item.key, isChecked ? item?.text : '');
+  const onComboBoxChange = (
+    event: React.FormEvent<IComboBox>,
+    selectedOption: IComboBoxOption | undefined,
+    item: any
+  ): void => {
+    SetObjValues(item.key, selectedOption?.text);
+  };
+
+  const onCheckBoxChange = (
+    ev: React.FormEvent<HTMLElement | HTMLInputElement>,
+    isChecked: boolean,
+    item: any
+  ): void => {
+    SetObjValues(item.key, isChecked ? item?.text : "");
+  };
+
+  const onTextUpdate = (
+    ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    text: string,
+    column: IColumnConfig
+  ): void => {
+    if (!IsValidDataType(column.dataType, text)) {
+      SetObjValues(
+        (ev.target as Element).id,
+        text,
+        false,
+        `Data should be of type '${column.dataType}'`
+      );
+      return;
     }
 
-    const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, column : IColumnConfig): void => {
-        if(!IsValidDataType(column.dataType, text)){
-            SetObjValues((ev.target as Element).id, text, false, `Data should be of type '${column.dataType}'`);
-            return;
-        }
-        
-        SetObjValues((ev.target as Element).id, ParseType(column.dataType, text));
-    };
+    SetObjValues((ev.target as Element).id, ParseType(column.dataType, text));
+  };
 
   const onPanelSubmit = (): void => {
     var objectKeys = Object.keys(columnValuesObj);
@@ -117,91 +138,151 @@ const AddRowPanel = (props: Props) => {
     SetObjValues(item.key, date);
   };
 
-    const createTextFields = () : any[] => {
-        let tmpRenderObj : any[] = [];
-        props.columnConfigurationData.forEach((item, index) => {
-            switch(item.inputType){
-                case EditControlType.CheckBox:
-                    tmpRenderObj.push(<Checkbox
-                        label={item.text}
-                        onChange={(ev, isChecked) => { if(ev && isChecked) onCheckBoxChange(ev, isChecked, item)}}
-                    />);
-                    break;
-                case EditControlType.Date:
-                    tmpRenderObj.push(<DatePicker
-                        label={item.text}
-                        strings={DayPickerStrings}
-                        placeholder="Select a date..."
-                        ariaLabel="Select a date"
-                        onSelectDate={(date) => onCellDateChange(date, item)}
-                        //value={props != null && props.panelValues != null ? new Date(props.panelValues[item.key]) : new Date()}
-                        value={new Date()}
-                    />);
-                    break;
-                case EditControlType.DropDown:
-                    tmpRenderObj.push(
-                        <Dropdown
-                            label={item.text}
-                            options={item.dropdownValues ?? []}
-                            onChange={(ev, selected) => onDropDownChange(ev, selected, item)}
-                        />
-                    );
-                    break;
-                case EditControlType.Picker:
-                    tmpRenderObj.push(<div>
-                        <span className={controlClass.pickerLabel}>{item.text}</span>
-                        <PickerControl 
-                            arialabel={item.text}
-                            selectedItemsLimit={1}
-                            pickerTags={item.pickerOptions?.pickerTags ?? []}
-                            minCharLimitForSuggestions={2}
-                            onTaglistChanged={(selectedItem: ITag[] | undefined) => onCellPickerTagListChanged(selectedItem, item)}
-                            pickerDescriptionOptions={item.pickerOptions?.pickerDescriptionOptions}
-                    /></div>);
-                    break;
-                case EditControlType.MultilineTextField:
-                    tmpRenderObj.push(<TextField
-                        errorMessage={columnValuesObj[item.key].error}
-                        name={item.text}
-                        multiline={true}
-                        rows={1}
-                        id={item.key}
-                        label={item.text}
-                        styles={textFieldStyles}
-                        onChange={(ev, text) => onTextUpdate(ev, text!, item)}
-                        value={columnValuesObj[item.key].value || ''}
-                        />);
-                    break;
-                case EditControlType.Password:
-                    tmpRenderObj.push(<TextField
-                        errorMessage={columnValuesObj[item.key].error}
-                        name={item.text}
-                        id={item.key}
-                        label={item.text}
-                        styles={textFieldStyles}
-                        onChange={(ev, text) => onTextUpdate(ev, text!, item)}
-                        value={columnValuesObj[item.key].value || ''}
-                        type="password"
-                        canRevealPassword
-                        />);
-                    break;
-                default:
-                    tmpRenderObj.push(<TextField
-                        errorMessage={columnValuesObj[item.key].error}
-                        name={item.text}
-                        id={item.key}
-                        label={item.text}
-                        styles={textFieldStyles}
-                        onChange={(ev, text) => onTextUpdate(ev, text!, item)}
-                        value={columnValuesObj[item.key].value || ''}
-                        />);
-                    break;
-            }
-        });
+  const [comboOptions, setComboOptions] = useState<IComboBoxOption[]>([]);
+  const createTextFields = (): any[] => {
+    let tmpRenderObj: any[] = [];
+    props.columnConfigurationData.forEach((item, index) => {
+      if (
+        item.comboBoxOptions &&
+        item.comboBoxOptions?.length > 0 &&
+        comboOptions.length < 0
+      ) {
+        setComboOptions(item.comboBoxOptions ?? []);
+      }
+      switch (item.inputType) {
+        case EditControlType.CheckBox:
+          tmpRenderObj.push(
+            <Checkbox
+              key={uuidv4()}
+              label={item.text}
+              onChange={(ev, isChecked) => {
+                if (ev && isChecked) onCheckBoxChange(ev, isChecked, item);
+              }}
+            />
+          );
+          break;
+        case EditControlType.Date:
+          tmpRenderObj.push(
+            <DatePicker
+              key={uuidv4()}
+              label={item.text}
+              strings={DayPickerStrings}
+              placeholder="Select a date..."
+              ariaLabel="Select a date"
+              onSelectDate={(date) => onCellDateChange(date, item)}
+              //value={props != null && props.panelValues != null ? new Date(props.panelValues[item.key]) : new Date()}
+              value={new Date()}
+            />
+          );
+          break;
+        case EditControlType.ComboBox:
+          tmpRenderObj.push(
+            <ComboBox
+              key={uuidv4()}
+              label={item.text}
+              options={comboOptions}
+              onInputValueChange={(text) => {
+                if (
+                  comboOptions.filter((obj) => obj.text.startsWith(text))
+                    .length > 0
+                )
+                  setComboOptions(
+                    comboOptions.filter((obj) => obj.text.startsWith(text))
+                  );
+                else if (text === "") {
+                  setComboOptions(comboOptions);
+                } else {
+                  setComboOptions([]);
+                }
+              }}
+              onChange={(ev, option) => onComboBoxChange(ev, option, item)}
+              allowFreeInput
+              autoComplete="on"
+            />
+          );
+          break;
+        case EditControlType.DropDown:
+          tmpRenderObj.push(
+            <Dropdown
+              key={uuidv4()}
+              label={item.text}
+              options={item.dropdownValues ?? []}
+              onChange={(ev, selected) => onDropDownChange(ev, selected, item)}
+            />
+          );
+          break;
+        case EditControlType.Picker:
+          tmpRenderObj.push(
+            <div key={uuidv4()}>
+              <span className={controlClass.pickerLabel}>{item.text}</span>
+              <PickerControl
+                arialabel={item.text}
+                selectedItemsLimit={1}
+                pickerTags={item.pickerOptions?.pickerTags ?? []}
+                minCharLimitForSuggestions={2}
+                onTaglistChanged={(selectedItem: ITag[] | undefined) =>
+                  onCellPickerTagListChanged(selectedItem, item)
+                }
+                pickerDescriptionOptions={
+                  item.pickerOptions?.pickerDescriptionOptions
+                }
+              />
+            </div>
+          );
+          break;
+        case EditControlType.MultilineTextField:
+          tmpRenderObj.push(
+            <TextField
+              key={uuidv4()}
+              errorMessage={columnValuesObj[item.key].error}
+              name={item.text}
+              multiline={true}
+              rows={1}
+              id={item.key}
+              label={item.text}
+              styles={textFieldStyles}
+              onChange={(ev, text) => onTextUpdate(ev, text!, item)}
+              value={columnValuesObj[item.key].value || ""}
+            />
+          );
+          break;
+        case EditControlType.Password:
+          tmpRenderObj.push(
+            <TextField
+              key={uuidv4()}
+              errorMessage={columnValuesObj[item.key].error}
+              name={item.text}
+              id={item.key}
+              label={item.text}
+              styles={textFieldStyles}
+              onChange={(ev, text) => onTextUpdate(ev, text!, item)}
+              value={columnValuesObj[item.key].value || ""}
+              type="password"
+              canRevealPassword
+            />
+          );
+          break;
+        default:
+          tmpRenderObj.push(
+            <TextField
+              key={uuidv4()}
+              errorMessage={columnValuesObj[item.key].error}
+              name={item.text}
+              id={item.key}
+              label={item.text}
+              styles={textFieldStyles}
+              onChange={(ev, text) => onTextUpdate(ev, text!, item)}
+              value={columnValuesObj[item.key].value || ""}
+            />
+          );
+          break;
+      }
+    });
 
     if (props.enableRowsCounterField) {
       tmpRenderObj.push(
         <SpinButton
+          key={uuidv4()}
           componentRef={AddSpinRef}
           label="# of Rows to Add"
           labelPosition={Position.top}

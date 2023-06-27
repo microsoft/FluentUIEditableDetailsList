@@ -2,21 +2,24 @@
 // Licensed under the MIT License.
 
 import {
-    Checkbox,
-    DatePicker,
-    DefaultButton,
-    Dialog,
-    DialogFooter,
-    Dropdown,
-    IDropdownOption,
-    IDropdownStyles,
-    IStackTokens,
-    ITag,
-    ITextFieldStyles,
-    mergeStyleSets,
-    PrimaryButton,
-    Stack,
-    TextField,
+  Checkbox,
+  ComboBox,
+  DatePicker,
+  DefaultButton,
+  Dialog,
+  DialogFooter,
+  Dropdown,
+  IComboBox,
+  IComboBoxOption,
+  IDropdownOption,
+  IDropdownStyles,
+  IStackTokens,
+  ITag,
+  ITextFieldStyles,
+  mergeStyleSets,
+  PrimaryButton,
+  Stack,
+  TextField,
 } from "@fluentui/react";
 import { DayPickerStrings } from "../editablegrid/datepickerconfig";
 import { GetDefault, IsValidDataType, ParseType } from "../editablegrid/helper";
@@ -24,6 +27,7 @@ import PickerControl from "../editablegrid/pickercontrol/picker";
 import { IColumnConfig } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
 import { useCallback, useEffect, useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
   columnConfigurationData: IColumnConfig[];
@@ -120,12 +124,29 @@ const ColumnUpdateDialog = (props: Props) => {
     else SetObjValues(item.key, "");
   };
 
-    const onDropDownChange = (event: React.FormEvent<HTMLDivElement>, selectedDropdownItem: IDropdownOption | undefined, item : any): void => {
-        SetObjValues(item.key, selectedDropdownItem?.text);
-    }
-    const onCheckBoxChange = (ev: React.FormEvent<HTMLElement | HTMLInputElement>, isChecked: boolean, item : any): void => {
-        SetObjValues(item.key, isChecked ? item?.text : '');
-    }
+  const onDropDownChange = (
+    event: React.FormEvent<HTMLDivElement>,
+    selectedDropdownItem: IDropdownOption | undefined,
+    item: any
+  ): void => {
+    SetObjValues(item.key, selectedDropdownItem?.text);
+  };
+  
+  const onComboBoxChange = (
+    event: React.FormEvent<IComboBox>,
+    selectedOption: IComboBoxOption | undefined,
+    item: any
+  ): void => {
+    SetObjValues(item.key, selectedOption?.text);
+  };
+  
+  const onCheckBoxChange = (
+    ev: React.FormEvent<HTMLElement | HTMLInputElement>,
+    isChecked: boolean,
+    item: any
+  ): void => {
+    SetObjValues(item.key, isChecked ? item?.text : "");
+  };
 
   const onSelectGridColumn = (
     event: React.FormEvent<HTMLDivElement>,
@@ -176,71 +197,115 @@ const ColumnUpdateDialog = (props: Props) => {
   };
 
   const options = createDropDownOptions();
+  const [comboOptions, setComboOptions] = useState<IComboBoxOption[]>([]);
+  const GetInputFieldContent = (): JSX.Element => {
+    var column = props.columnConfigurationData.filter(
+      (x) => x.key == gridColumn
+    );
+    if (column.length > 0) {
+      switch (column[0].inputType) {
+        case EditControlType.Date:
+          return (
+            <DatePicker
+              strings={DayPickerStrings}
+              placeholder="Select a date..."
+              ariaLabel="Select a date"
+              className={controlClass.inputClass}
+              onSelectDate={(date) => onSelectDate(date, column[0])}
+              //value={new Date()}
+            />
+          );
+        case EditControlType.Picker:
+          return (
+            <div>
+              <PickerControl
+                arialabel={column[0].text}
+                selectedItemsLimit={1}
+                pickerTags={column[0].pickerOptions?.pickerTags ?? []}
+                minCharLimitForSuggestions={2}
+                onTaglistChanged={(selectedItem: ITag[] | undefined) =>
+                  onCellPickerTagListChanged(selectedItem, column[0])
+                }
+                pickerDescriptionOptions={
+                  column[0].pickerOptions?.pickerDescriptionOptions
+                }
+              />
+            </div>
+          );
+        case EditControlType.CheckBox:
+          return (
+            <Checkbox
+              label={column[0].text}
+              onChange={(ev, isChecked) => {
+                if (ev && isChecked) onCheckBoxChange(ev, isChecked, column[0]);
+              }}
+            />
+          );
+        case EditControlType.DropDown:
+          return (
+            <Dropdown
+              label={column[0].text}
+              options={column[0].dropdownValues ?? []}
+              onChange={(ev, selected) =>
+                onDropDownChange(ev, selected, column[0])
+              }
+            />
+          );
 
-    const GetInputFieldContent = () : JSX.Element => {
-        var column = props.columnConfigurationData.filter(x => x.key == gridColumn);
-        if(column.length > 0){
-            switch(column[0].inputType){
-                case EditControlType.Date:
-                    return (<DatePicker
-                        strings={DayPickerStrings}
-                        placeholder="Select a date..."
-                        ariaLabel="Select a date"
-                        className={controlClass.inputClass}
-                        onSelectDate={(date) => onSelectDate(date, column[0])}
-                        //value={new Date()}
-                    />);
-                case EditControlType.Picker:
-                    return (<div>
-                        <PickerControl 
-                            arialabel={column[0].text}
-                            selectedItemsLimit={1}
-                            pickerTags={column[0].pickerOptions?.pickerTags ?? []}
-                            minCharLimitForSuggestions={2}
-                            onTaglistChanged={(selectedItem: ITag[] | undefined) => onCellPickerTagListChanged(selectedItem, column[0])}
-                            pickerDescriptionOptions={column[0].pickerOptions?.pickerDescriptionOptions}
-                    /></div>);
-                    case EditControlType.CheckBox:
-                        return (
-                            <Checkbox
-                                label={column[0].text}
-                                onChange={(ev, isChecked) => { if(ev && isChecked)onCheckBoxChange(ev, isChecked, column[0])}}
-                            />
-                        );
-                case EditControlType.DropDown:
-                    return (
-                        <Dropdown
-                            label={column[0].text}
-                            options={column[0].dropdownValues ?? []}
-                            onChange={(ev, selected) => onDropDownChange(ev, selected, column[0])}
-                        />
-                    );
-                case EditControlType.MultilineTextField:
-                    return (<TextField
-                        errorMessage={inputValue[column[0].key].error}
-                        className={controlClass.inputClass}
-                        multiline={true}
-                        rows={1}
-                        placeholder={`Enter '${column[0].text}'...`}
-                        id={column[0].key}
-                        styles={textFieldStyles}
-                        onChange={(ev, text) => onTextUpdate(ev, text!, column[0])}
-                        value={inputValue[column[0].key].value || ''}
-                        />);
-                default:
-                    return (
-                        <TextField
-                            errorMessage={inputValue[column[0].key].error}
-                            className={controlClass.inputClass}
-                            placeholder={`Enter '${column[0].text}'...`}
-                            onChange={(ev, text) => onTextUpdate(ev, text!,column[0])}
-                            styles={textFieldStyles}
-                            id={column[0].key}
-                            value={inputValue[column[0].key].value || ''}
-                        />
-                    );
-            }
-        }
+        case EditControlType.ComboBox:
+          setComboOptions(column[0].comboBoxOptions ?? []);
+          return (
+            <ComboBox
+              key={uuidv4()}
+              label={column[0].text}
+              options={comboOptions}
+              onInputValueChange={(text) => {
+                if (
+                  comboOptions.filter((obj) => obj.text.startsWith(text))
+                    .length > 0
+                )
+                  setComboOptions(
+                    comboOptions.filter((obj) => obj.text.startsWith(text))
+                  );
+                else if (text === "") {
+                  setComboOptions(comboOptions);
+                } else {
+                  setComboOptions([]);
+                }
+              }}
+              onChange={(ev, option) => onComboBoxChange(ev, option, column[0])}
+              allowFreeInput
+              autoComplete="on"
+            />
+          );
+        case EditControlType.MultilineTextField:
+          return (
+            <TextField
+              errorMessage={inputValue[column[0].key].error}
+              className={controlClass.inputClass}
+              multiline={true}
+              rows={1}
+              placeholder={`Enter '${column[0].text}'...`}
+              id={column[0].key}
+              styles={textFieldStyles}
+              onChange={(ev, text) => onTextUpdate(ev, text!, column[0])}
+              value={inputValue[column[0].key].value || ""}
+            />
+          );
+        default:
+          return (
+            <TextField
+              errorMessage={inputValue[column[0].key].error}
+              className={controlClass.inputClass}
+              placeholder={`Enter '${column[0].text}'...`}
+              onChange={(ev, text) => onTextUpdate(ev, text!, column[0])}
+              styles={textFieldStyles}
+              id={column[0].key}
+              value={inputValue[column[0].key].value || ""}
+            />
+          );
+      }
+    }
 
     return <></>;
   };

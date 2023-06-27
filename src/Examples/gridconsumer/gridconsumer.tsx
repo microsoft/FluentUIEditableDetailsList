@@ -210,6 +210,7 @@ const Consumer = () => {
       var randomInt = GetRandomInt(1, 3);
       dummyData.push({
         id: i,
+        combo: 'Black',
         excluded: randomInt % 2 == 0 ? true : false,
         customerhovercol: "Hover Me",
         name: "Name" + GetRandomInt(1, 10),

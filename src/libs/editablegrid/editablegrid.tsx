@@ -8,6 +8,7 @@ import * as XLSX from "xlsx";
 import {
   Announced,
   Checkbox,
+  ComboBox,
   CommandBar,
   ConstrainMode,
   DatePicker,
@@ -20,6 +21,8 @@ import {
   HoverCardType,
   IBasePickerSuggestionsProps,
   IColumn,
+  IComboBox,
+  IComboBoxOption,
   ICommandBarItemProps,
   IconButton,
   IDropdownOption,
@@ -776,8 +779,8 @@ const EditableGrid = (props: Props) => {
             try {
               if (!isValidDate(rowCol)) {
                 throw {};
-              }else{
-                continue
+              } else {
+                continue;
               }
             } catch (error) {
               errMsg.push(
@@ -1006,6 +1009,14 @@ const EditableGrid = (props: Props) => {
     EditCellValue(key, rowNum, activateCurrentCell);
   };
 
+  const onComboBoxDoubleClickEvent = (
+    key: string,
+    rowNum: number,
+    activateCurrentCell: boolean
+  ): void => {
+    EditCellValue(key, rowNum, activateCurrentCell);
+  };
+
   const onKeyDownEvent = (
     event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
     column: IColumnConfig,
@@ -1084,6 +1095,28 @@ const EditableGrid = (props: Props) => {
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
         item.properties[column.key].value = selectedDropdownItem?.text;
+      }
+
+      activateCellEditTmp.push(item);
+    });
+
+    if (column.onChange) {
+      HandleColumnOnChange(activateCellEditTmp, row, column);
+    }
+
+    setActivateCellEdit(activateCellEditTmp);
+  };
+
+  const onComboBoxChange = (
+    event: React.FormEvent<IComboBox>,
+    selectedOption: IComboBoxOption | undefined,
+    row: number,
+    column: IColumnConfig
+  ): void => {
+    let activateCellEditTmp: any[] = [];
+    activateCellEdit.forEach((item, index) => {
+      if (row == index) {
+        item.properties[column.key].value = selectedOption?.text;
       }
 
       activateCellEditTmp.push(item);
@@ -1497,11 +1530,11 @@ const EditableGrid = (props: Props) => {
     for (let index = 0; index < rowData.length; index++) {
       const currentVal = rowData[index];
       const colKeysVal = colKeys[index];
-      if(currentVal.toLowerCase() === 'false'){
+      if (currentVal.toLowerCase() === "false") {
         newColObj[colKeysVal] = false;
-      }else if(currentVal.toLowerCase() === 'true'){
+      } else if (currentVal.toLowerCase() === "true") {
         newColObj[colKeysVal] = true;
-      }else{
+      } else {
         newColObj[colKeysVal] = currentVal;
       }
     }
@@ -1990,6 +2023,8 @@ const EditableGrid = (props: Props) => {
   const CreateColumnConfigs = (): IColumn[] => {
     let columnConfigs: IColumn[] = [];
     let columnFilterArrTmp: IGridColumnFilter[] = [];
+    const [comboOptions, setComboOptions] = useState<IComboBoxOption[]>([]);
+    const [init, setInit] = useState<boolean>(false);
 
     props.columns.forEach((column, index) => {
       var colHeaderClassName = "id-" + props.id + "-col-" + index;
@@ -1997,6 +2032,12 @@ const EditableGrid = (props: Props) => {
       var isDataTypeSupportedForFilter: boolean =
         isColumnDataTypeSupportedForFilter(column.dataType);
 
+      if (
+        column.comboBoxOptions &&
+        column.comboBoxOptions?.length > 0 &&
+        comboOptions.length < 0
+      ){ setComboOptions(column.comboBoxOptions ?? []);
+      }
       columnConfigs.push({
         key: colKey,
         name: column.text,
@@ -2231,6 +2272,7 @@ const EditableGrid = (props: Props) => {
                       )}
                     </span>
                   );
+
                 case EditControlType.DropDown:
                   return (
                     <span className={"row-" + rowNum! + "-col-" + index}>
@@ -2290,6 +2332,85 @@ const EditableGrid = (props: Props) => {
                     </span>
                   );
                   break;
+
+                case EditControlType.ComboBox:
+                  if(!init){
+                    setInit(true)
+                  setComboOptions(column.comboBoxOptions ?? [])}
+                  return (
+                    <span className={"row-" + rowNum! + "-col-" + index}>
+                      {ShouldRenderSpan() ? (
+                        column?.hoverComponentOptions?.enable ? (
+                          <HoverCard
+                            type={HoverCardType.plain}
+                            plainCardProps={{
+                              onRenderPlainCard: () =>
+                                onRenderPlainCard(column, rowNum!, item),
+                            }}
+                            instantOpenOnClick
+                          >
+                            {RenderComboBoxSpan(
+                              props,
+                              index,
+                              rowNum,
+                              column,
+                              item,
+                              EditCellValue
+                            )}
+                          </HoverCard>
+                        ) : (
+                          RenderComboBoxSpan(
+                            props,
+                            index,
+                            rowNum,
+                            column,
+                            item,
+                            EditCellValue
+                          )
+                        )
+                      ) : (
+                        <ComboBox
+                          ariaLabel={column.key}
+                          placeholder={
+                            column.comboBoxOptions?.filter(
+                              (x) => x.text == item[column.key]
+                            )[0]?.text ?? "Start typing..."
+                          }
+                          options={comboOptions}
+                          onInputValueChange={(text) => {
+                            if (
+                              comboOptions.filter((obj) =>
+                                obj.text.startsWith(text)
+                              ).length > 0
+                            )
+                              setComboOptions(
+                                comboOptions.filter((obj) =>
+                                  obj.text.startsWith(text)
+                                )
+                              );
+                            else if (text === "") {
+                              setComboOptions(comboOptions);
+                            } else {
+                              setComboOptions([]);
+                            }
+                          }}
+                          // styles={dropdownStyles}
+                          onChange={(ev, option) =>
+                            onComboBoxChange(ev, option, rowNum!, column)
+                          }
+                          onDoubleClick={() =>
+                            !activateCellEdit[rowNum!].isActivated
+                              ? onComboBoxDoubleClickEvent(
+                                  column.key,
+                                  rowNum!,
+                                  false
+                                )
+                              : null
+                          }
+                        />
+                      )}
+                    </span>
+                  );
                 case EditControlType.Picker:
                   return (
                     <span>
@@ -3262,6 +3383,30 @@ const EditableGrid = (props: Props) => {
     );
   };
 
+  const RenderComboBoxSpan = (
+    props: Props,
+    index: number,
+    rowNum: number,
+    column: IColumnConfig,
+    item: any,
+    EditCellValue: (
+      key: string,
+      rowNum: number,
+      activateCurrentCell: boolean
+    ) => void
+  ): React.ReactNode => {
+    return RenderSpan(
+      props,
+      index,
+      rowNum,
+      column,
+      item,
+      HandleCellOnClick,
+      EditCellValue,
+      HandleCellOnDoubleClick
+    );
+  };
+
   const RenderCheckboxSpan = (
     props: Props,
     index: number,
@@ -3287,7 +3432,6 @@ const EditableGrid = (props: Props) => {
         )}
       >
         {item && item[column.key] ? (
-      
           <Checkbox
             ariaLabel={column.key}
             styles={{
@@ -3305,13 +3449,13 @@ const EditableGrid = (props: Props) => {
                 },
               },
             }}
-            checked={(item[column.key])}
+            checked={item[column.key]}
             disabled
           />
         ) : (
           <Checkbox
             ariaLabel={column.key}
-            checked={(item[column.key])}
+            checked={item[column.key]}
             disabled
           />
         )}

@@ -3,6 +3,7 @@
 
 export enum EditControlType {
   None,
+  ComboBox,
   TextField,
   DropDown,
   Date,
