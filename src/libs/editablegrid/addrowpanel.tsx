@@ -112,13 +112,22 @@ const AddRowPanel = (props: Props) => {
     SetObjValues((ev.target as Element).id, ParseType(column.dataType, text));
   };
 
+  const onTextUpdateAutoGen = (
+    id: string,
+    text: string,
+    column: IColumnConfig
+  ): void => {
+
+    SetObjValues(id, ParseType(column.dataType, text));
+  };
+
   const onPanelSubmit = (): void => {
     var objectKeys = Object.keys(columnValuesObj);
     objectKeys.forEach((objKey) => {
-      // if (columnValuesObj[objKey]["isChanged"]) {
-      //   updateObj[objKey] = columnValuesObj[objKey]["value"];
-      // }
-      updateObj[objKey] = columnValuesObj[objKey]["value"];
+      if (columnValuesObj[objKey]["isChanged"]) {
+        updateObj[objKey] = columnValuesObj[objKey]["value"];
+      }
+      //updateObj[objKey] = columnValuesObj[objKey]["value"];
 
     });
 
@@ -142,6 +151,10 @@ const AddRowPanel = (props: Props) => {
   const onCellDateChange = (date: Date | null | undefined, item: any): void => {
     SetObjValues(item.key, date);
   };
+
+  const getAutoId = () =>{
+    return props.autoGenId.toString()
+  }
 
   const [comboOptions, setComboOptions] = useState<IComboBoxOption[]>([]);
   const [init, setInit] = useState<boolean>(false);
@@ -171,7 +184,7 @@ const AddRowPanel = (props: Props) => {
               ariaLabel="Select a date"
               onSelectDate={(date) => onCellDateChange(date, item)}
               //value={props != null && props.panelValues != null ? new Date(props.panelValues[item.key]) : new Date()}
-              value={new Date()}
+              //value={new Date()}
             />
           );
           break;
@@ -266,7 +279,6 @@ const AddRowPanel = (props: Props) => {
           break;
         default:
           if (item.autoGenerate) {
-            console.log(props.autoGenId);
             tmpRenderObj.push(
               <TextField
                 key={item.key}
@@ -275,9 +287,9 @@ const AddRowPanel = (props: Props) => {
                 id={item.key}
                 label={item.text}
                 styles={textFieldStyles}
-                onLoad={(ev)=> onTextUpdate(ev, (props.autoGenId + 2).toString(), item)}
-                // onChange={(ev, text) => onTextUpdate(ev, text!, item)}
-                value={(props.autoGenId + 2).toString()}
+                onChange={(ev, text) => onTextUpdate(ev, (props.autoGenId + 2).toString(), item)}
+                onClick={() => onTextUpdateAutoGen(item.key, (props.autoGenId + 2).toString(), item)}
+                value={(getAutoId())}
                 readOnly
                 disabled
               />

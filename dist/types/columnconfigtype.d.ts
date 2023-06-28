@@ -13,6 +13,10 @@ export interface IColumnConfig extends IColumn {
         condition: any;
         errMsg: string;
     };
+    regexValidation?: [{
+        regex: RegExp;
+        errorMessage: string;
+    }];
     isResizable?: boolean;
     columnNeededInImport?: boolean;
     includeColumnInExport?: boolean;

@@ -14,6 +14,7 @@ export interface IColumnConfig extends IColumn {
   editable?: boolean;
   dataType?: string;
   extraValidations?: { condition: any; errMsg: string };
+  regexValidation?:[{ regex: RegExp; errorMessage: string }]
   isResizable?: boolean;
   columnNeededInImport?: boolean;
   includeColumnInExport?: boolean;

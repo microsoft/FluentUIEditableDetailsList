@@ -939,31 +939,44 @@ const EditableGrid = (props: Props) => {
     key: string,
     column: IColumnConfig
   ): void => {
+    let activateCellEditTmp: any[] = [];
+    activateCellEditTmp = [...activateCellEdit];
+    let err: null | string = null
+
     if (!IsValidDataType(column.dataType, text)) {
-      let activateCellEditTmp: any[] = [];
-      activateCellEditTmp = [...activateCellEdit];
       activateCellEditTmp[row]["properties"][key][
         "error"
       ] = `Value not '${column.dataType}'`;
-      setActivateCellEdit(activateCellEditTmp);
-      return;
+      err = `Value not '${column.dataType}'`
     }
 
-    if (column.extraValidations?.condition) {
-      let activateCellEditTmp: any[] = [];
-      activateCellEditTmp = [...activateCellEdit];
+    if (column.regexValidation) {
+      for (let index = 0; index < column.regexValidation.length; index++) {
+        const data = column.regexValidation[index];
+        console.log((data.regex))
+        console.log((text))
+        console.log(data.regex.test(text))
+        if(!data.regex.test(text)){
+          activateCellEditTmp[row]["properties"][key][
+            "error"
+          ] = `${data.errorMessage}`;
+          err = `${data.errorMessage}`
+
+        }
+      }
+    }
+
+    if (column.extraValidations?.condition === text) {
       activateCellEditTmp[row]["properties"][key][
         "error"
       ] = `${column.extraValidations?.errMsg}`;
-      setActivateCellEdit(activateCellEditTmp);
-      return;
+      `${column.extraValidations?.errMsg}`
     }
 
-    let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
         item.properties[key].value = ParseType(column.dataType, text);
-        item.properties[key].error = null;
+        item.properties[key].error = err ?? null;
       }
 
       activateCellEditTmp.push(item);
