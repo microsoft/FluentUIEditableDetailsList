@@ -31,12 +31,13 @@ import PickerControl from "../editablegrid/pickercontrol/picker";
 import { IColumnConfig } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
 import { createRef, useEffect, useState } from "react";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   onChange: any;
   columnConfigurationData: IColumnConfig[];
   enableRowsCounterField?: boolean;
+  autoGenId: number;
 }
 
 const AddRowPanel = (props: Props) => {
@@ -114,15 +115,19 @@ const AddRowPanel = (props: Props) => {
   const onPanelSubmit = (): void => {
     var objectKeys = Object.keys(columnValuesObj);
     objectKeys.forEach((objKey) => {
-      if (columnValuesObj[objKey]["isChanged"]) {
-        updateObj[objKey] = columnValuesObj[objKey]["value"];
-      }
+      // if (columnValuesObj[objKey]["isChanged"]) {
+      //   updateObj[objKey] = columnValuesObj[objKey]["value"];
+      // }
+      updateObj[objKey] = columnValuesObj[objKey]["value"];
+
     });
 
-    props.onChange(
-      updateObj,
-      props.enableRowsCounterField ? AddSpinRef.current.value : 1
-    );
+    // props.onChange(
+    //   updateObj,
+    //   props.enableRowsCounterField ? AddSpinRef.current.value : 1
+    // );
+
+    props.onChange(updateObj, 1);
   };
 
   const onCellPickerTagListChanged = (
@@ -139,21 +144,16 @@ const AddRowPanel = (props: Props) => {
   };
 
   const [comboOptions, setComboOptions] = useState<IComboBoxOption[]>([]);
+  const [init, setInit] = useState<boolean>(false);
+  let trackIdIncrement = 0;
   const createTextFields = (): any[] => {
     let tmpRenderObj: any[] = [];
     props.columnConfigurationData.forEach((item, index) => {
-      if (
-        item.comboBoxOptions &&
-        item.comboBoxOptions?.length > 0 &&
-        comboOptions.length < 0
-      ) {
-        setComboOptions(item.comboBoxOptions ?? []);
-      }
       switch (item.inputType) {
         case EditControlType.CheckBox:
           tmpRenderObj.push(
             <Checkbox
-              key={uuidv4()}
+              key={item.key}
               label={item.text}
               onChange={(ev, isChecked) => {
                 if (ev && isChecked) onCheckBoxChange(ev, isChecked, item);
@@ -164,7 +164,7 @@ const AddRowPanel = (props: Props) => {
         case EditControlType.Date:
           tmpRenderObj.push(
             <DatePicker
-              key={uuidv4()}
+              key={item.key}
               label={item.text}
               strings={DayPickerStrings}
               placeholder="Select a date..."
@@ -178,33 +178,35 @@ const AddRowPanel = (props: Props) => {
         case EditControlType.ComboBox:
           tmpRenderObj.push(
             <ComboBox
-              key={uuidv4()}
+              key={item.key}
               label={item.text}
-              options={comboOptions}
-              onInputValueChange={(text) => {
-                if (
-                  comboOptions.filter((obj) => obj.text.startsWith(text))
-                    .length > 0
-                )
-                  setComboOptions(
-                    comboOptions.filter((obj) => obj.text.startsWith(text))
-                  );
-                else if (text === "") {
-                  setComboOptions(comboOptions);
-                } else {
-                  setComboOptions([]);
-                }
-              }}
-              onChange={(ev, option) => onComboBoxChange(ev, option, item)}
               allowFreeInput
               autoComplete="on"
+              scrollSelectedToTop
+              options={comboOptions}
+              onClick={() => {
+                if (!init) {
+                  setInit(true);
+                  setComboOptions(item.comboBoxOptions ?? []);
+                }
+              }}
+              onInputValueChange={(text) => {
+                const searchPattern = new RegExp(text, "i");
+                const searchResults = item.comboBoxOptions?.filter((item) =>
+                  searchPattern.test(item.text)
+                );
+
+                console.log(searchResults);
+                setComboOptions(searchResults ?? []);
+              }}
+              onChange={(ev, option) => onComboBoxChange(ev, option, item)}
             />
           );
           break;
         case EditControlType.DropDown:
           tmpRenderObj.push(
             <Dropdown
-              key={uuidv4()}
+              key={item.key}
               label={item.text}
               options={item.dropdownValues ?? []}
               onChange={(ev, selected) => onDropDownChange(ev, selected, item)}
@@ -213,7 +215,7 @@ const AddRowPanel = (props: Props) => {
           break;
         case EditControlType.Picker:
           tmpRenderObj.push(
-            <div key={uuidv4()}>
+            <div key={item.key}>
               <span className={controlClass.pickerLabel}>{item.text}</span>
               <PickerControl
                 arialabel={item.text}
@@ -233,7 +235,7 @@ const AddRowPanel = (props: Props) => {
         case EditControlType.MultilineTextField:
           tmpRenderObj.push(
             <TextField
-              key={uuidv4()}
+              key={item.key}
               errorMessage={columnValuesObj[item.key].error}
               name={item.text}
               multiline={true}
@@ -249,7 +251,7 @@ const AddRowPanel = (props: Props) => {
         case EditControlType.Password:
           tmpRenderObj.push(
             <TextField
-              key={uuidv4()}
+              key={item.key}
               errorMessage={columnValuesObj[item.key].error}
               name={item.text}
               id={item.key}
@@ -263,38 +265,59 @@ const AddRowPanel = (props: Props) => {
           );
           break;
         default:
-          tmpRenderObj.push(
-            <TextField
-              key={uuidv4()}
-              errorMessage={columnValuesObj[item.key].error}
-              name={item.text}
-              id={item.key}
-              label={item.text}
-              styles={textFieldStyles}
-              onChange={(ev, text) => onTextUpdate(ev, text!, item)}
-              value={columnValuesObj[item.key].value || ""}
-            />
-          );
+          if (item.autoGenerate) {
+            console.log(props.autoGenId);
+            tmpRenderObj.push(
+              <TextField
+                key={item.key}
+                errorMessage={columnValuesObj[item.key].error}
+                name={item.text}
+                id={item.key}
+                label={item.text}
+                styles={textFieldStyles}
+                onLoad={(ev)=> onTextUpdate(ev, (props.autoGenId + 2).toString(), item)}
+                // onChange={(ev, text) => onTextUpdate(ev, text!, item)}
+                value={(props.autoGenId + 2).toString()}
+                readOnly
+                disabled
+              />
+            );
+          } else {
+            tmpRenderObj.push(
+              <TextField
+                key={item.key}
+                errorMessage={columnValuesObj[item.key].error}
+                name={item.text}
+                id={item.key}
+                label={item.text}
+                styles={textFieldStyles}
+                onChange={(ev, text) => onTextUpdate(ev, text!, item)}
+                value={columnValuesObj[item.key].value || ""}
+              />
+            );
+          }
+
           break;
       }
     });
 
     if (props.enableRowsCounterField) {
-      tmpRenderObj.push(
-        <SpinButton
-          key={uuidv4()}
-          componentRef={AddSpinRef}
-          label="# of Rows to Add"
-          labelPosition={Position.top}
-          defaultValue="1"
-          min={0}
-          max={100}
-          step={1}
-          incrementButtonAriaLabel="Increase value by 1"
-          decrementButtonAriaLabel="Decrease value by 1"
-          styles={{ spinButtonWrapper: { width: 75 } }}
-        />
-      );
+      console.warn("# of Rows to Add is deprecated");
+      // tmpRenderObj.push(
+      //   <SpinButton
+      //     key={"item.key"}
+      //     componentRef={AddSpinRef}
+      //     label="# of Rows to Add"
+      //     labelPosition={Position.top}
+      //     defaultValue="1"
+      //     min={0}
+      //     max={100}
+      //     step={1}
+      //     incrementButtonAriaLabel="Increase value by 1"
+      //     decrementButtonAriaLabel="Decrease value by 1"
+      //     styles={{ spinButtonWrapper: { width: 75 } }}
+      //   />
+      // );
     }
 
     return tmpRenderObj;

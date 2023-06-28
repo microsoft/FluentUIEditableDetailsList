@@ -949,6 +949,16 @@ const EditableGrid = (props: Props) => {
       return;
     }
 
+    if (column.extraValidations?.condition) {
+      let activateCellEditTmp: any[] = [];
+      activateCellEditTmp = [...activateCellEdit];
+      activateCellEditTmp[row]["properties"][key][
+        "error"
+      ] = `${column.extraValidations?.errMsg}`;
+      setActivateCellEdit(activateCellEditTmp);
+      return;
+    }
+
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
@@ -2032,12 +2042,7 @@ const EditableGrid = (props: Props) => {
       var isDataTypeSupportedForFilter: boolean =
         isColumnDataTypeSupportedForFilter(column.dataType);
 
-      if (
-        column.comboBoxOptions &&
-        column.comboBoxOptions?.length > 0 &&
-        comboOptions.length < 0
-      ){ setComboOptions(column.comboBoxOptions ?? []);
-      }
+     
       columnConfigs.push({
         key: colKey,
         name: column.text,
@@ -2334,9 +2339,6 @@ const EditableGrid = (props: Props) => {
                   break;
 
                 case EditControlType.ComboBox:
-                  if(!init){
-                    setInit(true)
-                  setComboOptions(column.comboBoxOptions ?? [])}
                   return (
                     <span className={"row-" + rowNum! + "-col-" + index}>
                       {ShouldRenderSpan() ? (
@@ -2376,23 +2378,24 @@ const EditableGrid = (props: Props) => {
                               (x) => x.text == item[column.key]
                             )[0]?.text ?? "Start typing..."
                           }
+                          allowFreeInput
+                          autoComplete="on"
+                          scrollSelectedToTop
                           options={comboOptions}
-                          onInputValueChange={(text) => {
-                            if (
-                              comboOptions.filter((obj) =>
-                                obj.text.startsWith(text)
-                              ).length > 0
-                            )
-                              setComboOptions(
-                                comboOptions.filter((obj) =>
-                                  obj.text.startsWith(text)
-                                )
-                              );
-                            else if (text === "") {
-                              setComboOptions(comboOptions);
-                            } else {
-                              setComboOptions([]);
+                          onClick={() => {
+                            if (!init) {
+                              setInit(true);
+                              setComboOptions(column.comboBoxOptions ?? []);
                             }
+                          }}
+                          onInputValueChange={(text) => {
+                            const searchPattern = new RegExp(text, "i");
+                            const searchResults = column.comboBoxOptions?.filter((item) =>
+                              searchPattern.test(item.text)
+                            );
+            
+                            console.log(searchResults)
+                            setComboOptions(searchResults ?? []);
                           }}
                           // styles={dropdownStyles}
                           onChange={(ev, option) =>
@@ -3637,6 +3640,12 @@ const EditableGrid = (props: Props) => {
             enableRowsCounterField={
               props.enableRowAddWithValues.enableRowsCounterInPanel
             }
+            autoGenId={ Math.max.apply(
+              Math,
+              defaultGridData.map(function (o) {
+                return o._grid_row_id_;
+              })
+            )}
           />
         </Panel>
       ) : null}

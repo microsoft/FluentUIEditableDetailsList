@@ -131,6 +131,7 @@ const EditPanel = (props: Props) => {
   };
 
   const [comboOptions, setComboOptions] = useState<IComboBoxOption[]>([]);
+  const [init, setInit] = useState<boolean>(false);
 
   const createTextFields = (): any[] => {
     let tmpRenderObj: any[] = [];
@@ -190,19 +191,20 @@ const EditPanel = (props: Props) => {
               <ComboBox
                 label={item.text}
                 options={comboOptions}
-                onInputValueChange={(text) => {
-                  if (
-                    comboOptions.filter((obj) => obj.text.startsWith(text))
-                      .length > 0
-                  )
-                    setComboOptions(
-                      comboOptions.filter((obj) => obj.text.startsWith(text))
-                    );
-                  else if (text === "") {
-                    setComboOptions(comboOptions);
-                  } else {
-                    setComboOptions([]);
+                onClick={() => {
+                  if (!init) {
+                    setInit(true);
+                    setComboOptions(item.comboBoxOptions ?? []);
                   }
+                }}
+                onInputValueChange={(text) => {
+                  const searchPattern = new RegExp(text, "i");
+                  const searchResults = item.comboBoxOptions?.filter((item) =>
+                    searchPattern.test(item.text)
+                  );
+  
+                  console.log(searchResults)
+                  setComboOptions(searchResults ?? []);
                 }}
                 onChange={(ev, option) => onComboBoxChange(ev, option, item)}
                 allowFreeInput

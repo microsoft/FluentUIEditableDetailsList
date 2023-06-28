@@ -10,8 +10,10 @@ export interface IColumnConfig extends IColumn {
   key: string;
   name: string;
   text: string;
+  autoGenerate?: boolean;
   editable?: boolean;
   dataType?: string;
+  extraValidations?: { condition: any; errMsg: string };
   isResizable?: boolean;
   columnNeededInImport?: boolean;
   includeColumnInExport?: boolean;

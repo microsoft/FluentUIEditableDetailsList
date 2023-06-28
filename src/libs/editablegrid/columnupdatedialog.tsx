@@ -198,6 +198,8 @@ const ColumnUpdateDialog = (props: Props) => {
 
   const options = createDropDownOptions();
   const [comboOptions, setComboOptions] = useState<IComboBoxOption[]>([]);
+  const [init, setInit] = useState<boolean>(false);
+
   const GetInputFieldContent = (): JSX.Element => {
     var column = props.columnConfigurationData.filter(
       (x) => x.key == gridColumn
@@ -259,19 +261,20 @@ const ColumnUpdateDialog = (props: Props) => {
               key={uuidv4()}
               label={column[0].text}
               options={comboOptions}
-              onInputValueChange={(text) => {
-                if (
-                  comboOptions.filter((obj) => obj.text.startsWith(text))
-                    .length > 0
-                )
-                  setComboOptions(
-                    comboOptions.filter((obj) => obj.text.startsWith(text))
-                  );
-                else if (text === "") {
-                  setComboOptions(comboOptions);
-                } else {
-                  setComboOptions([]);
+              onClick={() => {
+                if (!init) {
+                  setInit(true);
+                  setComboOptions(column[0].comboBoxOptions ?? []);
                 }
+              }}
+              onInputValueChange={(text) => {
+                const searchPattern = new RegExp(text, "i");
+                const searchResults = column[0].comboBoxOptions?.filter((item) =>
+                  searchPattern.test(item.text)
+                );
+
+                console.log(searchResults)
+                setComboOptions(searchResults ?? []);
               }}
               onChange={(ev, option) => onComboBoxChange(ev, option, column[0])}
               allowFreeInput

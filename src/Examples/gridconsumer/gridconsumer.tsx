@@ -206,7 +206,7 @@ const Consumer = () => {
   const SetDummyData = (): void => {
     var dummyData: GridItemsType[] = [];
 
-    for (var i = 1; i <= 50; i++) {
+    for (var i = 1; i <= 4; i++) {
       var randomInt = GetRandomInt(1, 3);
       dummyData.push({
         id: i,
