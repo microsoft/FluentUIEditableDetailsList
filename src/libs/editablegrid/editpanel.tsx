@@ -185,7 +185,6 @@ const EditPanel = (props: Props) => {
             );
             break;
           case EditControlType.ComboBox:
-            console.log(item.comboBoxOptions)
             setComboOptions(item.comboBoxOptions ?? []);
             tmpRenderObj.push(
               <ComboBox

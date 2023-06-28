@@ -953,9 +953,6 @@ const EditableGrid = (props: Props) => {
     if (column.regexValidation) {
       for (let index = 0; index < column.regexValidation.length; index++) {
         const data = column.regexValidation[index];
-        console.log((data.regex))
-        console.log((text))
-        console.log(data.regex.test(text))
         if(!data.regex.test(text)){
           activateCellEditTmp[row]["properties"][key][
             "error"
@@ -1372,7 +1369,9 @@ const EditableGrid = (props: Props) => {
     let activateCellEditTmp: any[] = [];
     let defaultGridDataTmp: any[] = [];
 
+
     defaultGridData.forEach((item, rowNum) => {
+      console.log(item)
       activateCellEditTmp = ChangeRowState(
         item,
         item["_grid_row_id_"],
