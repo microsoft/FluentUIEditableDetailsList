@@ -60,6 +60,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     dataType: "string",
     minWidth: 100,
     maxWidth: 100,
+    transformBasedOnData: [{key:'co', value:'Consol'}],
     regexValidation: [{regex: new RegExp('^[a-zA-Z0-9_]+$'), errorMessage: 'Special Char Invalid'}],
     // extraValidations: {condition: 2+2, errMsg: 'Some error'},
     isResizable: true,

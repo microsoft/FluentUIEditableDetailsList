@@ -941,24 +941,23 @@ const EditableGrid = (props: Props) => {
   ): void => {
     let activateCellEditTmp: any[] = [];
     activateCellEditTmp = [...activateCellEdit];
-    let err: null | string = null
+    let err: null | string = null;
 
     if (!IsValidDataType(column.dataType, text)) {
       activateCellEditTmp[row]["properties"][key][
         "error"
       ] = `Value not '${column.dataType}'`;
-      err = `Value not '${column.dataType}'`
+      err = `Value not '${column.dataType}'`;
     }
 
     if (column.regexValidation) {
       for (let index = 0; index < column.regexValidation.length; index++) {
         const data = column.regexValidation[index];
-        if(!data.regex.test(text)){
+        if (!data.regex.test(text)) {
           activateCellEditTmp[row]["properties"][key][
             "error"
           ] = `${data.errorMessage}`;
-          err = `${data.errorMessage}`
-
+          err = `${data.errorMessage}`;
         }
       }
     }
@@ -967,7 +966,7 @@ const EditableGrid = (props: Props) => {
       activateCellEditTmp[row]["properties"][key][
         "error"
       ] = `${column.extraValidations?.errMsg}`;
-      `${column.extraValidations?.errMsg}`
+      `${column.extraValidations?.errMsg}`;
     }
 
     activateCellEdit.forEach((item, index) => {
@@ -1369,9 +1368,7 @@ const EditableGrid = (props: Props) => {
     let activateCellEditTmp: any[] = [];
     let defaultGridDataTmp: any[] = [];
 
-
     defaultGridData.forEach((item, rowNum) => {
-      console.log(item)
       activateCellEditTmp = ChangeRowState(
         item,
         item["_grid_row_id_"],
@@ -1383,6 +1380,8 @@ const EditableGrid = (props: Props) => {
 
     if (!newEditModeValue) {
       defaultGridData.forEach((item, rowNum) => {
+        console.log(item);
+
         defaultGridDataTmp = SaveRowValue(
           item,
           item["_grid_row_id_"],
@@ -2054,7 +2053,6 @@ const EditableGrid = (props: Props) => {
       var isDataTypeSupportedForFilter: boolean =
         isColumnDataTypeSupportedForFilter(column.dataType);
 
-     
       columnConfigs.push({
         key: colKey,
         name: column.text,
@@ -2101,6 +2099,18 @@ const EditableGrid = (props: Props) => {
           ? column.onRender
           : (item, rowNum) => {
               rowNum = Number(item["_grid_row_id_"]);
+              if (column.transformBasedOnData) {
+                for (
+                  let index = 0;
+                  index < column.transformBasedOnData.length;
+                  index++
+                ) {
+                  const element = column.transformBasedOnData[index];
+                  if (element.key === item[column.key]) {
+                    item[column.key] = element.value;
+                  }
+                }
+              }
               switch (column.inputType) {
                 case EditControlType.MultilineTextField:
                   return (
@@ -2402,11 +2412,12 @@ const EditableGrid = (props: Props) => {
                           }}
                           onInputValueChange={(text) => {
                             const searchPattern = new RegExp(text, "i");
-                            const searchResults = column.comboBoxOptions?.filter((item) =>
-                              searchPattern.test(item.text)
-                            );
-            
-                            console.log(searchResults)
+                            const searchResults =
+                              column.comboBoxOptions?.filter((item) =>
+                                searchPattern.test(item.text)
+                              );
+
+                            console.log(searchResults);
                             setComboOptions(searchResults ?? []);
                           }}
                           // styles={dropdownStyles}
@@ -3652,7 +3663,7 @@ const EditableGrid = (props: Props) => {
             enableRowsCounterField={
               props.enableRowAddWithValues.enableRowsCounterInPanel
             }
-            autoGenId={ Math.max.apply(
+            autoGenId={Math.max.apply(
               Math,
               defaultGridData.map(function (o) {
                 return o._grid_row_id_;

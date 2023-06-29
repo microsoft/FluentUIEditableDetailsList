@@ -9,14 +9,12 @@ export interface IColumnConfig extends IColumn {
     autoGenerate?: boolean;
     editable?: boolean;
     dataType?: string;
+    transformBasedOnData?: ITransformBasedOnData[];
     extraValidations?: {
         condition: any;
         errMsg: string;
     };
-    regexValidation?: [{
-        regex: RegExp;
-        errorMessage: string;
-    }];
+    regexValidation?: IRegexValidation[];
     isResizable?: boolean;
     columnNeededInImport?: boolean;
     includeColumnInExport?: boolean;
@@ -37,6 +35,14 @@ export interface IColumnConfig extends IColumn {
     disableSort?: boolean;
     hoverComponentOptions?: IHoverOptions;
     linkOptions?: ILinkOptions;
+}
+export interface ITransformBasedOnData {
+    key: string;
+    value: any;
+}
+export interface IRegexValidation {
+    regex: RegExp;
+    errorMessage: string;
 }
 export interface ILinkOptions {
     href?: string;
