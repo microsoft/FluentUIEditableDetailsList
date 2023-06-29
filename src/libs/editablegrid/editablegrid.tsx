@@ -2106,7 +2106,7 @@ const EditableGrid = (props: Props) => {
                   index++
                 ) {
                   const element = column.transformBasedOnData[index];
-                  if (element.key === item[column.key]) {
+                  if (element.key.toLowerCase() === (item[column.key]?.toLowerCase() ?? '')) {
                     item[column.key] = element.value;
                   }
                 }
