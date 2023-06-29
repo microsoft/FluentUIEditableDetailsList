@@ -11,6 +11,7 @@ export interface IColumnConfig extends IColumn {
     dataType?: string;
     toolTipText?: string;
     transformBasedOnData?: ITransformBasedOnData[];
+    columnDependent?: IColumnDependent[];
     extraValidations?: {
         condition: any;
         errMsg: string;
@@ -36,6 +37,9 @@ export interface IColumnConfig extends IColumn {
     disableSort?: boolean;
     hoverComponentOptions?: IHoverOptions;
     linkOptions?: ILinkOptions;
+}
+export interface IColumnDependent {
+    columnKey: string;
 }
 export interface IDetailsColumnRenderTooltipPropsExtra extends ITooltipHostProps {
     column?: IColumnConfig;

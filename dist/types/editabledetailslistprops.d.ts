@@ -49,6 +49,7 @@ export interface Props extends IDetailsListProps {
     enableCommandBar?: boolean;
     enableSingleClickCellEdit?: boolean;
     onGridStatusMessageCallback?: any;
+    onGridValidationErrorMessageCallback?: any;
     gridCopyOptions?: IGridCopy;
     enableDefaultEditMode?: boolean;
     customCommandBarItems?: ICommandBarItemProps[];

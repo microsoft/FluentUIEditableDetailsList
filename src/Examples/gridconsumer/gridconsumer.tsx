@@ -25,6 +25,7 @@ import {
   Link,
   mergeStyles,
   mergeStyleSets,
+  MessageBar,
   SelectionMode,
   Stack,
   StackItem,
@@ -323,7 +324,7 @@ const Consumer = () => {
   const attachGridValueChangeCallbacks = (
     columnConfig: IColumnConfig[]
   ): IColumnConfig[] => {
-    //columnConfig.filter((item) => item.key == 'designation').map((item) => item.onChange = onDesignationChanged);
+    columnConfig.filter((item) => item.key == 'designation').map((item) => item.onChange = onDesignationChanged);
     //columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChanged);
     //columnConfig.filter((item) => item.key == 'payrolltype').map((item) => item.onChange = onPayrollChanged);
     //columnConfig.filter((item) => item.key == 'dateofjoining').map((item) => item.onChange = onDateChanged);
@@ -421,6 +422,7 @@ const Consumer = () => {
     );
   };
 
+  const [message, setMessage] = useState('')
   const onRenderRow = (
     props?: IDetailsRowProps,
     defaultRender?: IRenderFunction<IDetailsRowProps>
@@ -661,6 +663,9 @@ const Consumer = () => {
           backgroundColor: "white",
         }}
       >
+        <MessageBar>
+        {message}
+        </MessageBar>
         <EditableGrid
           checkboxVisibility={CheckboxVisibility.hidden}
           id={100}
@@ -702,7 +707,7 @@ const Consumer = () => {
           enableRowEdit={gridConfigOptions.enableRowEdit}
           enableRowEditCancel={gridConfigOptions.enableRowEditCancel}
           enableBulkEdit={gridConfigOptions.enableBulkEdit}
-          items={[]}
+          items={items}
           enableSingleCellEditOnDoubleClick={
             gridConfigOptions.enableSingleCellEditOnDoubleClick
           }
@@ -763,6 +768,35 @@ const Consumer = () => {
                 toast.warn(str, {
                   position: toast.POSITION.TOP_CENTER,
                 });
+                break;
+              default:
+                break;
+            }
+          }}
+          onGridValidationErrorMessageCallback={(str: string, type: GridToastTypes) => {
+            switch (type) {
+              case GridToastTypes.INFO:
+                setMessage(str)
+           
+                break;
+              case GridToastTypes.SUCCESS:
+                setMessage(str)
+
+                break;
+              case GridToastTypes.ERROR:
+                setMessage(str)
+
+                break;
+              case GridToastTypes.WARNING:
+                setMessage(str)
+
+              case GridToastTypes.DARK:
+                setMessage(str)
+
+                break;
+              case GridToastTypes.WARN:
+                setMessage(str)
+
                 break;
               default:
                 break;

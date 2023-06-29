@@ -940,15 +940,14 @@ const EditableGrid = (props: Props) => {
     key: string,
     column: IColumnConfig
   ): void => {
-    let activateCellEditTmp: any[] = [];
-    activateCellEditTmp = [...activateCellEdit];
+    let activateCellEditTmp: any[] = [...activateCellEdit]
     let err: null | string = null;
-
     if (!IsValidDataType(column.dataType, text)) {
       activateCellEditTmp[row]["properties"][key][
         "error"
       ] = `Value not '${column.dataType}'`;
-      err = `Value not '${column.dataType}'`;
+      setActivateCellEdit(activateCellEditTmp);
+      return;
     }
 
     if (column.regexValidation) {
@@ -963,14 +962,8 @@ const EditableGrid = (props: Props) => {
       }
     }
 
-    if (column.extraValidations?.condition === text) {
-      activateCellEditTmp[row]["properties"][key][
-        "error"
-      ] = `${column.extraValidations?.errMsg}`;
-      `${column.extraValidations?.errMsg}`;
-    }
-
-    activateCellEdit.forEach((item, index) => {
+     activateCellEditTmp = [];
+      activateCellEdit.forEach((item, index) => {
       if (row == index) {
         item.properties[key].value = ParseType(column.dataType, text);
         item.properties[key].error = err ?? null;
@@ -2142,6 +2135,7 @@ const EditableGrid = (props: Props) => {
                   }
                 }
               }
+
               switch (column.inputType) {
                 case EditControlType.MultilineTextField:
                   return (

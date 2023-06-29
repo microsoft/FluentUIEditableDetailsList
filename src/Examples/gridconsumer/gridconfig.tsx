@@ -59,6 +59,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     editable: true,
     dataType: "string",
     toolTipText:'Name Must Be In All CAPS',
+    columnDependent: [{columnKey: 'age'}],
     minWidth: 100,
     maxWidth: 100,
     transformBasedOnData: [{key:'co', value:'Consol'}],
