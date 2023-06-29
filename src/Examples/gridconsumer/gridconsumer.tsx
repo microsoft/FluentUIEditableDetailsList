@@ -41,7 +41,10 @@ import {
 } from "../gridconsumer/teachingbubbleconfig";
 import EditableGrid from "../../libs/editablegrid/editablegrid";
 import { ICallBackParams } from "../../libs/types/callbackparams";
-import { IColumnConfig, IDetailsColumnRenderTooltipPropsExtra } from "../../libs/types/columnconfigtype";
+import {
+  IColumnConfig,
+  IDetailsColumnRenderTooltipPropsExtra,
+} from "../../libs/types/columnconfigtype";
 import { Operation } from "../../libs/types/operation";
 import { GridToastTypes } from "../../libs/types/gridToastTypes";
 import { useEffect, useState } from "react";
@@ -396,16 +399,22 @@ const Consumer = () => {
     if (!props || !defaultRender) return null;
 
     const onRenderColumnHeaderTooltip: IRenderFunction<
-    IDetailsColumnRenderTooltipPropsExtra
+      IDetailsColumnRenderTooltipPropsExtra
     > = (tooltipHostProps) => {
-      return<TooltipHost {...tooltipHostProps} content={tooltipHostProps?.column?.toolTipText ?? tooltipHostProps?.column?.name} />
-  }
+      return (
+        <TooltipHost
+          {...tooltipHostProps}
+          content={tooltipHostProps?.column?.toolTipText ?? ""}
+        />
+      );
+    };
 
     return (
       <Sticky stickyPosition={StickyPositionType.Header} isScrollSynced={true}>
         {defaultRender!({
           ...props,
-          onRenderColumnHeaderTooltip: (onRenderColumnHeaderTooltip as IRenderFunction<IDetailsColumnRenderTooltipProps>),
+          onRenderColumnHeaderTooltip:
+            onRenderColumnHeaderTooltip as IRenderFunction<IDetailsColumnRenderTooltipProps>,
           styles: tableHeaderStyles,
         })}
       </Sticky>
@@ -655,6 +664,7 @@ const Consumer = () => {
         <EditableGrid
           checkboxVisibility={CheckboxVisibility.hidden}
           id={100}
+          zeroRowsMsg={"This Rule Will Not Run"}
           commandBarStyles={{
             root: {
               borderWidth: "1px 1px 1px 1px",
@@ -692,7 +702,7 @@ const Consumer = () => {
           enableRowEdit={gridConfigOptions.enableRowEdit}
           enableRowEditCancel={gridConfigOptions.enableRowEditCancel}
           enableBulkEdit={gridConfigOptions.enableBulkEdit}
-          items={items}
+          items={[]}
           enableSingleCellEditOnDoubleClick={
             gridConfigOptions.enableSingleCellEditOnDoubleClick
           }

@@ -21,6 +21,7 @@ export type IContentScrollablePaneStyleProps =
   };
 export interface Props extends IDetailsListProps {
   id: number;
+  zeroRowsMsg?: string;
   actionIconStylesInGrid?: IButtonStyles;
   items: any[];
   columns: IColumnConfig[];

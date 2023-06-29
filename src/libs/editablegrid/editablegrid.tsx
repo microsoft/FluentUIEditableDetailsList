@@ -42,6 +42,7 @@ import {
   SpinnerSize,
   Stack,
   TagPicker,
+  Text,
   TextField,
 } from "@fluentui/react";
 import AddRowPanel from "../editablegrid/addrowpanel";
@@ -1585,6 +1586,28 @@ const EditableGrid = (props: Props) => {
     return addedRows;
   };
 
+  const pasteRef = useRef<any>(null);
+  useEffect(() => {
+    const handlePaste = (event: any) => {
+      if (event.ctrlKey && event.key === "v") {
+        if (props.gridCopyOptions && props.gridCopyOptions.enableGridPaste)
+          PasteGridRows();
+      }
+    };
+
+    const gridToPasteInto = pasteRef.current;
+
+    if (gridToPasteInto) {
+      gridToPasteInto.addEventListener('keydown', handlePaste);
+    }
+
+    return () => {
+      if (gridToPasteInto) {
+        gridToPasteInto.removeEventListener('keydown', handlePaste);
+      }
+    };
+  }, []);
+
   const PasteGridRows = (): void => {
     isClipboardEmpty().then((empty) => {
       if (empty) {
@@ -2041,8 +2064,8 @@ const EditableGrid = (props: Props) => {
   };
   /* #endregion [Grid Column Filter] */
 
-  interface IColumnIToolTip extends IColumn{
-    toolTipText?: string
+  interface IColumnIToolTip extends IColumn {
+    toolTipText?: string;
   }
   const CreateColumnConfigs = (): IColumn[] => {
     let columnConfigs: IColumnIToolTip[] = [];
@@ -2111,7 +2134,10 @@ const EditableGrid = (props: Props) => {
                   index++
                 ) {
                   const element = column.transformBasedOnData[index];
-                  if (element.key.toLowerCase() === (item[column.key]?.toLowerCase() ?? '')) {
+                  if (
+                    element.key.toLowerCase() ===
+                    (item[column.key]?.toLowerCase() ?? "")
+                  ) {
                     item[column.key] = element.value;
                   }
                 }
@@ -3184,21 +3210,40 @@ const EditableGrid = (props: Props) => {
         onClick: () => {
           onGridSave();
         },
-        onRender: (item, index) => (
-          <PrimaryButton
-            style={{ marginTop: 5 }}
-            disabled={!isGridStateEdited}
-            text={isGridStateEdited ? "Commit Changes" : "No Changes"}
-            title={
-              isGridStateEdited
-                ? "Grid has unsaved data. Click on 'Commit' to save"
-                : "No Changes To Commit"
-            }
-            onClick={() => {
-              onGridSave();
-            }}
-          />
-        ),
+        onRender: (item, index) => {
+          if (defaultGridData.length <= 0) {
+            return (
+              <PrimaryButton
+                disabled
+                style={{ marginTop: 5 }}
+                styles={{ rootDisabled: { backgroundColor: "#d44040" } }}
+                text={
+                  defaultGridData.length + " Rows, " + props.zeroRowsMsg ??
+                  "No Data"
+                }
+                title={
+                  defaultGridData.length + " Rows, " + props.zeroRowsMsg ??
+                  "No Data"
+                }
+              />
+            );
+          }
+          return (
+            <PrimaryButton
+              style={{ marginTop: 5 }}
+              disabled={!isGridStateEdited}
+              text={isGridStateEdited ? "Commit Changes" : "No Changes"}
+              title={
+                isGridStateEdited
+                  ? "Grid has unsaved data. Click on 'Commit' to save"
+                  : "No Changes To Commit"
+              }
+              onClick={() => {
+                onGridSave();
+              }}
+            />
+          );
+        },
       });
     }
 
@@ -3639,6 +3684,7 @@ const EditableGrid = (props: Props) => {
 
   return (
     <Stack>
+                <div ref={pasteRef}>
       <Panel
         isOpen={isOpenForEdit}
         onDismiss={dismissPanelForEdit}
@@ -3691,6 +3737,7 @@ const EditableGrid = (props: Props) => {
 
       {props.enableCommandBar === undefined ||
       props.enableCommandBar === true ? (
+        <div ref={pasteRef}>
         <CommandBar
           items={CommandBarItemProps}
           ariaLabel="Command Bar"
@@ -3698,6 +3745,7 @@ const EditableGrid = (props: Props) => {
           farItems={CommandBarFarItemProps}
           styles={props.commandBarStyles}
         />
+        </div>
       ) : null}
       {showSpinner ? (
         <Spinner
@@ -3848,6 +3896,7 @@ const EditableGrid = (props: Props) => {
           gridData={defaultGridData}
         />
       ) : null}
+      </div>
     </Stack>
   );
 };
