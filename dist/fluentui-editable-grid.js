@@ -53493,7 +53493,9 @@ const IW = (e) => {
       L.push({
         key: un,
         name: X.text,
+        toolTipText: X.toolTipText,
         headerClassName: Pt,
+        data: X.data,
         ariaLabel: X.text,
         fieldName: X.key,
         isResizable: X.isResizable,

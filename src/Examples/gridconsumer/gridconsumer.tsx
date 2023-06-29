@@ -41,7 +41,7 @@ import {
 } from "../gridconsumer/teachingbubbleconfig";
 import EditableGrid from "../../libs/editablegrid/editablegrid";
 import { ICallBackParams } from "../../libs/types/callbackparams";
-import { IColumnConfig } from "../../libs/types/columnconfigtype";
+import { IColumnConfig, IDetailsColumnRenderTooltipPropsExtra } from "../../libs/types/columnconfigtype";
 import { Operation } from "../../libs/types/operation";
 import { GridToastTypes } from "../../libs/types/gridToastTypes";
 import { useEffect, useState } from "react";
@@ -210,7 +210,7 @@ const Consumer = () => {
       var randomInt = GetRandomInt(1, 3);
       dummyData.push({
         id: i,
-        combo: 'Black',
+        combo: "Black",
         excluded: randomInt % 2 == 0 ? true : false,
         customerhovercol: "Hover Me",
         name: "Name" + GetRandomInt(1, 10),
@@ -396,14 +396,16 @@ const Consumer = () => {
     if (!props || !defaultRender) return null;
 
     const onRenderColumnHeaderTooltip: IRenderFunction<
-      IDetailsColumnRenderTooltipProps
-    > = (tooltipHostProps) => <TooltipHost {...tooltipHostProps} />;
+    IDetailsColumnRenderTooltipPropsExtra
+    > = (tooltipHostProps) => {
+      return<TooltipHost {...tooltipHostProps} content={tooltipHostProps?.column?.toolTipText ?? tooltipHostProps?.column?.name} />
+  }
 
     return (
       <Sticky stickyPosition={StickyPositionType.Header} isScrollSynced={true}>
         {defaultRender!({
           ...props,
-          onRenderColumnHeaderTooltip,
+          onRenderColumnHeaderTooltip: (onRenderColumnHeaderTooltip as IRenderFunction<IDetailsColumnRenderTooltipProps>),
           styles: tableHeaderStyles,
         })}
       </Sticky>

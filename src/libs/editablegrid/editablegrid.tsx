@@ -2041,8 +2041,11 @@ const EditableGrid = (props: Props) => {
   };
   /* #endregion [Grid Column Filter] */
 
+  interface IColumnIToolTip extends IColumn{
+    toolTipText?: string
+  }
   const CreateColumnConfigs = (): IColumn[] => {
-    let columnConfigs: IColumn[] = [];
+    let columnConfigs: IColumnIToolTip[] = [];
     let columnFilterArrTmp: IGridColumnFilter[] = [];
     const [comboOptions, setComboOptions] = useState<IComboBoxOption[]>([]);
     const [init, setInit] = useState<boolean>(false);
@@ -2056,7 +2059,9 @@ const EditableGrid = (props: Props) => {
       columnConfigs.push({
         key: colKey,
         name: column.text,
+        toolTipText: column.toolTipText,
         headerClassName: colHeaderClassName,
+        data: column.data,
         ariaLabel: column.text,
         fieldName: column.key,
         isResizable: column.isResizable,

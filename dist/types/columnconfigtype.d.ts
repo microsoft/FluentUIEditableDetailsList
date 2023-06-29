@@ -1,4 +1,4 @@
-import { IColumn, IComboBoxOption, IDropdownOption } from "@fluentui/react";
+import { IColumn, IComboBoxOption, IDropdownOption, ITooltipHostProps } from "@fluentui/react";
 import { CalculationType } from "./calculationtype";
 import { ICellStyleRulesType, StringOperators } from "./cellstyleruletype";
 import { EditControlType } from "./editcontroltype";
@@ -9,6 +9,7 @@ export interface IColumnConfig extends IColumn {
     autoGenerate?: boolean;
     editable?: boolean;
     dataType?: string;
+    toolTipText?: string;
     transformBasedOnData?: ITransformBasedOnData[];
     extraValidations?: {
         condition: any;
@@ -35,6 +36,9 @@ export interface IColumnConfig extends IColumn {
     disableSort?: boolean;
     hoverComponentOptions?: IHoverOptions;
     linkOptions?: ILinkOptions;
+}
+export interface IDetailsColumnRenderTooltipPropsExtra extends ITooltipHostProps {
+    column?: IColumnConfig;
 }
 export interface ITransformBasedOnData {
     key: string;
