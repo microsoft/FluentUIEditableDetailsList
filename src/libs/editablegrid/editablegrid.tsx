@@ -950,16 +950,19 @@ const EditableGrid = (props: Props) => {
       return;
     }
 
+
+
     if (column.regexValidation) {
       for (let index = 0; index < column.regexValidation.length; index++) {
         const data = column.regexValidation[index];
         if (!data.regex.test(text)) {
-          activateCellEditTmp[row]["properties"][key][
-            "error"
-          ] = `${data.errorMessage}`;
           err = `${data.errorMessage}`;
         }
       }
+    }
+
+    if (column.extraValidations?.condition === text) {
+      `${column.extraValidations?.errMsg}`;
     }
 
      activateCellEditTmp = [];
