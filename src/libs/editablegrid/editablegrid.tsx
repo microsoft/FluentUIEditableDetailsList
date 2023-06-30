@@ -1003,7 +1003,9 @@ const EditableGrid = (props: Props) => {
           if (str) {
             if (str.toString().length > 0) {
               if (props.enableMessageBarErrors) {
-                var msg = element.errorMessage ?? `Data cannot be entered here and in ${element.dependentColumnName} Column. Remove data in ${element.dependentColumnName} Column to enter data here.`;
+                var msg =
+                  element.errorMessage ??
+                  `Data cannot be entered here and in ${element.dependentColumnName} Column. Remove data in ${element.dependentColumnName} Column to enter data here.`;
                 SetMessages(
                   insertToMap(new Map(Messages), key, {
                     msg: msg,
@@ -1043,7 +1045,7 @@ const EditableGrid = (props: Props) => {
             item.properties[element].error = null;
           });
         } else {
-          if (err && err.split('').length >= 4) {
+          if (err && err.split(" ").length >= 4) {
             if (props.enableMessageBarErrors) {
               var msg = err;
               SetMessages(
@@ -1051,8 +1053,8 @@ const EditableGrid = (props: Props) => {
                   msg: msg,
                   type: MessageBarType.error,
                 })
-              )
-            }else{
+              );
+            } else {
               item.properties[key].error = err ?? null;
             }
           }
@@ -3817,7 +3819,9 @@ const EditableGrid = (props: Props) => {
           />
         ) : null}
 
-        {props.enableMessageBarErrors ? <div style={{marginBottom: 15}}>{onRenderMsg()}</div> : null}
+        {props.enableMessageBarErrors ? (
+          <div style={{ marginBottom: 15 }}>{onRenderMsg()}</div>
+        ) : null}
 
         {props.enableCommandBar === undefined ||
         props.enableCommandBar === true ? (

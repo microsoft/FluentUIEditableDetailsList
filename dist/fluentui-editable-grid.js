@@ -53280,7 +53280,7 @@ const tU = (e) => {
           wt.forEach((Ts) => {
             Oe.properties[Ts].error = null;
           });
-        else if (Le && Le.split("").length >= 4)
+        else if (Le && Le.split(" ").length >= 4)
           if (e.enableMessageBarErrors) {
             var Ri = Le;
             K(
