@@ -38,10 +38,17 @@ export interface IColumnConfig extends IColumn {
 }
 
 export interface IColumnDependent {
-  columnKey: string
+  dependentColumnKey: string
+  dependentColumnName: string
+
 }
 export interface IDetailsColumnRenderTooltipPropsExtra extends ITooltipHostProps {
   column?: IColumnConfig;
+}
+
+export interface IGridErrorCallbacks {
+  key: string;
+  msg: string;
 }
 
 export interface ITransformBasedOnData {

@@ -31,6 +31,8 @@ import {
   Link,
   MarqueeSelection,
   mergeStyles,
+  MessageBar,
+  MessageBarType,
   Panel,
   PanelType,
   PrimaryButton,
@@ -247,8 +249,6 @@ const EditableGrid = (props: Props) => {
 
   useEffect(() => {
     UpdateGridEditStatus();
-    //console.log('activate cell edit');
-    //console.log(activateCellEdit);
     if (props.enableDefaultEditMode) {
       setDefaultGridData(
         ShallowCopyEditGridToDefaultGrid(defaultGridData, activateCellEdit)
@@ -932,6 +932,37 @@ const EditableGrid = (props: Props) => {
     return defaultGridDataTmp;
   };
 
+  const [Messages, SetMessages] = useState<
+    Map<string, { msg: string; type: MessageBarType }>
+  >(new Map());
+
+  const insertToMap = (mapVar: Map<any, any>, key: any, value: any) => {
+    mapVar.set(key, value);
+    return mapVar;
+  };
+
+  const removeFromMap = (mapVar: Map<any, any>, key: any) => {
+    mapVar.delete(key);
+    return mapVar;
+  };
+
+  const onRenderMsg = useCallback(() => {
+    let messageTmp: JSX.Element[] = [];
+
+    Messages.forEach(function (value, key) {
+      messageTmp.push(
+        <MessageBar
+          key={key}
+          messageBarType={value.type}
+          onDismiss={() => SetMessages(removeFromMap(new Map(Messages), key))}
+        >
+          {value.msg}
+        </MessageBar>
+      );
+    });
+    return messageTmp;
+  }, [Messages]);
+
   const onCellValueChange = (
     ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     text: string,
@@ -940,8 +971,10 @@ const EditableGrid = (props: Props) => {
     key: string,
     column: IColumnConfig
   ): void => {
-    let activateCellEditTmp: any[] = [...activateCellEdit]
+    let activateCellEditTmp: any[] = [...activateCellEdit];
     let err: null | string = null;
+    let clearThisDependent: any[] = [];
+
     if (!IsValidDataType(column.dataType, text)) {
       activateCellEditTmp[row]["properties"][key][
         "error"
@@ -950,26 +983,68 @@ const EditableGrid = (props: Props) => {
       return;
     }
 
+    if (column.columnDependent) {
+      for (let index = 0; index < column.columnDependent.length; index++) {
+        const element = column.columnDependent[index];
 
+        activateCellEdit.forEach((item, index) => {
+          if (row == index) {
+            if (
+              item.properties[element.dependentColumnKey].error &&
+              text.length <= 0
+            ) {
+              clearThisDependent.push(element.dependentColumnKey);
+            }
+          }
+        });
 
-    if (column.regexValidation) {
-      for (let index = 0; index < column.regexValidation.length; index++) {
-        const data = column.regexValidation[index];
-        if (!data.regex.test(text)) {
-          err = `${data.errorMessage}`;
+        if ((item as any)[element.dependentColumnKey]) {
+          const str = (item as any)[element.dependentColumnKey];
+          if (str) {
+            if (str.toString().length > 0) {
+              if (props.enableMessageBarErrors) {
+                var msg = `Data cannot be entered here and in ${element.dependentColumnName} Column. Remove data in ${element.dependentColumnName} Column to enter data here.`;
+                SetMessages(
+                  insertToMap(new Map(Messages), key, {
+                    msg: msg,
+                    type: MessageBarType.error,
+                  })
+                );
+                err = `Conflict error.`;
+              }
+            }
+          }
+        }
+
+        if (text.length <= 0) {
+          err = null;
         }
       }
-    }
+    } else {
+      if (column.regexValidation) {
+        for (let index = 0; index < column.regexValidation.length; index++) {
+          const data = column.regexValidation[index];
+          if (!data.regex.test(text)) {
+            err = `${data.errorMessage}`;
+          }
+        }
+      }
 
-    if (column.extraValidations?.condition === text) {
-      `${column.extraValidations?.errMsg}`;
+      if (column.extraValidations?.condition === text) {
+        `${column.extraValidations?.errMsg}`;
+      }
     }
-
-     activateCellEditTmp = [];
-      activateCellEdit.forEach((item, index) => {
+    activateCellEditTmp = [];
+    activateCellEdit.forEach((item, index) => {
       if (row == index) {
         item.properties[key].value = ParseType(column.dataType, text);
-        item.properties[key].error = err ?? null;
+        if (clearThisDependent.length > 0) {
+          clearThisDependent.forEach((element) => {
+            item.properties[element].error = null;
+          });
+        } else {
+          item.properties[key].error = err ?? null;
+        }
       }
 
       activateCellEditTmp.push(item);
@@ -1377,8 +1452,6 @@ const EditableGrid = (props: Props) => {
 
     if (!newEditModeValue) {
       defaultGridData.forEach((item, rowNum) => {
-        console.log(item);
-
         defaultGridDataTmp = SaveRowValue(
           item,
           item["_grid_row_id_"],
@@ -1594,12 +1667,12 @@ const EditableGrid = (props: Props) => {
     const gridToPasteInto = pasteRef.current;
 
     if (gridToPasteInto) {
-      gridToPasteInto.addEventListener('keydown', handlePaste);
+      gridToPasteInto.addEventListener("keydown", handlePaste);
     }
 
     return () => {
       if (gridToPasteInto) {
-        gridToPasteInto.removeEventListener('keydown', handlePaste);
+        gridToPasteInto.removeEventListener("keydown", handlePaste);
       }
     };
   }, []);
@@ -3681,218 +3754,222 @@ const EditableGrid = (props: Props) => {
 
   return (
     <Stack>
-                <div ref={pasteRef}>
-      <Panel
-        isOpen={isOpenForEdit}
-        onDismiss={dismissPanelForEdit}
-        isLightDismiss={true}
-        headerText="Edit Grid Data"
-        closeButtonAriaLabel="Close"
-        type={PanelType.smallFixedFar}
-      >
-        <EditPanel
-          onChange={onEditPanelChange}
-          columnConfigurationData={props.columns}
-        />
-      </Panel>
-
-      {props.enableRowAddWithValues && props.enableRowAddWithValues.enable ? (
+      <div ref={pasteRef}>
         <Panel
-          isOpen={isOpenForAdd}
-          onDismiss={dismissPanelForAdd}
+          isOpen={isOpenForEdit}
+          onDismiss={dismissPanelForEdit}
           isLightDismiss={true}
-          headerText="Add Rows"
+          headerText="Edit Grid Data"
           closeButtonAriaLabel="Close"
           type={PanelType.smallFixedFar}
         >
-          <AddRowPanel
-            onChange={onAddPanelChange}
+          <EditPanel
+            onChange={onEditPanelChange}
             columnConfigurationData={props.columns}
-            enableRowsCounterField={
-              props.enableRowAddWithValues.enableRowsCounterInPanel
-            }
-            autoGenId={Math.max.apply(
-              Math,
-              defaultGridData.map(function (o) {
-                return o._grid_row_id_;
-              })
-            )}
           />
         </Panel>
-      ) : null}
 
-      {defaultTag.length > 0 ? (
-        <TagPicker
-          onResolveSuggestions={onFilterChanged}
-          getTextFromItem={getTextFromItem}
-          pickerSuggestionsProps={pickerSuggestionsProps}
-          inputProps={inputProps}
-          selectedItems={defaultTag}
-          onChange={onFilterTagListChanged}
-        />
-      ) : null}
+        {props.enableRowAddWithValues && props.enableRowAddWithValues.enable ? (
+          <Panel
+            isOpen={isOpenForAdd}
+            onDismiss={dismissPanelForAdd}
+            isLightDismiss={true}
+            headerText="Add Rows"
+            closeButtonAriaLabel="Close"
+            type={PanelType.smallFixedFar}
+          >
+            <AddRowPanel
+              onChange={onAddPanelChange}
+              columnConfigurationData={props.columns}
+              enableRowsCounterField={
+                props.enableRowAddWithValues.enableRowsCounterInPanel
+              }
+              autoGenId={Math.max.apply(
+                Math,
+                defaultGridData.map(function (o) {
+                  return o._grid_row_id_;
+                })
+              )}
+            />
+          </Panel>
+        ) : null}
 
-      {props.enableCommandBar === undefined ||
-      props.enableCommandBar === true ? (
-        <div ref={pasteRef}>
-        <CommandBar
-          items={CommandBarItemProps}
-          ariaLabel="Command Bar"
-          overflowItems={CommandBarOverflowItemsProps}
-          farItems={CommandBarFarItemProps}
-          styles={props.commandBarStyles}
-        />
-        </div>
-      ) : null}
-      {showSpinner ? (
-        <Spinner
-          label="Updating..."
-          ariaLive="assertive"
-          labelPosition="right"
-          size={SpinnerSize.large}
-        />
-      ) : null}
+        {defaultTag.length > 0 ? (
+          <TagPicker
+            onResolveSuggestions={onFilterChanged}
+            getTextFromItem={getTextFromItem}
+            pickerSuggestionsProps={pickerSuggestionsProps}
+            inputProps={inputProps}
+            selectedItems={defaultTag}
+            onChange={onFilterTagListChanged}
+          />
+        ) : null}
 
-      {showFilterCallout && filterCalloutComponent}
-      <div
-        className={mergeStyles({
-          height: props.height != null ? props.height : "250px",
-          width: props.width != null ? props.width : "100%",
-          position: "relative",
-        })}
-      >
-        {importingStarted ? (
+        {props.enableMessageBarErrors ? <div style={{marginBottom: 15}}>{onRenderMsg()}</div> : null}
+
+        {props.enableCommandBar === undefined ||
+        props.enableCommandBar === true ? (
+          <div ref={pasteRef}>
+            <CommandBar
+              items={CommandBarItemProps}
+              ariaLabel="Command Bar"
+              overflowItems={CommandBarOverflowItemsProps}
+              farItems={CommandBarFarItemProps}
+              styles={props.commandBarStyles}
+            />
+          </div>
+        ) : null}
+        {showSpinner ? (
           <Spinner
             label="Updating..."
             ariaLive="assertive"
             labelPosition="right"
             size={SpinnerSize.large}
           />
-        ) : (
-          <ScrollablePane
-            styles={props.scrollablePaneStyles}
-            scrollbarVisibility={ScrollbarVisibility.auto}
-          >
-            <MarqueeSelection selection={_selection}>
-              <DetailsList
-                compact={true}
-                items={
-                  defaultGridData.length > 0
-                    ? defaultGridData.filter(
-                        (x) =>
-                          x._grid_row_operation_ != Operation.Delete &&
-                          x._is_filtered_in_ == true &&
-                          x._is_filtered_in_grid_search_ == true &&
-                          x._is_filtered_in_column_filter_ == true
-                      )
-                    : []
-                }
-                columns={GridColumns}
-                selectionMode={props.selectionMode}
-                // layoutMode={props.layoutMode}
-                // constrainMode={props.constrainMode}
-                layoutMode={props.layoutMode ?? DetailsListLayoutMode.justified}
-                constrainMode={
-                  props.constrainMode ?? ConstrainMode.unconstrained
-                }
-                selection={_selection}
-                setKey="none"
-                onRenderDetailsHeader={props.onRenderDetailsHeader}
-                ariaLabelForSelectAllCheckbox="Toggle selection for all items"
-                ariaLabelForSelectionColumn="Toggle selection"
-                checkButtonAriaLabel="Row checkbox"
-                ariaLabel={props.ariaLabel}
-                ariaLabelForGrid={props.ariaLabelForGrid}
-                ariaLabelForListHeader={props.ariaLabelForListHeader}
-                cellStyleProps={props.cellStyleProps}
-                checkboxCellClassName={props.checkboxCellClassName}
-                checkboxVisibility={props.checkboxVisibility}
-                className={props.className}
-                columnReorderOptions={props.columnReorderOptions}
-                componentRef={props.componentRef}
-                disableSelectionZone={props.disableSelectionZone}
-                dragDropEvents={props.dragDropEvents}
-                enableUpdateAnimations={props.enableUpdateAnimations}
-                enterModalSelectionOnTouch={props.enterModalSelectionOnTouch}
-                getCellValueKey={props.getCellValueKey}
-                getGroupHeight={props.getGroupHeight}
-                getKey={props.getKey}
-                getRowAriaDescribedBy={props.getRowAriaDescribedBy}
-                getRowAriaLabel={props.getRowAriaLabel}
-                groupProps={props.groupProps}
-                groups={props.groups}
-                indentWidth={props.indentWidth}
-                initialFocusedIndex={props.initialFocusedIndex}
-                isHeaderVisible={props.isHeaderVisible}
-                isPlaceholderData={props.isPlaceholderData}
-                listProps={props.listProps}
-                minimumPixelsForDrag={props.minimumPixelsForDrag}
-                onActiveItemChanged={props.onActiveItemChanged}
-                onColumnHeaderClick={props.onColumnHeaderClick}
-                onColumnHeaderContextMenu={props.onColumnHeaderContextMenu}
-                onColumnResize={props.onColumnResize}
-                onDidUpdate={props.onDidUpdate}
-                onItemContextMenu={props.onItemContextMenu}
-                onItemInvoked={props.onItemInvoked}
-                onRenderCheckbox={props.onRenderCheckbox}
-                onRenderDetailsFooter={props.onRenderDetailsFooter}
-                onRenderItemColumn={props.onRenderItemColumn}
-                onRenderMissingItem={props.onRenderMissingItem}
-                onRenderRow={props.onRenderRow}
-                onRowDidMount={props.onRowDidMount}
-                onRowWillUnmount={props.onRowWillUnmount}
-                onShouldVirtualize={props.onShouldVirtualize}
-                rowElementEventMap={props.rowElementEventMap}
-                selectionPreservedOnEmptyClick={
-                  props.selectionPreservedOnEmptyClick
-                }
-                selectionZoneProps={props.selectionZoneProps}
-                shouldApplyApplicationRole={props.shouldApplyApplicationRole}
-                styles={props.styles}
-                useFastIcons={props.useFastIcons}
-                usePageCache={props.usePageCache}
-                useReducedRowRenderer={props.useReducedRowRenderer}
-                viewport={props.viewport}
-              />
-            </MarqueeSelection>
-          </ScrollablePane>
-        )}
-      </div>
-      <Dialog
-        hidden={!dialogContent}
-        onDismiss={CloseRenameDialog}
-        closeButtonAriaLabel="Close"
-      >
-        {dialogContent}
-      </Dialog>
-      {messageDialogProps.visible ? (
-        <MessageDialog
-          message={messageDialogProps.message}
-          subMessage={messageDialogProps.subMessage}
-          onDialogClose={CloseMessageDialog}
-        />
-      ) : null}
+        ) : null}
 
-      {props.enableColumnEdit && isUpdateColumnClicked ? (
-        <ColumnUpdateDialog
-          columnConfigurationData={props.columns}
-          onDialogCancel={CloseColumnUpdateDialog}
-          onDialogSave={UpdateGridColumnData}
-        />
-      ) : null}
-
-      {props.enableColumnFilterRules && isColumnFilterClicked ? (
-        <ColumnFilterDialog
-          columnConfigurationData={props.columns.filter(
-            (item) =>
-              filteredColumns.indexOf(item) < 0 &&
-              isColumnDataTypeSupportedForFilter(item.dataType)
+        {showFilterCallout && filterCalloutComponent}
+        <div
+          className={mergeStyles({
+            height: props.height != null ? props.height : "250px",
+            width: props.width != null ? props.width : "100%",
+            position: "relative",
+          })}
+        >
+          {importingStarted ? (
+            <Spinner
+              label="Updating..."
+              ariaLive="assertive"
+              labelPosition="right"
+              size={SpinnerSize.large}
+            />
+          ) : (
+            <ScrollablePane
+              styles={props.scrollablePaneStyles}
+              scrollbarVisibility={ScrollbarVisibility.auto}
+            >
+              <MarqueeSelection selection={_selection}>
+                <DetailsList
+                  compact={true}
+                  items={
+                    defaultGridData.length > 0
+                      ? defaultGridData.filter(
+                          (x) =>
+                            x._grid_row_operation_ != Operation.Delete &&
+                            x._is_filtered_in_ == true &&
+                            x._is_filtered_in_grid_search_ == true &&
+                            x._is_filtered_in_column_filter_ == true
+                        )
+                      : []
+                  }
+                  columns={GridColumns}
+                  selectionMode={props.selectionMode}
+                  // layoutMode={props.layoutMode}
+                  // constrainMode={props.constrainMode}
+                  layoutMode={
+                    props.layoutMode ?? DetailsListLayoutMode.justified
+                  }
+                  constrainMode={
+                    props.constrainMode ?? ConstrainMode.unconstrained
+                  }
+                  selection={_selection}
+                  setKey="none"
+                  onRenderDetailsHeader={props.onRenderDetailsHeader}
+                  ariaLabelForSelectAllCheckbox="Toggle selection for all items"
+                  ariaLabelForSelectionColumn="Toggle selection"
+                  checkButtonAriaLabel="Row checkbox"
+                  ariaLabel={props.ariaLabel}
+                  ariaLabelForGrid={props.ariaLabelForGrid}
+                  ariaLabelForListHeader={props.ariaLabelForListHeader}
+                  cellStyleProps={props.cellStyleProps}
+                  checkboxCellClassName={props.checkboxCellClassName}
+                  checkboxVisibility={props.checkboxVisibility}
+                  className={props.className}
+                  columnReorderOptions={props.columnReorderOptions}
+                  componentRef={props.componentRef}
+                  disableSelectionZone={props.disableSelectionZone}
+                  dragDropEvents={props.dragDropEvents}
+                  enableUpdateAnimations={props.enableUpdateAnimations}
+                  enterModalSelectionOnTouch={props.enterModalSelectionOnTouch}
+                  getCellValueKey={props.getCellValueKey}
+                  getGroupHeight={props.getGroupHeight}
+                  getKey={props.getKey}
+                  getRowAriaDescribedBy={props.getRowAriaDescribedBy}
+                  getRowAriaLabel={props.getRowAriaLabel}
+                  groupProps={props.groupProps}
+                  groups={props.groups}
+                  indentWidth={props.indentWidth}
+                  initialFocusedIndex={props.initialFocusedIndex}
+                  isHeaderVisible={props.isHeaderVisible}
+                  isPlaceholderData={props.isPlaceholderData}
+                  listProps={props.listProps}
+                  minimumPixelsForDrag={props.minimumPixelsForDrag}
+                  onActiveItemChanged={props.onActiveItemChanged}
+                  onColumnHeaderClick={props.onColumnHeaderClick}
+                  onColumnHeaderContextMenu={props.onColumnHeaderContextMenu}
+                  onColumnResize={props.onColumnResize}
+                  onDidUpdate={props.onDidUpdate}
+                  onItemContextMenu={props.onItemContextMenu}
+                  onItemInvoked={props.onItemInvoked}
+                  onRenderCheckbox={props.onRenderCheckbox}
+                  onRenderDetailsFooter={props.onRenderDetailsFooter}
+                  onRenderItemColumn={props.onRenderItemColumn}
+                  onRenderMissingItem={props.onRenderMissingItem}
+                  onRenderRow={props.onRenderRow}
+                  onRowDidMount={props.onRowDidMount}
+                  onRowWillUnmount={props.onRowWillUnmount}
+                  onShouldVirtualize={props.onShouldVirtualize}
+                  rowElementEventMap={props.rowElementEventMap}
+                  selectionPreservedOnEmptyClick={
+                    props.selectionPreservedOnEmptyClick
+                  }
+                  selectionZoneProps={props.selectionZoneProps}
+                  shouldApplyApplicationRole={props.shouldApplyApplicationRole}
+                  styles={props.styles}
+                  useFastIcons={props.useFastIcons}
+                  usePageCache={props.usePageCache}
+                  useReducedRowRenderer={props.useReducedRowRenderer}
+                  viewport={props.viewport}
+                />
+              </MarqueeSelection>
+            </ScrollablePane>
           )}
-          onDialogCancel={CloseColumnFilterDialog}
-          onDialogSave={onFilterApplied}
-          gridData={defaultGridData}
-        />
-      ) : null}
+        </div>
+        <Dialog
+          hidden={!dialogContent}
+          onDismiss={CloseRenameDialog}
+          closeButtonAriaLabel="Close"
+        >
+          {dialogContent}
+        </Dialog>
+        {messageDialogProps.visible ? (
+          <MessageDialog
+            message={messageDialogProps.message}
+            subMessage={messageDialogProps.subMessage}
+            onDialogClose={CloseMessageDialog}
+          />
+        ) : null}
+
+        {props.enableColumnEdit && isUpdateColumnClicked ? (
+          <ColumnUpdateDialog
+            columnConfigurationData={props.columns}
+            onDialogCancel={CloseColumnUpdateDialog}
+            onDialogSave={UpdateGridColumnData}
+          />
+        ) : null}
+
+        {props.enableColumnFilterRules && isColumnFilterClicked ? (
+          <ColumnFilterDialog
+            columnConfigurationData={props.columns.filter(
+              (item) =>
+                filteredColumns.indexOf(item) < 0 &&
+                isColumnDataTypeSupportedForFilter(item.dataType)
+            )}
+            onDialogCancel={CloseColumnFilterDialog}
+            onDialogSave={onFilterApplied}
+            gridData={defaultGridData}
+          />
+        ) : null}
       </div>
     </Stack>
   );

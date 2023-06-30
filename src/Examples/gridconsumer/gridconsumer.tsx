@@ -26,6 +26,7 @@ import {
   mergeStyles,
   mergeStyleSets,
   MessageBar,
+  MessageBarType,
   SelectionMode,
   Stack,
   StackItem,
@@ -45,10 +46,11 @@ import { ICallBackParams } from "../../libs/types/callbackparams";
 import {
   IColumnConfig,
   IDetailsColumnRenderTooltipPropsExtra,
+  IGridErrorCallbacks,
 } from "../../libs/types/columnconfigtype";
 import { Operation } from "../../libs/types/operation";
 import { GridToastTypes } from "../../libs/types/gridToastTypes";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GridColumnConfig, GridItemsType } from "./gridconfig";
@@ -62,6 +64,7 @@ interface GridConfigOptions {
   enableRowEdit: boolean;
   enableRowEditCancel: boolean;
   enableBulkEdit: boolean;
+  enableMessageBarErrors: boolean;
   enableColumnEdit: boolean;
   enableCSVExport: boolean;
   enableExcelExport: boolean;
@@ -96,6 +99,7 @@ const Consumer = () => {
     });
   const [gridConfigOptions, setGridConfigOptions] = useState<GridConfigOptions>(
     {
+      enableMessageBarErrors: true,
       enableSingleCellEditOnDoubleClick: true,
       enableRowEditCopy: true,
       enableRowEditDelete: true,
@@ -422,7 +426,10 @@ const Consumer = () => {
     );
   };
 
-  const [message, setMessage] = useState('')
+  // const Messages = useRef(new Map());
+  const [Messages, SetMessages] = useState(new Map())
+  const [messageBarType, setMessageBarType] = useState<MessageBarType>(MessageBarType.info)
+
   const onRenderRow = (
     props?: IDetailsRowProps,
     defaultRender?: IRenderFunction<IDetailsRowProps>
@@ -430,6 +437,28 @@ const Consumer = () => {
     if (!props || !defaultRender) return null;
     return <DetailsRow {...props} styles={tableDetailsRowsStyles()} />;
   };
+
+  const insertToMap = (mapVar:  Map<any, any>, key: any, value: any) => {
+    mapVar.set(key, value);
+    return mapVar
+  };
+
+  const removeFromMap = (mapVar: Map<any, any>, key: any) => {
+    mapVar.delete(key)
+    return mapVar
+  };
+
+  const onRenderMsg = useCallback(() =>{
+    let messageTmp:JSX.Element[] = []
+
+  Messages.forEach(function(value, key) {
+  messageTmp.push(
+    <MessageBar key={key}  messageBarType={messageBarType} onDismiss={()=> removeFromMap(new Map(Messages), key)}>
+    {value}
+    </MessageBar>
+  )})
+    return messageTmp
+  }, [Messages])
 
   return (
     <Stack grow horizontalAlign="center">
@@ -663,11 +692,9 @@ const Consumer = () => {
           backgroundColor: "white",
         }}
       >
-        <MessageBar>
-        {message}
-        </MessageBar>
         <EditableGrid
           checkboxVisibility={CheckboxVisibility.hidden}
+          enableMessageBarErrors={gridConfigOptions.enableMessageBarErrors}
           id={100}
           zeroRowsMsg={"This Rule Will Not Run"}
           commandBarStyles={{
@@ -768,35 +795,6 @@ const Consumer = () => {
                 toast.warn(str, {
                   position: toast.POSITION.TOP_CENTER,
                 });
-                break;
-              default:
-                break;
-            }
-          }}
-          onGridValidationErrorMessageCallback={(str: string, type: GridToastTypes) => {
-            switch (type) {
-              case GridToastTypes.INFO:
-                setMessage(str)
-           
-                break;
-              case GridToastTypes.SUCCESS:
-                setMessage(str)
-
-                break;
-              case GridToastTypes.ERROR:
-                setMessage(str)
-
-                break;
-              case GridToastTypes.WARNING:
-                setMessage(str)
-
-              case GridToastTypes.DARK:
-                setMessage(str)
-
-                break;
-              case GridToastTypes.WARN:
-                setMessage(str)
-
                 break;
               default:
                 break;
