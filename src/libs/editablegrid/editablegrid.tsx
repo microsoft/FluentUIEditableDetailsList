@@ -1043,7 +1043,19 @@ const EditableGrid = (props: Props) => {
             item.properties[element].error = null;
           });
         } else {
-          item.properties[key].error = err ?? null;
+          if (err && err.split('').length >= 4) {
+            if (props.enableMessageBarErrors) {
+              var msg = err;
+              SetMessages(
+                insertToMap(new Map(Messages), key, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                })
+              )
+            }else{
+              item.properties[key].error = err ?? null;
+            }
+          }
         }
       }
 
