@@ -1003,7 +1003,7 @@ const EditableGrid = (props: Props) => {
           if (str) {
             if (str.toString().length > 0) {
               if (props.enableMessageBarErrors) {
-                var msg = `Data cannot be entered here and in ${element.dependentColumnName} Column. Remove data in ${element.dependentColumnName} Column to enter data here.`;
+                var msg = element.errorMessage ?? `Data cannot be entered here and in ${element.dependentColumnName} Column. Remove data in ${element.dependentColumnName} Column to enter data here.`;
                 SetMessages(
                   insertToMap(new Map(Messages), key, {
                     msg: msg,

@@ -40,6 +40,7 @@ export interface IColumnConfig extends IColumn {
 export interface IColumnDependent {
   dependentColumnKey: string
   dependentColumnName: string
+  errorMessage?: string;
 
 }
 export interface IDetailsColumnRenderTooltipPropsExtra extends ITooltipHostProps {
