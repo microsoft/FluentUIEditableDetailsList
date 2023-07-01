@@ -800,6 +800,9 @@ const Consumer = () => {
                 break;
             }
           }}
+          onGridInErrorCallback={(isInError: boolean)=>{
+            //alert('Error: ' + isInError);
+          }}
           onGridUpdate={onGridUpdate}
           enableDefaultEditMode={gridConfigOptions.enableDefaultEditMode}
           customCommandBarItems={[

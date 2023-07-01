@@ -86,7 +86,7 @@ import MessageDialog from "../editablegrid/messagedialog";
 import PickerControl from "../editablegrid/pickercontrol/picker";
 import { EventEmitter, EventType } from "../eventemitter/EventEmitter";
 import { ICallBackParams } from "../types/callbackparams";
-import { IColumnConfig } from "../types/columnconfigtype";
+import { DepColTypes, IColumnConfig } from "../types/columnconfigtype";
 import {
   IFilterItem,
   IFilterListProps,
@@ -109,6 +109,7 @@ interface SortOptions {
 
 const EditableGrid = (props: Props) => {
   const [editMode, setEditMode] = useState(false);
+  const [gridInError, setGridInError] = useState(false);
   const [importingStarted, setImportingStarted] = useState(false);
 
   const [isOpenForEdit, setIsOpenForEdit] = useState(false);
@@ -270,11 +271,224 @@ const EditableGrid = (props: Props) => {
     }
   }, [filterCalloutComponent]);
 
+  useEffect(() => {
+    //alert('IsGridInEdit: ' + isGridInEdit);
+    if (props.onGridInErrorCallback)
+          props.onGridInErrorCallback(gridInError);
+  }, [gridInError]);
+
+// const [Messages, SetMessages] = useState<
+//   Map<string, { msg: string; type: MessageBarType }>
+// >(new Map());
+
+// const useRefHeightMeasure = <T extends HTMLElement>() => {
+//   const [MessagesStored, SetMessages] = useState<
+//   Map<string, { msg: string; type: MessageBarType }>
+//    >(new Map());
+
+//   const refCallback = useCallback((node: T) => {
+//     if (node !== null) {
+//       SetMessages(node.)
+//     }
+//   }, [])
+
+//   return { MessagesStored, refCallback }
+// }
+
+const Messages  = useRef<
+Map<string, { msg: string; type: MessageBarType }>
+>(new Map())
+
+const insertToMap = (mapVar: Map<any, any>, key: any, value: any) => {
+  mapVar.set(key, value);
+  //return mapVar;
+};
+
+const removeFromMap = (mapVar: Map<any, any>, key: any) => {
+  mapVar.delete(key);
+  //return mapVar;
+};
   const onGridSave = (): void => {
+    setGridInError(false)
     if (props.onGridSave) {
       props.onGridSave(defaultGridData);
     }
-  };
+    console.log(defaultGridData)
+    for (let row = 0; row < defaultGridData.length; row++) {
+      const gridData = defaultGridData[row];
+      var elementColNames = Object.keys(gridData);
+      for (let indexInner = 0; indexInner < elementColNames.length; indexInner++) {
+        const colNames = elementColNames[indexInner];
+        const rowCol = gridData[colNames];
+        const currentCol = props.columns.filter((x) => x.key === colNames);
+        
+        // ValidDataTypeCheck
+        for (let j = 0; j < currentCol.length; j++) {
+          const element = currentCol[j];
+          const rowCol = gridData[element.key];
+
+          if (typeof rowCol !== element.dataType || typeof rowCol === 'number') {
+            if (element.dataType === "number") {
+              if (isNaN(parseInt(rowCol))) {
+                if (props.enableMessageBarErrors) {
+                  var msg =
+                    `Row: ${row + 1} Col: ${element.name} - ` +
+                    `Value is not a '${element.dataType}'.`;
+                    insertToMap(Messages.current, element.key+row, {
+                      msg: msg,
+                      type: MessageBarType.error,
+                    })
+
+                }
+                setGridInError(true)
+              }
+            } else if (element.dataType === "boolean") {
+              try {
+                Boolean(rowCol);
+              } catch (error) {
+                if (props.enableMessageBarErrors) {
+                  var msg =
+                    `Row: ${row + 1} Col: ${element.name} - ` +
+                    `Value is not a '${element.dataType}'.`;
+                    insertToMap(Messages.current, element.key+row, {
+                      msg: msg,
+                      type: MessageBarType.error,
+                    })
+                }
+                setGridInError(true)
+
+              }
+              
+            } else if (element.dataType === "date") {
+              try {
+                if (!isValidDate(rowCol)) {
+                  throw {};
+                } else {
+                  continue;
+                }
+              } catch (error) {
+                if (props.enableMessageBarErrors) {
+                  var msg =
+                    `Row: ${row + 1} Col: ${element.name} - ` +
+                    `Value is not a '${element.dataType}'.`;
+                    insertToMap(Messages.current, element.key+row, {
+                      msg: msg,
+                      type: MessageBarType.error,
+                    })
+                }
+                setGridInError(true)
+
+              }
+              
+            } else if (typeof rowCol !== element.dataType) {
+              if (props.enableMessageBarErrors) {
+                var msg =
+                  `Row: ${row + 1} Col: ${element.name} - ` +
+                  `Value is not a '${element.dataType}'.`;
+                  insertToMap(Messages.current, element.key+row, {
+                    msg: msg,
+                    type: MessageBarType.error,
+                  })
+              }
+              setGridInError(true)
+
+            }
+             else {
+              if (props.enableMessageBarErrors) {
+                var msg =
+                  `Row: ${row + 1} Col: ${element.name} - ` +
+                  `Value is not a '${element.dataType}'.`;
+                  insertToMap(Messages.current, element.key+row, {
+                    msg: msg,
+                    type: MessageBarType.error,
+                  })
+              }
+              setGridInError(true)
+
+            }            
+          }
+
+          if (element.columnDependent) {
+            for (let index = 0; index < element.columnDependent.length; index++) {
+              const colDep = element.columnDependent[index];
+      
+      
+              if ((gridData as any)[colDep.dependentColumnKey] || (gridData as any)[colDep.dependentColumnKey] !== undefined) {
+                const str = (gridData as any)[colDep.dependentColumnKey];
+
+                if (str !== undefined) {
+                  if ( str.toString().length > 0  && colDep.type === DepColTypes.MustBeEmpty) {
+                    if(rowCol.length > 0){
+                    if (props.enableMessageBarErrors) {
+                      var msg =
+                        `Row: ${row + 1} Col: ${element.name} - ` +
+                        (colDep.errorMessage ??
+                          ` Data cannot be entered here and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
+                     
+                        insertToMap(Messages.current, element.key+row, {
+                          msg: msg,
+                          type: MessageBarType.error,
+                        })
+                      
+                      setGridInError(true)
+                    }}
+                  }
+                  else if (str.toString().length <= 0 && colDep.type === DepColTypes.MustHaveData) {
+                    if (props.enableMessageBarErrors) {
+                      var msg =
+                        `Row: ${row + 1} Col: ${colDep.dependentColumnName} - ` +
+                        (colDep.errorMessage ??
+                          ` Data needs to entered here and in ${element.name} Column.`);
+                          insertToMap(Messages.current, element.key+row, {
+                            msg: msg,
+                            type: MessageBarType.error,
+                          })
+                          setGridInError(true)
+                        }
+                  }
+                }
+              }
+            }
+          }
+
+          if (element.regexValidation) {
+            for (let index = 0; index < element.regexValidation.length; index++) {
+              const data = element.regexValidation[index];
+              if (!data.regex.test(rowCol)) {
+                if (props.enableMessageBarErrors) {
+                  var msg =
+                    `Row: ${row + 1} Col: ${element.name} - ` +
+                    `${data.errorMessage}`;
+                    insertToMap(Messages.current, element.key+row, {
+                      msg: msg,
+                      type: MessageBarType.error,
+                    })
+
+                }
+                setGridInError(true)
+              }
+            }
+          }
+
+          
+      if (element.extraValidations?.condition === rowCol) {
+        if (props.enableMessageBarErrors) {
+          var msg =
+            `Row: ${row + 1} Col: ${element.name} - ` +
+            `${element.extraValidations?.errMsg}`;
+            insertToMap(Messages.current, element.key+row, {
+              msg: msg,
+              type: MessageBarType.error,
+            })
+
+        }
+        setGridInError(true)
+
+      }
+        }
+      }
+    }
+  }
 
   const onGridUpdate = async (): Promise<void> => {
     if (props.onGridUpdate) {
@@ -932,30 +1146,18 @@ const EditableGrid = (props: Props) => {
     return defaultGridDataTmp;
   };
 
-  const [Messages, SetMessages] = useState<
-    Map<string, { msg: string; type: MessageBarType }>
-  >(new Map());
 
-  const insertToMap = (mapVar: Map<any, any>, key: any, value: any) => {
-    mapVar.set(key, value);
-    return mapVar;
-  };
-
-  const removeFromMap = (mapVar: Map<any, any>, key: any) => {
-    mapVar.delete(key);
-    return mapVar;
-  };
 
   const onRenderMsg = useCallback(() => {
     let messageTmp: JSX.Element[] = [];
 
-    Messages.forEach(function (value, key) {
+    Messages.current.forEach(function (value, key) {
       messageTmp.push(
         <MessageBar
           styles={{root:{ marginBottom: 5} }}
           key={key}
           messageBarType={value.type}
-          onDismiss={() => SetMessages(removeFromMap(new Map(Messages), key))}
+          onDismiss={() => (removeFromMap(Messages.current, key))}
         >
           {value.msg}
         </MessageBar>
@@ -984,12 +1186,10 @@ const EditableGrid = (props: Props) => {
         var msg =
           `Row: ${row + 1} Col: ${column.name} - ` +
           `Value you just entered is not a '${column.dataType}'. We will re-evaluate on save or next character entered.`;
-        SetMessages(
-          insertToMap(new Map(Messages), key+row, {
+          insertToMap(Messages.current, key+row, {
             msg: msg,
             type: MessageBarType.error,
           })
-        );
       }
       setActivateCellEdit(activateCellEditTmp);
       return;
@@ -997,64 +1197,93 @@ const EditableGrid = (props: Props) => {
       activateCellEditTmp[row]["properties"][key]["error"] = ``;
     }
 
-    if (column.columnDependent) {
-      for (let index = 0; index < column.columnDependent.length; index++) {
-        const element = column.columnDependent[index];
+    // if (column.columnDependent) {
+    //   for (let index = 0; index < column.columnDependent.length; index++) {
+    //     const element = column.columnDependent[index];
 
-        activateCellEdit.forEach((item, index) => {
-          if (row == index) {
-            if (
-              item.properties[element.dependentColumnKey].error &&
-              text.length <= 0
-            ) {
-              clearThisDependent.push(element.dependentColumnKey);
-            }
-          }
-        });
+    //     if(element.type === DepColTypes.MustBeEmpty){
+    //     activateCellEdit.forEach((item, index) => {
+    //       if (row == index) {
+    //         if (
+    //           item.properties[element.dependentColumnKey].error &&
+    //           text.length <= 0
+    //         ) {
+    //           clearThisDependent.push(element.dependentColumnKey);
+    //         }
+    //       }
+    //     })}
+    //     else if(element.type === DepColTypes.MustHaveData){
+    //       activateCellEdit.forEach((item, index) => {
 
-        if ((item as any)[element.dependentColumnKey]) {
-          const str = (item as any)[element.dependentColumnKey];
-          if (str) {
-            if (str.toString().length > 0) {
-              if (props.enableMessageBarErrors) {
-                var msg =
-                  `Row: ${row + 1} Col: ${column.name} - ` +
-                  (element.errorMessage ??
-                    ` Data cannot be entered here and in ${element.dependentColumnName} Column. Remove data in ${element.dependentColumnName} Column to enter data here.`);
-                SetMessages(
-                  insertToMap(new Map(Messages), key+row, {
-                    msg: msg,
-                    type: MessageBarType.error,
-                  })
-                );
-                err = `Conflict error.`;
-              }
-            }
-          }
-        }
+    //         if (row == index) {
+    //           if (
+    //             item.properties[element.dependentColumnKey].error &&
+    //             text.length > 0
+    //           ) {
+    //             clearThisDependent.push(element.dependentColumnKey);
+    //           }
+    //         }
+    //       });
+    //     }
 
-        if (text.length <= 0) {
-          err = null;
-        }
-      }
-    } else {
-      if (column.regexValidation) {
-        for (let index = 0; index < column.regexValidation.length; index++) {
-          const data = column.regexValidation[index];
-          if (!data.regex.test(text)) {
-            err = `${data.errorMessage}`;
-          }
-        }
-      }
+        
+    //     if ((item as any)[element.dependentColumnKey] || (item as any)[element.dependentColumnKey] !== undefined ) {
 
-      if (column.extraValidations?.condition === text) {
-        `${column.extraValidations?.errMsg}`;
-      }
-    }
+    //       const str = (item as any)[element.dependentColumnKey];
+    //       if (str !== undefined) {
+    //         if (str.toString().length > 0 && element.type === DepColTypes.MustBeEmpty) {
+    //           if (props.enableMessageBarErrors) {
+    //             var msg =
+    //               `Row: ${row + 1} Col: ${column.name} - ` +
+    //               (element.errorMessage ??
+    //                 ` Data cannot be entered here and in ${element.dependentColumnName} Column. Remove data in ${element.dependentColumnName} Column to enter data here.`);
+    //                 insertToMap(Messages.current, key+row, {
+    //                   msg: msg,
+    //                   type: MessageBarType.error,
+    //                 })
+    //             err = `Conflict error.`;
+    //           }
+    //         }
+    //         else if ((str.toString().length <= 0 || str === '') && element.type === DepColTypes.MustHaveData) {
+    //           if (props.enableMessageBarErrors) {
+    //                 var msg =
+    //                 `Row: ${row + 1} Col: ${column.name} - ` +
+    //                 (element.errorMessage ??
+    //                   ` Data needs to entered here and in ${element.dependentColumnName} Column.`);
+    //                   insertToMap(Messages.current, key+row, {
+    //                     msg: msg,
+    //                     type: MessageBarType.error,
+    //                   })
+    //             err = `Dependency error.`;
+    //           }
+    //         }
+    //       }
+    //     }
+
+    //     if (text.length <= 0) {
+    //       err = null;
+    //     }
+    //   }
+    // } else {
+    //   if (column.regexValidation) {
+    //     for (let index = 0; index < column.regexValidation.length; index++) {
+    //       const data = column.regexValidation[index];
+    //       if (!data.regex.test(text)) {
+    //         err = `${data.errorMessage}`;
+    //       }
+    //     }
+    //   }
+
+    //   if (column.extraValidations?.condition === text) {
+    //     `${column.extraValidations?.errMsg}`;
+    //   }
+    // }
+
     activateCellEditTmp = [];
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
         item.properties[key].value = ParseType(column.dataType, text);
+        
         if (clearThisDependent.length > 0) {
           clearThisDependent.forEach((element) => {
             item.properties[element].error = null;
@@ -1063,15 +1292,13 @@ const EditableGrid = (props: Props) => {
           if (err && err.split(" ").length >= 4) {
             if (props.enableMessageBarErrors) {
               var msg = `Row: ${row + 1} Col: ${column.name} - ` + err;
-              SetMessages(
-                insertToMap(new Map(Messages), key+row, {
-                  msg: msg,
-                  type: MessageBarType.error,
-                })
-              );
-            } else {
-              item.properties[key].error = err ?? null;
+              insertToMap(Messages.current, key+row, {
+                msg: msg,
+                type: MessageBarType.error,
+              })
             }
+          } else {
+            item.properties[key].error = err ?? null;
           }
         }
       }
@@ -1138,7 +1365,7 @@ const EditableGrid = (props: Props) => {
   };
 
   const onKeyDownEvent = (
-    event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+    event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement> | any,
     column: IColumnConfig,
     rowNum: number,
     activateCurrentCell: boolean
@@ -1147,7 +1374,23 @@ const EditableGrid = (props: Props) => {
       if (!activateCellEdit[rowNum].isActivated) {
         EditCellValue(column.key, rowNum, activateCurrentCell);
         event.preventDefault();
-      }
+      }   
+    }
+  };
+
+  const onKeyDownEventFull = (
+    event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement> | any,
+    item: any,
+    _grid_row_id_: number,
+  ): void => {
+    if (event.key == "Enter") {
+        ShowRowEditMode(
+          item,
+          _grid_row_id_!,
+          false
+        );
+        event.preventDefault();
+      
     }
   };
 
@@ -2312,11 +2555,7 @@ const EditableGrid = (props: Props) => {
                             activateCellEdit[rowNum!]["properties"][column.key]
                               .value
                           }
-                          onDoubleClick={() =>
-                            !activateCellEdit[rowNum!].isActivated
-                              ? onDoubleClickEvent(column.key, rowNum!, false)
-                              : null
-                          }
+                          
                           maxLength={
                             column.maxLength != null ? column.maxLength : 10000
                           }
@@ -2372,11 +2611,7 @@ const EditableGrid = (props: Props) => {
                           onSelectDate={(date) =>
                             onCellDateChange(date, item, rowNum!, column)
                           }
-                          onDoubleClick={() =>
-                            !activateCellEdit[rowNum!].isActivated
-                              ? onDoubleClickEvent(column.key, rowNum!, false)
-                              : null
-                          }
+                         
                         />
                       )}
                     </span>
@@ -2475,15 +2710,7 @@ const EditableGrid = (props: Props) => {
                           onChange={(ev, selectedItem) =>
                             onDropDownChange(ev, selectedItem, rowNum!, column)
                           }
-                          onDoubleClick={() =>
-                            !activateCellEdit[rowNum!].isActivated
-                              ? onDropdownDoubleClickEvent(
-                                  column.key,
-                                  rowNum!,
-                                  false
-                                )
-                              : null
-                          }
+                        
                         />
                       )}
                     </span>
@@ -2554,15 +2781,25 @@ const EditableGrid = (props: Props) => {
                           onChange={(ev, option) =>
                             onComboBoxChange(ev, option, rowNum!, column)
                           }
-                          onDoubleClick={() =>
-                            !activateCellEdit[rowNum!].isActivated
-                              ? onComboBoxDoubleClickEvent(
-                                  column.key,
-                                  rowNum!,
-                                  false
-                                )
-                              : null
-                          }
+                          onKeyDown={(event)=>{ 
+                            
+                            if(props.enableSingleCellEditOnDoubleClick === true)
+                            onKeyDownEvent(event, column, rowNum!, false)
+                            else if(props.enableSingleCellEditOnDoubleClick === false)
+                            onKeyDownEventFull(event, item,
+                              Number(item["_grid_row_id_"])!)
+                          
+                          }}
+                          
+                          // onDoubleClick={() =>
+                          //   !activateCellEdit[rowNum!].isActivated
+                          //     ? onComboBoxDoubleClickEvent(
+                          //         column.key,
+                          //         rowNum!,
+                          //         false
+                          //       )
+                          //     : null
+                          // }
                         />
                       )}
                     </span>
@@ -2601,15 +2838,7 @@ const EditableGrid = (props: Props) => {
                         )
                       ) : (
                         <span
-                          onDoubleClick={() =>
-                            !activateCellEdit[rowNum!].isActivated
-                              ? onCellPickerDoubleClickEvent(
-                                  column.key,
-                                  rowNum!,
-                                  false
-                                )
-                              : null
-                          }
+                        
                         >
                           <PickerControl
                             arialabel={column.key}
@@ -2739,9 +2968,15 @@ const EditableGrid = (props: Props) => {
                             activateCellEdit[rowNum!]["properties"][column.key]
                               .value
                           }
-                          onKeyDown={(event) =>
+                          onKeyDown={(event)=>{ 
+                            
+                            if(props.enableSingleCellEditOnDoubleClick === true)
                             onKeyDownEvent(event, column, rowNum!, false)
-                          }
+                            else if(props.enableSingleCellEditOnDoubleClick === false)
+                            onKeyDownEventFull(event, item,
+                              Number(item["_grid_row_id_"])!)
+                          
+                          }}
                           maxLength={
                             column.maxLength != null ? column.maxLength : 1000
                           }
@@ -2813,9 +3048,15 @@ const EditableGrid = (props: Props) => {
                             activateCellEdit[rowNum!]["properties"][column.key]
                               .value
                           }
-                          onKeyDown={(event) =>
+                          onKeyDown={(event)=>{ 
+                            
+                            if(props.enableSingleCellEditOnDoubleClick === true)
                             onKeyDownEvent(event, column, rowNum!, false)
-                          }
+                            else if(props.enableSingleCellEditOnDoubleClick === false)
+                            onKeyDownEventFull(event, item,
+                              Number(item["_grid_row_id_"])!)
+                          
+                          }}
                           maxLength={
                             column.maxLength != null ? column.maxLength : 1000
                           }
@@ -3419,7 +3660,9 @@ const EditableGrid = (props: Props) => {
         id={`id-${props.id}-col-${index}-row-${rowNum}`}
         className={GetDynamicSpanStyles(column, item[column.key])}
         onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
-        onDoubleClick={HandleCellOnDoubleClick(
+        onDoubleClick={ HandleCellOnDoubleClick(
+          item,
+          Number(item["_grid_row_id_"])!,
           props,
           column,
           EditCellValue,
@@ -3498,7 +3741,9 @@ const EditableGrid = (props: Props) => {
         id={`id-${props.id}-col-${index}-row-${rowNum}`}
         className={GetDynamicSpanStyles(column, item[column.key])}
         onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
-        onDoubleClick={HandleCellOnDoubleClick(
+        onDoubleClick={ HandleCellOnDoubleClick(
+          item,
+          Number(item["_grid_row_id_"])!,
           props,
           column,
           EditCellValue,
@@ -3599,7 +3844,9 @@ const EditableGrid = (props: Props) => {
         horizontalAlign="center"
         id={`id-${props.id}-col-${index}-row-${rowNum}`}
         onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
-        onDoubleClick={HandleCellOnDoubleClick(
+        onDoubleClick={ HandleCellOnDoubleClick(
+          item,
+          Number(item["_grid_row_id_"])!,
           props,
           column,
           EditCellValue,
@@ -3655,7 +3902,9 @@ const EditableGrid = (props: Props) => {
         id={`id-${props.id}-col-${index}-row-${rowNum}`}
         className={GetDynamicSpanStyles(column, item[column.key])}
         onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
-        onDoubleClick={HandleCellOnDoubleClick(
+        onDoubleClick={ HandleCellOnDoubleClick(
+          item,
+          Number(item["_grid_row_id_"])!,
           props,
           column,
           EditCellValue,
@@ -3715,6 +3964,8 @@ const EditableGrid = (props: Props) => {
       activateCurrentCell: boolean
     ) => void,
     HandleCellOnDoubleClick: (
+      item: any,
+      _grid_row_id_: number,
       props: Props,
       column: IColumnConfig,
       EditCellValue: (
@@ -3730,12 +3981,20 @@ const EditableGrid = (props: Props) => {
         id={`id-${props.id}-col-${index}-row-${rowNum}`}
         className={GetDynamicSpanStyles(column, item[column.key])}
         onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
-        onDoubleClick={HandleCellOnDoubleClick(
+
+        onDoubleClick={
+          
+          HandleCellOnDoubleClick(
+          item,
+          Number(item["_grid_row_id_"])!,
           props,
           column,
           EditCellValue,
           rowNum
-        )}
+        )
+        
+        }
+        
       >
         {item[column.key]}
       </span>
@@ -3745,6 +4004,8 @@ const EditableGrid = (props: Props) => {
 
   /* #region [Utilities] */
   function HandleCellOnDoubleClick(
+    item: any,
+    _grid_row_id_: number,
     props: Props,
     column: IColumnConfig,
     EditCellValue: (
@@ -3754,12 +4015,21 @@ const EditableGrid = (props: Props) => {
     ) => void,
     rowNum: number
   ): React.MouseEventHandler<HTMLSpanElement> | undefined {
+   
+    if( props.enableSingleCellEditOnDoubleClick == true){
     return () =>
       props.enableSingleCellEditOnDoubleClick == true &&
-      column.editable == true &&
-      !props.enableSingleClickCellEdit
+      column.editable == true
         ? EditCellValue(column.key, rowNum!, true)
-        : null;
+        : null}
+    else if (props.enableSingleCellEditOnDoubleClick == false){
+      return ()=>
+      ShowRowEditMode(
+        item,
+        Number(item["_grid_row_id_"])!,
+        true
+      )
+    }
   }
 
   function HandleCellOnClick(
@@ -3774,8 +4044,7 @@ const EditableGrid = (props: Props) => {
   ): React.MouseEventHandler<HTMLSpanElement> | undefined {
     return () =>
       props.enableSingleCellEditOnDoubleClick == true &&
-      column.editable == true &&
-      props.enableSingleClickCellEdit
+      column.editable == true
         ? EditCellValue(column.key, rowNum!, true)
         : null;
   }

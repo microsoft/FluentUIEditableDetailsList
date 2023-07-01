@@ -37,10 +37,17 @@ export interface IColumnConfig extends IColumn {
   linkOptions?: ILinkOptions;
 }
 
+export enum DepColTypes {
+  MustBeEmpty = 'MustBeEmpty',
+  MustHaveData = 'MustHaveData'
+
+}
+
 export interface IColumnDependent {
   dependentColumnKey: string
   dependentColumnName: string
   errorMessage?: string;
+  type: DepColTypes
 
 }
 export interface IDetailsColumnRenderTooltipPropsExtra extends ITooltipHostProps {

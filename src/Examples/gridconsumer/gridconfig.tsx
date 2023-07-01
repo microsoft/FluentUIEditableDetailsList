@@ -5,7 +5,7 @@ import {
   NumberAndDateOperators,
   StringOperators,
 } from "../../libs/types/cellstyleruletype";
-import { IColumnConfig } from "../../libs/types/columnconfigtype";
+import { DepColTypes, IColumnConfig } from "../../libs/types/columnconfigtype";
 import { EditControlType } from "../../libs/types/editcontroltype";
 import { CellHover } from "../../libs/editablegrid/hoverComponent";
 
@@ -59,11 +59,11 @@ export const GridColumnConfig: IColumnConfig[] = [
     editable: true,
     dataType: "string",
     toolTipText:'Name Must Be In All CAPS',
-    columnDependent: [{dependentColumnKey: 'age', dependentColumnName: 'Age'}],
+    columnDependent: [{dependentColumnKey: 'age', dependentColumnName: 'Age', type: DepColTypes.MustBeEmpty}],
     minWidth: 100,
     maxWidth: 100,
     transformBasedOnData: [{key:'co', value:'Consol'}],
-    regexValidation: [{regex: new RegExp('^[a-zA-Z0-9_]+$'), errorMessage: 'Special Char Invalid'}],
+    //regexValidation: [{regex: new RegExp('^[a-zA-Z0-9_]+$'), errorMessage: 'Special Char Invalid'}],
     // extraValidations: {condition: 2+2, errMsg: 'Some error'},
     isResizable: true,
     includeColumnInExport: true,
@@ -103,7 +103,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Age",
     text: "Age",
     editable: true,
-    columnDependent: [{dependentColumnKey: 'name', dependentColumnName: 'Name'}],
+    //columnDependent: [{dependentColumnKey: 'name', dependentColumnName: 'Name', type: DepColTypes.MustBeEmpty}],
     dataType: "number",
     minWidth: 100,
     maxWidth: 100,
