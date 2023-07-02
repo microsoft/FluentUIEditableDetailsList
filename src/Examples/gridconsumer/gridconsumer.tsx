@@ -25,6 +25,9 @@ import {
   Link,
   mergeStyles,
   mergeStyleSets,
+  MessageBar,
+  MessageBarType,
+  PrimaryButton,
   SelectionMode,
   Stack,
   StackItem,
@@ -41,15 +44,20 @@ import {
 } from "../gridconsumer/teachingbubbleconfig";
 import EditableGrid from "../../libs/editablegrid/editablegrid";
 import { ICallBackParams } from "../../libs/types/callbackparams";
-import { IColumnConfig } from "../../libs/types/columnconfigtype";
+import {
+  IColumnConfig,
+  IDetailsColumnRenderTooltipPropsExtra,
+  IGridErrorCallbacks,
+} from "../../libs/types/columnconfigtype";
 import { Operation } from "../../libs/types/operation";
 import { GridToastTypes } from "../../libs/types/gridToastTypes";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GridColumnConfig, GridItemsType } from "./gridconfig";
 import { EventEmitter, EventType } from "../../libs/eventemitter/EventEmitter";
 import React from "react";
+import { IEnableMessageBarErrors } from "../../libs/types/editabledetailslistprops";
 
 interface GridConfigOptions {
   enableSingleCellEditOnDoubleClick: boolean;
@@ -58,6 +66,8 @@ interface GridConfigOptions {
   enableRowEdit: boolean;
   enableRowEditCancel: boolean;
   enableBulkEdit: boolean;
+  enableSaveGridOnCellValueChange: boolean;
+  enableMessageBarErrors: IEnableMessageBarErrors;
   enableColumnEdit: boolean;
   enableCSVExport: boolean;
   enableExcelExport: boolean;
@@ -92,6 +102,11 @@ const Consumer = () => {
     });
   const [gridConfigOptions, setGridConfigOptions] = useState<GridConfigOptions>(
     {
+      enableMessageBarErrors: {
+        enableShowErrors: true,
+        enableSendGroupedErrorsToCallback: true,
+      },
+      enableSaveGridOnCellValueChange: true,
       enableSingleCellEditOnDoubleClick: true,
       enableRowEditCopy: true,
       enableRowEditDelete: true,
@@ -206,10 +221,11 @@ const Consumer = () => {
   const SetDummyData = (): void => {
     var dummyData: GridItemsType[] = [];
 
-    for (var i = 1; i <= 50; i++) {
+    for (var i = 1; i <= 4; i++) {
       var randomInt = GetRandomInt(1, 3);
       dummyData.push({
         id: i,
+        combo: "Black",
         excluded: randomInt % 2 == 0 ? true : false,
         customerhovercol: "Hover Me",
         name: "Name" + GetRandomInt(1, 10),
@@ -249,7 +265,7 @@ const Consumer = () => {
     SetDummyData();
   }, []);
 
-  const onGridSave = (data: any[]): void => {
+  const onGridSave = (data: any[], validateGrid: any): void => {
     alert("Grid Data Saved");
     LogRows(data);
     setItems([
@@ -319,7 +335,9 @@ const Consumer = () => {
   const attachGridValueChangeCallbacks = (
     columnConfig: IColumnConfig[]
   ): IColumnConfig[] => {
-    //columnConfig.filter((item) => item.key == 'designation').map((item) => item.onChange = onDesignationChanged);
+    columnConfig
+      .filter((item) => item.key == "designation")
+      .map((item) => (item.onChange = onDesignationChanged));
     //columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChanged);
     //columnConfig.filter((item) => item.key == 'payrolltype').map((item) => item.onChange = onPayrollChanged);
     //columnConfig.filter((item) => item.key == 'dateofjoining').map((item) => item.onChange = onDateChanged);
@@ -395,19 +413,33 @@ const Consumer = () => {
     if (!props || !defaultRender) return null;
 
     const onRenderColumnHeaderTooltip: IRenderFunction<
-      IDetailsColumnRenderTooltipProps
-    > = (tooltipHostProps) => <TooltipHost {...tooltipHostProps} />;
+      IDetailsColumnRenderTooltipPropsExtra
+    > = (tooltipHostProps) => {
+      return (
+        <TooltipHost
+          {...tooltipHostProps}
+          content={tooltipHostProps?.column?.toolTipText ?? ""}
+        />
+      );
+    };
 
     return (
       <Sticky stickyPosition={StickyPositionType.Header} isScrollSynced={true}>
         {defaultRender!({
           ...props,
-          onRenderColumnHeaderTooltip,
+          onRenderColumnHeaderTooltip:
+            onRenderColumnHeaderTooltip as IRenderFunction<IDetailsColumnRenderTooltipProps>,
           styles: tableHeaderStyles,
         })}
       </Sticky>
     );
   };
+
+  // const Messages = useRef(new Map());
+  const [Messages, SetMessages] = useState(new Map());
+  const [messageBarType, setMessageBarType] = useState<MessageBarType>(
+    MessageBarType.info
+  );
 
   const onRenderRow = (
     props?: IDetailsRowProps,
@@ -416,6 +448,35 @@ const Consumer = () => {
     if (!props || !defaultRender) return null;
     return <DetailsRow {...props} styles={tableDetailsRowsStyles()} />;
   };
+
+  const insertToMap = (mapVar: Map<any, any>, key: any, value: any) => {
+    mapVar.set(key, value);
+    return mapVar;
+  };
+
+  const removeFromMap = (mapVar: Map<any, any>, key: any) => {
+    mapVar.delete(key);
+    return mapVar;
+  };
+
+  const onRenderMsg = useCallback(() => {
+    let messageTmp: JSX.Element[] = [];
+
+    Messages.forEach(function (value, key) {
+      messageTmp.push(
+        <MessageBar
+          key={key}
+          messageBarType={messageBarType}
+          onDismiss={() => removeFromMap(new Map(Messages), key)}
+        >
+          {value}
+        </MessageBar>
+      );
+    });
+    return messageTmp;
+  }, [Messages]);
+
+  const [saveAction, setSaveAction] = useState<()=>void>()
 
   return (
     <Stack grow horizontalAlign="center">
@@ -437,6 +498,14 @@ const Consumer = () => {
               label="Edit Cell On Double Click"
               onChange={onCheckboxChange}
               checked={gridConfigOptions.enableSingleCellEditOnDoubleClick}
+            />
+          </StackItem>
+          <StackItem className={classNames.checkbox}>
+            <Checkbox
+              id={"enableSaveGridOnCellValueChange"}
+              label="Save Grid On Cell Value Change"
+              onChange={onCheckboxChange}
+              checked={gridConfigOptions.enableSaveGridOnCellValueChange}
             />
           </StackItem>
           <StackItem className={classNames.checkbox}>
@@ -649,9 +718,20 @@ const Consumer = () => {
           backgroundColor: "white",
         }}
       >
+        <PrimaryButton
+        text="Save Grid"
+        onClick={()=> saveAction && saveAction()}
+        />
         <EditableGrid
-          checkboxVisibility={CheckboxVisibility.hidden}
           id={100}
+          gridLocation="Main Grid"
+          checkboxVisibility={CheckboxVisibility.hidden}
+          enableSaveGridOnCellValueChange={
+            gridConfigOptions.enableSaveGridOnCellValueChange
+          }
+          GridSaveAction={(saveActionMethod)=> setSaveAction(saveActionMethod)}
+          enableMessageBarErrors={gridConfigOptions.enableMessageBarErrors}
+          zeroRowsMsg={"This Rule Will Not Run"}
           commandBarStyles={{
             root: {
               borderWidth: "1px 1px 1px 1px",
@@ -754,6 +834,21 @@ const Consumer = () => {
               default:
                 break;
             }
+          }}
+          onGridInErrorCallback={(
+            isInError: boolean,
+            msg: React.MutableRefObject<Map<string, string>>
+          ) => {
+            //alert('Error: ' + isInError);
+            toast.warn(isInError, {
+              position: toast.POSITION.TOP_CENTER,
+            });
+
+            msg.current.forEach(function (value, key) {
+              toast.warn(value, {
+                position: toast.POSITION.TOP_CENTER,
+              });
+            });
           }}
           onGridUpdate={onGridUpdate}
           enableDefaultEditMode={gridConfigOptions.enableDefaultEditMode}

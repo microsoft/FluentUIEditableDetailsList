@@ -6,8 +6,15 @@ export type IContentScrollablePaneStyleProps = Partial<IScrollablePaneStyleProps
     scrollablePaneOffsetHeight?: number;
     scrollablePaneContentOffsetHeight?: number;
 };
+export type IEnableMessageBarErrors = {
+    enableShowErrors: boolean;
+    enableSendGroupedErrorsToCallback?: boolean;
+};
 export interface Props extends IDetailsListProps {
     id: number;
+    gridLocation: string;
+    zeroRowsMsg?: string;
+    GridSaveAction?: any;
     actionIconStylesInGrid?: IButtonStyles;
     items: any[];
     columns: IColumnConfig[];
@@ -27,6 +34,7 @@ export interface Props extends IDetailsListProps {
     onGridSelectionChange?: any;
     onGridUpdate?: any;
     onGridSave?: any;
+    enableSaveGridOnCellValueChange?: boolean;
     enableGridRowsDelete?: boolean;
     enableGridRowsAdd?: boolean;
     enableRowAddWithValues?: IRowAddWithValues;
@@ -46,8 +54,9 @@ export interface Props extends IDetailsListProps {
     enableColumnFilterRules?: boolean;
     enableColumnFilters?: boolean;
     enableCommandBar?: boolean;
-    enableSingleClickCellEdit?: boolean;
     onGridStatusMessageCallback?: any;
+    enableMessageBarErrors?: IEnableMessageBarErrors;
+    onGridInErrorCallback?: any;
     gridCopyOptions?: IGridCopy;
     enableDefaultEditMode?: boolean;
     customCommandBarItems?: ICommandBarItemProps[];

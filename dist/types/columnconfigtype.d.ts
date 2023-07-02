@@ -1,4 +1,4 @@
-import { IColumn, IDropdownOption } from "@fluentui/react";
+import { IColumn, IComboBoxOption, IDropdownOption, ITooltipHostProps } from "@fluentui/react";
 import { CalculationType } from "./calculationtype";
 import { ICellStyleRulesType, StringOperators } from "./cellstyleruletype";
 import { EditControlType } from "./editcontroltype";
@@ -6,8 +6,25 @@ export interface IColumnConfig extends IColumn {
     key: string;
     name: string;
     text: string;
+    autoGenerate?: boolean;
     editable?: boolean;
     dataType?: string;
+    toolTipText?: string;
+    transformBasedOnData?: ITransformBasedOnData[];
+    validations?: {
+        columnDependent?: IColumnDependent[];
+        regexValidation?: IRegexValidation[];
+        stringValidations?: {
+            conditionCantEqual: string;
+            caseInsensitive?: boolean;
+            errMsg: string;
+        };
+        numberBoundaries?: {
+            minRange?: number;
+            maxRange?: number;
+            trimDecimalPointBy?: number;
+        };
+    };
     isResizable?: boolean;
     columnNeededInImport?: boolean;
     includeColumnInExport?: boolean;
@@ -22,11 +39,37 @@ export interface IColumnConfig extends IColumn {
     applyColumnFilter?: boolean;
     cellStyleRule?: ICellStyleRulesType;
     dropdownValues?: IDropdownOption[];
+    comboBoxOptions?: IComboBoxOption[];
     checked?: boolean;
     pickerOptions?: IPickerOptions;
     disableSort?: boolean;
     hoverComponentOptions?: IHoverOptions;
     linkOptions?: ILinkOptions;
+}
+export declare enum DepColTypes {
+    MustBeEmpty = "MustBeEmpty",
+    MustHaveData = "MustHaveData"
+}
+export interface IColumnDependent {
+    dependentColumnKey: string;
+    dependentColumnName: string;
+    errorMessage?: string;
+    type: DepColTypes;
+}
+export interface IDetailsColumnRenderTooltipPropsExtra extends ITooltipHostProps {
+    column?: IColumnConfig;
+}
+export interface IGridErrorCallbacks {
+    key: string;
+    msg: string;
+}
+export interface ITransformBasedOnData {
+    key: string;
+    value: any;
+}
+export interface IRegexValidation {
+    regex: RegExp;
+    errorMessage: string;
 }
 export interface ILinkOptions {
     href?: string;
