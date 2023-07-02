@@ -11,12 +11,20 @@ export interface IColumnConfig extends IColumn {
     dataType?: string;
     toolTipText?: string;
     transformBasedOnData?: ITransformBasedOnData[];
-    columnDependent?: IColumnDependent[];
-    extraValidations?: {
-        condition: any;
-        errMsg: string;
+    validations?: {
+        columnDependent?: IColumnDependent[];
+        regexValidation?: IRegexValidation[];
+        stringValidations?: {
+            conditionCantEqual: string;
+            caseInsensitive?: boolean;
+            errMsg: string;
+        };
+        numberBoundaries?: {
+            minRange?: number;
+            maxRange?: number;
+            trimDecimalPointBy?: number;
+        };
     };
-    regexValidation?: IRegexValidation[];
     isResizable?: boolean;
     columnNeededInImport?: boolean;
     includeColumnInExport?: boolean;
@@ -38,10 +46,15 @@ export interface IColumnConfig extends IColumn {
     hoverComponentOptions?: IHoverOptions;
     linkOptions?: ILinkOptions;
 }
+export declare enum DepColTypes {
+    MustBeEmpty = "MustBeEmpty",
+    MustHaveData = "MustHaveData"
+}
 export interface IColumnDependent {
     dependentColumnKey: string;
     dependentColumnName: string;
     errorMessage?: string;
+    type: DepColTypes;
 }
 export interface IDetailsColumnRenderTooltipPropsExtra extends ITooltipHostProps {
     column?: IColumnConfig;
