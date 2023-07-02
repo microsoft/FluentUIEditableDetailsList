@@ -55274,6 +55274,7 @@ const gU = (e) => {
 };
 export {
   vU as CellHover,
+  uh as DepColTypes,
   cr as EditControlType,
   gU as EditableGrid,
   ax as EventEmitter,

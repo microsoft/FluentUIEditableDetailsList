@@ -9,6 +9,6 @@ export { NumberAndDateOperators, StringOperators, } from "./types/cellstylerulet
 export type { ICellStyleRulesType } from "./types/cellstyleruletype";
 export type { IColumnConfig } from "./types/columnconfigtype";
 export type { ITransformBasedOnData } from "./types/columnconfigtype";
-export type { DepColTypes } from "./types/columnconfigtype";
+export { DepColTypes } from "./types/columnconfigtype";
 export { EditControlType } from "./types/editcontroltype";
 export type { IGridItemsType } from "./types/griditemstype";
