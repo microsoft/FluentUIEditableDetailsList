@@ -19,9 +19,16 @@ export type IContentScrollablePaneStyleProps =
     scrollablePaneOffsetHeight?: number;
     scrollablePaneContentOffsetHeight?: number;
   };
+
+export type IEnableMessageBarErrors = {
+  enableShowErrors: boolean;
+  enableSendGroupedErrorsToCallback?: boolean;
+};
 export interface Props extends IDetailsListProps {
   id: number;
+  gridLocation: string
   zeroRowsMsg?: string;
+  GridSaveAction?: any // Returns a button to save the grid, along with if validations are in error
   actionIconStylesInGrid?: IButtonStyles;
   items: any[];
   columns: IColumnConfig[];
@@ -31,7 +38,7 @@ export interface Props extends IDetailsListProps {
   >;
   enableCSVExport?: boolean;
   enableExcelExport?: boolean;
-  enableExcelImport?: boolean
+  enableExcelImport?: boolean;
   exportFileName?: string;
   enableSaveChangesOnlyOnSubmit?: boolean;
   enableRowEditCopy?: boolean;
@@ -44,6 +51,7 @@ export interface Props extends IDetailsListProps {
   onGridSelectionChange?: any;
   onGridUpdate?: any;
   onGridSave?: any;
+  enableSaveGridOnCellValueChange?: boolean
   enableGridRowsDelete?: boolean;
   enableGridRowsAdd?: boolean;
   enableRowAddWithValues?: IRowAddWithValues;
@@ -67,7 +75,7 @@ export interface Props extends IDetailsListProps {
   enableColumnFilters?: boolean;
   enableCommandBar?: boolean;
   onGridStatusMessageCallback?: any;
-  enableMessageBarErrors?: boolean;
+  enableMessageBarErrors?: IEnableMessageBarErrors;
   onGridInErrorCallback?: any;
   gridCopyOptions?: IGridCopy;
   enableDefaultEditMode?: boolean;

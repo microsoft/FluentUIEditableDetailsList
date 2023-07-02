@@ -15,9 +15,17 @@ export interface IColumnConfig extends IColumn {
   dataType?: string;
   toolTipText?: string;
   transformBasedOnData?: ITransformBasedOnData[],
-  columnDependent?: IColumnDependent[]
-  extraValidations?: { condition: any; errMsg: string };
-  regexValidation?: IRegexValidation[]
+  validations?: {  
+    columnDependent?: IColumnDependent[],
+    regexValidation?: IRegexValidation[]
+    stringValidations?: { conditionCantEqual: string; caseInsensitive?:boolean, errMsg: string };
+    numberBoundaries?:{
+      minRange?: number
+      maxRange?: number
+      trimDecimalPointBy?: number
+    }
+
+  },
   isResizable?: boolean;
   columnNeededInImport?: boolean;
   includeColumnInExport?: boolean;

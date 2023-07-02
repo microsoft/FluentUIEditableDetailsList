@@ -273,92 +273,183 @@ const EditableGrid = (props: Props) => {
 
   useEffect(() => {
     //alert('IsGridInEdit: ' + isGridInEdit);
-    if (props.onGridInErrorCallback)
-          props.onGridInErrorCallback(gridInError);
+    if (props.onGridInErrorCallback) props.onGridInErrorCallback(gridInError, GlobalMessages);
   }, [gridInError]);
 
-// const [Messages, SetMessages] = useState<
-//   Map<string, { msg: string; type: MessageBarType }>
-// >(new Map());
+  // const [Messages, SetMessages] = useState<
+  //   Map<string, { msg: string; type: MessageBarType }>
+  // >(new Map());
 
-// const useRefHeightMeasure = <T extends HTMLElement>() => {
-//   const [MessagesStored, SetMessages] = useState<
-//   Map<string, { msg: string; type: MessageBarType }>
-//    >(new Map());
+  // const useRefHeightMeasure = <T extends HTMLElement>() => {
+  //   const [MessagesStored, SetMessages] = useState<
+  //   Map<string, { msg: string; type: MessageBarType }>
+  //    >(new Map());
 
-//   const refCallback = useCallback((node: T) => {
-//     if (node !== null) {
-//       SetMessages(node.)
-//     }
-//   }, [])
+  //   const refCallback = useCallback((node: T) => {
+  //     if (node !== null) {
+  //       SetMessages(node.)
+  //     }
+  //   }, [])
 
-//   return { MessagesStored, refCallback }
-// }
+  //   return { MessagesStored, refCallback }
+  // }
 
-const Messages  = useRef<
-Map<string, { msg: string; type: MessageBarType }>
->(new Map())
+  const Messages = useRef<Map<string, { msg: string; type: MessageBarType }>>(
+    new Map()
+  );
 
-const insertToMap = (mapVar: Map<any, any>, key: any, value: any) => {
-  mapVar.set(key, value);
-  //return mapVar;
-};
+  const GlobalMessages = useRef<Map<string, string>>(
+    new Map()
+  );
 
-const removeFromMap = (mapVar: Map<any, any>, key: any) => {
-  mapVar.delete(key);
-  //return mapVar;
-};
-  const onGridSave = (): void => {
-    setGridInError(false)
-    if (props.onGridSave) {
-      props.onGridSave(defaultGridData);
+  const insertToMap = (mapVar: Map<any, any>, key: any, value: any) => {
+    mapVar.set(key, value);
+    setMessagesState(mapVar)
+    if (
+      props.enableMessageBarErrors &&
+      props.enableMessageBarErrors.enableSendGroupedErrorsToCallback
+    ) {
+      var message = `${props.gridLocation} has errors`
+      GlobalMessages.current.set(props.id.toString(), message);
     }
-    console.log(defaultGridData)
-    for (let row = 0; row < defaultGridData.length; row++) {
-      const gridData = defaultGridData[row];
+    //return mapVar;
+  };
+
+  const removeFromMap = (mapVar: Map<any, any>, key: any) => {
+
+    mapVar.delete(key);
+    const newMap = new Map(mapVar)
+    setMessagesState(newMap)
+    console.log('TRACKED 5')
+
+    //return mapVar;
+  };
+
+  const trimTheseValues = useRef<Map<string, any>>(new Map())
+
+
+  const runGridValidations = (): void => {
+    Messages.current = new Map()
+    setMessagesState(Messages.current)
+    setGridInError(false);
+
+    const defaultGridDataTmp = defaultGridData.length > 0
+    ? defaultGridData.filter(
+        (x) =>
+          x._grid_row_operation_ != Operation.Delete 
+      )
+    : []
+
+    for (let row = 0; row < defaultGridDataTmp.length; row++) {
+      const gridData = defaultGridDataTmp[row];
       var elementColNames = Object.keys(gridData);
-      for (let indexInner = 0; indexInner < elementColNames.length; indexInner++) {
+      for (
+        let indexInner = 0;
+        indexInner < elementColNames.length;
+        indexInner++
+      ) {
         const colNames = elementColNames[indexInner];
         const rowCol = gridData[colNames];
         const currentCol = props.columns.filter((x) => x.key === colNames);
-        
+
         // ValidDataTypeCheck
         for (let j = 0; j < currentCol.length; j++) {
           const element = currentCol[j];
           const rowCol = gridData[element.key];
 
-          if (typeof rowCol !== element.dataType || typeof rowCol === 'number') {
+          if (
+             rowCol !== null &&
+           ( typeof rowCol !== element.dataType ||
+            typeof rowCol === "number")
+           
+          ) {
             if (element.dataType === "number") {
               if (isNaN(parseInt(rowCol))) {
-                if (props.enableMessageBarErrors) {
+                if (
+                  props.enableMessageBarErrors &&
+                  props.enableMessageBarErrors.enableShowErrors
+                ) {
                   var msg =
                     `Row: ${row + 1} Col: ${element.name} - ` +
                     `Value is not a '${element.dataType}'.`;
-                    insertToMap(Messages.current, element.key+row, {
+                  insertToMap(Messages.current, element.key + row, {
+                    msg: msg,
+                    type: MessageBarType.error,
+                  });
+                }
+                setGridInError(true);
+              }else if (element.validations && element.validations.numberBoundaries) {
+                const min = element.validations.numberBoundaries.minRange
+                const max = element.validations.numberBoundaries.maxRange
+
+                if(min && max){
+                if (!(min <= parseInt(rowCol) && max >= parseInt(rowCol))){
+                  if (
+                    props.enableMessageBarErrors &&
+                    props.enableMessageBarErrors.enableShowErrors
+                  ) {
+                    var msg =
+                      `Row: ${row + 1} Col: ${element.name} - ` +
+                      `Value outside of range '${min} - ${max}'. Entered value ${rowCol}`;
+                    insertToMap(Messages.current, element.key + row, {
                       msg: msg,
                       type: MessageBarType.error,
-                    })
-
+                    });
+                  }
+                  setGridInError(true);
                 }
-                setGridInError(true)
+            }  else if(min){
+              if (!(min <= parseInt(rowCol))){
+                if (
+                  props.enableMessageBarErrors &&
+                  props.enableMessageBarErrors.enableShowErrors
+                ) {
+                  var msg =
+                    `Row: ${row + 1} Col: ${element.name} - ` +
+                    `Value is lower than required range: '${min}'. Entered value ${rowCol}`;
+                  insertToMap(Messages.current, element.key + row, {
+                    msg: msg,
+                    type: MessageBarType.error,
+                  });
+                }
+                setGridInError(true);
+              }
+          } else if(max){
+            if (!(max >= parseInt(rowCol))){
+              if (
+                props.enableMessageBarErrors &&
+                props.enableMessageBarErrors.enableShowErrors
+              ) {
+                var msg =
+                  `Row: ${row + 1} Col: ${element.name} - ` +
+                  `Value is greater than required range: '${max}'. Entered value ${rowCol}`;
+                insertToMap(Messages.current, element.key + row, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
+              }
+              setGridInError(true);
+            }
+        }
               }
             } else if (element.dataType === "boolean") {
               try {
                 Boolean(rowCol);
               } catch (error) {
-                if (props.enableMessageBarErrors) {
+                if (
+                  props.enableMessageBarErrors &&
+                  props.enableMessageBarErrors.enableShowErrors
+                ) {
                   var msg =
                     `Row: ${row + 1} Col: ${element.name} - ` +
                     `Value is not a '${element.dataType}'.`;
-                    insertToMap(Messages.current, element.key+row, {
-                      msg: msg,
-                      type: MessageBarType.error,
-                    })
+                  insertToMap(Messages.current, element.key + row, {
+                    msg: msg,
+                    type: MessageBarType.error,
+                  });
                 }
-                setGridInError(true)
-
+                setGridInError(true);
               }
-              
             } else if (element.dataType === "date") {
               try {
                 if (!isValidDate(rowCol)) {
@@ -367,128 +458,209 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                   continue;
                 }
               } catch (error) {
-                if (props.enableMessageBarErrors) {
+                if (
+                  props.enableMessageBarErrors &&
+                  props.enableMessageBarErrors.enableShowErrors
+                ) {
                   var msg =
                     `Row: ${row + 1} Col: ${element.name} - ` +
                     `Value is not a '${element.dataType}'.`;
-                    insertToMap(Messages.current, element.key+row, {
-                      msg: msg,
-                      type: MessageBarType.error,
-                    })
+                  insertToMap(Messages.current, element.key + row, {
+                    msg: msg,
+                    type: MessageBarType.error,
+                  });
                 }
-                setGridInError(true)
-
+                setGridInError(true);
               }
-              
             } else if (typeof rowCol !== element.dataType) {
-              if (props.enableMessageBarErrors) {
+              if (
+                props.enableMessageBarErrors &&
+                props.enableMessageBarErrors.enableShowErrors
+              ) {
                 var msg =
                   `Row: ${row + 1} Col: ${element.name} - ` +
                   `Value is not a '${element.dataType}'.`;
-                  insertToMap(Messages.current, element.key+row, {
-                    msg: msg,
-                    type: MessageBarType.error,
-                  })
+                insertToMap(Messages.current, element.key + row, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
               }
-              setGridInError(true)
+              setGridInError(true);
+            } else {
 
+              if (
+                props.enableMessageBarErrors &&
+                props.enableMessageBarErrors.enableShowErrors
+              ) {
+                var msg =
+                  `Row: ${row + 1} Col: ${element.name} - ` +
+                  `Value is not a '${element.dataType}'.`;
+                insertToMap(Messages.current, element.key + row, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
+              }
+              setGridInError(true);
             }
-             else {
-              if (props.enableMessageBarErrors) {
-                var msg =
-                  `Row: ${row + 1} Col: ${element.name} - ` +
-                  `Value is not a '${element.dataType}'.`;
-                  insertToMap(Messages.current, element.key+row, {
-                    msg: msg,
-                    type: MessageBarType.error,
-                  })
-              }
-              setGridInError(true)
-
-            }            
           }
 
-          if (element.columnDependent) {
-            for (let index = 0; index < element.columnDependent.length; index++) {
-              const colDep = element.columnDependent[index];
-      
-      
-              if ((gridData as any)[colDep.dependentColumnKey] || (gridData as any)[colDep.dependentColumnKey] !== undefined) {
+
+          if (element.validations && element.validations.columnDependent) {
+            for (
+              let index = 0;
+              index < element.validations.columnDependent.length;
+              index++
+            ) {
+              const colDep = element.validations.columnDependent[index];
+
+              if (
+                (gridData as any)[colDep.dependentColumnKey] ||
+                (gridData as any)[colDep.dependentColumnKey] !== undefined
+              ) {
                 const str = (gridData as any)[colDep.dependentColumnKey];
 
-                if (str !== undefined) {
-                  if ( str.toString().length > 0  && colDep.type === DepColTypes.MustBeEmpty) {
-                    if(rowCol.length > 0){
-                    if (props.enableMessageBarErrors) {
-                      var msg =
-                        `Row: ${row + 1} Col: ${element.name} - ` +
-                        (colDep.errorMessage ??
-                          ` Data cannot be entered here and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
-                     
-                        insertToMap(Messages.current, element.key+row, {
+                if (str !== undefined && str !== null) {
+                  if (
+                    str.toString().length > 0 &&
+                    colDep.type === DepColTypes.MustBeEmpty
+                  ) {
+                    if (rowCol !== null && rowCol.length > 0) {
+                      if (
+                        props.enableMessageBarErrors &&
+                        props.enableMessageBarErrors.enableShowErrors
+                      ) {
+                        var msg =
+                          `Row: ${row + 1} Col: ${element.name} - ` +
+                          (colDep.errorMessage ??
+                            ` Data cannot be entered here and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
+
+                        insertToMap(Messages.current, element.key + row, {
                           msg: msg,
                           type: MessageBarType.error,
-                        })
-                      
-                      setGridInError(true)
-                    }}
-                  }
-                  else if (str.toString().length <= 0 && colDep.type === DepColTypes.MustHaveData) {
-                    if (props.enableMessageBarErrors) {
+                        });
+
+                        setGridInError(true);
+                      }
+                    }
+                  } else if (
+                    str.toString().length <= 0 &&
+                    colDep.type === DepColTypes.MustHaveData
+                  ) {
+                    if (
+                      props.enableMessageBarErrors &&
+                      props.enableMessageBarErrors.enableShowErrors
+                    ) {
                       var msg =
-                        `Row: ${row + 1} Col: ${colDep.dependentColumnName} - ` +
+                        `Row: ${row + 1} Col: ${
+                          colDep.dependentColumnName
+                        } - ` +
                         (colDep.errorMessage ??
                           ` Data needs to entered here and in ${element.name} Column.`);
-                          insertToMap(Messages.current, element.key+row, {
-                            msg: msg,
-                            type: MessageBarType.error,
-                          })
-                          setGridInError(true)
-                        }
+                      insertToMap(Messages.current, element.key + row, {
+                        msg: msg,
+                        type: MessageBarType.error,
+                      });
+                      setGridInError(true);
+                    }
                   }
                 }
               }
             }
           }
 
-          if (element.regexValidation) {
-            for (let index = 0; index < element.regexValidation.length; index++) {
-              const data = element.regexValidation[index];
+          if (element.validations && element.validations.regexValidation) {
+            for (
+              let index = 0;
+              index < element.validations.regexValidation.length;
+              index++
+            ) {
+              const data = element.validations.regexValidation[index];
               if (!data.regex.test(rowCol)) {
-                if (props.enableMessageBarErrors) {
+                if (
+                  props.enableMessageBarErrors &&
+                  props.enableMessageBarErrors.enableShowErrors
+                ) {
                   var msg =
                     `Row: ${row + 1} Col: ${element.name} - ` +
                     `${data.errorMessage}`;
-                    insertToMap(Messages.current, element.key+row, {
-                      msg: msg,
-                      type: MessageBarType.error,
-                    })
-
+                  insertToMap(Messages.current, element.key + row, {
+                    msg: msg,
+                    type: MessageBarType.error,
+                  });
                 }
-                setGridInError(true)
+                
+                setGridInError(true);
               }
             }
           }
 
+          if (element.validations && element.validations.stringValidations) {
+            const caseInsensitive = element.validations.stringValidations.caseInsensitive
+            if(caseInsensitive){
+              if (rowCol !== null && element.validations.stringValidations?.conditionCantEqual.toLowerCase() === rowCol.toString().toLowerCase()) {
+
+            if (
+              props.enableMessageBarErrors &&
+              props.enableMessageBarErrors.enableShowErrors
+            ) {
+              var msg =
+                `Row: ${row + 1} Col: ${element.name} - ` +
+                `${element.validations.stringValidations?.errMsg}`;
+              insertToMap(Messages.current, element.key + row, {
+                msg: msg,
+                type: MessageBarType.error,
+              });
+            }
+            setGridInError(true);
+          }
           
-      if (element.extraValidations?.condition === rowCol) {
-        if (props.enableMessageBarErrors) {
-          var msg =
-            `Row: ${row + 1} Col: ${element.name} - ` +
-            `${element.extraValidations?.errMsg}`;
-            insertToMap(Messages.current, element.key+row, {
-              msg: msg,
-              type: MessageBarType.error,
-            })
-
-        }
-        setGridInError(true)
-
-      }
+            else{
+              if (rowCol !== null && element.validations.stringValidations?.conditionCantEqual === rowCol.toString()) {
+              if (
+                props.enableMessageBarErrors &&
+                props.enableMessageBarErrors.enableShowErrors
+              ) {
+                var msg =
+                  `Row: ${row + 1} Col: ${element.name} - ` +
+                  `${element.validations.stringValidations?.errMsg}`;
+                insertToMap(Messages.current, element.key + row, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
+              }
+              setGridInError(true);
+            }
+          }
+          }
+        
         }
       }
     }
-  }
+    
+  }}
+
+  useEffect(() => {
+    if(props.GridSaveAction)
+    {
+      props.GridSaveAction(()=>onGridSave)
+    }
+
+  },[defaultGridData])
+
+  const onGridSave = (): boolean => {
+    const defaultGridDataTmp = defaultGridData.length > 0
+    ? defaultGridData.filter(
+        (x) =>
+          x._grid_row_operation_ != Operation.Delete 
+      )
+    : []
+
+    if (props.onGridSave) {
+      props.onGridSave(defaultGridDataTmp);
+    }
+    runGridValidations()
+    return gridInError
+  };
 
   const onGridUpdate = async (): Promise<void> => {
     if (props.onGridUpdate) {
@@ -643,8 +815,9 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
   const CloseRenameDialog = React.useCallback((): void => {
     setDialogContent(undefined);
   }, []);
+  const [CurrentAutoGenID, SetCurrentAutoGenID] = useState(0) 
 
-  const GetDefaultRowObject = (rowCount: number): any[] => {
+  const GetDefaultRowObject = useCallback((rowCount: number): any[] => {
     let obj: any = {};
     let addedRows: any[] = [];
     let _new_grid_row_id_ = Math.max.apply(
@@ -653,11 +826,16 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
         return o._grid_row_id_;
       })
     );
+    var tempID = CurrentAutoGenID
 
     for (var i = 1; i <= rowCount; i++) {
       obj = {};
       props.columns.forEach((item, index) => {
-        obj[item.key] = GetDefault(typeof item.data);
+        if(item.autoGenerate)
+        obj[item.key] = tempID++
+        else{
+          obj[item.key] = GetDefault(typeof item.data);
+        }
       });
 
       obj._grid_row_id_ = ++_new_grid_row_id_;
@@ -668,8 +846,11 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
       addedRows.push(obj);
     }
 
+    SetCurrentAutoGenID(tempID)
+
+
     return addedRows;
-  };
+  }, [CurrentAutoGenID]);
 
   const AddRowsToGrid = (): void => {
     const updateItemName = (): void => {
@@ -708,7 +889,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     );
   };
 
-  const onAddPanelChange = (item: any, noOfRows: number): void => {
+  const onAddPanelChange = useCallback((item: any, noOfRows: number): void => {
     dismissPanelForAdd();
     if (noOfRows < 0) {
       return;
@@ -726,11 +907,11 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
       });
     }
 
-    var newGridData = [...defaultGridData];
-    addedRows.forEach((row, index) => newGridData.splice(index, 0, row));
+    var newGridData = [...defaultGridData, ...addedRows];
+    //addedRows.forEach((row, index) => newGridData.splice(index, 0, row));
     setGridEditState(true);
     SetGridItems(newGridData);
-  };
+  },[CurrentAutoGenID]);
   /* #endregion */
 
   /* #region [Grid Row Delete Functions] */
@@ -759,8 +940,14 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
         .map((x) => (x._grid_row_operation_ = Operation.Delete));
     });
 
-    setGridEditState(true);
-    SetGridItems(defaultGridDataTmp);
+    if(props.enableSaveGridOnCellValueChange){
+      setDefaultGridData(defaultGridDataTmp);
+    }else{
+      setGridEditState(true);
+      SetGridItems(defaultGridDataTmp);
+    }
+
+    
   };
   /* #endregion */
 
@@ -1146,25 +1333,31 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     return defaultGridDataTmp;
   };
 
-
+  const [messagesState, setMessagesState] = useState<Map<string, any>>(new Map())
+  const [messagesJSXState, setMessagesJSXState] = useState<JSX.Element[]>([])
 
   const onRenderMsg = useCallback(() => {
     let messageTmp: JSX.Element[] = [];
 
-    Messages.current.forEach(function (value, key) {
+    messagesState.forEach(function (value, key) {
       messageTmp.push(
         <MessageBar
-          styles={{root:{ marginBottom: 5} }}
+          styles={{ root: { marginBottom: 5 } }}
           key={key}
           messageBarType={value.type}
-          onDismiss={() => (removeFromMap(Messages.current, key))}
+          onDismiss={() => removeFromMap(Messages.current, key)}
         >
           {value.msg}
         </MessageBar>
       );
     });
     return messageTmp;
-  }, [Messages]);
+  }, [messagesState]);
+
+  useEffect(() => {
+    Messages.current = messagesState
+    setMessagesJSXState(onRenderMsg());
+  }, [messagesState]);
 
   const onCellValueChange = (
     ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -1178,24 +1371,27 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     let err: null | string = null;
     let clearThisDependent: any[] = [];
 
-    if (!IsValidDataType(column.dataType, text)) {
-      activateCellEditTmp[row]["properties"][key][
-        "error"
-      ] = `Value not '${column.dataType}'`;
-      if (props.enableMessageBarErrors) {
-        var msg =
-          `Row: ${row + 1} Col: ${column.name} - ` +
-          `Value you just entered is not a '${column.dataType}'. We will re-evaluate on save or next character entered.`;
-          insertToMap(Messages.current, key+row, {
-            msg: msg,
-            type: MessageBarType.error,
-          })
-      }
-      setActivateCellEdit(activateCellEditTmp);
-      return;
-    } else {
-      activateCellEditTmp[row]["properties"][key]["error"] = ``;
-    }
+    // if (!IsValidDataType(column.dataType, text)) {
+    //   activateCellEditTmp[row]["properties"][key][
+    //     "error"
+    //   ] = `Value not '${column.dataType}'`;
+    //   if (
+    //     props.enableMessageBarErrors &&
+    //     props.enableMessageBarErrors.enableShowErrors
+    //   ) {
+    //     var msg =
+    //       `Row: ${row + 1} Col: ${column.name} - ` +
+    //       `Value you just entered is not a '${column.dataType}'. We will re-evaluate on save or next character entered.`;
+    //     insertToMap(Messages.current, key + row, {
+    //       msg: msg,
+    //       type: MessageBarType.error,
+    //     });
+    //   }
+    //   setActivateCellEdit(activateCellEditTmp);
+    //   return;
+    // } else {
+    //   activateCellEditTmp[row]["properties"][key]["error"] = ``;
+    // }
 
     // if (column.columnDependent) {
     //   for (let index = 0; index < column.columnDependent.length; index++) {
@@ -1226,13 +1422,12 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     //       });
     //     }
 
-        
     //     if ((item as any)[element.dependentColumnKey] || (item as any)[element.dependentColumnKey] !== undefined ) {
 
     //       const str = (item as any)[element.dependentColumnKey];
     //       if (str !== undefined) {
     //         if (str.toString().length > 0 && element.type === DepColTypes.MustBeEmpty) {
-    //           if (props.enableMessageBarErrors) {
+    //           if (props.enableMessageBarErrors && props.enableMessageBarErrors.enableShowErrors) {
     //             var msg =
     //               `Row: ${row + 1} Col: ${column.name} - ` +
     //               (element.errorMessage ??
@@ -1245,7 +1440,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     //           }
     //         }
     //         else if ((str.toString().length <= 0 || str === '') && element.type === DepColTypes.MustHaveData) {
-    //           if (props.enableMessageBarErrors) {
+    //           if (props.enableMessageBarErrors && props.enableMessageBarErrors.enableShowErrors) {
     //                 var msg =
     //                 `Row: ${row + 1} Col: ${column.name} - ` +
     //                 (element.errorMessage ??
@@ -1282,20 +1477,25 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     activateCellEditTmp = [];
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
-        item.properties[key].value = ParseType(column.dataType, text);
+        // TODO: Here is what sets text to null, instead of an empty string
+          item.properties[key].value = trimDecimal(ParseType(column.dataType, text) ?? '',row, column)          ;
         
+
         if (clearThisDependent.length > 0) {
           clearThisDependent.forEach((element) => {
             item.properties[element].error = null;
           });
         } else {
           if (err && err.split(" ").length >= 4) {
-            if (props.enableMessageBarErrors) {
+            if (
+              props.enableMessageBarErrors &&
+              props.enableMessageBarErrors.enableShowErrors
+            ) {
               var msg = `Row: ${row + 1} Col: ${column.name} - ` + err;
-              insertToMap(Messages.current, key+row, {
+              insertToMap(Messages.current, key + row, {
                 msg: msg,
                 type: MessageBarType.error,
-              })
+              });
             }
           } else {
             item.properties[key].error = err ?? null;
@@ -1312,7 +1512,29 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
 
     //ShallowCopyEditGridToDefaultGrid(defaultGridData, activateCellEditTmp);
     setActivateCellEdit(activateCellEditTmp);
+
+    if(props.enableSaveGridOnCellValueChange){
+    
+    let defaultGridDataTmp: any[] = SaveRowValue(
+      item,
+      row,
+      defaultGridData
+    );
+    setDefaultGridData(defaultGridDataTmp);}
   };
+
+  const [trim, setTrim] = useState(true)
+  const trimDecimal = useCallback((str: string, rowNum: number, column:IColumnConfig): string =>{
+    //const strBuilt = activateCellEdit[rowNum!]["properties"][column.key].value ?? ''
+    if(trim && column.dataType === 'number' && column.validations && column.validations.numberBoundaries && column.validations.numberBoundaries.trimDecimalPointBy){
+      const udf_trim = column.validations.numberBoundaries.trimDecimalPointBy
+      if(!isNaN(parseInt(str))){
+        const newNum = parseInt(str)
+        return newNum.toFixed(udf_trim)
+      }
+    }
+    return str
+  }, [isGridInEdit, trim, activateCellEdit])
 
   const CheckCellOnChangeCallBack = (
     defaultGridDataTmp: any[],
@@ -1374,23 +1596,24 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
       if (!activateCellEdit[rowNum].isActivated) {
         EditCellValue(column.key, rowNum, activateCurrentCell);
         event.preventDefault();
-      }   
+      }
+    }
+
+    if (event.keyCode == 8) {
+        setTrim(false)
+    }else{
+      setTrim(true)
     }
   };
 
   const onKeyDownEventFull = (
     event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement> | any,
     item: any,
-    _grid_row_id_: number,
+    _grid_row_id_: number
   ): void => {
     if (event.key == "Enter") {
-        ShowRowEditMode(
-          item,
-          _grid_row_id_!,
-          false
-        );
-        event.preventDefault();
-      
+      ShowRowEditMode(item, _grid_row_id_!, false);
+      event.preventDefault();
     }
   };
 
@@ -1414,12 +1637,24 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     }
 
     setActivateCellEdit(activateCellEditTmp);
+
+    if(props.enableSaveGridOnCellValueChange){
+      let defaultGridDataTmp: any[] = SaveRowValue(
+        item1,
+        row,
+        defaultGridData
+      );
+      setDefaultGridData(defaultGridDataTmp);
+    }
+
+    
   };
 
   const onCellPickerTagListChanged = (
     cellPickerTagList: ITag[] | undefined,
     row: number,
-    column: IColumnConfig
+    column: IColumnConfig,
+    item: any
   ): void => {
     //setGridEditState(true);
 
@@ -1446,13 +1681,23 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     }
 
     setActivateCellEdit(activateCellEditTmp);
+
+    if(props.enableSaveGridOnCellValueChange){
+      let defaultGridDataTmp: any[] = SaveRowValue(
+        item,
+        row,
+        defaultGridData
+      );
+      setDefaultGridData(defaultGridDataTmp);
+    }
   };
 
   const onDropDownChange = (
     event: React.FormEvent<HTMLDivElement>,
     selectedDropdownItem: IDropdownOption | undefined,
     row: number,
-    column: IColumnConfig
+    column: IColumnConfig,
+    item:any
   ): void => {
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
@@ -1468,13 +1713,23 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     }
 
     setActivateCellEdit(activateCellEditTmp);
+
+    if(props.enableSaveGridOnCellValueChange){
+      let defaultGridDataTmp: any[] = SaveRowValue(
+        item,
+        row,
+        defaultGridData
+      );
+      setDefaultGridData(defaultGridDataTmp);
+    }
   };
 
   const onComboBoxChange = (
     event: React.FormEvent<IComboBox>,
     selectedOption: IComboBoxOption | undefined,
     row: number,
-    column: IColumnConfig
+    column: IColumnConfig,
+    item: any
   ): void => {
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
@@ -1490,13 +1745,23 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     }
 
     setActivateCellEdit(activateCellEditTmp);
+
+    if(props.enableSaveGridOnCellValueChange){
+      let defaultGridDataTmp: any[] = SaveRowValue(
+        item,
+        row,
+        defaultGridData
+      );
+      setDefaultGridData(defaultGridDataTmp);
+    }
   };
 
   const onCheckBoxChange = (
     ev: React.FormEvent<HTMLElement | HTMLInputElement>,
     row: number,
     column: IColumnConfig,
-    isChecked?: boolean
+    isChecked: boolean | undefined,
+    item: any
   ): void => {
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
@@ -1512,6 +1777,15 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     }
 
     setActivateCellEdit(activateCellEditTmp);
+
+    if(props.enableSaveGridOnCellValueChange){
+      let defaultGridDataTmp: any[] = SaveRowValue(
+        item,
+        row,
+        defaultGridData
+      );
+      setDefaultGridData(defaultGridDataTmp);
+    }
   };
 
   const ChangeCellState = (
@@ -1621,7 +1895,6 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
           defaultGridData
         );
       });
-
     return defaultGridDataTmp;
   };
 
@@ -1722,7 +1995,8 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
 
     setActivateCellEdit(activateCellEditTmp);
 
-    if (!newEditModeValue) {
+    if(!props.enableSaveGridOnCellValueChange)
+    {if (!newEditModeValue) {
       defaultGridData.forEach((item, rowNum) => {
         defaultGridDataTmp = SaveRowValue(
           item,
@@ -1731,7 +2005,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
         );
       });
       setDefaultGridData(defaultGridDataTmp);
-    }
+    }}
 
     setEditMode(newEditModeValue);
   };
@@ -2025,15 +2299,64 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
       });
   };
 
+  const getGridRecordLength = useCallback((justLength?: boolean) =>{
+
+    if (justLength)
+    {
+      const deletedRows = defaultGridData.filter(
+        (x) =>
+          x._grid_row_operation_ === Operation.Delete
+      ).length
+      return (defaultGridData.length - deletedRows).toString()
+    }
+    if(props.enableSaveGridOnCellValueChange === false)
+    return (
+      `${
+        defaultGridData.filter(
+          (x) =>
+            x._grid_row_operation_ != Operation.Delete &&
+            x._is_filtered_in_ == true &&
+            x._is_filtered_in_grid_search_ == true &&
+            x._is_filtered_in_column_filter_ == true
+        ).length
+      }/${defaultGridData.length}`
+    )
+    else{
+      const deletedRows = defaultGridData.filter(
+        (x) =>
+          x._grid_row_operation_ === Operation.Delete
+      ).length
+      return (
+        `${
+          defaultGridData.filter(
+            (x) =>
+              x._grid_row_operation_ != Operation.Delete &&
+              x._is_filtered_in_ == true &&
+              x._is_filtered_in_grid_search_ == true &&
+              x._is_filtered_in_column_filter_ == true
+          ).length
+        }/${defaultGridData.length - deletedRows ?? 0}`
+      )
+    }
+  },[defaultGridData])
+
   const HandleRowSingleDelete = (rowNum: number): void => {
     let defaultGridDataTmp = [...defaultGridData];
 
-    defaultGridDataTmp
+    if(props.enableSaveGridOnCellValueChange ){
+      defaultGridDataTmp
+      .filter((x) => x._grid_row_id_ === rowNum)
+      .map((x) => (x._grid_row_operation_ = Operation.Delete));
+
+      setDefaultGridData(defaultGridDataTmp);
+    }
+    else{
+      defaultGridDataTmp
       .filter((x) => x._grid_row_id_ == rowNum)
       .map((x) => (x._grid_row_operation_ = Operation.Delete));
 
-    SetGridItems(defaultGridDataTmp);
-    setGridEditState(true);
+SetGridItems(defaultGridDataTmp);
+setGridEditState(true)    }
   };
 
   /* #endregion */
@@ -2484,6 +2807,10 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                 }
               }
 
+              if(column.autoGenerate){
+                SetCurrentAutoGenID( parseInt(item[column.key]) + 1)
+              }
+
               switch (column.inputType) {
                 case EditControlType.MultilineTextField:
                   return (
@@ -2553,9 +2880,8 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                           }
                           value={
                             activateCellEdit[rowNum!]["properties"][column.key]
-                              .value
+                            .value ?? ''
                           }
-                          
                           maxLength={
                             column.maxLength != null ? column.maxLength : 10000
                           }
@@ -2611,7 +2937,6 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                           onSelectDate={(date) =>
                             onCellDateChange(date, item, rowNum!, column)
                           }
-                         
                         />
                       )}
                     </span>
@@ -2658,7 +2983,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                           }
                           onChange={(ev, isChecked) => {
                             if (ev)
-                              onCheckBoxChange(ev, rowNum!, column, isChecked);
+                              onCheckBoxChange(ev, rowNum!, column, isChecked, item);
                           }}
                         />
                       )}
@@ -2708,9 +3033,8 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                           options={column.dropdownValues ?? []}
                           styles={dropdownStyles}
                           onChange={(ev, selectedItem) =>
-                            onDropDownChange(ev, selectedItem, rowNum!, column)
+                            onDropDownChange(ev, selectedItem, rowNum!, column, item)
                           }
-                        
                         />
                       )}
                     </span>
@@ -2779,18 +3103,23 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                           }}
                           // styles={dropdownStyles}
                           onChange={(ev, option) =>
-                            onComboBoxChange(ev, option, rowNum!, column)
+                            onComboBoxChange(ev, option, rowNum!, column, item)
                           }
-                          onKeyDown={(event)=>{ 
-                            
-                            if(props.enableSingleCellEditOnDoubleClick === true)
-                            onKeyDownEvent(event, column, rowNum!, false)
-                            else if(props.enableSingleCellEditOnDoubleClick === false)
-                            onKeyDownEventFull(event, item,
-                              Number(item["_grid_row_id_"])!)
-                          
+                          onKeyDown={(event) => {
+                            if (
+                              props.enableSingleCellEditOnDoubleClick === true
+                            )
+                              onKeyDownEvent(event, column, rowNum!, false);
+                            else if (
+                              props.enableSingleCellEditOnDoubleClick === false
+                            )
+                              onKeyDownEventFull(
+                                event,
+                                item,
+                                Number(item["_grid_row_id_"])!
+                              );
                           }}
-                          
+
                           // onDoubleClick={() =>
                           //   !activateCellEdit[rowNum!].isActivated
                           //     ? onComboBoxDoubleClickEvent(
@@ -2837,9 +3166,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                           )
                         )
                       ) : (
-                        <span
-                        
-                        >
+                        <span>
                           <PickerControl
                             arialabel={column.key}
                             selectedItemsLimit={column.pickerOptions?.tagsLimit}
@@ -2858,7 +3185,8 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                               onCellPickerTagListChanged(
                                 selectedItem,
                                 rowNum!,
-                                column
+                                column,
+                                item
                               )
                             }
                             pickerDescriptionOptions={
@@ -2957,6 +3285,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                               column
                             )
                           }
+                          
                           autoFocus={
                             !props.enableDefaultEditMode &&
                             !editMode &&
@@ -2966,16 +3295,21 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                           }
                           value={
                             activateCellEdit[rowNum!]["properties"][column.key]
-                              .value
+                            .value ?? ''
                           }
-                          onKeyDown={(event)=>{ 
-                            
-                            if(props.enableSingleCellEditOnDoubleClick === true)
-                            onKeyDownEvent(event, column, rowNum!, false)
-                            else if(props.enableSingleCellEditOnDoubleClick === false)
-                            onKeyDownEventFull(event, item,
-                              Number(item["_grid_row_id_"])!)
-                          
+                          onKeyDown={(event) => {
+                            if (
+                              props.enableSingleCellEditOnDoubleClick === true
+                            )
+                              onKeyDownEvent(event, column, rowNum!, false);
+                            else if (
+                              props.enableSingleCellEditOnDoubleClick === false
+                            )
+                              onKeyDownEventFull(
+                                event,
+                                item,
+                                Number(item["_grid_row_id_"])!
+                              );
                           }}
                           maxLength={
                             column.maxLength != null ? column.maxLength : 1000
@@ -3046,16 +3380,22 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                           }
                           value={
                             activateCellEdit[rowNum!]["properties"][column.key]
-                              .value
+                            .value ?? ''
                           }
-                          onKeyDown={(event)=>{ 
-                            
-                            if(props.enableSingleCellEditOnDoubleClick === true)
-                            onKeyDownEvent(event, column, rowNum!, false)
-                            else if(props.enableSingleCellEditOnDoubleClick === false)
-                            onKeyDownEventFull(event, item,
-                              Number(item["_grid_row_id_"])!)
                           
+                          onKeyDown={(event) => {
+                            if (
+                              props.enableSingleCellEditOnDoubleClick === true
+                            )
+                              onKeyDownEvent(event, column, rowNum!, false);
+                            else if (
+                              props.enableSingleCellEditOnDoubleClick === false
+                            )
+                              onKeyDownEventFull(
+                                event,
+                                item,
+                                Number(item["_grid_row_id_"])!
+                              );
                           }}
                           maxLength={
                             column.maxLength != null ? column.maxLength : 1000
@@ -3110,7 +3450,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
         maxWidth: 50,
         onRender: (item, index) => (
           <div>
-            {activateCellEdit &&
+            {!props.enableSaveGridOnCellValueChange && activateCellEdit &&
             activateCellEdit[Number(item["_grid_row_id_"])!] &&
             activateCellEdit[Number(item["_grid_row_id_"])!]["isActivated"] ? (
               <div>
@@ -3143,15 +3483,32 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
               <div>
                 {!props.enableDefaultEditMode && (
                   <IconButton
-                    onClick={() =>
-                      ShowRowEditMode(
+                    onClick={() =>{
+                      if(activateCellEdit &&
+                        activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                        activateCellEdit[Number(item["_grid_row_id_"])!][
+                          "isActivated"
+                        ]){
+                          CancelRowEditMode(item, Number(item["_grid_row_id_"])!)
+                        }
+                      else
+                     { ShowRowEditMode(
                         item,
                         Number(item["_grid_row_id_"])!,
                         true
-                      )
+                      )}}
                     }
-                    iconProps={{ iconName: "EditSolid12" }}
-                    title={"Edit Row"}
+                  
+                    iconProps={{ iconName: activateCellEdit &&
+                      activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                      activateCellEdit[Number(item["_grid_row_id_"])!][
+                        "isActivated"
+                      ] ?  "Cancel" :  "EditSolid12" }}
+                    title={activateCellEdit &&
+                      activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                      activateCellEdit[Number(item["_grid_row_id_"])!][
+                        "isActivated"
+                      ] ?  "Close Row" :  "Edit Row"}
                     styles={props.actionIconStylesInGrid}
                   ></IconButton>
                 )}
@@ -3178,11 +3535,12 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
               <IconButton
                 onClick={() => HandleRowCopy(Number(item["_grid_row_id_"])!)}
                 disabled={
+                 !props.enableSaveGridOnCellValueChange &&(
                   activateCellEdit &&
                   activateCellEdit[Number(item["_grid_row_id_"])!] &&
                   activateCellEdit[Number(item["_grid_row_id_"])!][
                     "isActivated"
-                  ]
+                  ])
                 }
                 iconProps={{ iconName: "Copy" }}
                 styles={props.actionIconStylesInGrid}
@@ -3212,12 +3570,13 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
                   HandleRowSingleDelete(Number(item["_grid_row_id_"])!)
                 }
                 disabled={
-                  activateCellEdit &&
-                  activateCellEdit[Number(item["_grid_row_id_"])!] &&
-                  activateCellEdit[Number(item["_grid_row_id_"])!][
-                    "isActivated"
-                  ]
-                }
+                  !props.enableSaveGridOnCellValueChange &&(
+                   activateCellEdit &&
+                   activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                   activateCellEdit[Number(item["_grid_row_id_"])!][
+                     "isActivated"
+                   ])
+                 }
                 iconProps={{ iconName: "ErrorBadge" }}
                 title={"Delete Row"}
                 styles={props.actionIconStylesInGrid}
@@ -3234,7 +3593,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
   const CreateCommandBarItemProps = (): ICommandBarItemProps[] => {
     let commandBarItems: ICommandBarItemProps[] = [];
 
-    if (props.enableExcelExport && !props.enableCSVExport) {
+    if (props.enableExcelExport && !props.enableCSVExport && !editMode ) {
       commandBarItems.push({
         id: "export",
         key: "exportToExcel",
@@ -3245,7 +3604,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
         iconProps: { iconName: "ExcelDocument" },
         onClick: () => onExportClick(ExportType.XLSX),
       });
-    } else if (props.enableCSVExport && !props.enableExcelExport) {
+    } else if (props.enableCSVExport && !props.enableExcelExport && !editMode) {
       commandBarItems.push({
         id: "export",
         key: "exportToCSV",
@@ -3256,7 +3615,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
         iconProps: { iconName: "LandscapeOrientation" },
         onClick: () => onExportClick(ExportType.CSV),
       });
-    } else if (props.enableExcelExport && props.enableCSVExport) {
+    } else if (props.enableExcelExport && props.enableCSVExport && !editMode) {
       commandBarItems.push({
         id: "export",
         key: "exportGrid",
@@ -3284,7 +3643,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
       });
     }
 
-    if (props.enableExcelImport) {
+    if (props.enableExcelImport &&       !editMode      ) {
       commandBarItems.push({
         id: "importExcel",
         key: "importFroExcel",
@@ -3414,16 +3773,18 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
       commandBarItems.push({
         key: "saveEdits",
         disabled: isGridInEdit && !editMode,
-        text: "Save Edits",
-        iconProps: { iconName: "Save" },
+        text: props.enableSaveGridOnCellValueChange ? "Exit" : "Save Edits",
+        iconProps: { iconName: props.enableSaveGridOnCellValueChange ? "Cancel" : 'Save' },
         onClick: () => {
           ShowGridEditMode();
+          if(!props.enableSaveGridOnCellValueChange)
           onGridSave();
         },
       });
     }
 
     if (
+      !props.enableSaveGridOnCellValueChange &&
       !props.enableDefaultEditMode &&
       props.enableEditModeCancel &&
       editMode
@@ -3515,17 +3876,10 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
 
     commandBarItems.push({
       key: "filteredrecs",
-      text: `${
-        defaultGridData.filter(
-          (x) =>
-            x._grid_row_operation_ != Operation.Delete &&
-            x._is_filtered_in_ == true &&
-            x._is_filtered_in_grid_search_ == true &&
-            x._is_filtered_in_column_filter_ == true
-        ).length
-      }/${defaultGridData.length}`,
+      text: getGridRecordLength(),
       // This needs an ariaLabel since it's icon-only
       ariaLabel: "Filtered Records",
+      title: 'Summary Count',
       iconOnly: false,
       iconProps: { iconName: "PageListFilter" },
     });
@@ -3660,7 +4014,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
         id={`id-${props.id}-col-${index}-row-${rowNum}`}
         className={GetDynamicSpanStyles(column, item[column.key])}
         onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
-        onDoubleClick={ HandleCellOnDoubleClick(
+        onDoubleClick={HandleCellOnDoubleClick(
           item,
           Number(item["_grid_row_id_"])!,
           props,
@@ -3741,7 +4095,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
         id={`id-${props.id}-col-${index}-row-${rowNum}`}
         className={GetDynamicSpanStyles(column, item[column.key])}
         onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
-        onDoubleClick={ HandleCellOnDoubleClick(
+        onDoubleClick={HandleCellOnDoubleClick(
           item,
           Number(item["_grid_row_id_"])!,
           props,
@@ -3844,7 +4198,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
         horizontalAlign="center"
         id={`id-${props.id}-col-${index}-row-${rowNum}`}
         onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
-        onDoubleClick={ HandleCellOnDoubleClick(
+        onDoubleClick={HandleCellOnDoubleClick(
           item,
           Number(item["_grid_row_id_"])!,
           props,
@@ -3902,7 +4256,7 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
         id={`id-${props.id}-col-${index}-row-${rowNum}`}
         className={GetDynamicSpanStyles(column, item[column.key])}
         onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
-        onDoubleClick={ HandleCellOnDoubleClick(
+        onDoubleClick={HandleCellOnDoubleClick(
           item,
           Number(item["_grid_row_id_"])!,
           props,
@@ -3981,20 +4335,14 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
         id={`id-${props.id}-col-${index}-row-${rowNum}`}
         className={GetDynamicSpanStyles(column, item[column.key])}
         onClick={HandleCellOnClick(props, column, EditCellValue, rowNum)}
-
-        onDoubleClick={
-          
-          HandleCellOnDoubleClick(
+        onDoubleClick={HandleCellOnDoubleClick(
           item,
           Number(item["_grid_row_id_"])!,
           props,
           column,
           EditCellValue,
           rowNum
-        )
-        
-        }
-        
+        )}
       >
         {item[column.key]}
       </span>
@@ -4015,22 +4363,17 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     ) => void,
     rowNum: number
   ): React.MouseEventHandler<HTMLSpanElement> | undefined {
-   
-    if( props.enableSingleCellEditOnDoubleClick == true){
-    return () =>
-      props.enableSingleCellEditOnDoubleClick == true &&
-      column.editable == true
-        ? EditCellValue(column.key, rowNum!, true)
-        : null}
-    else if (props.enableSingleCellEditOnDoubleClick == false){
-      return ()=>
-      ShowRowEditMode(
-        item,
-        Number(item["_grid_row_id_"])!,
-        true
-      )
+    if (props.enableSingleCellEditOnDoubleClick == true) {
+      return () =>
+        props.enableSingleCellEditOnDoubleClick == true &&
+        column.editable == true
+          ? EditCellValue(column.key, rowNum!, true)
+          : null;
+    } else if (props.enableSingleCellEditOnDoubleClick == false) {
+      return () => ShowRowEditMode(item, Number(item["_grid_row_id_"])!, true);
     }
   }
+
 
   function HandleCellOnClick(
     props: Props,
@@ -4043,12 +4386,27 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
     rowNum: number
   ): React.MouseEventHandler<HTMLSpanElement> | undefined {
     return () =>
-      props.enableSingleCellEditOnDoubleClick == true &&
-      column.editable == true
+      props.enableSingleCellEditOnDoubleClick == true && column.editable == true
         ? EditCellValue(column.key, rowNum!, true)
         : null;
   }
   /* #endregion */
+
+  const AddRowPanelRender = useCallback(()=>{
+    if(props.enableRowAddWithValues && props.enableRowAddWithValues.enable)
+    return(
+      <AddRowPanel
+      onChange={onAddPanelChange}
+      columnConfigurationData={props.columns}
+      enableRowsCounterField={
+        props.enableRowAddWithValues.enableRowsCounterInPanel
+      }
+      autoGenId={
+        CurrentAutoGenID 
+      }
+    />
+    )
+  }, [CurrentAutoGenID])
 
   return (
     <Stack>
@@ -4076,19 +4434,8 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
             closeButtonAriaLabel="Close"
             type={PanelType.smallFixedFar}
           >
-            <AddRowPanel
-              onChange={onAddPanelChange}
-              columnConfigurationData={props.columns}
-              enableRowsCounterField={
-                props.enableRowAddWithValues.enableRowsCounterInPanel
-              }
-              autoGenId={Math.max.apply(
-                Math,
-                defaultGridData.map(function (o) {
-                  return o._grid_row_id_;
-                })
-              )}
-            />
+            {AddRowPanelRender()}
+           
           </Panel>
         ) : null}
 
@@ -4104,8 +4451,16 @@ const removeFromMap = (mapVar: Map<any, any>, key: any) => {
         ) : null}
 
         {props.enableMessageBarErrors ? (
-          <div style={{marginBottom: 15 }}>{onRenderMsg()}</div>
+          <div style={{ marginBottom: 15 }}>
+          {messagesJSXState.map((element) => element)}
+          </div>
         ) : null}
+
+{props.enableSaveGridOnCellValueChange && !props.enableUnsavedEditIndicator && parseInt(getGridRecordLength(true)) <= 0 ? (
+          <Stack horizontal horizontalAlign="end" style={{ marginBottom: 15 }}><Text style={{borderBottom: '1px solid #d44040'}}><span style={{color: '#d44040'}}>0 Rows, </span>{props.zeroRowsMsg}</Text></Stack>
+        ) : null}
+
+        
 
         {props.enableCommandBar === undefined ||
         props.enableCommandBar === true ? (

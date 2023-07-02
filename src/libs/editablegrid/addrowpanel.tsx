@@ -37,7 +37,7 @@ interface Props {
   onChange: any;
   columnConfigurationData: IColumnConfig[];
   enableRowsCounterField?: boolean;
-  autoGenId: number;
+  autoGenId:  number;
 }
 
 const AddRowPanel = (props: Props) => {
@@ -112,15 +112,6 @@ const AddRowPanel = (props: Props) => {
     SetObjValues((ev.target as Element).id, ParseType(column.dataType, text));
   };
 
-  const onTextUpdateAutoGen = (
-    id: string,
-    text: string,
-    column: IColumnConfig
-  ): void => {
-
-    SetObjValues(id, ParseType(column.dataType, text));
-  };
-
   const onPanelSubmit = (): void => {
     var objectKeys = Object.keys(columnValuesObj);
     objectKeys.forEach((objKey) => {
@@ -152,13 +143,8 @@ const AddRowPanel = (props: Props) => {
     SetObjValues(item.key, date);
   };
 
-  const getAutoId = () =>{
-    return props.autoGenId.toString()
-  }
-
   const [comboOptions, setComboOptions] = useState<IComboBoxOption[]>([]);
   const [init, setInit] = useState<boolean>(false);
-  let trackIdIncrement = 0;
   const createTextFields = (): any[] => {
     let tmpRenderObj: any[] = [];
     props.columnConfigurationData.forEach((item, index) => {
@@ -287,9 +273,8 @@ const AddRowPanel = (props: Props) => {
                 id={item.key}
                 label={item.text}
                 styles={textFieldStyles}
-                onChange={(ev, text) => onTextUpdate(ev, (props.autoGenId + 2).toString(), item)}
-                onClick={() => onTextUpdateAutoGen(item.key, (props.autoGenId + 2).toString(), item)}
-                value={(getAutoId())}
+                onChange={(ev, text) => onTextUpdate(ev, (props.autoGenId).toString(), item)}
+                value={props.autoGenId.toString()}
                 readOnly
                 disabled
               />

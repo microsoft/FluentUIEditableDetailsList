@@ -146,19 +146,30 @@ export const ConvertObjectToText = (
   return text.substring(0, text.lastIndexOf("\t"));
 };
 
-export const ParseType = (type: string | undefined, text: string): any => {
+export const ParseType = (type: string | undefined, text: string, udf_trim?: number): any => {
   if (text.trim().length == 0) {
     return null;
   }
 
+  // switch (type) {
+  //   case "number":
+  //     return Number(text);
+  //   case "date":
+  //     return Date.parse(text);
+  // }
+
   switch (type) {
     case "number":
-      return Number(text);
+      if(udf_trim && !isNaN(parseInt(text))){
+        const newNum = parseInt(text)
+        return newNum.toFixed(udf_trim)
+      }
+      return (text)
     case "date":
       return Date.parse(text);
   }
 
-  return text;
+  return text.trim();
 };
 
 export const GetDefault = (type: string | undefined): any => {
