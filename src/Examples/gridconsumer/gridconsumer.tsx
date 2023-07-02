@@ -224,7 +224,7 @@ const Consumer = () => {
     for (var i = 1; i <= 4; i++) {
       var randomInt = GetRandomInt(1, 3);
       dummyData.push({
-        id: i+10,
+        id: i,
         combo: "Black",
         excluded: randomInt % 2 == 0 ? true : false,
         customerhovercol: "Hover Me",
