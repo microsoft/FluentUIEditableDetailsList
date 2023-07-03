@@ -5,7 +5,11 @@ import {
   NumberAndDateOperators,
   StringOperators,
 } from "../../libs/types/cellstyleruletype";
-import { DepColTypes, IColumnConfig } from "../../libs/types/columnconfigtype";
+import {
+  DepColTypes,
+  DisableColTypes,
+  IColumnConfig,
+} from "../../libs/types/columnconfigtype";
 import { EditControlType } from "../../libs/types/editcontroltype";
 import { CellHover } from "../../libs/editablegrid/hoverComponent";
 
@@ -121,8 +125,8 @@ export const GridColumnConfig: IColumnConfig[] = [
       columnDependent: [
         {
           dependentColumnKey: "name",
-          dependentColumnName: "Name",
-          type: DepColTypes.MustBeEmpty,
+          dependentColumnName: "name",
+          type: DepColTypes.MustHaveData,
         },
       ],
       numberBoundaries: {
@@ -223,6 +227,12 @@ export const GridColumnConfig: IColumnConfig[] = [
       { key: "biweekly", text: "Bi-Weekly" },
       { key: "monthly", text: "Monthly" },
     ],
+    // disableDropdown: false,
+    disableDropdown: {
+      dependentColumnKey: "name",
+      dependentColumnName: "Name",
+      type: DisableColTypes.DisableWhenEmpty,
+    },
   },
   {
     key: "employmenttype",

@@ -234,12 +234,7 @@ const Consumer = () => {
         designation: "Designation" + GetRandomInt(1, 15),
         salary: GetRandomInt(35000, 75000),
         dateofjoining: "2010-10-10T14:57:10",
-        payrolltype:
-          randomInt % 3 == 0
-            ? "Weekly"
-            : randomInt % 3 == 1
-            ? "Bi-Weekly"
-            : "Monthly",
+        payrolltype:null,
         employmenttype: "Employment Type" + GetRandomInt(1, 12),
         employeelink: "Link",
       });
@@ -837,14 +832,14 @@ const Consumer = () => {
           }}
           onGridInErrorCallback={(
             isInError: boolean,
-            msg: React.MutableRefObject<Map<string, string>>
+            msg: Map<string, string>
           ) => {
             //alert('Error: ' + isInError);
             toast.warn(isInError, {
               position: toast.POSITION.TOP_CENTER,
             });
 
-            msg.current.forEach(function (value, key) {
+            msg.forEach(function (value, key) {
               toast.warn(value, {
                 position: toast.POSITION.TOP_CENTER,
               });

@@ -8,7 +8,7 @@ export interface IColumnConfig extends IColumn {
     text: string;
     autoGenerate?: boolean;
     editable?: boolean;
-    dataType?: string;
+    dataType: string;
     toolTipText?: string;
     transformBasedOnData?: ITransformBasedOnData[];
     validations?: {
@@ -40,6 +40,8 @@ export interface IColumnConfig extends IColumn {
     cellStyleRule?: ICellStyleRulesType;
     dropdownValues?: IDropdownOption[];
     comboBoxOptions?: IComboBoxOption[];
+    disableDropdown?: boolean | IDisableCellOptions;
+    disableComboBox?: boolean;
     checked?: boolean;
     pickerOptions?: IPickerOptions;
     disableSort?: boolean;
@@ -49,6 +51,15 @@ export interface IColumnConfig extends IColumn {
 export declare enum DepColTypes {
     MustBeEmpty = "MustBeEmpty",
     MustHaveData = "MustHaveData"
+}
+export declare enum DisableColTypes {
+    DisableWhenItHasData = "DisableWhenItHasData",
+    DisableWhenEmpty = "DisableWhenEmpty"
+}
+export interface IDisableCellOptions {
+    dependentColumnKey: string;
+    dependentColumnName: string;
+    type: DisableColTypes;
 }
 export interface IColumnDependent {
     dependentColumnKey: string;
