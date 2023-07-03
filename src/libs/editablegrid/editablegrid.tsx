@@ -4460,9 +4460,8 @@ setGridEditState(true)    }
           </div>
         ) : null}
 
-{props.enableSaveGridOnCellValueChange && !props.enableUnsavedEditIndicator  ? (
           <Stack horizontal horizontalAlign="end" style={{ marginBottom: 15 }}><Text style={{borderBottom: '1px solid #d44040'}}><span style={{color: '#d44040'}}>0 Rows, </span>{props.zeroRowsMsg}</Text></Stack>
-        ) : null}
+        
 
         
 

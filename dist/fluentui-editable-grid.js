@@ -55059,10 +55059,10 @@ const vU = (e) => {
       }
     ) : null,
     e.enableMessageBarErrors ? /* @__PURE__ */ ee.jsx("div", { style: { marginBottom: 15 }, children: Ze.map((B) => B) }) : null,
-    e.enableSaveGridOnCellValueChange && !e.enableUnsavedEditIndicator ? /* @__PURE__ */ ee.jsx(jr, { horizontal: !0, horizontalAlign: "end", style: { marginBottom: 15 }, children: /* @__PURE__ */ ee.jsxs(LW, { style: { borderBottom: "1px solid #d44040" }, children: [
+    /* @__PURE__ */ ee.jsx(jr, { horizontal: !0, horizontalAlign: "end", style: { marginBottom: 15 }, children: /* @__PURE__ */ ee.jsxs(LW, { style: { borderBottom: "1px solid #d44040" }, children: [
       /* @__PURE__ */ ee.jsx("span", { style: { color: "#d44040" }, children: "0 Rows, " }),
       e.zeroRowsMsg
-    ] }) }) : null,
+    ] }) }),
     e.enableCommandBar === void 0 || e.enableCommandBar === !0 ? /* @__PURE__ */ ee.jsx("div", { ref: mf, children: /* @__PURE__ */ ee.jsx(
       O6,
       {
