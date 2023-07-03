@@ -219,13 +219,12 @@ const EditableGrid = (props: Props) => {
   });
 
   useEffect(() => {
-    if (props && props.items) {
       var data: any[] = InitializeInternalGrid(props.items);
       setGridData(data);
       setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
       setGridEditState(false);
       SetGridItems(data);
-    }
+    
   }, [props.items]);
 
   useEffect(() => {}, [backupDefaultGridData]);
@@ -640,9 +639,9 @@ const EditableGrid = (props: Props) => {
   }}
 
   useEffect(() => {
-    if(props.GridSaveAction)
+    if(props.GridSaveAction && defaultGridData.length > 0)
     {
-      props.GridSaveAction(()=>onGridSave)
+      props.GridSaveAction(()=>onGridSave )
     }
 
   },[defaultGridData])
@@ -2731,6 +2730,9 @@ setGridEditState(true)    }
   interface IColumnIToolTip extends IColumn {
     toolTipText?: string;
   }
+
+  const tempAutoGenId = useRef(0)
+
   const CreateColumnConfigs = (): IColumn[] => {
     let columnConfigs: IColumnIToolTip[] = [];
     let columnFilterArrTmp: IGridColumnFilter[] = [];
@@ -2808,7 +2810,7 @@ setGridEditState(true)    }
               }
 
               if(column.autoGenerate){
-                SetCurrentAutoGenID( parseInt(item[column.key]) + 1)
+                tempAutoGenId.current = parseInt(item[column.key]) + 1
               }
 
               switch (column.inputType) {
@@ -3098,7 +3100,6 @@ setGridEditState(true)    }
                                 searchPattern.test(item.text)
                               );
 
-                            console.log(searchResults);
                             setComboOptions(searchResults ?? []);
                           }}
                           // styles={dropdownStyles}
@@ -3706,7 +3707,10 @@ setGridEditState(true)    }
         text: "Add Rows With Data",
         disabled: isGridInEdit || editMode,
         iconProps: { iconName: "Add" },
-        onClick: () => RowSelectOperations(EditType.AddRowWithData, {}),
+        onClick: () => {
+          SetCurrentAutoGenID(tempAutoGenId.current)
+          RowSelectOperations(EditType.AddRowWithData, {})
+        },
       });
     }
 
@@ -3834,7 +3838,9 @@ setGridEditState(true)    }
         text: "Add Rows",
         disabled: isGridInEdit || editMode,
         iconProps: { iconName: "AddTo" },
-        onClick: () => RowSelectOperations(EditType.AddRow, {}),
+        onClick: () => {
+          SetCurrentAutoGenID(tempAutoGenId.current)
+          RowSelectOperations(EditType.AddRow, {})},
       });
     }
 

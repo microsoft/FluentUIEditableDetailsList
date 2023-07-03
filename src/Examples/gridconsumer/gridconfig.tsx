@@ -118,6 +118,13 @@ export const GridColumnConfig: IColumnConfig[] = [
     //columnDependent: [{dependentColumnKey: 'name', dependentColumnName: 'Name', type: DepColTypes.MustBeEmpty}],
     dataType: "number",
     validations: {
+      columnDependent: [
+        {
+          dependentColumnKey: "name",
+          dependentColumnName: "Name",
+          type: DepColTypes.MustBeEmpty,
+        },
+      ],
       numberBoundaries: {
         minRange: 10,
         maxRange: 20,
