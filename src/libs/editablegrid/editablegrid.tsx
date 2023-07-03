@@ -219,12 +219,13 @@ const EditableGrid = (props: Props) => {
   });
 
   useEffect(() => {
+    if(props && props.items){
       var data: any[] = InitializeInternalGrid(props.items);
       setGridData(data);
       setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
       setGridEditState(false);
       SetGridItems(data);
-    
+    }
   }, [props.items]);
 
   useEffect(() => {}, [backupDefaultGridData]);
@@ -2305,12 +2306,9 @@ const EditableGrid = (props: Props) => {
         (x) =>
           x._grid_row_operation_ === Operation.Delete
       ).length
-      console.log(defaultGridData.length)
-      console.log(deletedRows)
 
       return (defaultGridData.length - deletedRows).toString()}
       else{
-        console.log('Return Zerp')
         return '0'
       }
     }
@@ -2738,6 +2736,7 @@ setGridEditState(true)    }
   }
 
   const tempAutoGenId = useRef(0)
+
 
   const CreateColumnConfigs = (): IColumn[] => {
     let columnConfigs: IColumnIToolTip[] = [];
@@ -4420,6 +4419,16 @@ setGridEditState(true)    }
     )
   }, [CurrentAutoGenID])
 
+
+  const RenderNoRowsMsg = useCallback(()=>{
+    if(props.enableSaveGridOnCellValueChange && !props.enableUnsavedEditIndicator)
+    if(parseInt(getGridRecordLength(true)) <= 0)
+    return(
+      <Stack horizontal horizontalAlign="end" style={{ marginBottom: 15 }}><Text style={{borderBottom: '1px solid #d44040'}}><span style={{color: '#d44040'}}>0 Rows, </span>{props.zeroRowsMsg}</Text></Stack>
+    )
+    else return <></>
+  }, [defaultGridData, props.enableSaveGridOnCellValueChange, props.enableUnsavedEditIndicator])
+
   return (
     <Stack>
       <div ref={pasteRef}>
@@ -4468,11 +4477,7 @@ setGridEditState(true)    }
           </div>
         ) : null}
 
-{(props.enableSaveGridOnCellValueChange && !props.enableUnsavedEditIndicator && parseInt(getGridRecordLength(true)) <= 0) ?
-          <Stack horizontal horizontalAlign="end" style={{ marginBottom: 15 }}><Text style={{borderBottom: '1px solid #d44040'}}><span style={{color: '#d44040'}}>0 Rows, </span>{props.zeroRowsMsg}</Text></Stack>
-         : null}
-
-        
+        {RenderNoRowsMsg()}
 
         {props.enableCommandBar === undefined ||
         props.enableCommandBar === true ? (
