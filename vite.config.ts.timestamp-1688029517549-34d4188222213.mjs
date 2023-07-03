@@ -7,15 +7,15 @@ var __commonJS = (cb, mod) => function __require() {
 var require_package = __commonJS({
   "package.json"(exports, module) {
     module.exports = {
-      name: "fluentui-editable-grid",
+      name: "fluentui.editablegrid.lib",
       private: false,
       version: "2.1.0",
       description: "Wrapper over the existing DetailsList that makes in-place editability work like a dream(among many other new features)",
       license: "MIT",
       homepage: "https://github.com/microsoft/FluentUIEditableDetailsList#readme",
       author: "",
-      main: "./dist/fluentui-editable-grid.cjs",
-      module: "./dist/fluentui-editable-grid.js",
+      main: "./dist/fluentui.editablegrid.lib.cjs",
+      module: "./dist/fluentui.editablegrid.lib.js",
       type: "module",
       typings: "./dist/index.d.ts",
       files: [
@@ -23,8 +23,8 @@ var require_package = __commonJS({
       ],
       exports: {
         ".": {
-          import: "./dist/fluentui-editable-grid.js",
-          require: "./dist/fluentui-editable-grid.cjs",
+          import: "./dist/fluentui.editablegrid.lib.js",
+          require: "./dist/fluentui.editablegrid.lib.cjs",
           types: "./dist/index.d.ts"
         }
       },

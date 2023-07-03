@@ -48,12 +48,12 @@ This starts the project on port 3000 and you are ready to play around with the E
 
 ## NPM Install
 
-    npm i fluentui-editable-grid
+    npm i fluentui.editablegrid.lib
 
 ## Usage
 
     import { DetailsListLayoutMode, mergeStyles, mergeStyleSets, SelectionMode, TextField } from '@fluentui/react';
-    import { EditableGrid, EditControlType, IColumnConfig, EventEmitter, EventType, NumberAndDateOperators } from 'fluentui-editable-grid';
+    import { EditableGrid, EditControlType, IColumnConfig, EventEmitter, EventType, NumberAndDateOperators } from 'fluentui.editablegrid.lib';
     import { Fabric } from 'office-ui-fabric-react';
     import * as React from 'react';
     import { useState } from 'react';

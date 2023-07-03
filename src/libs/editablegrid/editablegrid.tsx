@@ -2305,8 +2305,12 @@ const EditableGrid = (props: Props) => {
         (x) =>
           x._grid_row_operation_ === Operation.Delete
       ).length
+      console.log(defaultGridData.length)
+      console.log(deletedRows)
+
       return (defaultGridData.length - deletedRows).toString()}
       else{
+        console.log('Return Zerp')
         return '0'
       }
     }
