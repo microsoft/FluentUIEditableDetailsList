@@ -319,8 +319,6 @@ const EditableGrid = (props: Props) => {
     mapVar.delete(key);
     const newMap = new Map(mapVar)
     setMessagesState(newMap)
-    console.log('TRACKED 5')
-
     //return mapVar;
   };
 

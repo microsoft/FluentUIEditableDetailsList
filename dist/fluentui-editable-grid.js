@@ -52905,7 +52905,7 @@ const vU = (e) => {
   }, Be = (B, Z) => {
     B.delete(Z);
     const G = new Map(B);
-    De(G), console.log("TRACKED 5");
+    De(G);
   };
   Zo(/* @__PURE__ */ new Map());
   const Pt = () => {
