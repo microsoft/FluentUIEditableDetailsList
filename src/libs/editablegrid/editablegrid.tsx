@@ -219,13 +219,11 @@ const EditableGrid = (props: Props) => {
   });
 
   useEffect(() => {
-    if(props && props.items){
       var data: any[] = InitializeInternalGrid(props.items);
       setGridData(data);
       setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
       setGridEditState(false);
       SetGridItems(data);
-    }
   }, [props.items]);
 
   useEffect(() => {}, [backupDefaultGridData]);
@@ -273,7 +271,7 @@ const EditableGrid = (props: Props) => {
 
   useEffect(() => {
     //alert('IsGridInEdit: ' + isGridInEdit);
-    if (props.onGridInErrorCallback) props.onGridInErrorCallback(gridInError, GlobalMessages);
+    if (props.onGridInErrorCallback && gridInError) props.onGridInErrorCallback(gridInError, GlobalMessages);
   }, [gridInError]);
 
   // const [Messages, SetMessages] = useState<
@@ -327,6 +325,7 @@ const EditableGrid = (props: Props) => {
 
 
   const runGridValidations = (): void => {
+    GlobalMessages.current = new Map()
     Messages.current = new Map()
     setMessagesState(Messages.current)
     setGridInError(false);
