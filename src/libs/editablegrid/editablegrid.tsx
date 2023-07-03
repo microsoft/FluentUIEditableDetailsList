@@ -269,11 +269,6 @@ const EditableGrid = (props: Props) => {
     }
   }, [filterCalloutComponent]);
 
-  useEffect(() => {
-    //alert('IsGridInEdit: ' + isGridInEdit);
-    if (props.onGridInErrorCallback && gridInError) props.onGridInErrorCallback(gridInError, GlobalMessages);
-  }, [gridInError]);
-
   // const [Messages, SetMessages] = useState<
   //   Map<string, { msg: string; type: MessageBarType }>
   // >(new Map());
@@ -296,6 +291,7 @@ const EditableGrid = (props: Props) => {
     new Map()
   );
 
+  const [GlobalMessagesState, SetGlobalMessagesState] = useState<Map<string, string>>(new Map())
   const GlobalMessages = useRef<Map<string, string>>(
     new Map()
   );
@@ -309,6 +305,7 @@ const EditableGrid = (props: Props) => {
     ) {
       var message = `${props.gridLocation} has errors`
       GlobalMessages.current.set(props.id.toString(), message);
+      SetGlobalMessagesState(GlobalMessages.current)
     }
     //return mapVar;
   };
@@ -323,9 +320,13 @@ const EditableGrid = (props: Props) => {
 
   const trimTheseValues = useRef<Map<string, any>>(new Map())
 
+  useEffect(() => {
+    if (props.onGridInErrorCallback && gridInError) props.onGridInErrorCallback(gridInError, GlobalMessagesState);
+  }, [gridInError, GlobalMessagesState]);
 
   const runGridValidations = (): void => {
     GlobalMessages.current = new Map()
+    SetGlobalMessagesState(GlobalMessages.current)
     Messages.current = new Map()
     setMessagesState(Messages.current)
     setGridInError(false);
