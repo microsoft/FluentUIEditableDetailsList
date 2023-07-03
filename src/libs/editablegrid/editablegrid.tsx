@@ -2300,11 +2300,15 @@ const EditableGrid = (props: Props) => {
 
     if (justLength)
     {
+      if(defaultGridData){
       const deletedRows = defaultGridData.filter(
         (x) =>
           x._grid_row_operation_ === Operation.Delete
       ).length
-      return (defaultGridData.length - deletedRows).toString()
+      return (defaultGridData.length - deletedRows).toString()}
+      else{
+        return '0'
+      }
     }
     if(props.enableSaveGridOnCellValueChange === false)
     return (
@@ -4460,8 +4464,9 @@ setGridEditState(true)    }
           </div>
         ) : null}
 
+{(props.enableSaveGridOnCellValueChange && !props.enableUnsavedEditIndicator && parseInt(getGridRecordLength(true)) <= 0) ?
           <Stack horizontal horizontalAlign="end" style={{ marginBottom: 15 }}><Text style={{borderBottom: '1px solid #d44040'}}><span style={{color: '#d44040'}}>0 Rows, </span>{props.zeroRowsMsg}</Text></Stack>
-        
+         : null}
 
         
 
