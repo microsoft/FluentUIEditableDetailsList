@@ -769,7 +769,7 @@ const Consumer = () => {
           enableRowEdit={gridConfigOptions.enableRowEdit}
           enableRowEditCancel={gridConfigOptions.enableRowEditCancel}
           enableBulkEdit={gridConfigOptions.enableBulkEdit}
-          items={items}
+          items={[]}
           enableSingleCellEditOnDoubleClick={
             gridConfigOptions.enableSingleCellEditOnDoubleClick
           }
