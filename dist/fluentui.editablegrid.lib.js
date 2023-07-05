@@ -55326,6 +55326,7 @@ const SU = (e) => {
 export {
   kU as CellHover,
   ph as DepColTypes,
+  $l as DisableColTypes,
   cr as EditControlType,
   SU as EditableGrid,
   sx as EventEmitter,
