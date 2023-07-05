@@ -14,6 +14,7 @@ export {
 } from "./types/cellstyleruletype";
 export type { ICellStyleRulesType } from "./types/cellstyleruletype";
 export type {
+  IRequiredColumnsOptions,
   IRegexValidation,
   IColumnConfig,
   ITransformBasedOnData,

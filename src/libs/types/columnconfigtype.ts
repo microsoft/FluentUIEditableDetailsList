@@ -19,6 +19,7 @@ export interface IColumnConfig extends IColumn {
   autoGenerate?: boolean;
   editable?: boolean;
   dataType: string;
+  required: boolean | IRequiredColumnsOptions
   toolTipText?: string;
   transformBasedOnData?: ITransformBasedOnData[];
   validations?: {
@@ -56,6 +57,7 @@ export interface IColumnConfig extends IColumn {
   linkOptions?: ILinkOptions;
 }
 
+
 export enum DepColTypes {
   MustBeEmpty = "MustBeEmpty",
   MustHaveData = "MustHaveData",
@@ -66,6 +68,10 @@ export enum DisableColTypes {
   DisableWhenColKeyIsEmpty = "DisableWhenEmpty",
 }
 
+export interface IRequiredColumnsOptions {
+  alwaysRequired?: boolean
+  requiredOnlyIfTheseColumnsAreEmpty?: {colKeys: string[]}
+}
 export interface IDisableDropCellOptions {
   disableBasedOnThisColumnKey: string;
   type: DisableColTypes;

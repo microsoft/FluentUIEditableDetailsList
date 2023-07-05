@@ -7,7 +7,7 @@ export type { ICallBackParams, ICallBackRequestParams, } from "./types/callbackp
 export type { ICellHoverProps } from "./types/cellhoverpropstype";
 export { NumberAndDateOperators, StringOperators, } from "./types/cellstyleruletype";
 export type { ICellStyleRulesType } from "./types/cellstyleruletype";
-export type { IRegexValidation, IColumnConfig, ITransformBasedOnData, IDisableDropCellOptions, } from "./types/columnconfigtype";
+export type { IRequiredColumnsOptions, IRegexValidation, IColumnConfig, ITransformBasedOnData, IDisableDropCellOptions, } from "./types/columnconfigtype";
 export { DepColTypes, DisableColTypes } from "./types/columnconfigtype";
 export { EditControlType } from "./types/editcontroltype";
 export type { IGridItemsType } from "./types/griditemstype";

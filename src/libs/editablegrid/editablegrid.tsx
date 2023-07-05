@@ -345,6 +345,8 @@ const EditableGrid = (props: Props) => {
     for (let row = 0; row < defaultGridDataTmp.length; row++) {
       const gridData = defaultGridDataTmp[row];
       var elementColNames = Object.keys(gridData);
+      let emptyCol:string[] = [];
+      let emptyReqCol:string[] = []
       for (
         let indexInner = 0;
         indexInner < elementColNames.length;
@@ -358,6 +360,41 @@ const EditableGrid = (props: Props) => {
         for (let j = 0; j < currentCol.length; j++) {
           const element = currentCol[j];
           const rowCol = gridData[element.key];
+
+          if (
+            (element.required && typeof element.required == "boolean" && (rowCol == null ||
+            rowCol == undefined ||
+            rowCol.toString().length <= 0 ||
+            rowCol == ""))
+          ) {
+            if(!emptyCol.includes(' '+element.name))
+            emptyCol.push(' '+element.name);
+          }else if( typeof element.required !== "boolean" && element.required.alwaysRequired && 
+          (rowCol == null ||
+            rowCol == undefined ||
+            rowCol.toString().length <= 0 ||
+            rowCol == "")
+            ){
+              if(!emptyCol.includes(' '+element.name))
+              emptyCol.push(' '+element.name);
+
+            }else if( typeof element.required !== "boolean" && element.required.requiredOnlyIfTheseColumnsAreEmpty){
+              const checkKeys = element.required.requiredOnlyIfTheseColumnsAreEmpty.colKeys
+              for (let index = 0; index < checkKeys.length; index++) {
+                const columnKey = checkKeys[index];
+                const str = (gridData as any)[columnKey]
+                if(str == null ||
+                  str == undefined ||
+                  str.toString().length <= 0 ||
+                  str == ""){
+                    if(!emptyReqCol.includes(' '+element.name))
+                    emptyReqCol.push(' '+element.name)
+                  }
+                
+              }
+
+            }
+          
 
           if (
             rowCol !== null &&
@@ -644,7 +681,79 @@ const EditableGrid = (props: Props) => {
           }
         }
       }
+
+      if(emptyReqCol.length > 1){
+        if (
+          props.enableMessageBarErrors &&
+          props.enableMessageBarErrors.enableShowErrors
+        ) {
+          
+
+          var msg =
+            `Row: ${row + 1} - ${emptyReqCol} cannot all be empty`;
+  
+          insertToMap(Messages.current, row, {
+            msg: msg,
+            type: MessageBarType.error,
+          });
+  
+        }
+        setGridInError(true);
+      }else if(emptyReqCol.length == 1){
+        if (
+          props.enableMessageBarErrors &&
+          props.enableMessageBarErrors.enableShowErrors
+        ) {
+          
+
+          var msg =
+            `Row: ${row + 1} - ${emptyReqCol} cannot be empty`;
+  
+          insertToMap(Messages.current, row, {
+            msg: msg,
+            type: MessageBarType.error,
+          });
+  
+        }
+        setGridInError(true);
+      }
+
+      if(emptyCol.length > 1){
+        if (
+          props.enableMessageBarErrors &&
+          props.enableMessageBarErrors.enableShowErrors
+        ) {
+          
+          var msg =
+            `Row: ${row + 1} - ${emptyCol.toString()} cannot be empty at all`;
+  
+          insertToMap(Messages.current, row, {
+            msg: msg,
+            type: MessageBarType.error,
+          });
+  
+        }
+        setGridInError(true);
+      }else if(emptyCol.length == 1){
+        if (
+          props.enableMessageBarErrors &&
+          props.enableMessageBarErrors.enableShowErrors
+        ) {
+          
+          var msg =
+            `Row: ${row + 1} - ${emptyCol.toString()} cannot be empty`;
+  
+          insertToMap(Messages.current, row, {
+            msg: msg,
+            type: MessageBarType.error,
+          });
+  
+        }
+        setGridInError(true);
+
+      }
     }
+
   };
 
   useEffect(() => {
@@ -2823,8 +2932,6 @@ const EditableGrid = (props: Props) => {
 
   const disableDropdown = useRef<Map<string, boolean>>(new Map());
   const disableComboBox = useRef<Map<string, boolean>>(new Map());
-
-
 
   const CreateColumnConfigs = (): IColumn[] => {
     let columnConfigs: IColumnIToolTip[] = [];
