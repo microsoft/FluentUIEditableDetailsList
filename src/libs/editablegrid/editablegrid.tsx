@@ -512,35 +512,37 @@ const EditableGrid = (props: Props) => {
                 }
                 setGridInError(true);
               }
-            } else if (typeof rowCol !== element.dataType) {
-              if (
-                props.enableMessageBarErrors &&
-                props.enableMessageBarErrors.enableShowErrors
-              ) {
-                var msg =
-                  `Row: ${row + 1} Col: ${element.name} - ` +
-                  `Value is not a '${element.dataType}'.`;
-                insertToMap(Messages.current, element.key + row, {
-                  msg: msg,
-                  type: MessageBarType.error,
-                });
-              }
-              setGridInError(true);
-            } else {
-              if (
-                props.enableMessageBarErrors &&
-                props.enableMessageBarErrors.enableShowErrors
-              ) {
-                var msg =
-                  `Row: ${row + 1} Col: ${element.name} - ` +
-                  `Value is not a '${element.dataType}'.`;
-                insertToMap(Messages.current, element.key + row, {
-                  msg: msg,
-                  type: MessageBarType.error,
-                });
-              }
-              setGridInError(true);
             }
+            // } else if (typeof rowCol !== element.dataType) {
+            //   if (
+            //     props.enableMessageBarErrors &&
+            //     props.enableMessageBarErrors.enableShowErrors
+            //   ) {
+            //     var msg =
+            //       `Row: ${row + 1} Col: ${element.name} - ` +
+            //       `Value is not a '${element.dataType}'.`;
+            //     insertToMap(Messages.current, element.key + row, {
+            //       msg: msg,
+            //       type: MessageBarType.error,
+            //     });
+            //   }
+            //   setGridInError(true);
+            // }
+            // } else {
+            //   if (
+            //     props.enableMessageBarErrors &&
+            //     props.enableMessageBarErrors.enableShowErrors
+            //   ) {
+            //     var msg =
+            //       `Row: ${row + 1} Col: ${element.name} - ` +
+            //       `Value is not a '${element.dataType}'.`;
+            //     insertToMap(Messages.current, element.key + row, {
+            //       msg: msg,
+            //       type: MessageBarType.error,
+            //     });
+            //   }
+            //   setGridInError(true);
+            // }
           }
 
           if (element.validations && element.validations.columnDependent) {
@@ -556,6 +558,32 @@ const EditableGrid = (props: Props) => {
                 (gridData as any)[colDep.dependentColumnKey] !== undefined
               ) {
                 const str = (gridData as any)[colDep.dependentColumnKey];
+                let skip = false
+
+                if(colDep.skipCheckIfTheseColumnsHaveData && colDep.skipCheckIfTheseColumnsHaveData.colKeys){
+                  for (const skipForKey of colDep.skipCheckIfTheseColumnsHaveData.colKeys) {
+                    if(colDep.skipCheckIfTheseColumnsHaveData?.partial){
+                      const str = (gridData as any)[skipForKey]
+                      if(str && str !== null && str !== undefined && str.toString().length > 0 ){
+                        skip = true
+                        break;
+                      }
+                    }else{
+                      const str = (gridData as any)[skipForKey]
+                      if(str && str !== null && str !== undefined && str.toString().length > 0 ){
+                        skip = true
+                      }
+                      else{
+                        skip = false
+                        break;
+                      }
+                      }
+                    }
+                  }
+                
+                
+                
+                if(!skip){
 
                 if (str !== undefined && str !== null) {
                   if (
@@ -604,6 +632,7 @@ const EditableGrid = (props: Props) => {
                     setGridInError(true);
                   }
                 }
+              }
               }
             }
           }

@@ -79,6 +79,7 @@ export interface IDisableDropCellOptions {
 export interface IColumnDependent {
   dependentColumnKey: string;
   dependentColumnName: string;
+  skipCheckIfTheseColumnsHaveData?: {colKeys: string[], partial: boolean}
   errorMessage?: string;
   type: DepColTypes;
 }

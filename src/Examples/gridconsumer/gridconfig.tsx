@@ -44,7 +44,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Custom Hover Column",
     text: "Custom Hover Column",
     editable: false,
-    required: false,
+    required: true,
     dataType: "string",
     minWidth: 150,
     maxWidth: 150,
@@ -77,6 +77,7 @@ export const GridColumnConfig: IColumnConfig[] = [
         {
           dependentColumnKey: "age",
           dependentColumnName: "Age",
+          skipCheckIfTheseColumnsHaveData: {colKeys: ['salary', 'password'], partial: false},
           type: DepColTypes.MustBeEmpty,
         },
       ],
@@ -97,7 +98,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Exclued",
     text: "Excluded",
     editable: true,
-    required: false,
+    required: true,
     dataType: "boolean",
     minWidth: 100,
     maxWidth: 100,
@@ -112,7 +113,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Password",
     text: "Password",
     editable: true,
-    required: false,
+    required: true,
     dataType: "string",
     minWidth: 100,
     maxWidth: 100,
@@ -127,7 +128,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Age",
     text: "Age",
     editable: true,
-    required: false,
+    required: true,
     dataType: "number",
     validations: {
       columnDependent: [
