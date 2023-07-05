@@ -654,6 +654,8 @@ const EditableGrid = (props: Props) => {
   }, [defaultGridData]);
 
   const onGridSave = (): boolean => {
+    setEditMode(false);
+    setGridEditState(false);
     const defaultGridDataTmp =
       defaultGridData.length > 0
         ? defaultGridData.filter(
@@ -1369,6 +1371,75 @@ const EditableGrid = (props: Props) => {
     setMessagesJSXState(onRenderMsg());
   }, [messagesState]);
 
+  // const checkForDependencies = (key: string, item: any, text: string) => {
+  //   for (let index = 0; index < props.columns.length; index++) {
+  //     const col = props.columns[index];
+  //     if (col.disableDropdown && typeof col.disableDropdown !== "boolean") {
+  //       if (col.disableDropdown.dependentColumnKey === key) {
+  //         // switch (col.disableDropdown.type) {
+  //         //   case DisableColTypes.DisableWhenItHasData:
+  //         //     if (
+  //         //      ( text &&
+  //         //         text.length > 0) && Boolean(col.disableDropdown) === false
+  //         //     ) {
+  //         //       col.disableDropdown = true
+  //         //     } else if (
+  //         //       (text !== null ||
+  //         //       text !== undefined)  && Boolean(col.disableDropdown) === false )
+  //         //      {
+  //         //       col.disableDropdown = true
+  //         //     }
+  //         //     col.disableDropdown = false
+  //         //     break;
+  //         //   case DisableColTypes.DisableWhenEmpty:
+  //         //     if (
+  //         //       (text == "" ||
+  //         //       (text &&
+  //         //         text.length <= 0)) && Boolean(col.disableDropdown) === false
+  //         //     ) {
+  //         //       col.disableDropdown = true
+  //         //     } else if (
+  //         //       (text === null ||
+  //         //       text === undefined) && Boolean(col.disableDropdown) === false)
+  //         //      {
+  //         //       col.disableDropdown = true
+  //         //     }
+  //         //     col.disableDropdown = false
+  //         //     break;
+  //         //   default:
+  //         //       col.disableDropdown = false
+  //         // }
+  //         //col.disableDropdown.default = true
+  //       }
+  //     }
+  //     console.log(col);
+  //   }
+  //   console.log(item);
+  // };
+  const [reset, setReset] = useState(false);
+  const asyncValues = useRef<Map<string, string>>(new Map());
+  const [asyncValuesState, SetAsyncValuesState] = useState<Map<string, string>>(
+    new Map()
+  );
+
+  // const runAsync = (key: string, text: string)=>{
+  //   fetch(`https://localhost:7172/api/DomainData/v1/companyName/${text}/1`, {
+  //     headers: {
+  //       Accept: 'application/x-www-form-urlencoded',
+  //       'Content-Type': 'application/x-www-form-urlencoded',
+  //     }
+  //   })
+  //     .then(response => {
+  //       console.log('responseJson');
+  //       return response.text();
+  //     }).then((responseJson) => {
+  //       console.log(responseJson);
+  //       asyncValues.current.set(key, responseJson)
+  //    })
+  //   SetAsyncValuesState(asyncValues.current)
+
+  // }
+
   const onCellValueChange = (
     ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     text: string,
@@ -1380,6 +1451,8 @@ const EditableGrid = (props: Props) => {
     let activateCellEditTmp: any[] = [...activateCellEdit];
     let err: null | string = null;
     let clearThisDependent: any[] = [];
+
+    //checkForDependencies(key,item, text)
 
     // if (!IsValidDataType(column.dataType, text)) {
     //   activateCellEditTmp[row]["properties"][key][
@@ -1484,6 +1557,14 @@ const EditableGrid = (props: Props) => {
     //   }
     // }
 
+    // if (column.transformBasedOnData) {
+    //   const colChosen = (item as any)['designation'];
+    //   runAsync((column.key+row), colChosen);
+
+    //   (item as any)['name'] = asyncValuesState.get(column.key+row)
+
+    // }
+
     activateCellEditTmp = [];
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
@@ -1521,6 +1602,8 @@ const EditableGrid = (props: Props) => {
 
     if (column.onChange) {
       HandleColumnOnChange(activateCellEditTmp, row, column);
+
+      // HandleColumnOnChange2(activateCellEditTmp, row, column);
     }
 
     //ShallowCopyEditGridToDefaultGrid(defaultGridData, activateCellEditTmp);
@@ -1971,8 +2054,8 @@ const EditableGrid = (props: Props) => {
   /* #endregion */
 
   /* #region [Grid Edit Mode Functions] */
-  const ShowGridEditMode = (): void => {
-    var newEditModeValue = !editMode;
+  const ShowGridEditMode = (close?: boolean): void => {
+    var newEditModeValue = close ?? !editMode;
     if (newEditModeValue) {
       setCancellableRows(defaultGridData);
     } else {
@@ -2730,12 +2813,22 @@ const EditableGrid = (props: Props) => {
   }
 
   const tempAutoGenId = useRef(0);
+  const [comboOptions, setComboOptions] = useState<
+    Map<string, IComboBoxOption[]>
+  >(new Map());
+  const [init, setInit] = useState<Map<string, boolean>>(new Map());
+  // const [disableDropdown, setDisableDropdown] = useState<Map<string, boolean>>(
+  //   new Map()
+  // );
+
+  const disableDropdown = useRef<Map<string, boolean>>(new Map());
+  const disableComboBox = useRef<Map<string, boolean>>(new Map());
+
+
 
   const CreateColumnConfigs = (): IColumn[] => {
     let columnConfigs: IColumnIToolTip[] = [];
     let columnFilterArrTmp: IGridColumnFilter[] = [];
-    const [comboOptions, setComboOptions] = useState<IComboBoxOption[]>([]);
-    const [init, setInit] = useState<boolean>(false);
 
     props.columns.forEach((column, index) => {
       var colHeaderClassName = "id-" + props.id + "-col-" + index;
@@ -2806,6 +2899,13 @@ const EditableGrid = (props: Props) => {
                   }
                 }
               }
+
+              // if (column.transformBasedOnData) {
+              //   var colChosen = item['designation']
+              //   runAsync(column.key+rowNum, colChosen)
+              //   item[column.key] = asyncValuesState.get(column.key+rowNum)
+
+              // }
 
               if (column.autoGenerate) {
                 tempAutoGenId.current = parseInt(item[column.key]) + 1;
@@ -3001,29 +3101,58 @@ const EditableGrid = (props: Props) => {
                     column.disableDropdown &&
                     typeof column.disableDropdown !== "boolean"
                   ) {
-                    const str = (gridData as any)[
-                      column.disableDropdown.dependentColumnKey
-                    ];
-                    switch (column.disableDropdown.type) {
-                      case DisableColTypes.DisableWhenItHasData:
-                        if (str && str.toString().length > 0) {
-                          column.disableDropdown = true;
-                        } else if (str === null || str === undefined) {
-                          column.disableDropdown = true;
+                    let newMap = new Map(disableDropdown.current);
+                    for (
+                      let index = 0;
+                      index < [column.disableDropdown].length;
+                      index++
+                    ) {
+                      const disableCellOptions = [column.disableDropdown][
+                        index
+                      ];
+                      const str = (item as any)[
+                        disableCellOptions.disableBasedOnThisColumnKey
+                      ];
+
+                      if (
+                        disableCellOptions.type ===
+                        DisableColTypes.DisableWhenColKeyHasData
+                      ) {
+                        if (
+                          str &&
+                          str.toString().length > 0 &&
+                          (newMap.get(column.key + rowNum) ?? false) === false
+                        ) {
+                          newMap.set(column.key + rowNum, true);
+                          disableDropdown.current = newMap;
+                        } else if (
+                          newMap.get(column.key + rowNum) == true &&
+                          !str
+                        ) {
+                          newMap.set(column.key + rowNum, false);
+                          disableDropdown.current = newMap;
                         }
-                        column.disableDropdown = false
-                        break;
-                      case DisableColTypes.DisableWhenEmpty:
+                      } else if (
+                        disableCellOptions.type ===
+                        DisableColTypes.DisableWhenColKeyIsEmpty
+                      ) {
                         if (str == "" || (str && str.toString().length <= 0)) {
-                          column.disableDropdown = true;
-                        } else if (str === null || str === undefined) {
-                          column.disableDropdown = true;
+                          newMap.set(column.key + rowNum, true);
+                        } else if (
+                          (str === null || str === undefined) &&
+                          (newMap.get(column.key + rowNum) ?? false) === false
+                        ) {
+                          newMap.set(column.key + rowNum, true);
+                        } else if (
+                          (newMap.get(column.key + rowNum) ?? true) !== false &&
+                          str &&
+                          str.toString().length > 0
+                        ) {
+                          newMap.set(column.key + rowNum, false);
                         }
-                        column.disableDropdown = false
-                        break;
-                      default:
-                        column.disableDropdown = false;
+                      }
                     }
+                    disableDropdown.current = newMap;
                   }
                   return (
                     <span className={"row-" + rowNum! + "-col-" + index}>
@@ -3075,7 +3204,12 @@ const EditableGrid = (props: Props) => {
                               item
                             )
                           }
-                          disabled={column.disableDropdown ?? false}
+                          disabled={
+                            disableDropdown.current.get(column.key + rowNum) ??
+                            (typeof column.disableDropdown == "boolean"
+                              ? column.disableDropdown
+                              : false)
+                          }
                         />
                       )}
                     </span>
@@ -3083,6 +3217,63 @@ const EditableGrid = (props: Props) => {
                   break;
 
                 case EditControlType.ComboBox:
+                  if (
+                    column.disableComboBox &&
+                    typeof column.disableComboBox !== "boolean"
+                  ) {
+                    let newMap = new Map(disableComboBox.current);
+                    for (
+                      let index = 0;
+                      index < [column.disableComboBox].length;
+                      index++
+                    ) {
+                      const disableCellOptions = [column.disableComboBox][
+                        index
+                      ];
+                      const str = (item as any)[
+                        disableCellOptions.disableBasedOnThisColumnKey
+                      ];
+
+                      if (
+                        disableCellOptions.type ===
+                        DisableColTypes.DisableWhenColKeyHasData
+                      ) {
+                        if (
+                          str &&
+                          str.toString().length > 0 &&
+                          (newMap.get(column.key + rowNum) ?? false) === false
+                        ) {
+                          newMap.set(column.key + rowNum, true);
+                          disableComboBox.current = newMap;
+                        } else if (
+                          newMap.get(column.key + rowNum) == true &&
+                          !str
+                        ) {
+                          newMap.set(column.key + rowNum, false);
+                          disableComboBox.current = newMap;
+                        }
+                      } else if (
+                        disableCellOptions.type ===
+                        DisableColTypes.DisableWhenColKeyIsEmpty
+                      ) {
+                        if (str == "" || (str && str.toString().length <= 0)) {
+                          newMap.set(column.key + rowNum, true);
+                        } else if (
+                          (str === null || str === undefined) &&
+                          (newMap.get(column.key + rowNum) ?? false) === false
+                        ) {
+                          newMap.set(column.key + rowNum, true);
+                        } else if (
+                          (newMap.get(column.key + rowNum) ?? true) !== false &&
+                          str &&
+                          str.toString().length > 0
+                        ) {
+                          newMap.set(column.key + rowNum, false);
+                        }
+                      }
+                    }
+                    disableComboBox.current = newMap;
+                  }
                   return (
                     <span className={"row-" + rowNum! + "-col-" + index}>
                       {ShouldRenderSpan() ? (
@@ -3116,7 +3307,12 @@ const EditableGrid = (props: Props) => {
                         )
                       ) : (
                         <ComboBox
-                          disabled={column.disableComboBox ?? false}
+                          disabled={
+                            disableComboBox.current.get(column.key + rowNum) ??
+                            (typeof column.disableComboBox == "boolean"
+                              ? column.disableComboBox
+                              : false)
+                          }
                           ariaLabel={column.key}
                           placeholder={
                             column.comboBoxOptions?.filter(
@@ -3126,11 +3322,19 @@ const EditableGrid = (props: Props) => {
                           allowFreeInput
                           autoComplete="on"
                           scrollSelectedToTop
-                          options={comboOptions}
+                          options={comboOptions.get(column.key + rowNum) ?? []}
                           onClick={() => {
-                            if (!init) {
-                              setInit(true);
-                              setComboOptions(column.comboBoxOptions ?? []);
+                            if (!init.get(column.key + rowNum)) {
+                              const newInitMap = new Map();
+                              newInitMap.set(column.key + rowNum, true);
+                              setInit(newInitMap);
+
+                              const newMap = new Map();
+                              newMap.set(
+                                column.key + rowNum,
+                                column.comboBoxOptions ?? []
+                              );
+                              setComboOptions(newMap);
                             }
                           }}
                           onInputValueChange={(text) => {
@@ -3140,7 +3344,12 @@ const EditableGrid = (props: Props) => {
                                 searchPattern.test(item.text)
                               );
 
-                            setComboOptions(searchResults ?? []);
+                            const newMap = new Map();
+                            newMap.set(
+                              column.key + rowNum,
+                              searchResults ?? []
+                            );
+                            setComboOptions(newMap);
                           }}
                           // styles={dropdownStyles}
                           onChange={(ev, option) =>

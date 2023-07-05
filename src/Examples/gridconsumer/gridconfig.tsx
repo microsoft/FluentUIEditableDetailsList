@@ -119,7 +119,6 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Age",
     text: "Age",
     editable: true,
-    //columnDependent: [{dependentColumnKey: 'name', dependentColumnName: 'Name', type: DepColTypes.MustBeEmpty}],
     dataType: "number",
     validations: {
       columnDependent: [
@@ -161,7 +160,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Salary",
     text: "Salary",
     editable: true,
-    dataType: "number",
+    dataType: "string",
     minWidth: 100,
     maxWidth: 100,
     isResizable: true,
@@ -209,6 +208,11 @@ export const GridColumnConfig: IColumnConfig[] = [
       { key: "blue", text: "Blue" },
       { key: "brown", text: "Brown" },
     ],
+    // disableComboBox: false,
+    disableComboBox:  {
+      disableBasedOnThisColumnKey: "name",
+      type: DisableColTypes.DisableWhenColKeyHasData,
+    },
   },
   {
     key: "payrolltype",
@@ -228,10 +232,9 @@ export const GridColumnConfig: IColumnConfig[] = [
       { key: "monthly", text: "Monthly" },
     ],
     // disableDropdown: false,
-    disableDropdown: {
-      dependentColumnKey: "name",
-      dependentColumnName: "Name",
-      type: DisableColTypes.DisableWhenEmpty,
+    disableDropdown:  {
+      disableBasedOnThisColumnKey: "name",
+      type: DisableColTypes.DisableWhenColKeyHasData,
     },
   },
   {
@@ -441,7 +444,7 @@ export interface GridItemsType {
   password: string;
   age: number;
   designation: string;
-  salary: number;
+  salary: number | string;
   dateofjoining: string;
   payrolltype: string;
   employmenttype: string;

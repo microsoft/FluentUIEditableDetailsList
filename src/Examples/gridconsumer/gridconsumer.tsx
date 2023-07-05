@@ -234,25 +234,11 @@ const Consumer = () => {
         designation: "Designation" + GetRandomInt(1, 15),
         salary: GetRandomInt(35000, 75000),
         dateofjoining: "2010-10-10T14:57:10",
-        payrolltype:null,
+        payrolltype: null,
         employmenttype: "Employment Type" + GetRandomInt(1, 12),
         employeelink: "Link",
       });
     }
-    //  dummyData = [
-    //   {
-    //     id: 1,
-    //     CompanyTypeDescription: 'Consolidating',
-    //     CompanyCode: '1999',
-    //     CompanyName: 'Microsoft X'
-    //   },
-    //   {
-    //     id: 2,
-    //     CompanyTypeDescription: 'Joint Venture',
-    //     CompanyCode: '1111',
-    //     CompanyName: 'Skype IO'
-    //   }
-    // ];
     setItems(dummyData);
   };
 
@@ -327,17 +313,69 @@ const Consumer = () => {
     return callbackRequestParamObj.data;
   };
 
-  const attachGridValueChangeCallbacks = (
-    columnConfig: IColumnConfig[]
-  ): IColumnConfig[] => {
-    columnConfig
-      .filter((item) => item.key == "designation")
-      .map((item) => (item.onChange = onDesignationChanged));
-    //columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChanged);
-    //columnConfig.filter((item) => item.key == 'payrolltype').map((item) => item.onChange = onPayrollChanged);
-    //columnConfig.filter((item) => item.key == 'dateofjoining').map((item) => item.onChange = onDateChanged);
-    return columnConfig;
+  const [data, setData] = useState("Ty");
+  const [asyncValues, setAsyncValues] = useState<Map<string, string>>(
+    new Map()
+  );
+
+  const fetchUserData = async (code: string, key: string) => {
+    fetch(`https://localhost:7172/api/DomainData/v1/companyName/${code}/1`, {
+      headers: {
+        Accept: "application/x-www-form-urlencoded",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    })
+      .then((response) => {
+        console.log("responseJson");
+        return response.text();
+      })
+      .then((responseJson) => {
+        console.log(responseJson);
+        setAsyncValues(new Map(asyncValues).set(key, responseJson));
+      });
   };
+  const [col, setCol] = useState(GridColumnConfig)
+  useEffect(() => {
+    setCol(attachGridValueChangeCallbacks(GridColumnConfig))
+  }, [asyncValues]);
+
+  const onDesignationChangedTest = (callbackRequestParamObj: ICallBackParams): any[] => {
+    for (let j = 0; j < callbackRequestParamObj.rowindex.length; j++) {
+      const index = callbackRequestParamObj.rowindex[j];
+      const filteredItems = callbackRequestParamObj.data.filter((item) => item._grid_row_id_ == index);
+      for (let i = 0; i < filteredItems.length; i++) {
+        const item = filteredItems[i];
+         fetchUserData(item.designation, callbackRequestParamObj.triggerkey + index);
+        item.salary = asyncValues.get(callbackRequestParamObj.triggerkey + index);
+      }
+    }
+  
+    return callbackRequestParamObj.data;
+  };
+  
+
+
+  // const attachGridValueChangeCallbacks = 
+  //   (columnConfig: IColumnConfig[]): IColumnConfig[] => {
+  //     columnConfig
+  //       .filter((item) => item.key == "designation")
+  //       .map((item) => (item.onChange = onDesignationChangedTest2));
+      
+  //     // columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChanged);
+  //     //columnConfig.filter((item) => item.key == 'payrolltype').map((item) => item.onChange = onPayrollChanged);
+  //     //columnConfig.filter((item) => item.key == 'dateofjoining').map((item) => item.onChange = onDateChanged);
+  //     return columnConfig;
+  //   }
+
+    const attachGridValueChangeCallbacks =  useCallback((columnConfig: IColumnConfig[]): IColumnConfig[] => {
+      const filteredItems = columnConfig.filter((item) => item.key === "designation");
+      for (let i = 0; i < filteredItems.length; i++) {
+        filteredItems[i].onChange = onDesignationChangedTest;
+      }
+          
+      return columnConfig;
+    },[onDesignationChangedTest]);
+    
 
   const onCheckboxChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
@@ -471,7 +509,7 @@ const Consumer = () => {
     return messageTmp;
   }, [Messages]);
 
-  const [saveAction, setSaveAction] = useState<()=>void>()
+  const [saveAction, setSaveAction] = useState<() => void>();
 
   return (
     <Stack grow horizontalAlign="center">
@@ -714,8 +752,8 @@ const Consumer = () => {
         }}
       >
         <PrimaryButton
-        text="Save Grid"
-        onClick={()=> saveAction && saveAction()}
+          text="Save Grid"
+          onClick={() => saveAction && saveAction()}
         />
         <EditableGrid
           id={100}
@@ -724,7 +762,7 @@ const Consumer = () => {
           enableSaveGridOnCellValueChange={
             gridConfigOptions.enableSaveGridOnCellValueChange
           }
-          GridSaveAction={(saveActionMethod)=> setSaveAction(saveActionMethod)}
+          GridSaveAction={(saveActionMethod) => setSaveAction(saveActionMethod)}
           enableMessageBarErrors={gridConfigOptions.enableMessageBarErrors}
           zeroRowsMsg={"This Rule Will Not Run"}
           commandBarStyles={{
@@ -754,7 +792,7 @@ const Consumer = () => {
           enableSaveChangesOnlyOnSubmit={
             gridConfigOptions.enableSaveChangesOnlyOnSubmit
           }
-          columns={attachGridValueChangeCallbacks(GridColumnConfig)}
+          columns={col}
           onRenderDetailsHeader={onRenderDetailsHeader}
           onRenderRow={onRenderRow}
           layoutMode={DetailsListLayoutMode.justified}

@@ -11,6 +11,7 @@ import { CalculationType } from "./calculationtype";
 import { ICellStyleRulesType, StringOperators } from "./cellstyleruletype";
 import { EditControlType } from "./editcontroltype";
 
+
 export interface IColumnConfig extends IColumn {
   key: string;
   name: string;
@@ -46,8 +47,8 @@ export interface IColumnConfig extends IColumn {
   cellStyleRule?: ICellStyleRulesType;
   dropdownValues?: IDropdownOption[];
   comboBoxOptions?: IComboBoxOption[];
-  disableDropdown?: boolean | IDisableCellOptions;
-  disableComboBox?: boolean;
+  disableDropdown?: boolean | IDisableDropCellOptions;
+  disableComboBox?: boolean | IDisableDropCellOptions;
   checked?: boolean;
   pickerOptions?: IPickerOptions;
   disableSort?: boolean;
@@ -61,14 +62,12 @@ export enum DepColTypes {
 }
 
 export enum DisableColTypes {
-  DisableWhenItHasData = "DisableWhenItHasData",
-  DisableWhenEmpty = "DisableWhenEmpty",
-
+  DisableWhenColKeyHasData = "DisableWhenItHasData",
+  DisableWhenColKeyIsEmpty = "DisableWhenEmpty",
 }
 
-export interface IDisableCellOptions {
-  dependentColumnKey: string;
-  dependentColumnName: string;
+export interface IDisableDropCellOptions {
+  disableBasedOnThisColumnKey: string;
   type: DisableColTypes;
 }
 export interface IColumnDependent {

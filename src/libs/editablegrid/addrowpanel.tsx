@@ -37,7 +37,7 @@ interface Props {
   onChange: any;
   columnConfigurationData: IColumnConfig[];
   enableRowsCounterField?: boolean;
-  autoGenId:  number;
+  autoGenId: number;
 }
 
 const AddRowPanel = (props: Props) => {
@@ -119,7 +119,6 @@ const AddRowPanel = (props: Props) => {
         updateObj[objKey] = columnValuesObj[objKey]["value"];
       }
       //updateObj[objKey] = columnValuesObj[objKey]["value"];
-
     });
 
     // props.onChange(
@@ -273,7 +272,9 @@ const AddRowPanel = (props: Props) => {
                 id={item.key}
                 label={item.text}
                 styles={textFieldStyles}
-                onChange={(ev, text) => onTextUpdate(ev, (props.autoGenId).toString(), item)}
+                onChange={(ev, text) =>
+                  onTextUpdate(ev, props.autoGenId.toString(), item)
+                }
                 value={props.autoGenId.toString()}
                 readOnly
                 disabled

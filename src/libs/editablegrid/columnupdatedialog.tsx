@@ -27,7 +27,7 @@ import PickerControl from "../editablegrid/pickercontrol/picker";
 import { IColumnConfig } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
 import { useCallback, useEffect, useState } from "react";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   columnConfigurationData: IColumnConfig[];
@@ -131,7 +131,7 @@ const ColumnUpdateDialog = (props: Props) => {
   ): void => {
     SetObjValues(item.key, selectedDropdownItem?.text);
   };
-  
+
   const onComboBoxChange = (
     event: React.FormEvent<IComboBox>,
     selectedOption: IComboBoxOption | undefined,
@@ -139,7 +139,7 @@ const ColumnUpdateDialog = (props: Props) => {
   ): void => {
     SetObjValues(item.key, selectedOption?.text);
   };
-  
+
   const onCheckBoxChange = (
     ev: React.FormEvent<HTMLElement | HTMLInputElement>,
     isChecked: boolean,
@@ -269,11 +269,11 @@ const ColumnUpdateDialog = (props: Props) => {
               }}
               onInputValueChange={(text) => {
                 const searchPattern = new RegExp(text, "i");
-                const searchResults = column[0].comboBoxOptions?.filter((item) =>
-                  searchPattern.test(item.text)
+                const searchResults = column[0].comboBoxOptions?.filter(
+                  (item) => searchPattern.test(item.text)
                 );
 
-                console.log(searchResults)
+                console.log(searchResults);
                 setComboOptions(searchResults ?? []);
               }}
               onChange={(ev, option) => onComboBoxChange(ev, option, column[0])}

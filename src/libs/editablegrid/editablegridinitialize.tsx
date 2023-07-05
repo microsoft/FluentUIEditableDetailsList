@@ -46,16 +46,19 @@ export const InitializeInternalGridEditStructure = (items : any[]) : any[] => {
     return activateCellEditTmp;
 };
 
-export const ShallowCopyDefaultGridToEditGrid = (defaultGrid : any[], editGrid : any[]) : any[] => {
-    defaultGrid.forEach((item, index) => {
-        var objectKeys = Object.keys(item);
-        objectKeys.forEach((objKey) => {
-            editGrid[index].properties[objKey]['value'] = item[objKey];
-        })
-    });
-
+export const ShallowCopyDefaultGridToEditGrid = (defaultGrid: any[], editGrid: any[]): any[] => {
+    for (let index = 0; index < defaultGrid.length; index++) {
+      const item = defaultGrid[index];
+      const objectKeys = Object.keys(item);
+      for (let j = 0; j < objectKeys.length; j++) {
+        const objKey = objectKeys[j];
+        editGrid[index].properties[objKey]['value'] = item[objKey];
+      }
+    }
+  
     return editGrid;
-};
+  };
+  
 
 export const ShallowCopyEditGridToDefaultGrid = (defaultGrid : any[], editGrid : any[]) : any[] => {
     editGrid.forEach((item) => {

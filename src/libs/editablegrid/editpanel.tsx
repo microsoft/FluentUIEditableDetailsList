@@ -138,8 +138,6 @@ const EditPanel = (props: Props) => {
     props.columnConfigurationData
       .filter((x) => x.editable == true)
       .forEach((item) => {
-     
-
         switch (item.inputType) {
           case EditControlType.Date:
             tmpRenderObj.push(
@@ -201,8 +199,8 @@ const EditPanel = (props: Props) => {
                   const searchResults = item.comboBoxOptions?.filter((item) =>
                     searchPattern.test(item.text)
                   );
-  
-                  console.log(searchResults)
+
+                  console.log(searchResults);
                   setComboOptions(searchResults ?? []);
                 }}
                 onChange={(ev, option) => onComboBoxChange(ev, option, item)}
