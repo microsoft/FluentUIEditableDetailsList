@@ -369,30 +369,37 @@ const EditableGrid = (props: Props) => {
           ) {
             if(!emptyCol.includes(' '+element.name))
             emptyCol.push(' '+element.name);
-          }else if( typeof element.required !== "boolean" && element.required.alwaysRequired && 
-          (rowCol == null ||
+          }
+          else if( typeof element.required !== "boolean" && element.required.requiredOnlyIfTheseColumnsAreEmpty && (rowCol == null ||
             rowCol == undefined ||
             rowCol.toString().length <= 0 ||
-            rowCol == "")
-            ){
-              if(!emptyCol.includes(' '+element.name))
-              emptyCol.push(' '+element.name);
-
-            }else if( typeof element.required !== "boolean" && element.required.requiredOnlyIfTheseColumnsAreEmpty){
+            rowCol == "")){
               const checkKeys = element.required.requiredOnlyIfTheseColumnsAreEmpty.colKeys
+              let skippable = false
               for (let index = 0; index < checkKeys.length; index++) {
                 const columnKey = checkKeys[index];
                 const str = (gridData as any)[columnKey]
+
+                if(element.required.alwaysRequired){
                 if(str == null ||
                   str == undefined ||
                   str.toString().length <= 0 ||
                   str == ""){
-                    if(!emptyReqCol.includes(' '+element.name))
+                    if(!emptyReqCol.includes(' '+element.name)){
                     emptyReqCol.push(' '+element.name)
-                  }
-                
+                    break}
+                  }}
+                else{
+                  if(str && str.toString().length > 0){
+                      skippable = true
+                      break
+                    }
+                    }
+                    console.log(element.name)
               }
-
+              if(!emptyReqCol.includes(' '+element.name) && skippable == false){
+                emptyReqCol.push(' '+element.name)
+                }
             }
           
 
@@ -401,7 +408,7 @@ const EditableGrid = (props: Props) => {
             (typeof rowCol !== element.dataType || typeof rowCol === "number")
           ) {
             if (element.dataType === "number") {
-              if (isNaN(parseInt(rowCol))) {
+              if (isNaN(parseInt(rowCol)) && rowCol !== '') {
                 if (
                   props.enableMessageBarErrors &&
                   props.enableMessageBarErrors.enableShowErrors
@@ -721,7 +728,7 @@ const EditableGrid = (props: Props) => {
           var msg =
             `Row: ${row + 1} - ${emptyReqCol} cannot all be empty`;
   
-          insertToMap(Messages.current, row, {
+          insertToMap(Messages.current, row+'erc', {
             msg: msg,
             type: MessageBarType.error,
           });
@@ -734,11 +741,10 @@ const EditableGrid = (props: Props) => {
           props.enableMessageBarErrors.enableShowErrors
         ) {
           
-
           var msg =
             `Row: ${row + 1} - ${emptyReqCol} cannot be empty`;
   
-          insertToMap(Messages.current, row, {
+          insertToMap(Messages.current, row+'erc', {
             msg: msg,
             type: MessageBarType.error,
           });
@@ -756,7 +762,7 @@ const EditableGrid = (props: Props) => {
           var msg =
             `Row: ${row + 1} - ${emptyCol.toString()} cannot be empty at all`;
   
-          insertToMap(Messages.current, row, {
+          insertToMap(Messages.current, row+'ec', {
             msg: msg,
             type: MessageBarType.error,
           });
@@ -772,7 +778,7 @@ const EditableGrid = (props: Props) => {
           var msg =
             `Row: ${row + 1} - ${emptyCol.toString()} cannot be empty`;
   
-          insertToMap(Messages.current, row, {
+          insertToMap(Messages.current, row+'ec', {
             msg: msg,
             type: MessageBarType.error,
           });

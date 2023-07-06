@@ -69,8 +69,8 @@ export enum DisableColTypes {
 }
 
 export interface IRequiredColumnsOptions {
-  alwaysRequired?: boolean
-  requiredOnlyIfTheseColumnsAreEmpty?: {colKeys: string[]}
+  alwaysRequired: boolean
+  requiredOnlyIfTheseColumnsAreEmpty: {colKeys: string[]}
 }
 export interface IDisableDropCellOptions {
   disableBasedOnThisColumnKey: string;

@@ -58,8 +58,8 @@ export declare enum DisableColTypes {
     DisableWhenColKeyIsEmpty = "DisableWhenEmpty"
 }
 export interface IRequiredColumnsOptions {
-    alwaysRequired?: boolean;
-    requiredOnlyIfTheseColumnsAreEmpty?: {
+    alwaysRequired: boolean;
+    requiredOnlyIfTheseColumnsAreEmpty: {
         colKeys: string[];
     };
 }
