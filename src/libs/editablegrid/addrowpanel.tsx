@@ -86,6 +86,13 @@ const AddRowPanel = (props: Props) => {
     SetObjValues(item.key, selectedOption?.text);
   };
 
+  const onComboBoxChangeRaw = (
+    text: string,
+    item: any
+  ): void => {
+    SetObjValues(item.key, text);
+  };
+
   const onCheckBoxChange = (
     ev: React.FormEvent<HTMLElement | HTMLInputElement>,
     isChecked: boolean,
@@ -179,6 +186,7 @@ const AddRowPanel = (props: Props) => {
               key={item.key}
               label={item.text}
               allowFreeInput
+              allowFreeform
               autoComplete="on"
               scrollSelectedToTop
               options={comboOptions}
@@ -196,6 +204,7 @@ const AddRowPanel = (props: Props) => {
 
                 console.log(searchResults);
                 setComboOptions(searchResults ?? []);
+                onComboBoxChangeRaw(text, item)
               }}
               onChange={(ev, option) => onComboBoxChange(ev, option, item)}
             />

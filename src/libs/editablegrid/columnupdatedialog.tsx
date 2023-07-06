@@ -140,6 +140,10 @@ const ColumnUpdateDialog = (props: Props) => {
     SetObjValues(item.key, selectedOption?.text);
   };
 
+  const onComboBoxChangeRaw = (text: string, item: any): void => {
+    SetObjValues(item.key, text);
+  };
+
   const onCheckBoxChange = (
     ev: React.FormEvent<HTMLElement | HTMLInputElement>,
     isChecked: boolean,
@@ -275,9 +279,11 @@ const ColumnUpdateDialog = (props: Props) => {
 
                 console.log(searchResults);
                 setComboOptions(searchResults ?? []);
+                onComboBoxChangeRaw(text, column[0]);
               }}
               onChange={(ev, option) => onComboBoxChange(ev, option, column[0])}
               allowFreeInput
+              allowFreeform
               autoComplete="on"
             />
           );

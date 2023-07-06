@@ -1983,6 +1983,34 @@ const EditableGrid = (props: Props) => {
     }
   };
 
+
+  const onComboBoxChangeRaw = (
+    text: string,
+    row: number,
+    column: IColumnConfig,
+    item: any
+  ): void => {
+    let activateCellEditTmp: any[] = [];
+    activateCellEdit.forEach((item, index) => {
+      if (row == index) {
+        item.properties[column.key].value = text;
+      }
+
+      activateCellEditTmp.push(item);
+    });
+
+    if (column.onChange) {
+      HandleColumnOnChange(activateCellEditTmp, row, column);
+    }
+
+    setActivateCellEdit(activateCellEditTmp);
+
+    if (props.enableSaveGridOnCellValueChange) {
+      let defaultGridDataTmp: any[] = SaveRowValue(item, row, defaultGridData);
+      setDefaultGridData(defaultGridDataTmp);
+    }
+  };
+
   const onCheckBoxChange = (
     ev: React.FormEvent<HTMLElement | HTMLInputElement>,
     row: number,
@@ -3462,6 +3490,7 @@ const EditableGrid = (props: Props) => {
                             )[0]?.text ?? "Start typing..."
                           }
                           allowFreeInput
+                          allowFreeform
                           autoComplete="on"
                           scrollSelectedToTop
                           options={comboOptions.get(column.key + rowNum) ?? []}
@@ -3492,6 +3521,7 @@ const EditableGrid = (props: Props) => {
                               searchResults ?? []
                             );
                             setComboOptions(newMap);
+                            onComboBoxChangeRaw(text,rowNum!, column, item)
                           }}
                           // styles={dropdownStyles}
                           onChange={(ev, option) =>
