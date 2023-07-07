@@ -3487,7 +3487,9 @@ const EditableGrid = (props: Props) => {
                           placeholder={
                             column.comboBoxOptions?.filter(
                               (x) => x.text == item[column.key]
-                            )[0]?.text ?? "Start typing..."
+                            )[0]?.text ?? column.comboBoxOptions?.filter(
+                              (x) => x.key.toString() == item[column.key]
+                            )[0]?.key.toString() ?? "Start typing..."
                           }
                           allowFreeInput
                           allowFreeform

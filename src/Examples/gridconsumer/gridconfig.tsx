@@ -223,10 +223,10 @@ export const GridColumnConfig: IColumnConfig[] = [
       { key: "brown", text: "Brown" },
     ],
     // disableComboBox: false,
-    disableComboBox: {
-      disableBasedOnThisColumnKey: "name",
-      type: DisableColTypes.DisableWhenColKeyHasData,
-    },
+    // disableComboBox: {
+    //   disableBasedOnThisColumnKey: "name",
+    //   type: DisableColTypes.DisableWhenColKeyHasData,
+    // },
   },
   {
     key: "payrolltype",
