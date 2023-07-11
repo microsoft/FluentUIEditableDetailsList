@@ -53740,7 +53740,11 @@ const HU = (e) => {
     }
   }, Wp = (M, X, F, J) => {
     let se = [];
-    return se = [...J], console.log(se), se[X].properties[M].activated = F, se[X].properties[M].error = F ? se[X].properties[M].error : null, se;
+    try {
+      return se = [...J], se[X].properties[M].activated = F, se[X].properties[M].error = F ? se[X].properties[M].error : null, se;
+    } catch {
+      return console.log(M), console.log(X), console.log(se[X].properties), console.log(se), J;
+    }
   }, cn = (M, X, F) => {
     let J = Wp(
       M,

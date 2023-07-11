@@ -2276,14 +2276,27 @@ const EditableGrid = (props: Props) => {
     activateCellEditArr: any[]
   ): any[] => {
     let activateCellEditTmp: any[] = [];
-    activateCellEditTmp = [...activateCellEditArr];
-    console.log(activateCellEditTmp)
-    activateCellEditTmp[rowNum]["properties"][key]["activated"] = activateCurrentCell;
-    activateCellEditTmp[rowNum]["properties"][key]["error"] =
-      !activateCurrentCell
-        ? null
-        : activateCellEditTmp[rowNum]["properties"][key]["error"];
-    return activateCellEditTmp;
+
+    try {
+      activateCellEditTmp = [...activateCellEditArr];
+      activateCellEditTmp[rowNum]["properties"][key]["activated"] = activateCurrentCell;
+      activateCellEditTmp[rowNum]["properties"][key]["error"] =
+        !activateCurrentCell
+          ? null
+          : activateCellEditTmp[rowNum]["properties"][key]["error"];
+  
+  
+  
+      return activateCellEditTmp;
+    } catch (error) {
+      console.log(key)
+      console.log(rowNum)
+      console.log(activateCellEditTmp[rowNum]["properties"])
+      console.log(activateCellEditTmp)
+      return activateCellEditArr
+
+    }
+
   };
 
   const EditCellValue = (

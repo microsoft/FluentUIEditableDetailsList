@@ -807,7 +807,7 @@ const Consumer = () => {
           enableSaveChangesOnlyOnSubmit={
             gridConfigOptions.enableSaveChangesOnlyOnSubmit
           }
-          columns={col}
+          columns={attachGridValueChangeCallbacks(GridColumnConfig)}
           onRenderDetailsHeader={onRenderDetailsHeader}
           onRenderRow={onRenderRow}
           layoutMode={DetailsListLayoutMode.fixedColumns}
