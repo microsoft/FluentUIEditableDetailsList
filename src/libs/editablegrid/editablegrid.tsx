@@ -1219,7 +1219,7 @@ const EditableGrid = (props: Props) => {
       );
       SetAddRowActive(false);
     }
-  }, [activateCellEdit]);
+  }, [activateCellEdit, defaultGridData]);
 
   const AddRowsToGrid = (): void => {
     const updateItemName = (): void => {
@@ -3362,8 +3362,7 @@ const EditableGrid = (props: Props) => {
                       ) : (
                         <TextField
                           errorMessage={
-                            activateCellEdit[rowNum!]["properties"][column.key]
-                              .error
+                            activateCellEdit[rowNum!]["properties"][column.key]?.error
                           }
                           label={item.text}
                           ariaLabel={column.key}
@@ -3965,8 +3964,7 @@ const EditableGrid = (props: Props) => {
                       ) : (
                         <TextField
                           errorMessage={
-                            activateCellEdit[rowNum!]["properties"][column.key]
-                              .error
+                            activateCellEdit[rowNum!]["properties"][column.key]?.error
                           }
                           label={item.text}
                           ariaLabel={column.key}
@@ -4050,8 +4048,7 @@ const EditableGrid = (props: Props) => {
                       ) : (
                         <TextField
                           errorMessage={
-                            activateCellEdit[rowNum!]["properties"][column.key]
-                              .error
+                            activateCellEdit[rowNum!]["properties"][column.key]?.error
                           }
                           label={item.text}
                           ariaLabel={column.key}
