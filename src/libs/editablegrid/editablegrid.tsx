@@ -1212,6 +1212,8 @@ const EditableGrid = (props: Props) => {
   const [AddRowActive, SetAddRowActive] = useState(false);
   useEffect(() => {
     if (AddRowActive && props.enableInlineGridAdd) {
+      console.log(activateCellEdit)
+
       ShowRowEditMode(
         defaultGridData[0],
         Number(defaultGridData[0]["_grid_row_id_"])!,
@@ -1219,7 +1221,7 @@ const EditableGrid = (props: Props) => {
       );
       SetAddRowActive(false);
     }
-  }, [activateCellEdit, defaultGridData]);
+  }, [activateCellEdit, defaultGridData, props.items]);
 
   const AddRowsToGrid = (): void => {
     const updateItemName = (): void => {
@@ -2278,7 +2280,8 @@ const EditableGrid = (props: Props) => {
     let activateCellEditTmp: any[] = [];
 
     try {
-      activateCellEditTmp = [...activateCellEditArr];
+
+      activateCellEditTmp = [...activateCellEditArr];    
       activateCellEditTmp[rowNum]["properties"][key]["activated"] = activateCurrentCell;
       activateCellEditTmp[rowNum]["properties"][key]["error"] =
         !activateCurrentCell
@@ -2289,12 +2292,8 @@ const EditableGrid = (props: Props) => {
   
       return activateCellEditTmp;
     } catch (error) {
-      console.log(key)
-      console.log(rowNum)
-      console.log(activateCellEditTmp[rowNum]["properties"])
-      console.log(activateCellEditTmp)
+      // console.log(error)
       return activateCellEditArr
-
     }
 
   };
@@ -2347,13 +2346,14 @@ const EditableGrid = (props: Props) => {
   /* #endregion */
 
   /* #region [Grid Row Edit Functions] */
-  const ChangeRowState = (
+  const ChangeRowState = useCallback((
     item: any,
     rowNum: number,
     enableTextField: boolean
   ): any[] => {
     let activateCellEditTmp: any[] = [...activateCellEdit];
     var objectKeys = Object.keys(item);
+
     objectKeys
       .filter((key) => key != "_grid_row_id_" && key != "_grid_row_operation_")
       .forEach((objKey) => {
@@ -2368,7 +2368,7 @@ const EditableGrid = (props: Props) => {
     activateCellEditTmp[rowNum]["isActivated"] = enableTextField;
 
     return activateCellEditTmp;
-  };
+  },[activateCellEdit, defaultGridData]);
 
   const SaveRowValue = (
     item: any,
