@@ -86,10 +86,7 @@ const AddRowPanel = (props: Props) => {
     SetObjValues(item.key, selectedOption?.text);
   };
 
-  const onComboBoxChangeRaw = (
-    text: string,
-    item: any
-  ): void => {
+  const onComboBoxChangeRaw = (text: string, item: any): void => {
     SetObjValues(item.key, text);
   };
 
@@ -186,16 +183,19 @@ const AddRowPanel = (props: Props) => {
               key={item.key}
               label={item.text}
               allowFreeInput
-              allowFreeform
+              allowFreeform={false}
               autoComplete="on"
               scrollSelectedToTop
               options={comboOptions}
               onClick={() => {
                 if (!init) {
                   setInit(true);
-                  setComboOptions(item.comboBoxOptions ?? []);
+                  setComboOptions([...item.comboBoxOptions ?? []].concat([
+                    { key: "beaddf9d-503a-4753-95d9-158f08d9d37e", text: "" },
+                  ]) ?? []);
                 }
               }}
+              placeholder="Start typing..."
               onInputValueChange={(text) => {
                 const searchPattern = new RegExp(text, "i");
                 const searchResults = item.comboBoxOptions?.filter((item) =>
@@ -203,8 +203,12 @@ const AddRowPanel = (props: Props) => {
                 );
 
                 console.log(searchResults);
-                setComboOptions(searchResults ?? []);
-                onComboBoxChangeRaw(text, item)
+                setComboOptions(
+                  searchResults?.concat([
+                    { key: "64830f62-5ab8-490a-a0ed-971f977a3603", text: "" },
+                  ]) ?? []
+                );
+                onComboBoxChangeRaw(text, item);
               }}
               onChange={(ev, option) => onComboBoxChange(ev, option, item)}
             />

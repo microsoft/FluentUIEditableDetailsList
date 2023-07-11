@@ -259,8 +259,9 @@ const ColumnUpdateDialog = (props: Props) => {
           );
 
         case EditControlType.ComboBox:
-          setComboOptions(column[0].comboBoxOptions ?? []);
-          return (
+          setComboOptions([...column[0].comboBoxOptions ?? []].concat([
+            { key: "b0af6b90-1c51-4938-a7cf-63567ba5daed", text: "" },
+          ]) ?? []);          return (
             <ComboBox
               key={uuidv4()}
               label={column[0].text}
@@ -268,8 +269,9 @@ const ColumnUpdateDialog = (props: Props) => {
               onClick={() => {
                 if (!init) {
                   setInit(true);
-                  setComboOptions(column[0].comboBoxOptions ?? []);
-                }
+                  setComboOptions([...column[0].comboBoxOptions ?? []].concat([
+                    { key: "beaddf9d-503a-4753-95d9-158f08d9d37e", text: "" },
+                  ]) ?? []);                }
               }}
               onInputValueChange={(text) => {
                 const searchPattern = new RegExp(text, "i");
@@ -278,12 +280,16 @@ const ColumnUpdateDialog = (props: Props) => {
                 );
 
                 console.log(searchResults);
-                setComboOptions(searchResults ?? []);
+                setComboOptions(
+                  searchResults?.concat([
+                    { key: "64830f62-5ab8-490a-a0ed-971f977a3603", text: "" },
+                  ]) ?? []
+                );
                 onComboBoxChangeRaw(text, column[0]);
               }}
               onChange={(ev, option) => onComboBoxChange(ev, option, column[0])}
               allowFreeInput
-              allowFreeform
+              allowFreeform={false}
               autoComplete="on"
             />
           );

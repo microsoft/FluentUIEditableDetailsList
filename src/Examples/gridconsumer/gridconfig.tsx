@@ -77,7 +77,7 @@ export const GridColumnConfig: IColumnConfig[] = [
         {
           dependentColumnKey: "age",
           dependentColumnName: "Age",
-          skipCheckIfTheseColumnsHaveData: {colKeys: ['salary', 'password'], partial: false},
+          // skipCheckIfTheseColumnsHaveData: {colKeys: ['salary', 'password'], partial: false},
           type: DepColTypes.MustBeEmpty,
         },
       ],
@@ -218,8 +218,8 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInSearch: true,
     inputType: EditControlType.ComboBox,
     comboBoxOptions: [
-      { key: "black", text: "Black" },
-      { key: "blue", text: "Blue" },
+      { key: "1111", text: "Black Red" },
+      { key: "Blue", text: "Blue" },
       { key: "brown", text: "Brown" },
     ],
     // disableComboBox: false,
@@ -365,99 +365,6 @@ export const GridColumnConfig: IColumnConfig[] = [
     },
   },
 ];
-
-export const GridColumnConfig2: IColumnConfig[] = [
-  {
-    key: "id",
-    name: "ID",
-    text: "ID",
-    editable: false,
-    required: false,
-    dataType: "number",
-    minWidth: 100,
-    maxWidth: 100,
-    isResizable: true,
-    includeColumnInExport: true,
-    includeColumnInSearch: true,
-    applyColumnFilter: true,
-    disableSort: true,
-  },
-  {
-    key: "exclude",
-    name: "Exclude",
-    text: "Exclude",
-    editable: true,
-    required: false,
-    dataType: "boolean",
-    minWidth: 150,
-    maxWidth: 150,
-    isResizable: true,
-    includeColumnInExport: true,
-    includeColumnInSearch: false,
-    onRender: (item: {
-      selected: boolean | undefined;
-      onCheckboxChange: (arg0: any) => void;
-    }) => {
-      return (
-        <Stack horizontalAlign="center">
-          <Checkbox checked={item.selected} />
-        </Stack>
-      );
-    },
-    inputType: EditControlType.CheckBox,
-  },
-  {
-    key: "CompanyTypeDescription",
-    name: "Company Type Description",
-    text: "Company Type Description",
-    editable: true,
-    required: false,
-    dataType: "string",
-    minWidth: 250,
-    maxWidth: 250,
-    isResizable: true,
-    includeColumnInExport: true,
-    includeColumnInSearch: true,
-    applyColumnFilter: true,
-  },
-  {
-    key: "CompanyCode",
-    name: "Company Code",
-    text: "Company Code",
-    editable: true,
-    required: false,
-    dataType: "number",
-    minWidth: 150,
-    maxWidth: 150,
-    isResizable: true,
-    includeColumnInExport: true,
-    includeColumnInSearch: true,
-    applyColumnFilter: true,
-  },
-  {
-    key: "CompanyName",
-    name: "Company Name",
-    text: "Company Name",
-    editable: false,
-    required: false,
-    dataType: "string",
-    minWidth: 150,
-    maxWidth: 150,
-    isResizable: true,
-    columnNeededInImport: false,
-    includeColumnInExport: true,
-    includeColumnInSearch: true,
-    inputType: EditControlType.MultilineTextField,
-    applyColumnFilter: true,
-  },
-];
-
-export interface GridItemsType2 {
-  id: number;
-  CompanyTypeDescription: string;
-  CompanyCode: string;
-  CompanyName: string;
-}
 
 export interface GridItemsType {
   id: number;

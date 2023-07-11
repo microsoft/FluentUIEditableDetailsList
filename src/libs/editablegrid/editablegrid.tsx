@@ -328,6 +328,50 @@ const EditableGrid = (props: Props) => {
       props.onGridInErrorCallback(gridInError, GlobalMessagesState);
   }, [gridInError, GlobalMessagesState]);
 
+  function findDuplicates(array: any) {
+    const makeEverythingAString = array.map((obj:any) => {
+      const convertedObj = {} as any;
+      for (const key in obj) {
+        convertedObj[key] = String(obj[key]);
+      }
+      return convertedObj;
+    });
+
+    const ignoredProperties = [
+      "_grid_row_id_",
+      "_grid_row_operation_",
+      "_is_filtered_in_",
+      "_is_filtered_in_grid_search_",
+      "_is_filtered_in_column_filter_",
+    ];
+
+    if(indentiferColumn.current !== null){
+      ignoredProperties.push(indentiferColumn.current)
+    }
+
+    const duplicates = {} as any;
+
+    makeEverythingAString.forEach((obj: any, index: number) => {
+      const properties = Object.keys(obj)
+        .filter((key) => !ignoredProperties.includes(key))
+        .map((key) => obj[key]);
+
+      const hash = JSON.stringify(properties);
+
+      if (duplicates[hash]) {
+        duplicates[hash].rowIndex.push(indentiferColumn.current !== null ?  obj[indentiferColumn.current] : index + 1);
+      } else {
+        duplicates[hash] = { rowIndex: indentiferColumn.current !== null ?  [obj[indentiferColumn.current] ]: [index + 1] };
+      }
+    });
+
+    const duplicateRowIndex = Object.values(duplicates)
+      .filter((obj:any) => obj.rowIndex.length > 1)
+      .flatMap((obj:any) => obj.rowIndex);
+
+    return duplicateRowIndex;
+  }
+
   const runGridValidations = (): void => {
     GlobalMessages.current = new Map();
     SetGlobalMessagesState(GlobalMessages.current);
@@ -341,6 +385,23 @@ const EditableGrid = (props: Props) => {
             (x) => x._grid_row_operation_ != Operation.Delete
           )
         : [];
+
+    //Duplicate Rows
+    const duplicates = findDuplicates(defaultGridDataTmp);
+    if(duplicates.length > 0){
+      if (
+        props.enableMessageBarErrors &&
+        props.enableMessageBarErrors.enableShowErrors
+      ) {
+        var msg = indentiferColumn.current !== null ? `Rows Located At IDs: ${duplicates} are duplicated` : `Rows Located At Indexes ${duplicates} are duplicated`;
+
+        insertToMap(Messages.current, "dups", {
+          msg: msg,
+          type: MessageBarType.error,
+        });
+      }
+      setGridInError(true);
+    }
 
     for (let row = 0; row < defaultGridDataTmp.length; row++) {
       const gridData = defaultGridDataTmp[row];
@@ -425,7 +486,7 @@ const EditableGrid = (props: Props) => {
                   props.enableMessageBarErrors.enableShowErrors
                 ) {
                   var msg =
-                    `Row: ${row + 1} Col: ${element.name} - ` +
+                    `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} Col: ${element.name} - ` +
                     `Value is not a '${element.dataType}'.`;
                   insertToMap(Messages.current, element.key + row, {
                     msg: msg,
@@ -447,7 +508,7 @@ const EditableGrid = (props: Props) => {
                       props.enableMessageBarErrors.enableShowErrors
                     ) {
                       var msg =
-                        `Row: ${row + 1} Col: ${element.name} - ` +
+                        `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} Col: ${element.name} - ` +
                         `Value outside of range '${min} - ${max}'. Entered value ${rowCol}`;
                       insertToMap(Messages.current, element.key + row, {
                         msg: msg,
@@ -463,7 +524,7 @@ const EditableGrid = (props: Props) => {
                       props.enableMessageBarErrors.enableShowErrors
                     ) {
                       var msg =
-                        `Row: ${row + 1} Col: ${element.name} - ` +
+                        `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} Col: ${element.name} - ` +
                         `Value is lower than required range: '${min}'. Entered value ${rowCol}`;
                       insertToMap(Messages.current, element.key + row, {
                         msg: msg,
@@ -479,7 +540,7 @@ const EditableGrid = (props: Props) => {
                       props.enableMessageBarErrors.enableShowErrors
                     ) {
                       var msg =
-                        `Row: ${row + 1} Col: ${element.name} - ` +
+                        `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} Col: ${element.name} - ` +
                         `Value is greater than required range: '${max}'. Entered value ${rowCol}`;
                       insertToMap(Messages.current, element.key + row, {
                         msg: msg,
@@ -499,7 +560,7 @@ const EditableGrid = (props: Props) => {
                   props.enableMessageBarErrors.enableShowErrors
                 ) {
                   var msg =
-                    `Row: ${row + 1} Col: ${element.name} - ` +
+                    `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} Col: ${element.name} - ` +
                     `Value is not a '${element.dataType}'.`;
                   insertToMap(Messages.current, element.key + row, {
                     msg: msg,
@@ -521,7 +582,7 @@ const EditableGrid = (props: Props) => {
                   props.enableMessageBarErrors.enableShowErrors
                 ) {
                   var msg =
-                    `Row: ${row + 1} Col: ${element.name} - ` +
+                    `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} Col: ${element.name} - ` +
                     `Value is not a '${element.dataType}'.`;
                   insertToMap(Messages.current, element.key + row, {
                     msg: msg,
@@ -624,7 +685,7 @@ const EditableGrid = (props: Props) => {
                           props.enableMessageBarErrors.enableShowErrors
                         ) {
                           var msg =
-                            `Row: ${row + 1} Col: ${element.name} - ` +
+                            `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} Col: ${element.name} - ` +
                             (colDep.errorMessage ??
                               ` Data cannot be entered here and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
 
@@ -650,7 +711,7 @@ const EditableGrid = (props: Props) => {
                       props.enableMessageBarErrors.enableShowErrors
                     ) {
                       var msg =
-                        `Row: ${row + 1} Col: ${
+                        `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} Col: ${
                           colDep.dependentColumnName
                         } - ` +
                         (colDep.errorMessage ??
@@ -680,7 +741,7 @@ const EditableGrid = (props: Props) => {
                   props.enableMessageBarErrors.enableShowErrors
                 ) {
                   var msg =
-                    `Row: ${row + 1} Col: ${element.name} - ` +
+                    `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} Col: ${element.name} - ` +
                     `${data.errorMessage}`;
                   insertToMap(Messages.current, element.key + row, {
                     msg: msg,
@@ -707,7 +768,7 @@ const EditableGrid = (props: Props) => {
                   props.enableMessageBarErrors.enableShowErrors
                 ) {
                   var msg =
-                    `Row: ${row + 1} Col: ${element.name} - ` +
+                    `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} Col: ${element.name} - ` +
                     `${element.validations.stringValidations?.errMsg}`;
                   insertToMap(Messages.current, element.key + row, {
                     msg: msg,
@@ -726,7 +787,7 @@ const EditableGrid = (props: Props) => {
                     props.enableMessageBarErrors.enableShowErrors
                   ) {
                     var msg =
-                      `Row: ${row + 1} Col: ${element.name} - ` +
+                      `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} Col: ${element.name} - ` +
                       `${element.validations.stringValidations?.errMsg}`;
                     insertToMap(Messages.current, element.key + row, {
                       msg: msg,
@@ -741,12 +802,13 @@ const EditableGrid = (props: Props) => {
         }
       }
 
+
       if (emptyReqCol.length > 1) {
         if (
           props.enableMessageBarErrors &&
           props.enableMessageBarErrors.enableShowErrors
         ) {
-          var msg = `Row: ${row + 1} - ${emptyReqCol} cannot all be empty`;
+          var msg = `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} - ${emptyReqCol} cannot all be empty`;
 
           insertToMap(Messages.current, row + "erc", {
             msg: msg,
@@ -759,7 +821,7 @@ const EditableGrid = (props: Props) => {
           props.enableMessageBarErrors &&
           props.enableMessageBarErrors.enableShowErrors
         ) {
-          var msg = `Row: ${row + 1} - ${emptyReqCol} cannot be empty`;
+          var msg = `Row: ${indentiferColumn.current ? 'With ID:' + (gridData as any)[indentiferColumn.current] : row + 1} - ${emptyReqCol} cannot be empty`;
 
           insertToMap(Messages.current, row + "erc", {
             msg: msg,
@@ -774,9 +836,7 @@ const EditableGrid = (props: Props) => {
           props.enableMessageBarErrors &&
           props.enableMessageBarErrors.enableShowErrors
         ) {
-          var msg = `Row: ${
-            row + 1
-          } - ${emptyCol.toString()} cannot be empty at all`;
+          var msg = `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} - ${emptyCol.toString()} cannot be empty at all`;
 
           insertToMap(Messages.current, row + "ec", {
             msg: msg,
@@ -789,7 +849,7 @@ const EditableGrid = (props: Props) => {
           props.enableMessageBarErrors &&
           props.enableMessageBarErrors.enableShowErrors
         ) {
-          var msg = `Row: ${row + 1} - ${emptyCol.toString()} cannot be empty`;
+          var msg = `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} - ${emptyCol.toString()} cannot be empty`;
 
           insertToMap(Messages.current, row + "ec", {
             msg: msg,
@@ -978,6 +1038,12 @@ const EditableGrid = (props: Props) => {
     setDialogContent(undefined);
   }, []);
   const [CurrentAutoGenID, SetCurrentAutoGenID] = useState(0);
+  const tempAutoGenId = useRef(0);
+
+  useEffect(() => {
+    // Ref only updates once
+    SetCurrentAutoGenID(tempAutoGenId.current);
+  }, [tempAutoGenId.current]);
 
   const GetDefaultRowObject = useCallback(
     (rowCount: number): any[] => {
@@ -1739,7 +1805,7 @@ const EditableGrid = (props: Props) => {
               props.enableMessageBarErrors &&
               props.enableMessageBarErrors.enableShowErrors
             ) {
-              var msg = `Row: ${row + 1} Col: ${column.name} - ` + err;
+              var msg = `Row ${indentiferColumn.current ? 'With ID: ' + (gridData as any)[indentiferColumn.current] : 'With Index:' + row + 1} Col: ${column.name} - ` + err;
               insertToMap(Messages.current, key + row, {
                 msg: msg,
                 type: MessageBarType.error,
@@ -2463,26 +2529,26 @@ const EditableGrid = (props: Props) => {
   };
 
   const pasteRef = useRef<any>(null);
-  useEffect(() => {
-    const handlePaste = (event: any) => {
-      if (event.ctrlKey && event.key === "v") {
-        if (props.gridCopyOptions && props.gridCopyOptions.enableGridPaste)
-          PasteGridRows();
-      }
-    };
+  // useEffect(() => {
+  //   const handlePaste = (event: any) => {
+  //     if (event.ctrlKey && event.key === "v") {
+  //       if (props.gridCopyOptions && props.gridCopyOptions.enableGridPaste)
+  //         PasteGridRows();
+  //     }
+  //   };
 
-    const gridToPasteInto = pasteRef.current;
+  //   const gridToPasteInto = pasteRef.current;
 
-    if (gridToPasteInto) {
-      gridToPasteInto.addEventListener("keydown", handlePaste);
-    }
+  //   if (gridToPasteInto) {
+  //     gridToPasteInto.addEventListener("keydown", handlePaste);
+  //   }
 
-    return () => {
-      if (gridToPasteInto) {
-        gridToPasteInto.removeEventListener("keydown", handlePaste);
-      }
-    };
-  }, []);
+  //   return () => {
+  //     if (gridToPasteInto) {
+  //       gridToPasteInto.removeEventListener("keydown", handlePaste);
+  //     }
+  //   };
+  // }, []);
 
   const PasteGridRows = (): void => {
     isClipboardEmpty().then((empty) => {
@@ -2993,7 +3059,6 @@ const EditableGrid = (props: Props) => {
     toolTipText?: string;
   }
 
-  const tempAutoGenId = useRef(0);
   const [comboOptions, setComboOptions] = useState<
     Map<string, IComboBoxOption[]>
   >(new Map());
@@ -3004,6 +3069,11 @@ const EditableGrid = (props: Props) => {
 
   const disableDropdown = useRef<Map<string, boolean>>(new Map());
   const disableComboBox = useRef<Map<string, boolean>>(new Map());
+
+  const initalComboBoxOptions = useRef<Map<string, IComboBoxOption[]>>(
+    new Map()
+  );
+  const indentiferColumn = useRef<string|null>(null);
 
   const CreateColumnConfigs = (): IColumn[] => {
     let columnConfigs: IColumnIToolTip[] = [];
@@ -3088,6 +3158,13 @@ const EditableGrid = (props: Props) => {
 
               if (column.autoGenerate) {
                 tempAutoGenId.current = parseInt(item[column.key]) + 1;
+                indentiferColumn.current = column.key
+              }
+
+              if (column.comboBoxOptions) {
+                const newMap = new Map();
+                newMap.set(column.key + rowNum, column.comboBoxOptions ?? []);
+                initalComboBoxOptions.current = newMap;
               }
 
               switch (column.inputType) {
@@ -3504,21 +3581,39 @@ const EditableGrid = (props: Props) => {
                               ?.key.toString() ??
                             "Start typing..."
                           }
+                          defaultSelectedKey={
+                            column.comboBoxOptions
+                              ?.filter((x) => x?.text == item[column.key])[0]
+                              ?.key?.toString() ?? null
+                          }
                           allowFreeInput
-                          allowFreeform
+                          allowFreeform={false}
                           autoComplete="on"
                           scrollSelectedToTop
-                          options={comboOptions.get(column.key + rowNum) ?? []}
+                          options={
+                            comboOptions.get(column.key + rowNum) ??
+                            column.comboBoxOptions ??
+                            []
+                          }
                           onClick={() => {
                             if (!init.get(column.key + rowNum)) {
                               const newInitMap = new Map();
                               newInitMap.set(column.key + rowNum, true);
                               setInit(newInitMap);
 
+                              const safeCopy = column.comboBoxOptions
+                                ? [...column.comboBoxOptions]
+                                : [];
+
                               const newMap = new Map();
                               newMap.set(
                                 column.key + rowNum,
-                                column.comboBoxOptions ?? []
+                                safeCopy.concat([
+                                  {
+                                    key: "8509984a-3d7f-45ff-90dc-b560f5b321d9",
+                                    text: "",
+                                  },
+                                ]) ?? []
                               );
                               setComboOptions(newMap);
                             }
@@ -3533,7 +3628,12 @@ const EditableGrid = (props: Props) => {
                             const newMap = new Map();
                             newMap.set(
                               column.key + rowNum,
-                              searchResults ?? []
+                              searchResults?.concat([
+                                {
+                                  key: "64830f62-5ab8-490a-a0ed-971f977a3603",
+                                  text: "",
+                                },
+                              ]) ?? []
                             );
                             setComboOptions(newMap);
                             onComboBoxChangeRaw(text, rowNum!, column, item);
@@ -3873,105 +3973,126 @@ const EditableGrid = (props: Props) => {
       setColumnFiltersRef(columnFilterArrTmp);
     }
 
-    if(!props.disableAllRowActions){
-    columnConfigs.push({
-      key: "actions",
-      name: "Actions",
-      ariaLabel: "Actions",
-      fieldName: "Actions",
-      isResizable: false,
-      isIconOnly: false,
-      minWidth: props.actionsColumnMinWidth ?? 100,
-      onRender: (item, index) => (
-        <Stack horizontal horizontalAlign="center">
-          {props.enableRowEdit && (
-            <div>
-              {!props.enableSaveGridOnCellValueChange &&
-              activateCellEdit &&
-              activateCellEdit[Number(item["_grid_row_id_"])!] &&
-              activateCellEdit[Number(item["_grid_row_id_"])!][
-                "isActivated"
-              ] ? (
-                <div>
-                  <IconButton
-                    disabled={editMode}
-                    onClick={() => {
-                      ShowRowEditMode(
-                        item,
-                        Number(item["_grid_row_id_"])!,
-                        false
-                      );
-                    }}
-                    iconProps={{ iconName: "Save" }}
-                    title={"Save"}
-                    styles={props.actionIconStylesInGrid}
-                  ></IconButton>
-                  {props.enableRowEditCancel ? (
+    if (!props.disableAllRowActions) {
+      columnConfigs.push({
+        key: "actions",
+        name: "Actions",
+        ariaLabel: "Actions",
+        fieldName: "Actions",
+        isResizable: false,
+        isIconOnly: false,
+        minWidth: props.actionsColumnMinWidth ?? 100,
+        onRender: (item, index) => (
+          <Stack horizontal horizontalAlign="center">
+            {props.enableRowEdit && (
+              <div>
+                {!props.enableSaveGridOnCellValueChange &&
+                activateCellEdit &&
+                activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                activateCellEdit[Number(item["_grid_row_id_"])!][
+                  "isActivated"
+                ] ? (
+                  <div>
                     <IconButton
                       disabled={editMode}
-                      onClick={() =>
-                        CancelRowEditMode(item, Number(item["_grid_row_id_"])!)
-                      }
-                      iconProps={{ iconName: "RemoveFilter" }}
-                      title={"Cancel"}
+                      onClick={() => {
+                        ShowRowEditMode(
+                          item,
+                          Number(item["_grid_row_id_"])!,
+                          false
+                        );
+                      }}
+                      iconProps={{ iconName: "Save" }}
+                      title={"Save"}
                       styles={props.actionIconStylesInGrid}
                     ></IconButton>
-                  ) : null}
-                </div>
-              ) : (
-                <div>
-                  {!props.enableDefaultEditMode && (
-                    <IconButton
-                      onClick={() => {
-                        if (
-                          activateCellEdit &&
-                          activateCellEdit[Number(item["_grid_row_id_"])!] &&
-                          activateCellEdit[Number(item["_grid_row_id_"])!][
-                            "isActivated"
-                          ]
-                        ) {
+                    {props.enableRowEditCancel ? (
+                      <IconButton
+                        disabled={editMode}
+                        onClick={() =>
                           CancelRowEditMode(
                             item,
                             Number(item["_grid_row_id_"])!
-                          );
-                        } else {
-                          ShowRowEditMode(
-                            item,
-                            Number(item["_grid_row_id_"])!,
-                            true
-                          );
+                          )
                         }
-                      }}
-                      iconProps={{
-                        iconName:
+                        iconProps={{ iconName: "RemoveFilter" }}
+                        title={"Cancel"}
+                        styles={props.actionIconStylesInGrid}
+                      ></IconButton>
+                    ) : null}
+                  </div>
+                ) : (
+                  <div>
+                    {!props.enableDefaultEditMode && (
+                      <IconButton
+                        onClick={() => {
+                          if (
+                            activateCellEdit &&
+                            activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                            activateCellEdit[Number(item["_grid_row_id_"])!][
+                              "isActivated"
+                            ]
+                          ) {
+                            CancelRowEditMode(
+                              item,
+                              Number(item["_grid_row_id_"])!
+                            );
+                          } else {
+                            ShowRowEditMode(
+                              item,
+                              Number(item["_grid_row_id_"])!,
+                              true
+                            );
+                          }
+                        }}
+                        iconProps={{
+                          iconName:
+                            activateCellEdit &&
+                            activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                            activateCellEdit[Number(item["_grid_row_id_"])!][
+                              "isActivated"
+                            ]
+                              ? "Cancel"
+                              : "EditSolid12",
+                        }}
+                        title={
                           activateCellEdit &&
                           activateCellEdit[Number(item["_grid_row_id_"])!] &&
                           activateCellEdit[Number(item["_grid_row_id_"])!][
                             "isActivated"
                           ]
-                            ? "Cancel"
-                            : "EditSolid12",
-                      }}
-                      title={
-                        activateCellEdit &&
-                        activateCellEdit[Number(item["_grid_row_id_"])!] &&
-                        activateCellEdit[Number(item["_grid_row_id_"])!][
-                          "isActivated"
-                        ]
-                          ? "Close Row"
-                          : "Edit Row"
-                      }
-                      styles={props.actionIconStylesInGrid}
-                    ></IconButton>
-                  )}
-                </div>
+                            ? "Close Row"
+                            : "Edit Row"
+                        }
+                        styles={props.actionIconStylesInGrid}
+                      ></IconButton>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+            {props.gridCopyOptions &&
+              props.gridCopyOptions.enableSingleRowCopy && (
+                <IconButton
+                  onClick={() => HandleRowCopy(Number(item["_grid_row_id_"])!)}
+                  disabled={
+                    !props.enableSaveGridOnCellValueChange &&
+                    activateCellEdit &&
+                    activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                    activateCellEdit[Number(item["_grid_row_id_"])!][
+                      "isActivated"
+                    ]
+                  }
+                  iconProps={{ iconName: "Copy" }}
+                  styles={props.actionIconStylesInGrid}
+                  title={"Copy Row"}
+                ></IconButton>
               )}
-            </div>
-          )}
-          {props.gridCopyOptions &&
-            props.gridCopyOptions.enableSingleRowCopy && (
+            {props.enableRowEditDelete && (
               <IconButton
-                onClick={() => HandleRowCopy(Number(item["_grid_row_id_"])!)}
+                onClick={() =>
+                  HandleRowSingleDelete(Number(item["_grid_row_id_"])!)
+                }
                 disabled={
                   !props.enableSaveGridOnCellValueChange &&
                   activateCellEdit &&
@@ -3980,31 +4101,15 @@ const EditableGrid = (props: Props) => {
                     "isActivated"
                   ]
                 }
-                iconProps={{ iconName: "Copy" }}
+                iconProps={{ iconName: "ErrorBadge" }}
+                title={"Delete Row"}
                 styles={props.actionIconStylesInGrid}
-                title={"Copy Row"}
               ></IconButton>
             )}
-          {props.enableRowEditDelete && (
-            <IconButton
-              onClick={() =>
-                HandleRowSingleDelete(Number(item["_grid_row_id_"])!)
-              }
-              disabled={
-                !props.enableSaveGridOnCellValueChange &&
-                activateCellEdit &&
-                activateCellEdit[Number(item["_grid_row_id_"])!] &&
-                activateCellEdit[Number(item["_grid_row_id_"])!]["isActivated"]
-              }
-              iconProps={{ iconName: "ErrorBadge" }}
-              title={"Delete Row"}
-              styles={props.actionIconStylesInGrid}
-            ></IconButton>
-          )}
-        </Stack>
-      ),
-    });
-  }
+          </Stack>
+        ),
+      });
+    }
 
     return columnConfigs;
   };
