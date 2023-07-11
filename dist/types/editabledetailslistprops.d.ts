@@ -11,6 +11,8 @@ export type IEnableMessageBarErrors = {
     enableSendGroupedErrorsToCallback?: boolean;
 };
 export interface Props extends IDetailsListProps {
+    actionsColumnMinWidth?: number;
+    disableAllRowActions: boolean;
     id: number;
     gridLocation: string;
     zeroRowsMsg?: string;
@@ -24,7 +26,6 @@ export interface Props extends IDetailsListProps {
     enableExcelImport?: boolean;
     exportFileName?: string;
     enableSaveChangesOnlyOnSubmit?: boolean;
-    enableRowEditCopy?: boolean;
     enableRowEditDelete?: boolean;
     enableRowEdit?: boolean;
     enableRowEditCancel?: boolean;
@@ -37,7 +38,7 @@ export interface Props extends IDetailsListProps {
     enableSaveGridOnCellValueChange?: boolean;
     enableGridRowsDelete?: boolean;
     enableGridRowsAdd?: boolean;
-    enableRowAddWithValues?: IRowAddWithValues;
+    enableGridRowAddWithValues?: IRowAddWithValues;
     enableEditMode?: boolean;
     enableEditModeCancel?: boolean;
     enablePagination?: boolean;

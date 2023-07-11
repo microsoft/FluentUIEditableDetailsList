@@ -345,8 +345,8 @@ const EditableGrid = (props: Props) => {
     for (let row = 0; row < defaultGridDataTmp.length; row++) {
       const gridData = defaultGridDataTmp[row];
       var elementColNames = Object.keys(gridData);
-      let emptyCol:string[] = [];
-      let emptyReqCol:string[] = []
+      let emptyCol: string[] = [];
+      let emptyReqCol: string[] = [];
       for (
         let indexInner = 0;
         indexInner < elementColNames.length;
@@ -362,53 +362,64 @@ const EditableGrid = (props: Props) => {
           const rowCol = gridData[element.key];
 
           if (
-            (element.required && typeof element.required == "boolean" && (rowCol == null ||
-            rowCol == undefined ||
-            rowCol.toString().length <= 0 ||
-            rowCol == ""))
+            element.required &&
+            typeof element.required == "boolean" &&
+            (rowCol == null ||
+              rowCol == undefined ||
+              rowCol.toString().length <= 0 ||
+              rowCol == "")
           ) {
-            if(!emptyCol.includes(' '+element.name))
-            emptyCol.push(' '+element.name);
-          }
-          else if( typeof element.required !== "boolean" && element.required.requiredOnlyIfTheseColumnsAreEmpty && (rowCol == null ||
-            rowCol == undefined ||
-            rowCol.toString().length <= 0 ||
-            rowCol == "")){
-              const checkKeys = element.required.requiredOnlyIfTheseColumnsAreEmpty.colKeys
-              let skippable = false
-              for (let index = 0; index < checkKeys.length; index++) {
-                const columnKey = checkKeys[index];
-                const str = (gridData as any)[columnKey]
+            if (!emptyCol.includes(" " + element.name))
+              emptyCol.push(" " + element.name);
+          } else if (
+            typeof element.required !== "boolean" &&
+            element.required.requiredOnlyIfTheseColumnsAreEmpty &&
+            (rowCol == null ||
+              rowCol == undefined ||
+              rowCol.toString().length <= 0 ||
+              rowCol == "")
+          ) {
+            const checkKeys =
+              element.required.requiredOnlyIfTheseColumnsAreEmpty.colKeys;
+            let skippable = false;
+            for (let index = 0; index < checkKeys.length; index++) {
+              const columnKey = checkKeys[index];
+              const str = (gridData as any)[columnKey];
 
-                if(element.required.alwaysRequired){
-                if(str == null ||
+              if (element.required.alwaysRequired) {
+                if (
+                  str == null ||
                   str == undefined ||
                   str.toString().length <= 0 ||
-                  str == ""){
-                    if(!emptyReqCol.includes(' '+element.name)){
-                    emptyReqCol.push(' '+element.name)
-                    break}
-                  }}
-                else{
-                  if(str && str.toString().length > 0){
-                      skippable = true
-                      break
-                    }
-                    }
-                    console.log(element.name)
-              }
-              if(!emptyReqCol.includes(' '+element.name) && skippable == false){
-                emptyReqCol.push(' '+element.name)
+                  str == ""
+                ) {
+                  if (!emptyReqCol.includes(" " + element.name)) {
+                    emptyReqCol.push(" " + element.name);
+                    break;
+                  }
                 }
+              } else {
+                if (str && str.toString().length > 0) {
+                  skippable = true;
+                  break;
+                }
+              }
+              console.log(element.name);
             }
-          
+            if (
+              !emptyReqCol.includes(" " + element.name) &&
+              skippable == false
+            ) {
+              emptyReqCol.push(" " + element.name);
+            }
+          }
 
           if (
             rowCol !== null &&
             (typeof rowCol !== element.dataType || typeof rowCol === "number")
           ) {
             if (element.dataType === "number") {
-              if (isNaN(parseInt(rowCol)) && rowCol !== '') {
+              if (isNaN(parseInt(rowCol)) && rowCol !== "") {
                 if (
                   props.enableMessageBarErrors &&
                   props.enableMessageBarErrors.enableShowErrors
@@ -565,81 +576,93 @@ const EditableGrid = (props: Props) => {
                 (gridData as any)[colDep.dependentColumnKey] !== undefined
               ) {
                 const str = (gridData as any)[colDep.dependentColumnKey];
-                let skip = false
+                let skip = false;
 
-                if(colDep.skipCheckIfTheseColumnsHaveData && colDep.skipCheckIfTheseColumnsHaveData.colKeys){
-                  for (const skipForKey of colDep.skipCheckIfTheseColumnsHaveData.colKeys) {
-                    if(colDep.skipCheckIfTheseColumnsHaveData?.partial){
-                      const str = (gridData as any)[skipForKey]
-                      if(str && str !== null && str !== undefined && str.toString().length > 0 ){
-                        skip = true
-                        break;
-                      }
-                    }else{
-                      const str = (gridData as any)[skipForKey]
-                      if(str && str !== null && str !== undefined && str.toString().length > 0 ){
-                        skip = true
-                      }
-                      else{
-                        skip = false
-                        break;
-                      }
-                      }
-                    }
-                  }
-                
-                
-                
-                if(!skip){
-
-                if (str !== undefined && str !== null) {
-                  if (
-                    str.toString().length > 0 &&
-                    colDep.type === DepColTypes.MustBeEmpty
-                  ) {
-                    if (rowCol !== null && rowCol.length > 0) {
-                      if (
-                        props.enableMessageBarErrors &&
-                        props.enableMessageBarErrors.enableShowErrors
-                      ) {
-                        var msg =
-                          `Row: ${row + 1} Col: ${element.name} - ` +
-                          (colDep.errorMessage ??
-                            ` Data cannot be entered here and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
-
-                        insertToMap(Messages.current, element.key + row, {
-                          msg: msg,
-                          type: MessageBarType.error,
-                        });
-
-                        setGridInError(true);
-                      }
-                    }
-                  }
-                }
                 if (
-                  (str == undefined ||
-                    str == null ||
-                    str == "" ||
-                    (str && str.toString().length <= 0)) &&
-                  colDep.type === DepColTypes.MustHaveData
+                  colDep.skipCheckIfTheseColumnsHaveData &&
+                  colDep.skipCheckIfTheseColumnsHaveData.colKeys
                 ) {
-                  if (
-                    props.enableMessageBarErrors &&
-                    props.enableMessageBarErrors.enableShowErrors
-                  ) {
-                    var msg =
-                      `Row: ${row + 1} Col: ${colDep.dependentColumnName} - ` +
-                      (colDep.errorMessage ??
-                        ` Data needs to entered here and in ${element.name} Column.`);
-                    insertToMap(Messages.current, element.key + row, {
-                      msg: msg,
-                      type: MessageBarType.error,
-                    });
-                    setGridInError(true);
+                  for (const skipForKey of colDep
+                    .skipCheckIfTheseColumnsHaveData.colKeys) {
+                    if (colDep.skipCheckIfTheseColumnsHaveData?.partial) {
+                      const str = (gridData as any)[skipForKey];
+                      if (
+                        str &&
+                        str !== null &&
+                        str !== undefined &&
+                        str.toString().length > 0
+                      ) {
+                        skip = true;
+                        break;
+                      }
+                    } else {
+                      const str = (gridData as any)[skipForKey];
+                      if (
+                        str &&
+                        str !== null &&
+                        str !== undefined &&
+                        str.toString().length > 0
+                      ) {
+                        skip = true;
+                      } else {
+                        skip = false;
+                        break;
+                      }
+                    }
                   }
                 }
-              }
+
+                if (!skip) {
+                  if (str !== undefined && str !== null) {
+                    if (
+                      str.toString().length > 0 &&
+                      colDep.type === DepColTypes.MustBeEmpty
+                    ) {
+                      if (rowCol !== null && rowCol.length > 0) {
+                        if (
+                          props.enableMessageBarErrors &&
+                          props.enableMessageBarErrors.enableShowErrors
+                        ) {
+                          var msg =
+                            `Row: ${row + 1} Col: ${element.name} - ` +
+                            (colDep.errorMessage ??
+                              ` Data cannot be entered here and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
+
+                          insertToMap(Messages.current, element.key + row, {
+                            msg: msg,
+                            type: MessageBarType.error,
+                          });
+
+                          setGridInError(true);
+                        }
+                      }
+                    }
+                  }
+                  if (
+                    (str == undefined ||
+                      str == null ||
+                      str == "" ||
+                      (str && str.toString().length <= 0)) &&
+                    colDep.type === DepColTypes.MustHaveData
+                  ) {
+                    if (
+                      props.enableMessageBarErrors &&
+                      props.enableMessageBarErrors.enableShowErrors
+                    ) {
+                      var msg =
+                        `Row: ${row + 1} Col: ${
+                          colDep.dependentColumnName
+                        } - ` +
+                        (colDep.errorMessage ??
+                          ` Data needs to entered here and in ${element.name} Column.`);
+                      insertToMap(Messages.current, element.key + row, {
+                        msg: msg,
+                        type: MessageBarType.error,
+                      });
+                      setGridInError(true);
+                    }
+                  }
+                }
               }
             }
           }
@@ -718,77 +741,64 @@ const EditableGrid = (props: Props) => {
         }
       }
 
-      if(emptyReqCol.length > 1){
+      if (emptyReqCol.length > 1) {
         if (
           props.enableMessageBarErrors &&
           props.enableMessageBarErrors.enableShowErrors
         ) {
-          
+          var msg = `Row: ${row + 1} - ${emptyReqCol} cannot all be empty`;
 
-          var msg =
-            `Row: ${row + 1} - ${emptyReqCol} cannot all be empty`;
-  
-          insertToMap(Messages.current, row+'erc', {
+          insertToMap(Messages.current, row + "erc", {
             msg: msg,
             type: MessageBarType.error,
           });
-  
         }
         setGridInError(true);
-      }else if(emptyReqCol.length == 1){
+      } else if (emptyReqCol.length == 1) {
         if (
           props.enableMessageBarErrors &&
           props.enableMessageBarErrors.enableShowErrors
         ) {
-          
-          var msg =
-            `Row: ${row + 1} - ${emptyReqCol} cannot be empty`;
-  
-          insertToMap(Messages.current, row+'erc', {
+          var msg = `Row: ${row + 1} - ${emptyReqCol} cannot be empty`;
+
+          insertToMap(Messages.current, row + "erc", {
             msg: msg,
             type: MessageBarType.error,
           });
-  
         }
         setGridInError(true);
       }
 
-      if(emptyCol.length > 1){
+      if (emptyCol.length > 1) {
         if (
           props.enableMessageBarErrors &&
           props.enableMessageBarErrors.enableShowErrors
         ) {
-          
-          var msg =
-            `Row: ${row + 1} - ${emptyCol.toString()} cannot be empty at all`;
-  
-          insertToMap(Messages.current, row+'ec', {
-            msg: msg,
-            type: MessageBarType.error,
-          });
-  
-        }
-        setGridInError(true);
-      }else if(emptyCol.length == 1){
-        if (
-          props.enableMessageBarErrors &&
-          props.enableMessageBarErrors.enableShowErrors
-        ) {
-          
-          var msg =
-            `Row: ${row + 1} - ${emptyCol.toString()} cannot be empty`;
-  
-          insertToMap(Messages.current, row+'ec', {
-            msg: msg,
-            type: MessageBarType.error,
-          });
-  
-        }
-        setGridInError(true);
+          var msg = `Row: ${
+            row + 1
+          } - ${emptyCol.toString()} cannot be empty at all`;
 
+          insertToMap(Messages.current, row + "ec", {
+            msg: msg,
+            type: MessageBarType.error,
+          });
+        }
+        setGridInError(true);
+      } else if (emptyCol.length == 1) {
+        if (
+          props.enableMessageBarErrors &&
+          props.enableMessageBarErrors.enableShowErrors
+        ) {
+          var msg = `Row: ${row + 1} - ${emptyCol.toString()} cannot be empty`;
+
+          insertToMap(Messages.current, row + "ec", {
+            msg: msg,
+            type: MessageBarType.error,
+          });
+        }
+        setGridInError(true);
       }
     }
-
   };
 
   useEffect(() => {
@@ -1982,7 +1992,6 @@ const EditableGrid = (props: Props) => {
       setDefaultGridData(defaultGridDataTmp);
     }
   };
-
 
   const onComboBoxChangeRaw = (
     text: string,
@@ -3487,9 +3496,13 @@ const EditableGrid = (props: Props) => {
                           placeholder={
                             column.comboBoxOptions?.filter(
                               (x) => x.text == item[column.key]
-                            )[0]?.text ?? column.comboBoxOptions?.filter(
-                              (x) => x.key.toString() == item[column.key]
-                            )[0]?.key.toString() ?? "Start typing..."
+                            )[0]?.text ??
+                            column.comboBoxOptions
+                              ?.filter(
+                                (x) => x.key.toString() == item[column.key]
+                              )[0]
+                              ?.key.toString() ??
+                            "Start typing..."
                           }
                           allowFreeInput
                           allowFreeform
@@ -3523,7 +3536,7 @@ const EditableGrid = (props: Props) => {
                               searchResults ?? []
                             );
                             setComboOptions(newMap);
-                            onComboBoxChangeRaw(text,rowNum!, column, item)
+                            onComboBoxChangeRaw(text, rowNum!, column, item);
                           }}
                           // styles={dropdownStyles}
                           onChange={(ev, option) =>
@@ -3860,111 +3873,103 @@ const EditableGrid = (props: Props) => {
       setColumnFiltersRef(columnFilterArrTmp);
     }
 
-    if (props.enableRowEdit) {
-      columnConfigs.push({
-        key: "edit",
-        name: "Edit Row",
-        isIconOnly: true,
-        ariaLabel: "Edit Row",
-        fieldName: "Edit",
-        isResizable: false,
-        minWidth: 50,
-        maxWidth: 50,
-        onRender: (item, index) => (
-          <div>
-            {!props.enableSaveGridOnCellValueChange &&
-            activateCellEdit &&
-            activateCellEdit[Number(item["_grid_row_id_"])!] &&
-            activateCellEdit[Number(item["_grid_row_id_"])!]["isActivated"] ? (
-              <div>
-                <IconButton
-                  disabled={editMode}
-                  onClick={() => {
-                    ShowRowEditMode(
-                      item,
-                      Number(item["_grid_row_id_"])!,
-                      false
-                    );
-                  }}
-                  iconProps={{ iconName: "Save" }}
-                  title={"Save"}
-                  styles={props.actionIconStylesInGrid}
-                ></IconButton>
-                {props.enableRowEditCancel ? (
+    if(!props.disableAllRowActions){
+    columnConfigs.push({
+      key: "actions",
+      name: "Actions",
+      ariaLabel: "Actions",
+      fieldName: "Actions",
+      isResizable: false,
+      isIconOnly: false,
+      minWidth: props.actionsColumnMinWidth ?? 100,
+      onRender: (item, index) => (
+        <Stack horizontal horizontalAlign="center">
+          {props.enableRowEdit && (
+            <div>
+              {!props.enableSaveGridOnCellValueChange &&
+              activateCellEdit &&
+              activateCellEdit[Number(item["_grid_row_id_"])!] &&
+              activateCellEdit[Number(item["_grid_row_id_"])!][
+                "isActivated"
+              ] ? (
+                <div>
                   <IconButton
                     disabled={editMode}
-                    onClick={() =>
-                      CancelRowEditMode(item, Number(item["_grid_row_id_"])!)
-                    }
-                    iconProps={{ iconName: "RemoveFilter" }}
-                    title={"Cancel"}
-                    styles={props.actionIconStylesInGrid}
-                  ></IconButton>
-                ) : null}
-              </div>
-            ) : (
-              <div>
-                {!props.enableDefaultEditMode && (
-                  <IconButton
                     onClick={() => {
-                      if (
-                        activateCellEdit &&
-                        activateCellEdit[Number(item["_grid_row_id_"])!] &&
-                        activateCellEdit[Number(item["_grid_row_id_"])!][
-                          "isActivated"
-                        ]
-                      ) {
-                        CancelRowEditMode(item, Number(item["_grid_row_id_"])!);
-                      } else {
-                        ShowRowEditMode(
-                          item,
-                          Number(item["_grid_row_id_"])!,
-                          true
-                        );
-                      }
+                      ShowRowEditMode(
+                        item,
+                        Number(item["_grid_row_id_"])!,
+                        false
+                      );
                     }}
-                    iconProps={{
-                      iconName:
-                        activateCellEdit &&
-                        activateCellEdit[Number(item["_grid_row_id_"])!] &&
-                        activateCellEdit[Number(item["_grid_row_id_"])!][
-                          "isActivated"
-                        ]
-                          ? "Cancel"
-                          : "EditSolid12",
-                    }}
-                    title={
-                      activateCellEdit &&
-                      activateCellEdit[Number(item["_grid_row_id_"])!] &&
-                      activateCellEdit[Number(item["_grid_row_id_"])!][
-                        "isActivated"
-                      ]
-                        ? "Close Row"
-                        : "Edit Row"
-                    }
+                    iconProps={{ iconName: "Save" }}
+                    title={"Save"}
                     styles={props.actionIconStylesInGrid}
                   ></IconButton>
-                )}
-              </div>
-            )}
-          </div>
-        ),
-      });
-    }
-
-    if (props.gridCopyOptions && props.gridCopyOptions.enableRowCopy) {
-      columnConfigs.push({
-        key: "copy",
-        name: "Copy Row",
-        ariaLabel: "Copy Row",
-        fieldName: "Copy",
-        isResizable: false,
-        isIconOnly: true,
-        minWidth: 50,
-        //maxWidth: 50,
-        onRender: (item, index) => (
-          <div>
-            {props.gridCopyOptions && props.gridCopyOptions.enableRowCopy && (
+                  {props.enableRowEditCancel ? (
+                    <IconButton
+                      disabled={editMode}
+                      onClick={() =>
+                        CancelRowEditMode(item, Number(item["_grid_row_id_"])!)
+                      }
+                      iconProps={{ iconName: "RemoveFilter" }}
+                      title={"Cancel"}
+                      styles={props.actionIconStylesInGrid}
+                    ></IconButton>
+                  ) : null}
+                </div>
+              ) : (
+                <div>
+                  {!props.enableDefaultEditMode && (
+                    <IconButton
+                      onClick={() => {
+                        if (
+                          activateCellEdit &&
+                          activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                          activateCellEdit[Number(item["_grid_row_id_"])!][
+                            "isActivated"
+                          ]
+                        ) {
+                          CancelRowEditMode(
+                            item,
+                            Number(item["_grid_row_id_"])!
+                          );
+                        } else {
+                          ShowRowEditMode(
+                            item,
+                            Number(item["_grid_row_id_"])!,
+                            true
+                          );
+                        }
+                      }}
+                      iconProps={{
+                        iconName:
+                          activateCellEdit &&
+                          activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                          activateCellEdit[Number(item["_grid_row_id_"])!][
+                            "isActivated"
+                          ]
+                            ? "Cancel"
+                            : "EditSolid12",
+                      }}
+                      title={
+                        activateCellEdit &&
+                        activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                        activateCellEdit[Number(item["_grid_row_id_"])!][
+                          "isActivated"
+                        ]
+                          ? "Close Row"
+                          : "Edit Row"
+                      }
+                      styles={props.actionIconStylesInGrid}
+                    ></IconButton>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+          {props.gridCopyOptions &&
+            props.gridCopyOptions.enableSingleRowCopy && (
               <IconButton
                 onClick={() => HandleRowCopy(Number(item["_grid_row_id_"])!)}
                 disabled={
@@ -3980,45 +3985,26 @@ const EditableGrid = (props: Props) => {
                 title={"Copy Row"}
               ></IconButton>
             )}
-          </div>
-        ),
-      });
-    }
-
-    if (props.enableRowEditDelete) {
-      columnConfigs.push({
-        key: "delete",
-        name: "Delete Row",
-        ariaLabel: "Delete Row",
-        fieldName: "Delete",
-        isResizable: false,
-        isIconOnly: true,
-        minWidth: 50,
-        maxWidth: 50,
-        onRender: (item, index) => (
-          <div>
-            {props.enableRowEditDelete && (
-              <IconButton
-                onClick={() =>
-                  HandleRowSingleDelete(Number(item["_grid_row_id_"])!)
-                }
-                disabled={
-                  !props.enableSaveGridOnCellValueChange &&
-                  activateCellEdit &&
-                  activateCellEdit[Number(item["_grid_row_id_"])!] &&
-                  activateCellEdit[Number(item["_grid_row_id_"])!][
-                    "isActivated"
-                  ]
-                }
-                iconProps={{ iconName: "ErrorBadge" }}
-                title={"Delete Row"}
-                styles={props.actionIconStylesInGrid}
-              ></IconButton>
-            )}
-          </div>
-        ),
-      });
-    }
+          {props.enableRowEditDelete && (
+            <IconButton
+              onClick={() =>
+                HandleRowSingleDelete(Number(item["_grid_row_id_"])!)
+              }
+              disabled={
+                !props.enableSaveGridOnCellValueChange &&
+                activateCellEdit &&
+                activateCellEdit[Number(item["_grid_row_id_"])!] &&
+                activateCellEdit[Number(item["_grid_row_id_"])!]["isActivated"]
+              }
+              iconProps={{ iconName: "ErrorBadge" }}
+              title={"Delete Row"}
+              styles={props.actionIconStylesInGrid}
+            ></IconButton>
+          )}
+        </Stack>
+      ),
+    });
+  }
 
     return columnConfigs;
   };
@@ -4129,8 +4115,8 @@ const EditableGrid = (props: Props) => {
     }
 
     if (
-      props.enableRowAddWithValues &&
-      props.enableRowAddWithValues.enable &&
+      props.enableGridRowAddWithValues &&
+      props.enableGridRowAddWithValues.enable &&
       !editMode
     ) {
       commandBarItems.push({
@@ -4832,13 +4818,16 @@ const EditableGrid = (props: Props) => {
   /* #endregion */
 
   const AddRowPanelRender = useCallback(() => {
-    if (props.enableRowAddWithValues && props.enableRowAddWithValues.enable)
+    if (
+      props.enableGridRowAddWithValues &&
+      props.enableGridRowAddWithValues.enable
+    )
       return (
         <AddRowPanel
           onChange={onAddPanelChange}
           columnConfigurationData={props.columns}
           enableRowsCounterField={
-            props.enableRowAddWithValues.enableRowsCounterInPanel
+            props.enableGridRowAddWithValues.enableRowsCounterInPanel
           }
           autoGenId={CurrentAutoGenID}
         />
@@ -4883,7 +4872,8 @@ const EditableGrid = (props: Props) => {
           />
         </Panel>
 
-        {props.enableRowAddWithValues && props.enableRowAddWithValues.enable ? (
+        {props.enableGridRowAddWithValues &&
+        props.enableGridRowAddWithValues.enable ? (
           <Panel
             isOpen={isOpenForAdd}
             onDismiss={dismissPanelForAdd}
@@ -4986,7 +4976,6 @@ const EditableGrid = (props: Props) => {
                   ariaLabelForSelectAllCheckbox="Toggle selection for all items"
                   ariaLabelForSelectionColumn="Toggle selection"
                   checkButtonAriaLabel="Row checkbox"
-                  ariaLabel={props.ariaLabel}
                   ariaLabelForGrid={props.ariaLabelForGrid}
                   ariaLabelForListHeader={props.ariaLabelForListHeader}
                   cellStyleProps={props.cellStyleProps}
@@ -5032,7 +5021,6 @@ const EditableGrid = (props: Props) => {
                     props.selectionPreservedOnEmptyClick
                   }
                   selectionZoneProps={props.selectionZoneProps}
-                  shouldApplyApplicationRole={props.shouldApplyApplicationRole}
                   styles={props.styles}
                   useFastIcons={props.useFastIcons}
                   usePageCache={props.usePageCache}

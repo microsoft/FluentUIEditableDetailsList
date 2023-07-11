@@ -60,8 +60,8 @@ import React from "react";
 import { IEnableMessageBarErrors } from "../../libs/types/editabledetailslistprops";
 
 interface GridConfigOptions {
+  disableAllRowActions: boolean
   enableSingleCellEditOnDoubleClick: boolean;
-  enableRowEditCopy: boolean;
   enableRowEditDelete: boolean;
   enableRowEdit: boolean;
   enableRowEditCancel: boolean;
@@ -77,10 +77,10 @@ interface GridConfigOptions {
   enableGridRowsDelete: boolean;
   enableGridRowsAdd: boolean;
   enableColumnFilterRules: boolean;
-  enableRowAddWithValues: boolean;
+  enableGridRowAddWithValues: boolean;
   enableGridCopy: boolean;
   enableGridPaste: boolean;
-  enableRowCopy: boolean;
+  enableSingleRowCopy: true;
   enableUnsavedEditIndicator: boolean;
   enableSaveChangesOnlyOnSubmit: boolean;
   enableGridReset: boolean;
@@ -102,13 +102,13 @@ const Consumer = () => {
     });
   const [gridConfigOptions, setGridConfigOptions] = useState<GridConfigOptions>(
     {
+      disableAllRowActions: false,
       enableMessageBarErrors: {
         enableShowErrors: true,
         enableSendGroupedErrorsToCallback: true,
       },
       enableSaveGridOnCellValueChange: true,
       enableSingleCellEditOnDoubleClick: true,
-      enableRowEditCopy: true,
       enableRowEditDelete: true,
       enableRowEdit: true,
       enableRowEditCancel: true,
@@ -122,10 +122,10 @@ const Consumer = () => {
       enableGridRowsDelete: true,
       enableGridRowsAdd: true,
       enableColumnFilterRules: true,
-      enableRowAddWithValues: true,
+      enableGridRowAddWithValues: true,
       enableGridCopy: true,
       enableGridPaste: true,
-      enableRowCopy: true,
+      enableSingleRowCopy: true,
       enableUnsavedEditIndicator: true,
       enableSaveChangesOnlyOnSubmit: false,
       enableGridReset: true,
@@ -334,48 +334,59 @@ const Consumer = () => {
         setAsyncValues(new Map(asyncValues).set(key, responseJson));
       });
   };
-  const [col, setCol] = useState(GridColumnConfig)
+  const [col, setCol] = useState(GridColumnConfig);
   useEffect(() => {
-    setCol(attachGridValueChangeCallbacks(GridColumnConfig))
+    setCol(attachGridValueChangeCallbacks(GridColumnConfig));
   }, [asyncValues]);
 
-  const onDesignationChangedTest = (callbackRequestParamObj: ICallBackParams): any[] => {
+  const onDesignationChangedTest = (
+    callbackRequestParamObj: ICallBackParams
+  ): any[] => {
     for (let j = 0; j < callbackRequestParamObj.rowindex.length; j++) {
       const index = callbackRequestParamObj.rowindex[j];
-      const filteredItems = callbackRequestParamObj.data.filter((item) => item._grid_row_id_ == index);
+      const filteredItems = callbackRequestParamObj.data.filter(
+        (item) => item._grid_row_id_ == index
+      );
       for (let i = 0; i < filteredItems.length; i++) {
         const item = filteredItems[i];
-         fetchUserData(item.designation, callbackRequestParamObj.triggerkey + index);
-        item.salary = asyncValues.get(callbackRequestParamObj.triggerkey + index);
+        fetchUserData(
+          item.designation,
+          callbackRequestParamObj.triggerkey + index
+        );
+        item.salary = asyncValues.get(
+          callbackRequestParamObj.triggerkey + index
+        );
       }
     }
-  
+
     return callbackRequestParamObj.data;
   };
-  
 
-
-  // const attachGridValueChangeCallbacks = 
+  // const attachGridValueChangeCallbacks =
   //   (columnConfig: IColumnConfig[]): IColumnConfig[] => {
   //     columnConfig
   //       .filter((item) => item.key == "designation")
   //       .map((item) => (item.onChange = onDesignationChangedTest2));
-      
+
   //     // columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChanged);
   //     //columnConfig.filter((item) => item.key == 'payrolltype').map((item) => item.onChange = onPayrollChanged);
   //     //columnConfig.filter((item) => item.key == 'dateofjoining').map((item) => item.onChange = onDateChanged);
   //     return columnConfig;
   //   }
 
-    const attachGridValueChangeCallbacks =  useCallback((columnConfig: IColumnConfig[]): IColumnConfig[] => {
-      const filteredItems = columnConfig.filter((item) => item.key === "designation");
+  const attachGridValueChangeCallbacks = useCallback(
+    (columnConfig: IColumnConfig[]): IColumnConfig[] => {
+      const filteredItems = columnConfig.filter(
+        (item) => item.key === "designation"
+      );
       for (let i = 0; i < filteredItems.length; i++) {
         filteredItems[i].onChange = onDesignationChangedTest;
       }
-          
+
       return columnConfig;
-    },[onDesignationChangedTest]);
-    
+    },
+    [onDesignationChangedTest]
+  );
 
   const onCheckboxChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
@@ -551,10 +562,10 @@ const Consumer = () => {
           </StackItem>
           <StackItem className={classNames.checkbox}>
             <Checkbox
-              id={"enableRowEditCopy"}
+              id={"enableSingleRowCopy"}
               label="Row Single Copy"
               onChange={onCheckboxChange}
-              checked={gridConfigOptions.enableRowEditCopy}
+              checked={gridConfigOptions.enableSingleRowCopy}
             />
           </StackItem>
           <StackItem className={classNames.checkbox}>
@@ -632,7 +643,7 @@ const Consumer = () => {
           <StackItem className={classNames.checkbox}>
             <Checkbox
               id={"enableGridRowsDelete"}
-              label="Row Delete"
+              label="Delete Rows"
               onChange={onCheckboxChange}
               checked={gridConfigOptions.enableGridRowsDelete}
             />
@@ -640,7 +651,7 @@ const Consumer = () => {
           <StackItem className={classNames.checkbox}>
             <Checkbox
               id={"enableGridRowsAdd"}
-              label="Row Add"
+              label="Add Blank Rows"
               onChange={onCheckboxChange}
               checked={gridConfigOptions.enableGridRowsAdd}
             />
@@ -655,10 +666,10 @@ const Consumer = () => {
           </StackItem>
           <StackItem className={classNames.checkbox}>
             <Checkbox
-              id={"enableRowAddWithValues"}
-              label="Row Add Panel"
+              id={"enableGridRowAddWithValues"}
+              label="Add Rows w/ Values"
               onChange={onCheckboxChange}
-              checked={gridConfigOptions.enableRowAddWithValues}
+              checked={gridConfigOptions.enableGridRowAddWithValues}
             />
           </StackItem>
           <StackItem className={classNames.checkbox}>
@@ -675,14 +686,6 @@ const Consumer = () => {
               label="Grid Paste"
               onChange={onCheckboxChange}
               checked={gridConfigOptions.enableGridPaste}
-            />
-          </StackItem>
-          <StackItem className={classNames.checkbox}>
-            <Checkbox
-              id={"enableRowCopy"}
-              label="Row Copy"
-              onChange={onCheckboxChange}
-              checked={gridConfigOptions.enableRowCopy}
             />
           </StackItem>
           <StackItem className={classNames.checkbox}>
@@ -756,6 +759,7 @@ const Consumer = () => {
           onClick={() => saveAction && saveAction()}
         />
         <EditableGrid
+        disableAllRowActions={gridConfigOptions.disableAllRowActions}
           id={100}
           gridLocation="Main Grid"
           checkboxVisibility={CheckboxVisibility.hidden}
@@ -795,9 +799,8 @@ const Consumer = () => {
           columns={col}
           onRenderDetailsHeader={onRenderDetailsHeader}
           onRenderRow={onRenderRow}
-          layoutMode={DetailsListLayoutMode.justified}
+          layoutMode={DetailsListLayoutMode.fixedColumns}
           selectionMode={SelectionMode.multiple}
-          enableRowEditCopy={gridConfigOptions.enableRowEditCopy}
           enableRowEditDelete={gridConfigOptions.enableRowEditDelete}
           enableRowEdit={gridConfigOptions.enableRowEdit}
           enableRowEditCancel={gridConfigOptions.enableRowEditCancel}
@@ -823,14 +826,14 @@ const Consumer = () => {
           enableGridReset={gridConfigOptions.enableGridReset}
           enableColumnFilters={gridConfigOptions.enableColumnFilters}
           enableColumnFilterRules={gridConfigOptions.enableColumnFilterRules}
-          enableRowAddWithValues={{
-            enable: gridConfigOptions.enableRowAddWithValues,
+          enableGridRowAddWithValues={{
+            enable: gridConfigOptions.enableGridRowAddWithValues,
             enableRowsCounterInPanel: true,
           }}
           gridCopyOptions={{
             enableGridCopy: gridConfigOptions.enableGridCopy,
-            enableRowCopy: gridConfigOptions.enableRowCopy,
             enableGridPaste: gridConfigOptions.enableGridPaste,
+            enableSingleRowCopy: gridConfigOptions.enableSingleRowCopy,
           }}
           onGridStatusMessageCallback={(str: string, type: GridToastTypes) => {
             switch (type) {

@@ -125,7 +125,7 @@ export const teachingBubbleConfig: ITeachingBubblePropsExtended[] = [
     target: "#addrowswithdata",
     headline: "Add Rows With Data",
     innerText: `Adds rows with initial set of values.
-                    Set 'enableRowAddWithValues={{enable : true, enableRowsCounterInPanel : true}}' to enable this feature.
+                    Set 'enableGridRowAddWithValues={{enable : true, enableRowsCounterInPanel : true}}' to enable this feature.
                     If 'enableRowsCounterInPanel' is set to false, user can only add 1 row at a time. 
                     Added rows can be identified by property '_grid_row_operation_ = 2'`,
   },

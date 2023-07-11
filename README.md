@@ -305,7 +305,7 @@ This starts the project on port 3000 and you are ready to play around with the E
                 enableGridReset={true}
                 enableColumnFilters={true}
                 enableColumnFilterRules={true}
-                enableRowAddWithValues={{enable : true, enableRowsCounterInPanel : true}}
+                enableGridRowAddWithValues={{enable : true, enableRowsCounterInPanel : true}}
                 layoutMode={DetailsListLayoutMode.justified}
                 selectionMode={SelectionMode.multiple}
                 enableRowEdit={true}
