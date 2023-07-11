@@ -3406,8 +3406,7 @@ const EditableGrid = (props: Props) => {
                             )
                           }
                           value={
-                            activateCellEdit[rowNum!]["properties"][column.key]
-                              .value ?? ""
+                            activateCellEdit[rowNum!]["properties"][column.key]?.value ?? ""
                           }
                           maxLength={
                             column.maxLength != null ? column.maxLength : 10000
@@ -3505,8 +3504,7 @@ const EditableGrid = (props: Props) => {
                           styles={{ root: { justifyContent: "center" } }}
                           ariaLabel={column.key}
                           defaultChecked={
-                            activateCellEdit[rowNum!]["properties"][column.key]
-                              .value
+                            activateCellEdit[rowNum!]["properties"][column.key]?.value
                           }
                           onChange={(ev, isChecked) => {
                             if (ev)
@@ -4000,8 +3998,7 @@ const EditableGrid = (props: Props) => {
                             ]?.["isActivated"]
                           }
                           value={
-                            activateCellEdit[rowNum!]["properties"][column.key]
-                              .value ?? ""
+                            activateCellEdit[rowNum!]["properties"][column.key]?.value ?? ""
                           }
                           onKeyDown={(event) => {
                             if (
@@ -4084,8 +4081,7 @@ const EditableGrid = (props: Props) => {
                             ]?.["isActivated"]
                           }
                           value={
-                            activateCellEdit[rowNum!]["properties"][column.key]
-                              .value ?? ""
+                            activateCellEdit[rowNum!]["properties"][column.key]?.value ?? ""
                           }
                           onKeyDown={(event) => {
                             if (
