@@ -60,6 +60,7 @@ import React from "react";
 import { IEnableMessageBarErrors } from "../../libs/types/editabledetailslistprops";
 
 interface GridConfigOptions {
+  enableInlineGridAdd: boolean;
   disableAllRowActions: boolean
   enableSingleCellEditOnDoubleClick: boolean;
   enableRowEditDelete: boolean;
@@ -102,6 +103,7 @@ const Consumer = () => {
     });
   const [gridConfigOptions, setGridConfigOptions] = useState<GridConfigOptions>(
     {
+      enableInlineGridAdd: true,
       disableAllRowActions: false,
       enableMessageBarErrors: {
         enableShowErrors: true,
@@ -650,6 +652,14 @@ const Consumer = () => {
           </StackItem>
           <StackItem className={classNames.checkbox}>
             <Checkbox
+              id={"enableInlineGridAdd"}
+              label="Add Rows Inline"
+              onChange={onCheckboxChange}
+              checked={gridConfigOptions.enableInlineGridAdd}
+            />
+          </StackItem>
+          <StackItem className={classNames.checkbox}>
+            <Checkbox
               id={"enableGridRowsAdd"}
               label="Add Blank Rows"
               onChange={onCheckboxChange}
@@ -759,6 +769,7 @@ const Consumer = () => {
           onClick={() => saveAction && saveAction()}
         />
         <EditableGrid
+        enableInlineGridAdd={gridConfigOptions.enableInlineGridAdd}
         disableAllRowActions={gridConfigOptions.disableAllRowActions}
           id={100}
           gridLocation="Main Grid"

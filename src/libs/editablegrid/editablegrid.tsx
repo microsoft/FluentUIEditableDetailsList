@@ -1081,6 +1081,18 @@ const EditableGrid = (props: Props) => {
     [CurrentAutoGenID]
   );
 
+  const [AddRowActive, SetAddRowActive] = useState(false)
+  useEffect(()=>{         
+    if(AddRowActive && props.enableInlineGridAdd)
+  {  ShowRowEditMode(
+    defaultGridData[0],
+    Number(defaultGridData[0]['_grid_row_id_'])!,
+    true
+  )
+  SetAddRowActive(false)}
+
+  },[activateCellEdit])
+
   const AddRowsToGrid = (): void => {
     const updateItemName = (): void => {
       if (SpinRef && SpinRef.current.value) {
@@ -1089,12 +1101,16 @@ const EditableGrid = (props: Props) => {
 
         let rowCount = parseInt(SpinRef.current.value, 10);
         var addedRows = GetDefaultRowObject(rowCount);
-        var newGridData = [...defaultGridData, ...addedRows];
+        var newGridData = [ ...addedRows, ...defaultGridData];
+     
         setGridEditState(true);
-        SetGridItems(newGridData);
+        SetGridItems(newGridData);       
+        
       }
     };
 
+    if(!props.enableInlineGridAdd)
+{
     setDialogContent(
       <>
         <SpinButton
@@ -1115,7 +1131,16 @@ const EditableGrid = (props: Props) => {
           />
         </DialogFooter>
       </>
-    );
+    );}
+
+    else{
+      var addedRows = GetDefaultRowObject(1);
+      var newGridData = [ ...addedRows, ...defaultGridData];
+   
+      setGridEditState(true);
+      SetGridItems(newGridData);
+      SetAddRowActive(true)
+    }
   };
 
   const onAddPanelChange = useCallback(
@@ -2729,7 +2754,11 @@ const EditableGrid = (props: Props) => {
         ShowColumnFilterDialog();
         break;
       case EditType.AddRowWithData:
-        setIsOpenForAdd(true);
+        if(!props.enableInlineGridAdd){
+        setIsOpenForAdd(true);}
+        else{
+          AddRowsToGrid();
+        }
         break;
     }
 
@@ -4189,7 +4218,7 @@ const EditableGrid = (props: Props) => {
       commandBarItems.push({
         key: "copy",
         text: "Copy Grid",
-        disabled: isGridInEdit || editMode || selectionCount == 0,
+        disabled: props.enableSaveGridOnCellValueChange ? undefined : isGridInEdit || editMode || selectionCount == 0,
         ariaLabel:
           isGridInEdit || editMode || selectionCount == 0
             ? "Make A Selection In The Grid To Copy"
@@ -4228,7 +4257,7 @@ const EditableGrid = (props: Props) => {
         id: "addrowswithdata",
         key: "addrowswithdata",
         text: "Add Rows With Data",
-        disabled: isGridInEdit || editMode,
+        disabled: props.enableSaveGridOnCellValueChange ? undefined : isGridInEdit || editMode,
         iconProps: { iconName: "Add" },
         onClick: () => {
           SetCurrentAutoGenID(tempAutoGenId.current);
@@ -4242,7 +4271,7 @@ const EditableGrid = (props: Props) => {
         id: "deleterows",
         key: "deleterows",
         text: selectionCount > 1 ? "Delete Rows" : "Delete Row",
-        disabled: isGridInEdit || editMode || selectionCount == 0,
+        disabled: props.enableSaveGridOnCellValueChange ? undefined : isGridInEdit || editMode || selectionCount == 0,
         iconProps: { iconName: "trash" },
         onClick: () => RowSelectOperations(EditType.DeleteRow, {}),
       });
@@ -4355,12 +4384,12 @@ const EditableGrid = (props: Props) => {
       });
     }
 
-    if (props.enableGridRowsAdd && !editMode) {
+    if (props.enableGridRowsAdd ) {
       commandBarItems.push({
         id: "addrows",
         key: "addrows",
         text: "Add Rows",
-        disabled: isGridInEdit || editMode,
+        disabled: props.enableSaveGridOnCellValueChange ? undefined : isGridInEdit || editMode,
         iconProps: { iconName: "AddTo" },
         onClick: () => {
           SetCurrentAutoGenID(tempAutoGenId.current);

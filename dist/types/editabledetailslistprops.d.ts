@@ -12,6 +12,8 @@ export type IEnableMessageBarErrors = {
     enableSendGroupedErrorsToCallback?: boolean;
 };
 export interface Props extends IDetailsListProps {
+    /** Determines if a panel is shown for adding new rows is shown or done in grid*/
+    enableInlineGridAdd: boolean;
     /** sets the min width for the actions column*/
     actionsColumnMinWidth?: number;
     /** Shows in Grid Column, Removes The Actions Column If True */
