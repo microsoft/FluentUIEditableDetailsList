@@ -337,7 +337,11 @@ const EditableGrid = (props: Props) => {
     const makeEverythingAString = array.map((obj: any) => {
       const convertedObj = {} as any;
       for (const key in obj) {
-        convertedObj[key] = String(obj[key]);
+        if(obj[key] == null || (obj[key] == undefined))
+        convertedObj[key] = ''
+        else{        convertedObj[key] = String(obj[key]);
+        }
+
       }
       return convertedObj;
     });
