@@ -52962,7 +52962,7 @@ const zU = (e) => {
     return kt.current !== null && se.push(kt.current), j.forEach((ee, De) => {
       console.log(Object.entries(ee).filter(([_e]) => Object.keys(e.items[0]).includes(_e)).filter(([_e]) => e.columns.map(($e) => $e.key).includes(_e)).filter(([_e]) => !se.includes(_e)).sort());
       const ge = JSON.stringify(
-        Object.entries(ee).filter(([_e]) => e.columns.map(($e) => $e.key).includes(_e)).filter(([_e]) => Object.keys(e.items[0]).includes(_e)).filter(([_e]) => !se.includes(_e)).sort()
+        Object.entries(ee).filter(([_e]) => Object.keys(e.items[0]).includes(_e)).filter(([_e]) => e.columns.map(($e) => $e.key).includes(_e)).filter(([_e]) => !se.includes(_e)).sort()
       );
       F[ge] ? kt.current !== null ? F[ge].ids.push(ee[kt.current]) : F[ge].ids.push(De) : kt.current !== null ? (F[ge] = { index: q.length, ids: [ee[kt.current]] }, q.push(F[ge].ids)) : (F[ge] = { index: q.length, ids: [De] }, q.push(F[ge].ids));
     }), q.filter((ee) => ee.length > 1).map((ee) => ee.sort((De, ge) => De - ge));
