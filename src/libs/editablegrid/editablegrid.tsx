@@ -1214,11 +1214,11 @@ const EditableGrid = (props: Props) => {
     if (AddRowActive && props.enableInlineGridAdd) {
       console.log(activateCellEdit)
 
-      ShowRowEditMode(
-        defaultGridData[0],
-        Number(defaultGridData[0]["_grid_row_id_"])!,
-        true
-      );
+      // ShowRowEditMode(
+      //   defaultGridData[0],
+      //   Number(defaultGridData[0]["_grid_row_id_"])!,
+      //   true
+      // );
       SetAddRowActive(false);
     }
   }, [activateCellEdit, defaultGridData, props.items]);
@@ -1267,6 +1267,12 @@ const EditableGrid = (props: Props) => {
       setGridEditState(true);
       SetGridItems(newGridData);
       SetAddRowActive(true);
+
+      ShowRowEditMode(
+        addedRows[0],
+        Number(addedRows[0]["_grid_row_id_"])!,
+        true
+      );
     }
   };
 
