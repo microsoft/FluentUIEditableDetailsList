@@ -223,11 +223,13 @@ const EditableGrid = (props: Props) => {
   });
 
   useEffect(() => {
-    var data: any[] = InitializeInternalGrid(props.items);
-    setGridData(data);
-    setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
-    setGridEditState(false);
-    SetGridItems(data);
+    if (props && props.items) {
+      var data: any[] = InitializeInternalGrid(props.items);
+      setGridData(data);
+      setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
+      setGridEditState(false);
+      SetGridItems(data);
+    }
   }, [props.items]);
 
   useEffect(() => {}, [backupDefaultGridData]);
@@ -399,7 +401,7 @@ const EditableGrid = (props: Props) => {
     );
 
     for (const key of properties) {
-      if (obj[key] !== null && obj[key] !== '') {
+      if (obj[key] !== null && obj[key] !== "") {
         return false;
       }
     }
@@ -408,7 +410,6 @@ const EditableGrid = (props: Props) => {
   }
 
   const runGridValidations = (): void => {
-
     const defaultGridDataTmp =
       defaultGridData.length > 0
         ? defaultGridData.filter(
@@ -973,28 +974,28 @@ const EditableGrid = (props: Props) => {
     setMessagesState(Messages.current);
     setGridInError(false);
 
-        // Delete Blank Rows
-        let blankRowsCount = 0
-        const blankObjects = defaultGridData.filter((obj: any) => isRowBlank(obj));
-        blankObjects.forEach((element) => {
-          HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
-          blankRowsCount = blankRowsCount + 1
-        });
+    // Delete Blank Rows
+    let blankRowsCount = 0;
+    const blankObjects = defaultGridData.filter((obj: any) => isRowBlank(obj));
+    blankObjects.forEach((element) => {
+      HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
+      blankRowsCount = blankRowsCount + 1;
+    });
 
-        if(blankRowsCount > 0){
-          if (
-            props.enableMessageBarErrors &&
-            props.enableMessageBarErrors.enableShowErrors
-          ) {
-            var msg = `Auto Deleted ${blankRowsCount} Blank Rows`
-    
-            insertToMap(Messages.current, "blanks", {
-              msg: msg,
-              type: MessageBarType.warning,
-            });
-          }
-        }
-        
+    if (blankRowsCount > 0) {
+      if (
+        props.enableMessageBarErrors &&
+        props.enableMessageBarErrors.enableShowErrors
+      ) {
+        var msg = `Auto Deleted ${blankRowsCount} Blank Rows`;
+
+        insertToMap(Messages.current, "blanks", {
+          msg: msg,
+          type: MessageBarType.warning,
+        });
+      }
+    }
+
     setEditMode(false);
     setGridEditState(false);
     const defaultGridDataTmp =
@@ -1167,12 +1168,12 @@ const EditableGrid = (props: Props) => {
   }, []);
   const [CurrentAutoGenID, SetCurrentAutoGenID] = useState(0);
   const tempAutoGenId = useRef(0);
-  const fallBackAutoGenId = useRef(0)
+  const fallBackAutoGenId = useRef(0);
 
   useEffect(() => {
     // Ref only updates once
     SetCurrentAutoGenID(tempAutoGenId.current);
-    fallBackAutoGenId.current = tempAutoGenId.current
+    fallBackAutoGenId.current = tempAutoGenId.current;
   }, [tempAutoGenId.current]);
 
   const GetDefaultRowObject = useCallback(
@@ -2281,22 +2282,19 @@ const EditableGrid = (props: Props) => {
     let activateCellEditTmp: any[] = [];
 
     try {
-
-      activateCellEditTmp = [...activateCellEditArr];    
-      activateCellEditTmp[rowNum]["properties"][key]["activated"] = activateCurrentCell;
+      activateCellEditTmp = [...activateCellEditArr];
+      activateCellEditTmp[rowNum]["properties"][key]["activated"] =
+        activateCurrentCell;
       activateCellEditTmp[rowNum]["properties"][key]["error"] =
         !activateCurrentCell
           ? null
           : activateCellEditTmp[rowNum]["properties"][key]["error"];
-  
-  
-  
+
       return activateCellEditTmp;
     } catch (error) {
       // console.log(error)
-      return activateCellEditArr
+      return activateCellEditArr;
     }
-
   };
 
   const EditCellValue = (
@@ -2347,29 +2345,30 @@ const EditableGrid = (props: Props) => {
   /* #endregion */
 
   /* #region [Grid Row Edit Functions] */
-  const ChangeRowState = useCallback((
-    item: any,
-    rowNum: number,
-    enableTextField: boolean
-  ): any[] => {
-    let activateCellEditTmp: any[] = [...activateCellEdit];
-    var objectKeys = Object.keys(item);
+  const ChangeRowState = useCallback(
+    (item: any, rowNum: number, enableTextField: boolean): any[] => {
+      let activateCellEditTmp: any[] = [...activateCellEdit];
+      var objectKeys = Object.keys(item);
 
-    objectKeys
-      .filter((key) => key != "_grid_row_id_" && key != "_grid_row_operation_")
-      .forEach((objKey) => {
-        activateCellEditTmp = ChangeCellState(
-          objKey,
-          rowNum,
-          enableTextField,
-          activateCellEditTmp
-        );
-      });
+      objectKeys
+        .filter(
+          (key) => key != "_grid_row_id_" && key != "_grid_row_operation_"
+        )
+        .forEach((objKey) => {
+          activateCellEditTmp = ChangeCellState(
+            objKey,
+            rowNum,
+            enableTextField,
+            activateCellEditTmp
+          );
+        });
 
-    activateCellEditTmp[rowNum]["isActivated"] = enableTextField;
+      activateCellEditTmp[rowNum]["isActivated"] = enableTextField;
 
-    return activateCellEditTmp;
-  },[activateCellEdit, defaultGridData]);
+      return activateCellEditTmp;
+    },
+    [activateCellEdit, defaultGridData]
+  );
 
   const SaveRowValue = (
     item: any,
@@ -3330,7 +3329,10 @@ const EditableGrid = (props: Props) => {
               // }
 
               if (column.autoGenerate) {
-                tempAutoGenId.current = isNaN(parseInt(item[column.key])) === false ? parseInt(item[column.key]) + 1 : fallBackAutoGenId.current++;
+                tempAutoGenId.current =
+                  isNaN(parseInt(item[column.key])) === false
+                    ? parseInt(item[column.key]) + 1
+                    : fallBackAutoGenId.current++;
                 indentiferColumn.current = column.key;
               }
 
@@ -3376,7 +3378,8 @@ const EditableGrid = (props: Props) => {
                       ) : (
                         <TextField
                           errorMessage={
-                            activateCellEdit[rowNum!]["properties"][column.key]?.error
+                            activateCellEdit[rowNum!]["properties"][column.key]
+                              ?.error
                           }
                           label={item.text}
                           ariaLabel={column.key}
@@ -3407,7 +3410,8 @@ const EditableGrid = (props: Props) => {
                             )
                           }
                           value={
-                            activateCellEdit[rowNum!]["properties"][column.key]?.value ?? ""
+                            activateCellEdit[rowNum!]["properties"][column.key]
+                              ?.value ?? ""
                           }
                           maxLength={
                             column.maxLength != null ? column.maxLength : 10000
@@ -3505,7 +3509,8 @@ const EditableGrid = (props: Props) => {
                           styles={{ root: { justifyContent: "center" } }}
                           ariaLabel={column.key}
                           defaultChecked={
-                            activateCellEdit[rowNum!]["properties"][column.key]?.value
+                            activateCellEdit[rowNum!]["properties"][column.key]
+                              ?.value
                           }
                           onChange={(ev, isChecked) => {
                             if (ev)
@@ -3976,7 +3981,8 @@ const EditableGrid = (props: Props) => {
                       ) : (
                         <TextField
                           errorMessage={
-                            activateCellEdit[rowNum!]["properties"][column.key]?.error
+                            activateCellEdit[rowNum!]["properties"][column.key]
+                              ?.error
                           }
                           label={item.text}
                           ariaLabel={column.key}
@@ -3999,7 +4005,8 @@ const EditableGrid = (props: Props) => {
                             ]?.["isActivated"]
                           }
                           value={
-                            activateCellEdit[rowNum!]["properties"][column.key]?.value ?? ""
+                            activateCellEdit[rowNum!]["properties"][column.key]
+                              ?.value ?? ""
                           }
                           onKeyDown={(event) => {
                             if (
@@ -4059,7 +4066,8 @@ const EditableGrid = (props: Props) => {
                       ) : (
                         <TextField
                           errorMessage={
-                            activateCellEdit[rowNum!]["properties"][column.key]?.error
+                            activateCellEdit[rowNum!]["properties"][column.key]
+                              ?.error
                           }
                           label={item.text}
                           ariaLabel={column.key}
@@ -4082,7 +4090,8 @@ const EditableGrid = (props: Props) => {
                             ]?.["isActivated"]
                           }
                           value={
-                            activateCellEdit[rowNum!]["properties"][column.key]?.value ?? ""
+                            activateCellEdit[rowNum!]["properties"][column.key]
+                              ?.value ?? ""
                           }
                           onKeyDown={(event) => {
                             if (

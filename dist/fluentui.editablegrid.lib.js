@@ -52910,8 +52910,10 @@ const zU = (e) => {
   x.useEffect(() => (kx.subscribe(Sx.onSearch, Fr), function() {
     kx.unsubscribe(Sx.onSearch, Fr);
   })), Dr(() => {
-    var M = PU(e.items);
-    p(M), b(M.map((X) => ({ ...X }))), br(!1), tr(M);
+    if (e && e.items) {
+      var M = PU(e.items);
+      p(M), b(M.map((X) => ({ ...X }))), br(!1), tr(M);
+    }
   }, [e.items]), Dr(() => {
   }, [g]), Dr(() => {
     (async () => {
@@ -53773,18 +53775,23 @@ const zU = (e) => {
       le,
       M
     );
-  }, If = Ia((M, X, F) => {
-    let J = [...k];
-    var le = Object.keys(M);
-    return le.filter((ee) => ee != "_grid_row_id_" && ee != "_grid_row_operation_").forEach((ee) => {
-      J = Wp(
-        ee,
-        X,
-        F,
-        J
-      );
-    }), J[X].isActivated = F, J;
-  }, [k, m]), Ui = (M, X, F) => {
+  }, If = Ia(
+    (M, X, F) => {
+      let J = [...k];
+      var le = Object.keys(M);
+      return le.filter(
+        (ee) => ee != "_grid_row_id_" && ee != "_grid_row_operation_"
+      ).forEach((ee) => {
+        J = Wp(
+          ee,
+          X,
+          F,
+          J
+        );
+      }), J[X].isActivated = F, J;
+    },
+    [k, m]
+  ), Ui = (M, X, F) => {
     let J = [];
     J = [...F];
     var le = Object.keys(M);
