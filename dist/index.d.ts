@@ -8,6 +8,8 @@ export type { ICellHoverProps } from "./types/cellhoverpropstype";
 export { NumberAndDateOperators, StringOperators, } from "./types/cellstyleruletype";
 export type { ICellStyleRulesType } from "./types/cellstyleruletype";
 export type { IRequiredColumnsOptions, IRegexValidation, IColumnConfig, ITransformBasedOnData, IDisableDropCellOptions, } from "./types/columnconfigtype";
+export type { IDetailsColumnRenderTooltipPropsExtra } from "./types/columnconfigtype";
 export { DepColTypes, DisableColTypes } from "./types/columnconfigtype";
 export { EditControlType } from "./types/editcontroltype";
 export type { IGridItemsType } from "./types/griditemstype";
+export type { IEnableMessageBarErrors, IContentScrollablePaneStyleProps, } from "./types/editabledetailslistprops";
