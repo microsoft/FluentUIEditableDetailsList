@@ -229,16 +229,16 @@ const Consumer = () => {
         id: i,
         combo: "Black Red",
         excluded: randomInt % 2 == 0 ? true : false,
-        customerhovercol: "Hover Me",
+        // customerhovercol: "Hover Me",
         name: "Name" + GetRandomInt(1, 10),
         password: "somepassword",
         age: GetRandomInt(20, 40),
         designation: "Designation" + GetRandomInt(1, 15),
         salary: GetRandomInt(35000, 75000),
-        dateofjoining: "2010-10-10T14:57:10",
+        dateofjoining: new Date(),
         payrolltype: null,
         employmenttype: "Employment Type" + GetRandomInt(1, 12),
-        employeelink: "Link",
+        // employeelink: "Link",
       });
     }
     setItems(dummyData);

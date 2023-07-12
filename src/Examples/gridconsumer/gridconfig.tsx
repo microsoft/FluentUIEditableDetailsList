@@ -376,7 +376,7 @@ export interface GridItemsType {
   age: number;
   designation: string;
   salary: number | string;
-  dateofjoining: string;
+  dateofjoining: Date;
   payrolltype: string;
   employmenttype: string;
   employeelink: string;

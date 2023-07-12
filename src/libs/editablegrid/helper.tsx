@@ -174,6 +174,8 @@ export const ParseType = (type: string | undefined, text: string, udf_trim?: num
 
 export const GetDefault = (type: string | undefined): any => {
   switch (type) {
+    case 'boolean':
+      return false
     case "date":
       return new Date();
     default:

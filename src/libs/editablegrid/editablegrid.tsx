@@ -331,6 +331,9 @@ const EditableGrid = (props: Props) => {
   }, [gridInError, GlobalMessagesState]);
 
   function findDuplicates(array: any) {
+    const duplicates:any[] = [];
+    const seen:any = {};
+
     const makeEverythingAString = array.map((obj: any) => {
       const convertedObj = {} as any;
       for (const key in obj) {
@@ -351,36 +354,39 @@ const EditableGrid = (props: Props) => {
       ignoredProperties.push(indentiferColumn.current);
     }
 
-    const duplicates = {} as any;
+    makeEverythingAString.forEach((row:any, index: number) => {
 
-    makeEverythingAString.forEach((obj: any, index: number) => {
-      const properties = Object.keys(obj)
-        .filter((key) => !ignoredProperties.includes(key))
-        .map((key) => obj[key]);
+      console.log(Object.entries(row)
+      // .filter(([prop]) => prop !== "id")
+      .filter(([prop]) => Object.keys(props.items[0]).includes(prop))
+      .filter(([prop]) => props.columns.map(obj => obj.key).includes(prop))
+      .filter(([prop]) => !ignoredProperties.includes(prop))
+      .sort())
+    const key = JSON.stringify(
+      Object.entries(row)
+        // .filter(([prop]) => prop !== "id")
+        .filter(([prop]) => props.columns.map(obj => obj.key).includes(prop))
+        .filter(([prop]) => Object.keys(props.items[0]).includes(prop))
+        .filter(([prop]) => !ignoredProperties.includes(prop))
+        .sort()
+    );
+    if (seen[key]) {
+      // Duplicate row found
+      indentiferColumn.current !== null ? seen[key].ids.push(row[indentiferColumn.current]) : seen[key].ids.push(index);
 
-      const hash = JSON.stringify(properties);
-
-      if (duplicates[hash]) {
-        duplicates[hash].rowIndex.push(
-          indentiferColumn.current !== null
-            ? obj[indentiferColumn.current]
-            : index + 1
-        );
-      } else {
-        duplicates[hash] = {
-          rowIndex:
-            indentiferColumn.current !== null
-              ? [obj[indentiferColumn.current]]
-              : [index + 1],
-        };
+    } else {
+      if (indentiferColumn.current !== null){
+      seen[key] = { index: duplicates.length, ids: [row[indentiferColumn.current]] };
+      duplicates.push(seen[key].ids)}else{
+        seen[key] = { index: duplicates.length, ids: [index] };
+        duplicates.push(seen[key].ids)
       }
-    });
+    }
+  });
 
-    const duplicateRowIndex = Object.values(duplicates)
-      .filter((obj: any) => obj.rowIndex.length > 1)
-      .flatMap((obj: any) => obj.rowIndex);
 
-    return duplicateRowIndex;
+
+    return duplicates.filter(ids => ids.length > 1).map(ids => ids.sort((a:any, b:any) => a - b));
   }
 
   function isRowBlank(obj: any) {
@@ -401,7 +407,7 @@ const EditableGrid = (props: Props) => {
     );
 
     for (const key of properties) {
-      if (obj[key] !== null && obj[key] !== "") {
+      if (obj[key] !== null && obj[key] !== "" && obj[key] !== false) {
         return false;
       }
     }
@@ -424,15 +430,19 @@ const EditableGrid = (props: Props) => {
         props.enableMessageBarErrors &&
         props.enableMessageBarErrors.enableShowErrors
       ) {
-        var msg =
-          indentiferColumn.current !== null
-            ? `Rows Located At IDs: ${duplicates} are duplicated`
-            : `Rows Located At Indexes ${duplicates} are duplicated`;
 
-        insertToMap(Messages.current, "dups", {
+        duplicates.forEach((dups, index) => {
+          var msg =
+          indentiferColumn.current !== null
+            ? `Rows Located At IDs: ${dups} are duplicated`
+            : `Rows Located At Indexes ${dups} are duplicated`;
+
+        insertToMap(Messages.current, "dups"+index, {
           msg: msg,
           type: MessageBarType.error,
         });
+        });
+        
       }
       setGridInError(true);
     }
@@ -1193,7 +1203,7 @@ const EditableGrid = (props: Props) => {
         props.columns.forEach((item, index) => {
           if (item.autoGenerate) obj[item.key] = tempID++;
           else {
-            obj[item.key] = GetDefault(typeof item.data);
+            obj[item.key] = GetDefault(item.dataType);
           }
         });
 
@@ -3319,6 +3329,10 @@ const EditableGrid = (props: Props) => {
                     item[column.key] = element.value;
                   }
                 }
+              }
+
+              if(column.dataType == 'date' && item[column.key]){
+                item[column.key] = new Date(item[column.key]).toDateString()
               }
 
               // if (column.transformBasedOnData) {
