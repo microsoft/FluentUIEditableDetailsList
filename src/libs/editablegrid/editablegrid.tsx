@@ -1187,7 +1187,9 @@ const EditableGrid = (props: Props) => {
 
       for (var i = 1; i <= rowCount; i++) {
         obj = {};
+        console.log(props.columns)
         props.columns.forEach((item, index) => {
+          console.log(item)
           if (item.autoGenerate) obj[item.key] = tempID++;
           else {
             obj[item.key] = GetDefault(typeof item.data);
@@ -1206,14 +1208,12 @@ const EditableGrid = (props: Props) => {
 
       return addedRows;
     },
-    [CurrentAutoGenID]
+    [CurrentAutoGenID, props.columns, defaultGridData]
   );
 
   const [AddRowActive, SetAddRowActive] = useState(false);
   useEffect(() => {
     if (AddRowActive && props.enableInlineGridAdd) {
-      console.log(activateCellEdit)
-
       ShowRowEditMode(
         defaultGridData[0],
         Number(defaultGridData[0]["_grid_row_id_"])!,
