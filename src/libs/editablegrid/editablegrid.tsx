@@ -1167,10 +1167,12 @@ const EditableGrid = (props: Props) => {
   }, []);
   const [CurrentAutoGenID, SetCurrentAutoGenID] = useState(0);
   const tempAutoGenId = useRef(0);
+  const fallBackAutoGenId = useRef(0)
 
   useEffect(() => {
     // Ref only updates once
     SetCurrentAutoGenID(tempAutoGenId.current);
+    fallBackAutoGenId.current = tempAutoGenId.current
   }, [tempAutoGenId.current]);
 
   const GetDefaultRowObject = useCallback(
@@ -1187,9 +1189,9 @@ const EditableGrid = (props: Props) => {
 
       for (var i = 1; i <= rowCount; i++) {
         obj = {};
-        console.log(props.columns)
+        // console.log(props.columns)
         props.columns.forEach((item, index) => {
-          console.log(item)
+          // console.log(item)
           if (item.autoGenerate) obj[item.key] = tempID++;
           else {
             obj[item.key] = GetDefault(typeof item.data);
@@ -3329,7 +3331,7 @@ const EditableGrid = (props: Props) => {
               // }
 
               if (column.autoGenerate) {
-                tempAutoGenId.current = isNaN(parseInt(item[column.key])) === false ? parseInt(item[column.key]) + 1 : 0;
+                tempAutoGenId.current = isNaN(parseInt(item[column.key])) === false ? parseInt(item[column.key]) + 1 : fallBackAutoGenId.current++;
                 indentiferColumn.current = column.key;
               }
 
