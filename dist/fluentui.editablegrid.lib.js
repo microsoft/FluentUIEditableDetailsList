@@ -53332,7 +53332,11 @@ const GU = (e) => {
     [Jt]
   ), [nt, Pt] = Je(!1);
   Ir(() => {
-    nt && e.enableInlineGridAdd && (console.log(k), Pt(!1));
+    nt && e.enableInlineGridAdd && (console.log(k), zs(
+      m[0],
+      Number(m[0]._grid_row_id_),
+      !0
+    ), Pt(!1));
   }, [k, m, e.items]);
   const D = () => {
     const M = () => {
@@ -53370,11 +53374,7 @@ const GU = (e) => {
       );
     else {
       var X = Ne(1), F = [...X, ...m];
-      br(!0), tr(F), Pt(!0), zs(
-        X[0],
-        Number(X[0]._grid_row_id_),
-        !0
-      );
+      br(!0), tr(F), Pt(!0);
     }
   }, L = Da(
     (M, X) => {
