@@ -53324,9 +53324,9 @@ const zU = (e) => {
         })
       );
       for (var le = Jt, ee = 1; ee <= M; ee++)
-        X = {}, console.log(e.columns), e.columns.forEach((De, xe) => {
-          console.log(De), De.autoGenerate ? X[De.key] = le++ : X[De.key] = eu(typeof De.data);
-        }), X._grid_row_id_ = ++J, X._grid_row_operation_ = Cr.Add, X._is_filtered_in_ = !0, X._is_filtered_in_grid_search_ = !0, X._is_filtered_in_column_filter_ = !0, console.log(X), F.push(X);
+        X = {}, e.columns.forEach((De, xe) => {
+          De.autoGenerate ? X[De.key] = le++ : X[De.key] = eu(typeof De.data);
+        }), X._grid_row_id_ = ++J, X._grid_row_operation_ = Cr.Add, X._is_filtered_in_ = !0, X._is_filtered_in_grid_search_ = !0, X._is_filtered_in_column_filter_ = !0, F.push(X);
       return Q(le), F;
     },
     [Jt, e.columns, m]
@@ -53337,7 +53337,7 @@ const zU = (e) => {
       Number(m[0]._grid_row_id_),
       !0
     ), D(!1));
-  }, [k, m, e.items]);
+  }, [k]);
   const L = () => {
     const M = () => {
       if (mt && mt.current.value) {

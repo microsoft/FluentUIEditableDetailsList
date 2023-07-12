@@ -1189,9 +1189,7 @@ const EditableGrid = (props: Props) => {
 
       for (var i = 1; i <= rowCount; i++) {
         obj = {};
-        console.log(props.columns)
         props.columns.forEach((item, index) => {
-          console.log(item)
           if (item.autoGenerate) obj[item.key] = tempID++;
           else {
             obj[item.key] = GetDefault(typeof item.data);
@@ -1204,7 +1202,6 @@ const EditableGrid = (props: Props) => {
         obj._is_filtered_in_grid_search_ = true;
         obj._is_filtered_in_column_filter_ = true;
 
-        console.log(obj)
         addedRows.push(obj);
       }
 
@@ -1225,7 +1222,7 @@ const EditableGrid = (props: Props) => {
       );
       SetAddRowActive(false);
     }
-  }, [activateCellEdit, defaultGridData, props.items]);
+  }, [activateCellEdit]);
 
   const AddRowsToGrid = (): void => {
     const updateItemName = (): void => {
