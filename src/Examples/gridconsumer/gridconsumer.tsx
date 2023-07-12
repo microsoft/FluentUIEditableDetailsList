@@ -912,33 +912,33 @@ const Consumer = () => {
         />
       </div>
 
-      {teachingBubbleVisible && (
-        <TeachingBubble
-          target={teachingBubblePropsConfig?.config.target}
-          primaryButtonProps={
-            teachingBubblePropsConfig?.id < teachingBubbleConfig.length - 1
-              ? nextBubbleProps
-              : closeButtonProps
-          }
-          secondaryButtonProps={
-            teachingBubblePropsConfig?.id > 0 ? previousBubbleProps : undefined
-          }
-          onDismiss={() => setToggleTeachingBubbleVisible(false)}
-          footerContent={teachingBubblePropsConfig?.config.footerContent}
-          headline={teachingBubblePropsConfig?.config.headline}
-          hasCloseButton={true}
-          isWide={
-            teachingBubblePropsConfig?.config.isWide == null
-              ? true
-              : teachingBubblePropsConfig?.config.isWide
-          }
-          calloutProps={{
-            directionalHint: DirectionalHint.bottomLeftEdge,
-          }}
-        >
-          {teachingBubblePropsConfig?.config.innerText}
-        </TeachingBubble>
-      )}
+      {/* {teachingBubbleVisible && (
+        // <TeachingBubble
+        //   target={teachingBubblePropsConfig?.config.target}
+        //   primaryButtonProps={
+        //     teachingBubblePropsConfig?.id < teachingBubbleConfig.length - 1
+        //       ? nextBubbleProps
+        //       : closeButtonProps
+        //   }
+        //   secondaryButtonProps={
+        //     teachingBubblePropsConfig?.id > 0 ? previousBubbleProps : undefined
+        //   }
+        //   onDismiss={() => setToggleTeachingBubbleVisible(false)}
+        //   footerContent={teachingBubblePropsConfig?.config.footerContent}
+        //   headline={teachingBubblePropsConfig?.config.headline}
+        //   hasCloseButton={true}
+        //   isWide={
+        //     teachingBubblePropsConfig?.config.isWide == null
+        //       ? true
+        //       : teachingBubblePropsConfig?.config.isWide
+        //   }
+        //   calloutProps={{
+        //     directionalHint: DirectionalHint.bottomLeftEdge,
+        //   }}
+        // >
+        //   {teachingBubblePropsConfig?.config.innerText}
+        // </TeachingBubble>
+      )} */}
     </Stack>
   );
 };

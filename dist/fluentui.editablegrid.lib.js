@@ -54253,7 +54253,7 @@ const GU = (e) => {
               const ir = F.transformBasedOnData[We];
               ir.key.toLowerCase() === (((Mt = xe[F.key]) == null ? void 0 : Mt.toLowerCase()) ?? "") && (xe[F.key] = ir.value);
             }
-          if (F.autoGenerate && (ke.current = parseInt(xe[F.key]) + 1, kt.current = F.key), F.comboBoxOptions) {
+          if (F.autoGenerate && (ke.current = isNaN(parseInt(xe[F.key])) === !1 ? parseInt(xe[F.key]) + 1 : 0, kt.current = F.key), F.comboBoxOptions) {
             const We = /* @__PURE__ */ new Map();
             We.set(F.key + ye, F.comboBoxOptions ?? []), jC.current = We;
           }

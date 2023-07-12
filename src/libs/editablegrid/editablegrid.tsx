@@ -3329,7 +3329,7 @@ const EditableGrid = (props: Props) => {
               // }
 
               if (column.autoGenerate) {
-                tempAutoGenId.current = parseInt(item[column.key]) + 1;
+                tempAutoGenId.current = isNaN(parseInt(item[column.key])) === false ? parseInt(item[column.key]) + 1 : 0;
                 indentiferColumn.current = column.key;
               }
 
