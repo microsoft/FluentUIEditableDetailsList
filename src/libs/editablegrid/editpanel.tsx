@@ -187,9 +187,11 @@ const EditPanel = (props: Props) => {
             );
             break;
           case EditControlType.ComboBox:
-            setComboOptions([...item.comboBoxOptions ?? []].concat([
-              { key: "b0af6b90-1c51-4938-a7cf-63567ba5daed", text: "" },
-            ]) ?? []);
+            setComboOptions(
+              [...(item.comboBoxOptions ?? [])].concat([
+                { key: "b0af6b90-1c51-4938-a7cf-63567ba5daed", text: "" },
+              ]) ?? []
+            );
             tmpRenderObj.push(
               <ComboBox
                 label={item.text}
@@ -197,24 +199,43 @@ const EditPanel = (props: Props) => {
                 onClick={() => {
                   if (!init) {
                     setInit(true);
-                    setComboOptions([...item.comboBoxOptions ?? []].concat([
-                      { key: "beaddf9d-503a-4753-95d9-158f08d9d37e", text: "" },
-                    ]) ?? []);
+                    setComboOptions(
+                      [...(item.comboBoxOptions ?? [])].concat([
+                        {
+                          key: "beaddf9d-503a-4753-95d9-158f08d9d37e",
+                          text: "",
+                        },
+                      ]) ?? []
+                    );
                   }
                 }}
                 onInputValueChange={(text) => {
-                  const searchPattern = new RegExp(text, "i");
-                  const searchResults = item.comboBoxOptions?.filter((item) =>
-                    searchPattern.test(item.text)
-                  );
+                  try {
+                    const searchPattern = new RegExp(text, "i");
+                    const searchResults = item.comboBoxOptions?.filter((item) =>
+                      searchPattern.test(item.text)
+                    );
 
-                  console.log(searchResults);
-                  setComboOptions(
-                    searchResults?.concat([
-                      { key: "64830f62-5ab8-490a-a0ed-971f977a3603", text: "" },
-                    ]) ?? []
-                  );
-                  onComboBoxChangeRaw(text, item);
+                    console.log(searchResults);
+                    setComboOptions(
+                      searchResults?.concat([
+                        {
+                          key: "64830f62-5ab8-490a-a0ed-971f977a3603",
+                          text: "",
+                        },
+                      ]) ?? []
+                    );
+                    onComboBoxChangeRaw(text, item);
+                  } catch (error) {
+                    setComboOptions(
+                      [...(item.comboBoxOptions ?? [])]?.concat([
+                        {
+                          key: "64830f62-5ab8-490a-a0ed-971f977a3603",
+                          text: "",
+                        },
+                      ]) ?? []
+                    );
+                  }
                 }}
                 onChange={(ev, option) => onComboBoxChange(ev, option, item)}
                 allowFreeInput

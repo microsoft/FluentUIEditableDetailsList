@@ -89,9 +89,11 @@ export interface IRequiredColumnsOptions {
      */
     alwaysRequired: boolean;
     /** States to only report an validation error on save, if this column doesn't have data. BUT, if the columns in `requiredOnlyIfTheseColumnsAreEmpty` have data skip the data required validation for this column */
-    requiredOnlyIfTheseColumnsAreEmpty: {
+    requiredOnlyIfTheseColumnsAreEmpty?: {
         colKeys: string[];
     };
+    /**Custom Error Msg */
+    errorMessage?: string;
 }
 export interface IDisableDropCellOptions {
     disableBasedOnThisColumnKey: string;

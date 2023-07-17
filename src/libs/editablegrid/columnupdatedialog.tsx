@@ -274,7 +274,8 @@ const ColumnUpdateDialog = (props: Props) => {
                   ]) ?? []);                }
               }}
               onInputValueChange={(text) => {
-                const searchPattern = new RegExp(text, "i");
+                try {
+                  const searchPattern = new RegExp(text, "i");
                 const searchResults = column[0].comboBoxOptions?.filter(
                   (item) => searchPattern.test(item.text)
                 );
@@ -286,6 +287,14 @@ const ColumnUpdateDialog = (props: Props) => {
                   ]) ?? []
                 );
                 onComboBoxChangeRaw(text, column[0]);
+                } catch (error) {
+                  setComboOptions(
+                    [...column[0].comboBoxOptions ?? [] ]?.concat([
+                      { key: "64830f62-5ab8-490a-a0ed-971f977a3603", text: "" },
+                    ]) ?? []
+                  );
+                }
+                
               }}
               onChange={(ev, option) => onComboBoxChange(ev, option, column[0])}
               allowFreeInput

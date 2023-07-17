@@ -197,19 +197,31 @@ const AddRowPanel = (props: Props) => {
               }}
               placeholder="Start typing..."
               onInputValueChange={(text) => {
-                const searchPattern = new RegExp(text, "i");
-                const searchResults = item.comboBoxOptions?.filter((item) =>
-                  searchPattern.test(item.text)
-                );
-
-                console.log(searchResults);
-                setComboOptions(
-                  searchResults?.concat([
-                    { key: "64830f62-5ab8-490a-a0ed-971f977a3603", text: "" },
-                  ]) ?? []
-                );
-                onComboBoxChangeRaw(text, item);
+                try {
+                  const searchPattern = new RegExp(text, "i");
+                  const searchResults = item.comboBoxOptions?.filter((item) =>
+                    searchPattern.test(item.text)
+                  );
+  
+                  console.log(searchResults);
+                  setComboOptions(
+                    searchResults?.concat([
+                      { key: "64830f62-5ab8-490a-a0ed-971f977a3603", text: "" },
+                    ]) ?? []
+                  );
+                  onComboBoxChangeRaw(text, item);
+                } catch (error) {
+                  setComboOptions(
+                    [...item.comboBoxOptions ?? [] ]?.concat([
+                      { key: "64830f62-5ab8-490a-a0ed-971f977a3603", text: "" },
+                    ]) ?? []
+                  );
+                }
+               
               }}
+
+
+
               onChange={(ev, option) => onComboBoxChange(ev, option, item)}
             />
           );

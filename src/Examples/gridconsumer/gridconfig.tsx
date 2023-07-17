@@ -79,6 +79,7 @@ export const GridColumnConfig: IColumnConfig[] = [
           dependentColumnName: "Age",
           // skipCheckIfTheseColumnsHaveData: {colKeys: ['salary', 'password'], partial: false},
           type: DepColTypes.MustBeEmpty,
+          
         },
       ],
       //regexValidation: [{regex: new RegExp('^[a-zA-Z0-9_]+$'), errorMessage: 'Special Char Invalid'}],
@@ -98,7 +99,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Exclued",
     text: "Excluded",
     editable: true,
-    required: true,
+    required:true,
     dataType: "boolean",
     minWidth: 100,
     maxWidth: 100,
@@ -235,7 +236,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     editable: true,
     required: {
       alwaysRequired: false,
-      requiredOnlyIfTheseColumnsAreEmpty: {colKeys: ['age', 'salary']}
+      requiredOnlyIfTheseColumnsAreEmpty: {colKeys: ['age', 'salary']},
     },    dataType: "string",
     minWidth: 150,
     maxWidth: 150,

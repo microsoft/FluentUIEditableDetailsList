@@ -331,17 +331,16 @@ const EditableGrid = (props: Props) => {
   }, [gridInError, GlobalMessagesState]);
 
   function findDuplicates(array: any) {
-    const duplicates:any[] = [];
-    const seen:any = {};
+    const duplicates: any[] = [];
+    const seen: any = {};
 
     const makeEverythingAString = array.map((obj: any) => {
       const convertedObj = {} as any;
       for (const key in obj) {
-        if(obj[key] == null || (obj[key] == undefined))
-        convertedObj[key] = ''
-        else{        convertedObj[key] = String(obj[key]);
+        if (obj[key] == null || obj[key] == undefined) convertedObj[key] = "";
+        else {
+          convertedObj[key] = String(obj[key]);
         }
-
       }
       return convertedObj;
     });
@@ -358,41 +357,51 @@ const EditableGrid = (props: Props) => {
       ignoredProperties.push(indentiferColumn.current);
     }
 
-    makeEverythingAString.forEach((row:any, index: number) => {
-
-      console.log(Object.entries(row)
-      // .filter(([prop]) => prop !== "id")
-      // .filter(([prop]) => props.columns.map(obj => obj.key).includes(prop))
-      .filter(([prop]) => Object.keys(props.items[0]).includes(prop))
-      .filter(([prop]) => props.columns.map(obj => obj.key).includes(prop))
-      .filter(([prop]) => !ignoredProperties.includes(prop))
-      .sort())
-    const key = JSON.stringify(
-      Object.entries(row)
-        // .filter(([prop]) => prop !== "id")
-        // .filter(([prop]) => props.columns.map(obj => obj.key).includes(prop))
-        .filter(([prop]) => Object.keys(props.items[0]).includes(prop))
-        .filter(([prop]) => props.columns.map(obj => obj.key).includes(prop))
-        .filter(([prop]) => !ignoredProperties.includes(prop))
-        .sort()
-    );
-    if (seen[key]) {
-      // Duplicate row found
-      indentiferColumn.current !== null ? seen[key].ids.push(row[indentiferColumn.current]) : seen[key].ids.push(index);
-
-    } else {
-      if (indentiferColumn.current !== null){
-      seen[key] = { index: duplicates.length, ids: [row[indentiferColumn.current]] };
-      duplicates.push(seen[key].ids)}else{
-        seen[key] = { index: duplicates.length, ids: [index] };
-        duplicates.push(seen[key].ids)
+    makeEverythingAString.forEach((row: any, index: number) => {
+      console.log(
+        Object.entries(row)
+          // .filter(([prop]) => prop !== "id")
+          // .filter(([prop]) => props.columns.map(obj => obj.key).includes(prop))
+          .filter(([prop]) => Object.keys(props.items[0]).includes(prop))
+          .filter(([prop]) =>
+            props.columns.map((obj) => obj.key).includes(prop)
+          )
+          .filter(([prop]) => !ignoredProperties.includes(prop))
+          .sort()
+      );
+      const key = JSON.stringify(
+        Object.entries(row)
+          // .filter(([prop]) => prop !== "id")
+          // .filter(([prop]) => props.columns.map(obj => obj.key).includes(prop))
+          .filter(([prop]) => Object.keys(props.items[0]).includes(prop))
+          .filter(([prop]) =>
+            props.columns.map((obj) => obj.key).includes(prop)
+          )
+          .filter(([prop]) => !ignoredProperties.includes(prop))
+          .sort()
+      );
+      if (seen[key]) {
+        // Duplicate row found
+        indentiferColumn.current !== null
+          ? seen[key].ids.push(row[indentiferColumn.current])
+          : seen[key].ids.push(index);
+      } else {
+        if (indentiferColumn.current !== null) {
+          seen[key] = {
+            index: duplicates.length,
+            ids: [row[indentiferColumn.current]],
+          };
+          duplicates.push(seen[key].ids);
+        } else {
+          seen[key] = { index: duplicates.length, ids: [index] };
+          duplicates.push(seen[key].ids);
+        }
       }
-    }
-  });
+    });
 
-
-
-    return duplicates.filter(ids => ids.length > 1).map(ids => ids.sort((a:any, b:any) => a - b));
+    return duplicates
+      .filter((ids) => ids.length > 1)
+      .map((ids) => ids.sort((a: any, b: any) => a - b));
   }
 
   function isRowBlank(obj: any) {
@@ -436,19 +445,17 @@ const EditableGrid = (props: Props) => {
         props.enableMessageBarErrors &&
         props.enableMessageBarErrors.enableShowErrors
       ) {
-
         duplicates.forEach((dups, index) => {
           var msg =
-          indentiferColumn.current !== null
-            ? `Rows Located At IDs: ${dups} are duplicated`
-            : `Rows Located At Indexes ${dups} are duplicated`;
+            indentiferColumn.current !== null
+              ? `Rows Located At IDs: ${dups} are duplicated`
+              : `Rows Located At Indexes ${dups} are duplicated`;
 
-        insertToMap(Messages.current, "dups"+index, {
-          msg: msg,
-          type: MessageBarType.error,
+          insertToMap(Messages.current, "dups" + index, {
+            msg: msg,
+            type: MessageBarType.error,
+          });
         });
-        });
-        
       }
       setGridInError(true);
     }
@@ -482,7 +489,30 @@ const EditableGrid = (props: Props) => {
           ) {
             if (!emptyCol.includes(" " + element.name))
               emptyCol.push(" " + element.name);
-          } else if (
+          }
+          
+          else if(            typeof element.required !== "boolean" &&
+          !element.required.requiredOnlyIfTheseColumnsAreEmpty && element.required.errorMessage &&    (rowCol == null ||
+            rowCol == undefined ||
+            rowCol.toString().length <= 0 ||
+            rowCol == "") )
+          {
+            var msg =
+            `Row ${
+              indentiferColumn.current
+                ? "With ID: " +
+                  (gridData as any)[indentiferColumn.current]
+                : "With Index:" + row + 1
+            } Col: ${element.name} - ` +
+            `${element.required.errorMessage}'.`;
+          insertToMap(Messages.current, element.key + row + 'empty', {
+            msg: msg,
+            type: MessageBarType.error,
+          });
+          }
+          
+          
+          else if (
             typeof element.required !== "boolean" &&
             element.required.requiredOnlyIfTheseColumnsAreEmpty &&
             (rowCol == null ||
@@ -504,7 +534,20 @@ const EditableGrid = (props: Props) => {
                   str.toString().length <= 0 ||
                   str == ""
                 ) {
-                  if (!emptyReqCol.includes(" " + element.name)) {
+                  if(element.required.errorMessage){
+                    var msg =
+                        `Row ${
+                          indentiferColumn.current
+                            ? "With ID: " +
+                              (gridData as any)[indentiferColumn.current]
+                            : "With Index:" + row + 1
+                        } Col: ${element.name} - ` +
+                        `${element.required.errorMessage}'.`;
+                      insertToMap(Messages.current, element.key + row + 'empty', {
+                        msg: msg,
+                        type: MessageBarType.error,
+                      });
+                  }else if (!emptyReqCol.includes(" " + element.name)) {
                     emptyReqCol.push(" " + element.name);
                     break;
                   }
@@ -520,7 +563,22 @@ const EditableGrid = (props: Props) => {
               !emptyReqCol.includes(" " + element.name) &&
               skippable == false
             ) {
+              if(!element.required.errorMessage)
               emptyReqCol.push(" " + element.name);
+              else{
+                var msg =
+                    `Row ${
+                      indentiferColumn.current
+                        ? "With ID: " +
+                          (gridData as any)[indentiferColumn.current]
+                        : "With Index:" + row + 1
+                    } Col: ${element.name} - ` +
+                    `${element.required.errorMessage}'.`;
+                  insertToMap(Messages.current, element.key + row + 'empty', {
+                    msg: msg,
+                    type: MessageBarType.error,
+                  });
+              }
             }
           }
 
@@ -3337,8 +3395,8 @@ const EditableGrid = (props: Props) => {
                 }
               }
 
-              if(column.dataType == 'date' && item[column.key]){
-                item[column.key] = new Date(item[column.key]).toDateString()
+              if (column.dataType == "date" && item[column.key]) {
+                item[column.key] = new Date(item[column.key]).toDateString();
               }
 
               // if (column.transformBasedOnData) {
@@ -3814,24 +3872,38 @@ const EditableGrid = (props: Props) => {
                             }
                           }}
                           onInputValueChange={(text) => {
-                            const searchPattern = new RegExp(text, "i");
-                            const searchResults =
-                              column.comboBoxOptions?.filter((item) =>
-                                searchPattern.test(item.text)
-                              );
+                            try {
+                              const searchPattern = new RegExp(text, "i");
+                              const searchResults =
+                                column.comboBoxOptions?.filter((item) =>
+                                  searchPattern.test(item.text)
+                                );
 
-                            const newMap = new Map();
-                            newMap.set(
-                              column.key + rowNum,
-                              searchResults?.concat([
-                                {
-                                  key: "64830f62-5ab8-490a-a0ed-971f977a3603",
-                                  text: "",
-                                },
-                              ]) ?? []
-                            );
-                            setComboOptions(newMap);
-                            onComboBoxChangeRaw(text, rowNum!, column, item);
+                              const newMap = new Map();
+                              newMap.set(
+                                column.key + rowNum,
+                                searchResults?.concat([
+                                  {
+                                    key: "64830f62-5ab8-490a-a0ed-971f977a3603",
+                                    text: "",
+                                  },
+                                ]) ?? []
+                              );
+                              setComboOptions(newMap);
+                              onComboBoxChangeRaw(text, rowNum!, column, item);
+                            } catch (error) {
+                              const newMap = new Map();
+                              newMap.set(
+                                column.key + rowNum,
+                                [...column.comboBoxOptions ?? []]?.concat([
+                                  {
+                                    key: "64830f62-5ab8-490a-a0ed-971f977a3603",
+                                    text: "",
+                                  },
+                                ]) ?? []
+                              );
+                              setComboOptions(newMap);
+                            }
                           }}
                           // styles={dropdownStyles}
                           onChange={(ev, option) =>
