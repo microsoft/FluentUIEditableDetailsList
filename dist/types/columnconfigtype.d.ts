@@ -17,6 +17,8 @@ export interface IColumnConfig extends IColumn {
     required: boolean | IRequiredColumnsOptions;
     /** Changes the text you see when you hover over the column header */
     toolTipText?: string;
+    /** Default value you desire to see on add row */
+    defaultOnAddRow?: any;
     /** Transforms data in the Selected column. If Data comes in as TO, KY you can use this to say if TO change to Tall Order */
     transformBasedOnData?: ITransformBasedOnData[];
     /** Majority of properties to be set for the validation engine to run against during save */

@@ -1061,7 +1061,7 @@ const EditableGrid = (props: Props) => {
         props.enableMessageBarErrors &&
         props.enableMessageBarErrors.enableShowErrors
       ) {
-        var msg = `Auto Deleted ${blankRowsCount} Blank Rows`;
+        var msg = `Auto Deleted ${blankRowsCount} Blank Row${blankRowsCount == 1 ? '': 's'}`;
 
         insertToMap(Messages.current, "blanks", {
           msg: msg,
@@ -1266,6 +1266,7 @@ const EditableGrid = (props: Props) => {
         obj = {};
         props.columns.forEach((item, index) => {
           if (item.autoGenerate) obj[item.key] = tempID++;
+          else if(item.defaultOnAddRow) obj[item.key] = item.defaultOnAddRow
           else {
             obj[item.key] = GetDefault(item.dataType);
           }

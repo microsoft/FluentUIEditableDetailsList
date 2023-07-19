@@ -42,6 +42,9 @@ export interface IColumnConfig extends IColumn {
   /** Changes the text you see when you hover over the column header */
   toolTipText?: string;
 
+  /** Default value you desire to see on add row */
+  defaultOnAddRow?: any;
+
   /** Transforms data in the Selected column. If Data comes in as TO, KY you can use this to say if TO change to Tall Order */
   transformBasedOnData?: ITransformBasedOnData[];
 
@@ -138,7 +141,7 @@ export interface IRequiredColumnsOptions {
   /** States to only report an validation error on save, if this column doesn't have data. BUT, if the columns in `requiredOnlyIfTheseColumnsAreEmpty` have data skip the data required validation for this column */
   requiredOnlyIfTheseColumnsAreEmpty?: { colKeys: string[] };
   /**Custom Error Msg */
-  errorMessage?: string
+  errorMessage?: string;
 }
 export interface IDisableDropCellOptions {
   disableBasedOnThisColumnKey: string;
