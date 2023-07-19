@@ -63,6 +63,8 @@ export interface IColumnConfig extends IColumn {
         fields: any[];
     };
     onChange?: any;
+    /** Adds decimals to given depth to freshly loaded data */
+    precision?: number;
     /**Sets the max amount of characters you can entered for that column */
     maxLength?: number;
     /** Determines if a filter can be applied*/

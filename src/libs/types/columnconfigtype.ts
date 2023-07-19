@@ -75,9 +75,9 @@ export interface IColumnConfig extends IColumn {
 
     /** If `inputType` is `EditControlType.NumericFormat`, send props here to set number restrictions*/
     numericFormatProps?: {
-      label?: string,
-      ariaLabel?: string
-      onRenderLabel?: IRenderFunction<ITextFieldProps> | undefined,
+      label?: string;
+      ariaLabel?: string;
+      onRenderLabel?: IRenderFunction<ITextFieldProps> | undefined;
       formatBase?: NumberFormatBaseProps;
       formatProps?: NumericFormatProps;
     };
@@ -99,6 +99,9 @@ export interface IColumnConfig extends IColumn {
   calculatedColumn?: { type: CalculationType; fields: any[] };
 
   onChange?: any;
+
+  /** Adds decimals to given depth to freshly loaded data */ 
+  precision?: number;
 
   /**Sets the max amount of characters you can entered for that column */
   maxLength?: number;

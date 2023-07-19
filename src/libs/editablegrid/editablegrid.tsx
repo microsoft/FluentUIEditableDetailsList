@@ -3395,6 +3395,17 @@ const EditableGrid = (props: Props) => {
                 }
               }
 
+              if(column.precision){
+                const checkNaN = parseFloat(item[column.key]).toFixed(column.precision)
+
+                if(column.dataType === 'string')
+                item[column.key] = isNaN(parseFloat(checkNaN)) ? item[column.key] : checkNaN
+                else{
+                  item[column.key] = isNaN(parseFloat(checkNaN)) ? item[column.key] : parseFloat(checkNaN)
+
+                }
+              }
+
               if (column.dataType == "date" && item[column.key]) {
                 item[column.key] = new Date(item[column.key]).toDateString();
               }

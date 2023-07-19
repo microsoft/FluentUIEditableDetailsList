@@ -181,6 +181,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInExport: false,
     includeColumnInSearch: true,
     // maxLength: 5,
+    precision: 2,
     applyColumnFilter: true,
     inputType: EditControlType.NumericFormat,
     validations:{
