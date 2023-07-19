@@ -13,4 +13,5 @@ export enum EditControlType {
   Link,
   Password,
   CheckBox,
+  NumericFormat
 }

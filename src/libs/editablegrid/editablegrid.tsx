@@ -104,6 +104,7 @@ import { IFilter } from "../types/filterstype";
 import { Operation } from "../types/operation";
 import { ImportType } from "../types/importtype";
 import { GridToastTypes } from "../types/gridToastTypes";
+import { NumericFormat } from "react-number-format";
 
 interface SortOptions {
   key: string;
@@ -489,30 +490,26 @@ const EditableGrid = (props: Props) => {
           ) {
             if (!emptyCol.includes(" " + element.name))
               emptyCol.push(" " + element.name);
-          }
-          
-          else if(            typeof element.required !== "boolean" &&
-          !element.required.requiredOnlyIfTheseColumnsAreEmpty && element.required.errorMessage &&    (rowCol == null ||
-            rowCol == undefined ||
-            rowCol.toString().length <= 0 ||
-            rowCol == "") )
-          {
+          } else if (
+            typeof element.required !== "boolean" &&
+            !element.required.requiredOnlyIfTheseColumnsAreEmpty &&
+            element.required.errorMessage &&
+            (rowCol == null ||
+              rowCol == undefined ||
+              rowCol.toString().length <= 0 ||
+              rowCol == "")
+          ) {
             var msg =
-            `Row ${
-              indentiferColumn.current
-                ? "With ID: " +
-                  (gridData as any)[indentiferColumn.current]
-                : "With Index:" + row + 1
-            } Col: ${element.name} - ` +
-            `${element.required.errorMessage}'.`;
-          insertToMap(Messages.current, element.key + row + 'empty', {
-            msg: msg,
-            type: MessageBarType.error,
-          });
-          }
-          
-          
-          else if (
+              `Row ${
+                indentiferColumn.current
+                  ? "With ID: " + (gridData as any)[indentiferColumn.current]
+                  : "With Index:" + row + 1
+              } Col: ${element.name} - ` + `${element.required.errorMessage}'.`;
+            insertToMap(Messages.current, element.key + row + "empty", {
+              msg: msg,
+              type: MessageBarType.error,
+            });
+          } else if (
             typeof element.required !== "boolean" &&
             element.required.requiredOnlyIfTheseColumnsAreEmpty &&
             (rowCol == null ||
@@ -534,20 +531,20 @@ const EditableGrid = (props: Props) => {
                   str.toString().length <= 0 ||
                   str == ""
                 ) {
-                  if(element.required.errorMessage){
+                  if (element.required.errorMessage) {
                     var msg =
-                        `Row ${
-                          indentiferColumn.current
-                            ? "With ID: " +
-                              (gridData as any)[indentiferColumn.current]
-                            : "With Index:" + row + 1
-                        } Col: ${element.name} - ` +
-                        `${element.required.errorMessage}'.`;
-                      insertToMap(Messages.current, element.key + row + 'empty', {
-                        msg: msg,
-                        type: MessageBarType.error,
-                      });
-                  }else if (!emptyReqCol.includes(" " + element.name)) {
+                      `Row ${
+                        indentiferColumn.current
+                          ? "With ID: " +
+                            (gridData as any)[indentiferColumn.current]
+                          : "With Index:" + row + 1
+                      } Col: ${element.name} - ` +
+                      `${element.required.errorMessage}'.`;
+                    insertToMap(Messages.current, element.key + row + "empty", {
+                      msg: msg,
+                      type: MessageBarType.error,
+                    });
+                  } else if (!emptyReqCol.includes(" " + element.name)) {
                     emptyReqCol.push(" " + element.name);
                     break;
                   }
@@ -563,21 +560,21 @@ const EditableGrid = (props: Props) => {
               !emptyReqCol.includes(" " + element.name) &&
               skippable == false
             ) {
-              if(!element.required.errorMessage)
-              emptyReqCol.push(" " + element.name);
-              else{
+              if (!element.required.errorMessage)
+                emptyReqCol.push(" " + element.name);
+              else {
                 var msg =
-                    `Row ${
-                      indentiferColumn.current
-                        ? "With ID: " +
-                          (gridData as any)[indentiferColumn.current]
-                        : "With Index:" + row + 1
-                    } Col: ${element.name} - ` +
-                    `${element.required.errorMessage}'.`;
-                  insertToMap(Messages.current, element.key + row + 'empty', {
-                    msg: msg,
-                    type: MessageBarType.error,
-                  });
+                  `Row ${
+                    indentiferColumn.current
+                      ? "With ID: " +
+                        (gridData as any)[indentiferColumn.current]
+                      : "With Index:" + row + 1
+                  } Col: ${element.name} - ` +
+                  `${element.required.errorMessage}'.`;
+                insertToMap(Messages.current, element.key + row + "empty", {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
               }
             }
           }
@@ -1061,7 +1058,9 @@ const EditableGrid = (props: Props) => {
         props.enableMessageBarErrors &&
         props.enableMessageBarErrors.enableShowErrors
       ) {
-        var msg = `Auto Deleted ${blankRowsCount} Blank Row${blankRowsCount == 1 ? '': 's'}`;
+        var msg = `Auto Deleted ${blankRowsCount} Blank Row${
+          blankRowsCount == 1 ? "" : "s"
+        }`;
 
         insertToMap(Messages.current, "blanks", {
           msg: msg,
@@ -1266,7 +1265,7 @@ const EditableGrid = (props: Props) => {
         obj = {};
         props.columns.forEach((item, index) => {
           if (item.autoGenerate) obj[item.key] = tempID++;
-          else if(item.defaultOnAddRow) obj[item.key] = item.defaultOnAddRow
+          else if (item.defaultOnAddRow) obj[item.key] = item.defaultOnAddRow;
           else {
             obj[item.key] = GetDefault(item.dataType);
           }
@@ -3896,7 +3895,7 @@ const EditableGrid = (props: Props) => {
                               const newMap = new Map();
                               newMap.set(
                                 column.key + rowNum,
-                                [...column.comboBoxOptions ?? []]?.concat([
+                                [...(column.comboBoxOptions ?? [])]?.concat([
                                   {
                                     key: "64830f62-5ab8-490a-a0ed-971f977a3603",
                                     text: "",
@@ -4120,6 +4119,156 @@ const EditableGrid = (props: Props) => {
                           }
                           type="password"
                           canRevealPassword
+                        />
+                      )}
+                    </span>
+                  );
+                case EditControlType.NumericFormat:
+                  return (
+                    <span>
+                      {ShouldRenderSpan() ? (
+                        column?.hoverComponentOptions?.enable ? (
+                          <HoverCard
+                            type={HoverCardType.plain}
+                            plainCardProps={{
+                              onRenderPlainCard: () =>
+                                onRenderPlainCard(column, rowNum!, item),
+                            }}
+                            instantOpenOnClick
+                          >
+                            {RenderTextFieldSpan(
+                              props,
+                              index,
+                              rowNum,
+                              column,
+                              item,
+                              EditCellValue
+                            )}
+                          </HoverCard>
+                        ) : (
+                          RenderTextFieldSpan(
+                            props,
+                            index,
+                            rowNum,
+                            column,
+                            item,
+                            EditCellValue
+                          )
+                        )
+                      ) : (
+                        <NumericFormat
+                          key={item.key}
+                          value={
+                            activateCellEdit[rowNum!]["properties"][column.key]
+                              ?.value ?? ""
+                          }
+                          placeholder={
+                            column.validations?.numericFormatProps?.formatBase
+                              ?.placeholder
+                          }
+                          valueIsNumericString={
+                            column.validations?.numericFormatProps?.formatBase
+                              ?.valueIsNumericString ?? true
+                          }
+                          type={
+                            column.validations?.numericFormatProps?.formatBase
+                              ?.type
+                          }
+                          inputMode={
+                            column.validations?.numericFormatProps?.formatBase
+                              ?.inputMode
+                          }
+                          renderText={
+                            column.validations?.numericFormatProps?.formatBase
+                              ?.renderText
+                          }
+                          label={
+                            column.validations?.numericFormatProps?.label ??
+                            item.text
+                          }
+                          decimalScale={
+                            column.validations?.numericFormatProps?.formatProps
+                              ?.decimalScale
+                          }
+                          fixedDecimalScale={
+                            column.validations?.numericFormatProps?.formatProps
+                              ?.fixedDecimalScale
+                          }
+                          decimalSeparator={
+                            column.validations?.numericFormatProps?.formatProps
+                              ?.decimalSeparator
+                          }
+                          allowedDecimalSeparators={
+                            column.validations?.numericFormatProps?.formatProps
+                              ?.allowedDecimalSeparators
+                          }
+                          thousandsGroupStyle={
+                            column.validations?.numericFormatProps?.formatProps
+                              ?.thousandsGroupStyle
+                          }
+                          thousandSeparator={
+                            column.validations?.numericFormatProps?.formatProps
+                              ?.thousandSeparator
+                          }
+                          onRenderLabel={
+                            column.validations?.numericFormatProps?.onRenderLabel
+                          }
+                          ariaLabel={
+                            column.validations?.numericFormatProps?.ariaLabel ??
+                            item.text
+                          }
+                          customInput={TextField}
+                          suffix={
+                            column.validations?.numericFormatProps?.formatProps
+                              ?.suffix
+                          }
+                          prefix={
+                            column.validations?.numericFormatProps?.formatProps
+                              ?.prefix
+                          }
+                          allowLeadingZeros={
+                            column.validations?.numericFormatProps?.formatProps
+                              ?.allowLeadingZeros
+                          }
+                          allowNegative={
+                            column.validations?.numericFormatProps?.formatProps
+                              ?.allowNegative
+                          }
+                          isAllowed={
+                            column.validations?.numericFormatProps?.formatBase
+                              ?.isAllowed
+                          }
+                          errorMessage={
+                            activateCellEdit[rowNum!]["properties"][column.key]
+                              ?.error
+                          }
+                          onValueChange={(values, sourceInfo) =>{
+                            console.log(values)
+                            onCellValueChange(
+                              sourceInfo.event as any,
+                              values.formattedValue ?? values.value,
+                              item,
+                              rowNum!,
+                              column.key,
+                              column
+                            )}
+                          }
+                      
+                          
+                          onKeyDown={(event) => {
+                            if (
+                              props.enableSingleCellEditOnDoubleClick === true
+                            )
+                              onKeyDownEvent(event, column, rowNum!, false);
+                            else if (
+                              props.enableSingleCellEditOnDoubleClick === false
+                            )
+                              onKeyDownEventFull(
+                                event,
+                                item,
+                                Number(item["_grid_row_id_"])!
+                              );
+                          }}
                         />
                       )}
                     </span>
@@ -4923,6 +5072,8 @@ const EditableGrid = (props: Props) => {
       </span>
     );
   };
+
+
 
   const RenderPickerSpan = (
     props: Props,

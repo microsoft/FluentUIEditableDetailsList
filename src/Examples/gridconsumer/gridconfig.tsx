@@ -174,14 +174,28 @@ export const GridColumnConfig: IColumnConfig[] = [
     text: "Salary",
     editable: true,
     required: false,
-    dataType: "number",
+    dataType: "string",
     minWidth: 100,
     maxWidth: 100,
     isResizable: true,
     includeColumnInExport: false,
     includeColumnInSearch: true,
-    maxLength: 5,
+    // maxLength: 5,
     applyColumnFilter: true,
+    inputType: EditControlType.NumericFormat,
+    validations:{
+      numericFormatProps: {
+        // formatBase: {
+        //   displayType: 'text',
+          
+        // },
+        formatProps: {
+          decimalScale: 3,
+          fixedDecimalScale: true,
+          allowNegative: false
+        }
+      }
+    },
     cellStyleRule: {
       enable: true,
       rule: {

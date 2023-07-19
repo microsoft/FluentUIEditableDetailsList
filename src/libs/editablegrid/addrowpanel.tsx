@@ -30,8 +30,9 @@ import { GetDefault, IsValidDataType, ParseType } from "../editablegrid/helper";
 import PickerControl from "../editablegrid/pickercontrol/picker";
 import { IColumnConfig } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
-import { createRef, useEffect, useState } from "react";
+import { createRef, SyntheticEvent, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { NumericFormat } from "react-number-format";
 
 interface Props {
   onChange: any;
@@ -116,6 +117,24 @@ const AddRowPanel = (props: Props) => {
     SetObjValues((ev.target as Element).id, ParseType(column.dataType, text));
   };
 
+  const onNumericFormatUpdate = (
+    ev: SyntheticEvent<HTMLInputElement, Event> | undefined,
+    text: string,
+    column: IColumnConfig
+  ): void => {
+    if (!IsValidDataType(column.dataType, text)) {
+      SetObjValues(
+        (ev?.target as Element).id,
+        text,
+        false,
+        `Data should be of type '${column.dataType}'`
+      );
+      return;
+    }
+
+    SetObjValues((ev?.target as Element).id, ParseType(column.dataType, text));
+  };
+
   const onPanelSubmit = (): void => {
     var objectKeys = Object.keys(columnValuesObj);
     objectKeys.forEach((objKey) => {
@@ -190,9 +209,11 @@ const AddRowPanel = (props: Props) => {
               onClick={() => {
                 if (!init) {
                   setInit(true);
-                  setComboOptions([...item.comboBoxOptions ?? []].concat([
-                    { key: "beaddf9d-503a-4753-95d9-158f08d9d37e", text: "" },
-                  ]) ?? []);
+                  setComboOptions(
+                    [...(item.comboBoxOptions ?? [])].concat([
+                      { key: "beaddf9d-503a-4753-95d9-158f08d9d37e", text: "" },
+                    ]) ?? []
+                  );
                 }
               }}
               placeholder="Start typing..."
@@ -202,7 +223,7 @@ const AddRowPanel = (props: Props) => {
                   const searchResults = item.comboBoxOptions?.filter((item) =>
                     searchPattern.test(item.text)
                   );
-  
+
                   console.log(searchResults);
                   setComboOptions(
                     searchResults?.concat([
@@ -212,16 +233,12 @@ const AddRowPanel = (props: Props) => {
                   onComboBoxChangeRaw(text, item);
                 } catch (error) {
                   setComboOptions(
-                    [...item.comboBoxOptions ?? [] ]?.concat([
+                    [...(item.comboBoxOptions ?? [])]?.concat([
                       { key: "64830f62-5ab8-490a-a0ed-971f977a3603", text: "" },
                     ]) ?? []
                   );
                 }
-               
               }}
-
-
-
               onChange={(ev, option) => onComboBoxChange(ev, option, item)}
             />
           );
@@ -285,6 +302,35 @@ const AddRowPanel = (props: Props) => {
               type="password"
               canRevealPassword
             />
+          );
+          break;
+        case EditControlType.NumericFormat:
+          tmpRenderObj.push(
+            <NumericFormat
+            key={item.key}
+            value={columnValuesObj[item.key].value || ""}
+            placeholder={item.validations?.numericFormatProps?.formatBase?.placeholder}
+            valueIsNumericString={item.validations?.numericFormatProps?.formatBase?.valueIsNumericString}
+            type={item.validations?.numericFormatProps?.formatBase?.type}
+            inputMode={item.validations?.numericFormatProps?.formatBase?.inputMode}
+            renderText={item.validations?.numericFormatProps?.formatBase?.renderText}
+            label={item.validations?.numericFormatProps?.label ?? item.text}
+            decimalScale={item.validations?.numericFormatProps?.formatProps?.decimalScale}
+            fixedDecimalScale={item.validations?.numericFormatProps?.formatProps?.fixedDecimalScale}
+            decimalSeparator={item.validations?.numericFormatProps?.formatProps?.decimalSeparator}
+            allowedDecimalSeparators={item.validations?.numericFormatProps?.formatProps?.allowedDecimalSeparators}
+            thousandsGroupStyle={item.validations?.numericFormatProps?.formatProps?.thousandsGroupStyle}
+            thousandSeparator={item.validations?.numericFormatProps?.formatProps?.thousandSeparator}
+            onRenderLabel={item.validations?.numericFormatProps?.onRenderLabel}
+            ariaLabel={item.validations?.numericFormatProps?.ariaLabel ?? item.text}
+            customInput={TextField}
+            suffix={item.validations?.numericFormatProps?.formatProps?.suffix}
+            prefix={item.validations?.numericFormatProps?.formatProps?.prefix}
+            allowLeadingZeros={item.validations?.numericFormatProps?.formatProps?.allowLeadingZeros}
+            allowNegative={item.validations?.numericFormatProps?.formatProps?.allowNegative}
+            isAllowed={item.validations?.numericFormatProps?.formatBase?.isAllowed}
+            onValueChange={(values, sourceInfo)=> onNumericFormatUpdate(sourceInfo.event,values.formattedValue ?? values.value, item)}
+          />
           );
           break;
         default:

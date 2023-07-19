@@ -9,5 +9,6 @@ export declare enum EditControlType {
     Picker = 7,
     Link = 8,
     Password = 9,
-    CheckBox = 10
+    CheckBox = 10,
+    NumericFormat = 11
 }

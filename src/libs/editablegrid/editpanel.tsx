@@ -27,7 +27,8 @@ import PickerControl from "../editablegrid/pickercontrol/picker";
 import SearchableDropdown from "../editablegrid/searchabledropdown/searchabledropdown";
 import { IColumnConfig } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
-import React, { useEffect, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
+import { NumericFormat } from "react-number-format";
 
 interface Props {
   onChange: any;
@@ -81,6 +82,14 @@ const EditPanel = (props: Props) => {
   };
 
   const onComboBoxChangeRaw = (text: string, item: any): void => {
+    SetObjValues(item.key, text);
+  };
+
+  const onNumericFormatUpdate = (
+    ev: SyntheticEvent<HTMLInputElement, Event> | undefined,
+    text: string,
+    item: any
+  ): void => {
     SetObjValues(item.key, text);
   };
 
@@ -251,6 +260,84 @@ const EditPanel = (props: Props) => {
                 onChange={(ev, isChecked) => {
                   if (ev && isChecked) onCheckBoxChange(ev, isChecked, item);
                 }}
+              />
+            );
+            break;
+          case EditControlType.NumericFormat:
+            tmpRenderObj.push(
+              <NumericFormat
+                key={item.key}
+                value={columnValuesObj[item.key].value || ""}
+                placeholder={
+                  item.validations?.numericFormatProps?.formatBase?.placeholder
+                }
+                valueIsNumericString={
+                  item.validations?.numericFormatProps?.formatBase
+                    ?.valueIsNumericString
+                }
+                type={item.validations?.numericFormatProps?.formatBase?.type}
+                inputMode={
+                  item.validations?.numericFormatProps?.formatBase?.inputMode
+                }
+                renderText={
+                  item.validations?.numericFormatProps?.formatBase?.renderText
+                }
+                label={item.validations?.numericFormatProps?.label ?? item.text}
+                decimalScale={
+                  item.validations?.numericFormatProps?.formatProps
+                    ?.decimalScale
+                }
+                fixedDecimalScale={
+                  item.validations?.numericFormatProps?.formatProps
+                    ?.fixedDecimalScale
+                }
+                decimalSeparator={
+                  item.validations?.numericFormatProps?.formatProps
+                    ?.decimalSeparator
+                }
+                allowedDecimalSeparators={
+                  item.validations?.numericFormatProps?.formatProps
+                    ?.allowedDecimalSeparators
+                }
+                thousandsGroupStyle={
+                  item.validations?.numericFormatProps?.formatProps
+                    ?.thousandsGroupStyle
+                }
+                thousandSeparator={
+                  item.validations?.numericFormatProps?.formatProps
+                    ?.thousandSeparator
+                }
+                onRenderLabel={
+                  item.validations?.numericFormatProps?.onRenderLabel
+                }
+                ariaLabel={
+                  item.validations?.numericFormatProps?.ariaLabel ?? item.text
+                }
+                customInput={TextField}
+                suffix={
+                  item.validations?.numericFormatProps?.formatProps?.suffix
+                }
+                prefix={
+                  item.validations?.numericFormatProps?.formatProps?.prefix
+                }
+                allowLeadingZeros={
+                  item.validations?.numericFormatProps?.formatProps
+                    ?.allowLeadingZeros
+                }
+                allowNegative={
+                  item.validations?.numericFormatProps?.formatProps
+                    ?.allowNegative
+                }
+                isAllowed={
+                  item.validations?.numericFormatProps?.formatBase?.isAllowed
+                }
+                onValueChange={(values, sourceInfo) =>
+                  onNumericFormatUpdate(
+                    sourceInfo.event,
+                    values.formattedValue ?? values.value,
+                    item
+                  )
+                }
               />
             );
             break;

@@ -1,7 +1,8 @@
-import { IColumn, IComboBoxOption, IDropdownOption, ITooltipHostProps } from "@fluentui/react";
+import { IColumn, IComboBoxOption, IDropdownOption, IRenderFunction, ITextFieldProps, ITooltipHostProps } from "@fluentui/react";
 import { CalculationType } from "./calculationtype";
 import { ICellStyleRulesType, StringOperators } from "./cellstyleruletype";
 import { EditControlType } from "./editcontroltype";
+import { NumberFormatBaseProps, NumericFormatProps } from "react-number-format";
 export interface IColumnConfig extends IColumn {
     key: string;
     name: string;
@@ -38,6 +39,14 @@ export interface IColumnConfig extends IColumn {
             minRange?: number;
             maxRange?: number;
             trimDecimalPointBy?: number;
+        };
+        /** If `inputType` is `EditControlType.NumericFormat`, send props here to set number restrictions*/
+        numericFormatProps?: {
+            label?: string;
+            ariaLabel?: string;
+            onRenderLabel?: IRenderFunction<ITextFieldProps> | undefined;
+            formatBase?: NumberFormatBaseProps;
+            formatProps?: NumericFormatProps;
         };
     };
     isResizable?: boolean;
