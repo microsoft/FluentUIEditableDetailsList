@@ -62,6 +62,8 @@ export interface Props extends IDetailsListProps {
     enableBulkEdit?: boolean;
     /** Shows Nowhere - Allows Users To Double Click A Single Cell & Edit That One Only, Saves After User Presses Enter In Cell. If False when user double click, the whole row is editable*/
     enableSingleCellEditOnDoubleClick?: boolean;
+    /** If true the user cannot double click or single click to edit a row */
+    disableInlineCellEdit?: boolean;
     /** Callback for when a row is selected/unselected */
     onGridSelectionChange?: any;
     /** Callback for when the grid data/items are updated */

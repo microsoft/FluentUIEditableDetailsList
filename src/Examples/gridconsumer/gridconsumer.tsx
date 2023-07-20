@@ -60,8 +60,9 @@ import React from "react";
 import { IEnableMessageBarErrors } from "../../libs/types/editabledetailslistprops";
 
 interface GridConfigOptions {
+  disableInlineCellEdit: boolean;
   enableInlineGridAdd: boolean;
-  disableAllRowActions: boolean
+  disableAllRowActions: boolean;
   enableSingleCellEditOnDoubleClick: boolean;
   enableRowEditDelete: boolean;
   enableRowEdit: boolean;
@@ -103,6 +104,7 @@ const Consumer = () => {
     });
   const [gridConfigOptions, setGridConfigOptions] = useState<GridConfigOptions>(
     {
+      disableInlineCellEdit: false,
       enableInlineGridAdd: true,
       disableAllRowActions: false,
       enableMessageBarErrors: {
@@ -548,6 +550,14 @@ const Consumer = () => {
           </StackItem>
           <StackItem className={classNames.checkbox}>
             <Checkbox
+              id={"disableInlineCellEdit"}
+              label="Disable Edit On Cell Double / Single Click"
+              onChange={onCheckboxChange}
+              checked={gridConfigOptions.disableInlineCellEdit}
+            />
+          </StackItem>
+          <StackItem className={classNames.checkbox}>
+            <Checkbox
               id={"enableSaveGridOnCellValueChange"}
               label="Save Grid On Cell Value Change"
               onChange={onCheckboxChange}
@@ -769,8 +779,9 @@ const Consumer = () => {
           onClick={() => saveAction && saveAction()}
         />
         <EditableGrid
-        enableInlineGridAdd={gridConfigOptions.enableInlineGridAdd}
-        disableAllRowActions={gridConfigOptions.disableAllRowActions}
+        disableInlineCellEdit={gridConfigOptions.disableInlineCellEdit}
+          enableInlineGridAdd={gridConfigOptions.enableInlineGridAdd}
+          disableAllRowActions={gridConfigOptions.disableAllRowActions}
           id={100}
           gridLocation="Main Grid"
           checkboxVisibility={CheckboxVisibility.hidden}

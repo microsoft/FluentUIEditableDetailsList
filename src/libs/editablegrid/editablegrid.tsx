@@ -2146,7 +2146,7 @@ const EditableGrid = (props: Props) => {
     rowNum: number,
     activateCurrentCell: boolean
   ): void => {
-    if (event.key == "Enter") {
+    if (event.key == "Enter" && !props.disableInlineCellEdit) {
       if (!activateCellEdit[rowNum].isActivated) {
         EditCellValue(column.key, rowNum, activateCurrentCell);
         event.preventDefault();
@@ -2165,7 +2165,7 @@ const EditableGrid = (props: Props) => {
     item: any,
     _grid_row_id_: number
   ): void => {
-    if (event.key == "Enter") {
+    if (event.key == "Enter" && !props.disableInlineCellEdit) {
       ShowRowEditMode(item, _grid_row_id_!, false);
       event.preventDefault();
     }
@@ -4649,7 +4649,6 @@ const EditableGrid = (props: Props) => {
       commandBarItems.push({
         key: "paste",
         text: "Paste Into Grid",
-        disabled: isGridInEdit || editMode,
         ariaLabel: "Pasted Copied Grid Rows",
         title: "Pasted Copied Grid Rows",
         iconProps: { iconName: "Paste" },
@@ -5342,11 +5341,12 @@ const EditableGrid = (props: Props) => {
   ): React.MouseEventHandler<HTMLSpanElement> | undefined {
     if (props.enableSingleCellEditOnDoubleClick == true) {
       return () =>
+      !props.disableInlineCellEdit &&
         props.enableSingleCellEditOnDoubleClick == true &&
         column.editable == true
           ? EditCellValue(column.key, rowNum!, true)
           : null;
-    } else if (props.enableSingleCellEditOnDoubleClick == false) {
+    } else if (!props.disableInlineCellEdit && props.enableSingleCellEditOnDoubleClick == false) {
       return () => ShowRowEditMode(item, Number(item["_grid_row_id_"])!, true);
     }
   }
@@ -5362,7 +5362,7 @@ const EditableGrid = (props: Props) => {
     rowNum: number
   ): React.MouseEventHandler<HTMLSpanElement> | undefined {
     return () =>
-      props.enableSingleCellEditOnDoubleClick == true && column.editable == true
+    !props.disableInlineCellEdit && props.enableSingleCellEditOnDoubleClick == true && column.editable == true
         ? EditCellValue(column.key, rowNum!, true)
         : null;
   }
