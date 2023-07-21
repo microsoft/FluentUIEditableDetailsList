@@ -359,17 +359,6 @@ const EditableGrid = (props: Props) => {
     }
 
     makeEverythingAString.forEach((row: any, index: number) => {
-      console.log(
-        Object.entries(row)
-          // .filter(([prop]) => prop !== "id")
-          // .filter(([prop]) => props.columns.map(obj => obj.key).includes(prop))
-          .filter(([prop]) => Object.keys(props.items[0]).includes(prop))
-          .filter(([prop]) =>
-            props.columns.map((obj) => obj.key).includes(prop)
-          )
-          .filter(([prop]) => !ignoredProperties.includes(prop))
-          .sort()
-      );
       const key = JSON.stringify(
         Object.entries(row)
           // .filter(([prop]) => prop !== "id")
@@ -1079,7 +1068,26 @@ const EditableGrid = (props: Props) => {
         : [];
 
     if (props.onGridSave) {
-      props.onGridSave(defaultGridDataTmp);
+      const ignoredProperties = [
+        "_grid_row_id_",
+        "_grid_row_operation_",
+        "_is_filtered_in_",
+        "_is_filtered_in_grid_search_",
+        "_is_filtered_in_column_filter_",
+      ];
+
+      const removeIgnoredProperties = (obj: any) => {
+        return Object.keys(obj).reduce((acc:any, key:any) => {
+          if (!ignoredProperties.includes(key)) {
+            acc[key] = obj[key];
+          }
+          return acc;
+        }, {});
+      }
+
+      const defaultGridDataTmpWithInternalPropsIgnored = defaultGridDataTmp.map(removeIgnoredProperties)
+
+      props.onGridSave(defaultGridDataTmp, defaultGridDataTmpWithInternalPropsIgnored);
     }
 
     runGridValidations();

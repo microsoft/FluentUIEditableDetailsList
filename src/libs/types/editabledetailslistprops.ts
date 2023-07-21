@@ -111,7 +111,7 @@ export interface Props extends IDetailsListProps {
   onGridUpdate?: any;
 
   /** Callback for when the grid is saved */
-  onGridSave?: any;
+  onGridSave?: (internalGridData: any, updatedItems: any) => void;
 
   /** Removed 'Commit Changes' button, but only if `enableUnsavedEditIndicator` is false. If not, grid will still save on every value change, but 'Commit Changes' button
    * will still be present

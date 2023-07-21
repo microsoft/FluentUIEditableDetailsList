@@ -250,11 +250,11 @@ const Consumer = () => {
     SetDummyData();
   }, []);
 
-  const onGridSave = (data: any[], validateGrid: any): void => {
+  const onGridSave = (internalGridData: any[], updatedItems: any): void => {
     alert("Grid Data Saved");
-    LogRows(data);
+    LogRows(internalGridData);
     setItems([
-      ...data
+      ...internalGridData
         .filter((y) => y._grid_row_operation_ != Operation.Delete)
         .map((x) => {
           return { ...x, _grid_row_operation_: Operation.None };
