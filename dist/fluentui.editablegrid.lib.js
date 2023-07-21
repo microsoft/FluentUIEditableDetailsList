@@ -53602,7 +53602,7 @@ const BG = (e) => {
   ), [Nt, Ze] = nt(/* @__PURE__ */ new Map()), Me = kn(/* @__PURE__ */ new Map()), tt = (L, Z, w) => {
     if (L.set(Z, w), Xn(L), e.enableMessageBarErrors && e.enableMessageBarErrors.enableSendGroupedErrorsToCallback) {
       var j = `${e.gridLocation} has errors`;
-      Me.current.set(e.id.toString(), j), Ze(Me.current);
+      Me.current.set(e.id.toString(), j ?? e.customGroupedMsgError), Ze(Me.current);
     }
   }, Ke = (L, Z) => {
     L.delete(Z);

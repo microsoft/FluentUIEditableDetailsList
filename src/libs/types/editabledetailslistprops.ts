@@ -26,14 +26,16 @@ export type IEnableMessageBarErrors = {
   enableSendGroupedErrorsToCallback?: boolean;
 };
 export interface Props extends IDetailsListProps {
+  /** Changes the default msg given if you have  `enableSendGroupedErrorsToCallback` set to true on save grid*/
+  customGroupedMsgError?: string;
   /** Determines if a panel is shown for adding new rows is shown or done in grid*/
-  enableInlineGridAdd: boolean
+  enableInlineGridAdd?: boolean;
 
   /** sets the min width for the actions column*/
   actionsColumnMinWidth?: number;
 
   /** Shows in Grid Column, Removes The Actions Column If True */
-  disableAllRowActions: boolean;
+  disableAllRowActions?: boolean;
   id: number;
 
   /**
@@ -100,7 +102,7 @@ export interface Props extends IDetailsListProps {
   enableSingleCellEditOnDoubleClick?: boolean;
 
   /** If true the user cannot double click or single click to edit a row */
-  disableInlineCellEdit?: boolean
+  disableInlineCellEdit?: boolean;
 
   /** Callback for when a row is selected/unselected */
   onGridSelectionChange?: any;
