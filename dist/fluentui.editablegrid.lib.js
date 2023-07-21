@@ -53579,7 +53579,7 @@ const BG = (e) => {
     V_.unsubscribe(W_.onSearch, Jt);
   })), Er(() => {
     if (e && e.items) {
-      var L = wG([...e.items]);
+      var L = wG(JSON.parse(JSON.stringify(e.items)));
       p(L), b(L.map((Z) => ({ ...Z }))), pt(!1), Mt(L);
     }
   }, [e.items]), Er(() => {
