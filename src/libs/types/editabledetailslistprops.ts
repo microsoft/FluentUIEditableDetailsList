@@ -108,7 +108,7 @@ export interface Props extends IDetailsListProps {
   onGridSelectionChange?: any;
 
   /** Callback for when the grid data/items are updated */
-  onGridUpdate?: any;
+  onGridUpdate?: (internalGridData: any[]) => Promise<void>;
 
   /** Callback for when the grid is saved */
   onGridSave?: (internalGridData: any, updatedItems: any) => void;

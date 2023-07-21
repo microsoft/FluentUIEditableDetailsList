@@ -69,7 +69,7 @@ export interface Props extends IDetailsListProps {
     /** Callback for when a row is selected/unselected */
     onGridSelectionChange?: any;
     /** Callback for when the grid data/items are updated */
-    onGridUpdate?: any;
+    onGridUpdate?: (internalGridData: any[]) => Promise<void>;
     /** Callback for when the grid is saved */
     onGridSave?: (internalGridData: any, updatedItems: any) => void;
     /** Removed 'Commit Changes' button, but only if `enableUnsavedEditIndicator` is false. If not, grid will still save on every value change, but 'Commit Changes' button

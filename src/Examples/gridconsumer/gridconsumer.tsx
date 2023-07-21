@@ -262,9 +262,9 @@ const Consumer = () => {
     ]);
   };
 
-  const onGridUpdate = async (data: any[]): Promise<void> => {
+  const onGridUpdate = async (internalGridData: any[]): Promise<void> => {
     console.log("Grid Data Updated");
-    LogRows(data);
+    LogRows(internalGridData);
   };
 
   const LogRows = (data: any[]): void => {
