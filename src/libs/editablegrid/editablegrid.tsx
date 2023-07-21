@@ -311,7 +311,7 @@ const EditableGrid = (props: Props) => {
       props.enableMessageBarErrors.enableSendGroupedErrorsToCallback
     ) {
       var message = `${props.gridLocation} has errors`;
-      GlobalMessages.current.set(props.id.toString(), message ?? props.customGroupedMsgError);
+      GlobalMessages.current.set(props.id.toString(), props.customGroupedMsgError ?? message);
       SetGlobalMessagesState(GlobalMessages.current);
     }
     //return mapVar;
