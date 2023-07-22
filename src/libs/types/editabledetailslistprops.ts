@@ -39,6 +39,9 @@ export interface EditableGridProps extends IDetailsListProps {
   /** If `customOperationsKey` is enabled. This Key/Column will be updated with what operation has been preformed. `(Add, Delete, Updated, None)` */
   customOperationsKey?: IUserDefinedOperationKey;
 
+  /** Actions to preform before the grid save process starts */
+  onBeforeGridSave?: any
+
   /** Changes the default msg given if you have  `enableSendGroupedErrorsToCallback` set to true on save grid*/
   customGroupedMsgError?: string;
   /** Determines if a panel is shown for adding new rows is shown or done in grid*/

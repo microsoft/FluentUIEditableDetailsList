@@ -28852,7 +28852,7 @@ function Dr(e) {
 function b4(e) {
   e === void 0 && (e = 0), Od[Md] = e;
 }
-var Xr = function() {
+var qr = function() {
   for (var e = [], n = 0; n < arguments.length; n++)
     e[n] = arguments[n];
   for (var t = {}, r = 0, a = e; r < a.length; r++)
@@ -28861,7 +28861,7 @@ var Xr = function() {
       t[u] = 1;
     }
   return t;
-}, y4 = Xr([
+}, y4 = qr([
   "onCopy",
   "onCut",
   "onPaste",
@@ -28941,7 +28941,7 @@ var Xr = function() {
   "onPointerUp",
   "onGotPointerCapture",
   "onLostPointerCapture"
-]), C4 = Xr([
+]), C4 = qr([
   "accessKey",
   "children",
   "className",
@@ -28961,10 +28961,10 @@ var Xr = function() {
   "spellCheck",
   "name"
   // global
-]), Mr = Xr(C4, y4), S4 = Xr(Mr, [
+]), Mr = qr(C4, y4), S4 = qr(Mr, [
   "form"
   // button, fieldset, input, label, meter, object, output, select, textarea
-]), Ey = Xr(Mr, [
+]), Ey = qr(Mr, [
   "height",
   "loop",
   "muted",
@@ -28972,16 +28972,16 @@ var Xr = function() {
   "src",
   "width"
   // canvas, embed, iframe, img, input, object, video
-]), E4 = Xr(Ey, [
+]), E4 = qr(Ey, [
   "poster"
   // video
-]), k4 = Xr(Mr, [
+]), k4 = qr(Mr, [
   "start"
   // ol
-]), w4 = Xr(Mr, [
+]), w4 = qr(Mr, [
   "value"
   // button, input, li, option, meter, progress, param
-]), wp = Xr(Mr, [
+]), wp = qr(Mr, [
   "download",
   "href",
   "hrefLang",
@@ -28990,7 +28990,7 @@ var Xr = function() {
   "target",
   "type"
   // a, button, input, link, menu, object, script, source, style
-]), Zo = Xr(Mr, [
+]), Zo = qr(Mr, [
   "autoFocus",
   "disabled",
   "form",
@@ -29002,7 +29002,7 @@ var Xr = function() {
   "type",
   "value"
   // button, input, li, option, meter, progress, param,
-]), Fp = Xr(Zo, [
+]), Fp = qr(Zo, [
   "accept",
   "alt",
   "autoCapitalize",
@@ -29029,7 +29029,7 @@ var Xr = function() {
   "value",
   "width"
   // canvas, embed, iframe, img, input, object, video
-]), ky = Xr(Zo, [
+]), ky = qr(Zo, [
   "autoCapitalize",
   "cols",
   "dirname",
@@ -29042,36 +29042,36 @@ var Xr = function() {
   "rows",
   "wrap"
   // textarea
-]), F4 = Xr(Zo, [
+]), F4 = qr(Zo, [
   "form",
   "multiple",
   "required"
   // input, select, textarea
-]), D4 = Xr(Mr, [
+]), D4 = qr(Mr, [
   "selected",
   "value"
   // button, input, li, option, meter, progress, param
-]), T4 = Xr(Mr, [
+]), T4 = qr(Mr, [
   "cellPadding",
   "cellSpacing"
   // table
-]), I4 = Mr, A4 = Xr(Mr, [
+]), I4 = Mr, A4 = qr(Mr, [
   "rowSpan",
   "scope"
   // th
-]), R4 = Xr(Mr, [
+]), R4 = qr(Mr, [
   "colSpan",
   "headers",
   "rowSpan",
   "scope"
   // th
-]), N4 = Xr(Mr, [
+]), N4 = qr(Mr, [
   "span"
   // col, colgroup
-]), P4 = Xr(Mr, [
+]), P4 = qr(Mr, [
   "span"
   // col, colgroup
-]), B4 = Xr(Mr, [
+]), B4 = qr(Mr, [
   "acceptCharset",
   "action",
   "encType",
@@ -29080,7 +29080,7 @@ var Xr = function() {
   "noValidate",
   "target"
   // form
-]), M4 = Xr(Mr, [
+]), M4 = qr(Mr, [
   "allow",
   "allowFullScreen",
   "allowPaymentRequest",
@@ -29094,7 +29094,7 @@ var Xr = function() {
   "srcDoc",
   "width"
   // canvas, embed, iframe, img, input, object, video,
-]), wy = Xr(Mr, [
+]), wy = qr(Mr, [
   "alt",
   "crossOrigin",
   "height",
@@ -43511,7 +43511,7 @@ var d7 = mt(), f7 = "DetailsList", Bo = 100, h7 = 2, p7 = 2, m7 = { tabIndex: 0 
     Gi,
     S({}, ai),
     x.createElement(Zd, S({ ref: pe, role: "presentation", items: h, onRenderCell: Fa(0), usePageCache: z, onShouldVirtualize: X }, ke))
-  ), qr = x.useCallback(function(jt) {
+  ), Yr = x.useCallback(function(jt) {
     jt.which === xe.down && ce.current && ce.current.focus() && (Ft && n.getSelectedIndices().length === 0 && n.setIndexSelected(0, !0, !1), jt.preventDefault(), jt.stopPropagation());
   }, [n, ce, Ft]), Of = x.useCallback(function(jt) {
     jt.which === xe.up && !jt.altKey && Ee.current && Ee.current.focus() && (jt.preventDefault(), jt.stopPropagation());
@@ -43523,7 +43523,7 @@ var d7 = mt(), f7 = "DetailsList", Bo = 100, h7 = 2, p7 = 2, m7 = { tabIndex: 0 
     x.createElement(
       "div",
       { role: Dt, "aria-label": R || D, "aria-rowcount": p ? 0 : fe, "aria-colcount": Ie, "aria-busy": p },
-      x.createElement("div", { onKeyDown: qr, role: "presentation", className: De.headerWrapper }, m && H({
+      x.createElement("div", { onKeyDown: Yr, role: "presentation", className: De.headerWrapper }, m && H({
         componentRef: Ee,
         selectionMode: E,
         layoutMode: v,
@@ -51179,7 +51179,7 @@ function BU(e) {
 }
 var MU = {
   Item: kS
-}, Yr = $p(PU, {
+}, Xr = $p(PU, {
   displayName: "Stack",
   styles: NU,
   statics: MU
@@ -52381,10 +52381,10 @@ const mG = (e) => {
       }
     }), e.enableRowsCounterField && console.warn("# of Rows to Add is deprecated"), _;
   };
-  return /* @__PURE__ */ te.jsxs(Yr, { children: [
-    /* @__PURE__ */ te.jsx(Yr, { tokens: TS, children: t && b() }),
+  return /* @__PURE__ */ te.jsxs(Xr, { children: [
+    /* @__PURE__ */ te.jsx(Xr, { tokens: TS, children: t && b() }),
     /* @__PURE__ */ te.jsx(
-      Yr,
+      Xr,
       {
         horizontal: !0,
         disableShrink: !0,
@@ -52497,7 +52497,7 @@ const mG = (e) => {
       _.map((y) => y.isFilteredIn = !0), t(_);
     }
   };
-  return /* @__PURE__ */ te.jsx(te.Fragment, { children: /* @__PURE__ */ te.jsxs(Yr, { verticalAlign: "start", tokens: gG, children: [
+  return /* @__PURE__ */ te.jsx(te.Fragment, { children: /* @__PURE__ */ te.jsxs(Xr, { verticalAlign: "start", tokens: gG, children: [
     /* @__PURE__ */ te.jsx(
       vn,
       {
@@ -52530,7 +52530,7 @@ const mG = (e) => {
         ] })
       }
     ),
-    /* @__PURE__ */ te.jsxs(Yr, { horizontal: !0, horizontalAlign: "start", children: [
+    /* @__PURE__ */ te.jsxs(Xr, { horizontal: !0, horizontalAlign: "start", children: [
       /* @__PURE__ */ te.jsx(
         xd,
         {
@@ -52772,8 +52772,8 @@ const mG = (e) => {
       onDismiss: _,
       closeButtonAriaLabel: "Close",
       children: [
-        /* @__PURE__ */ te.jsxs(Yr, { verticalAlign: "space-between", tokens: bG, children: [
-          /* @__PURE__ */ te.jsx(Yr.Item, { grow: 1, children: /* @__PURE__ */ te.jsx(
+        /* @__PURE__ */ te.jsxs(Xr, { verticalAlign: "space-between", tokens: bG, children: [
+          /* @__PURE__ */ te.jsx(Xr.Item, { grow: 1, children: /* @__PURE__ */ te.jsx(
             Na,
             {
               placeholder: "Select the Column",
@@ -52782,10 +52782,10 @@ const mG = (e) => {
               onChange: s
             }
           ) }),
-          /* @__PURE__ */ te.jsx(Yr.Item, { grow: 1, children: g }),
-          /* @__PURE__ */ te.jsx(Yr.Item, { grow: 1, children: m })
+          /* @__PURE__ */ te.jsx(Xr.Item, { grow: 1, children: g }),
+          /* @__PURE__ */ te.jsx(Xr.Item, { grow: 1, children: m })
         ] }),
-        /* @__PURE__ */ te.jsx(Yr.Item, { children: /* @__PURE__ */ te.jsxs(Cc, { className: Y0.dialogFooterStyles, children: [
+        /* @__PURE__ */ te.jsx(Xr.Item, { children: /* @__PURE__ */ te.jsxs(Cc, { className: Y0.dialogFooterStyles, children: [
           /* @__PURE__ */ te.jsx(
             Ts,
             {
@@ -53068,8 +53068,8 @@ const DG = (e) => {
       hidden: !d,
       onDismiss: k,
       closeButtonAriaLabel: "Close",
-      children: /* @__PURE__ */ te.jsxs(Yr, { grow: !0, verticalAlign: "space-between", tokens: s, children: [
-        /* @__PURE__ */ te.jsx(Yr.Item, { grow: 1, children: /* @__PURE__ */ te.jsx(
+      children: /* @__PURE__ */ te.jsxs(Xr, { grow: !0, verticalAlign: "space-between", tokens: s, children: [
+        /* @__PURE__ */ te.jsx(Xr.Item, { grow: 1, children: /* @__PURE__ */ te.jsx(
           Na,
           {
             placeholder: "Select the Column",
@@ -53078,8 +53078,8 @@ const DG = (e) => {
             onChange: y
           }
         ) }),
-        /* @__PURE__ */ te.jsx(Yr.Item, { grow: 1, children: q() }),
-        /* @__PURE__ */ te.jsx(Yr.Item, { children: /* @__PURE__ */ te.jsxs(Cc, { className: n.inputClass, children: [
+        /* @__PURE__ */ te.jsx(Xr.Item, { grow: 1, children: q() }),
+        /* @__PURE__ */ te.jsx(Xr.Item, { children: /* @__PURE__ */ te.jsxs(Cc, { className: n.inputClass, children: [
           /* @__PURE__ */ te.jsx(
             Ts,
             {
@@ -53364,10 +53364,10 @@ const TG = (e, n) => e.map((t, r) => {
       }
     }), _;
   };
-  return /* @__PURE__ */ te.jsxs(Yr, { children: [
-    /* @__PURE__ */ te.jsx(Yr, { tokens: TS, children: t && b() }),
+  return /* @__PURE__ */ te.jsxs(Xr, { children: [
+    /* @__PURE__ */ te.jsx(Xr, { tokens: TS, children: t && b() }),
     /* @__PURE__ */ te.jsx(
-      Yr,
+      Xr,
       {
         horizontal: !0,
         disableShrink: !0,
@@ -53902,7 +53902,7 @@ const HG = (e) => {
     e.GridSaveAction && m.length > 0 && e.GridSaveAction(() => hr);
   }, [m]);
   const hr = () => {
-    Me.current = /* @__PURE__ */ new Map(), Je(Me.current), et.current = /* @__PURE__ */ new Map(), Fa(et.current), a(!1);
+    e.onBeforeGridSave && e.onBeforeGridSave(), Me.current = /* @__PURE__ */ new Map(), Je(Me.current), et.current = /* @__PURE__ */ new Map(), Fa(et.current), a(!1), Yr(/* @__PURE__ */ new Map());
     let L = 0;
     if (m.filter((le) => yt(le)).forEach((le) => {
       em(Number(le._grid_row_id_)), L = L + 1;
@@ -54137,7 +54137,7 @@ const HG = (e) => {
       var w;
       (w = oe.current) == null || w.click();
     };
-    return /* @__PURE__ */ te.jsxs(Yr, { horizontal: !0, horizontalAlign: "center", verticalAlign: "center", children: [
+    return /* @__PURE__ */ te.jsxs(Xr, { horizontal: !0, horizontalAlign: "center", verticalAlign: "center", children: [
       /* @__PURE__ */ te.jsx(
         Kn,
         {
@@ -54203,7 +54203,7 @@ const HG = (e) => {
           msg: "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Rename / Add  `" + Re + "` column",
           type: Ke.error
         });
-        return qr(se), !1;
+        return Yr(se), !1;
       }
     }
     return !0;
@@ -54266,7 +54266,7 @@ const HG = (e) => {
                 type: Ke.error
               }
             );
-            qr(Vr), o(!1);
+            Yr(Vr), o(!1);
             return;
           }
           for (let Vr = 0; Vr < 1; Vr++)
@@ -54286,7 +54286,7 @@ const HG = (e) => {
                   e.id.toString(),
                   { msg: `Import Error: ${ss}`, type: Ke.error }
                 );
-                qr(ls);
+                Yr(ls);
               }), o(!1);
               return;
             }
@@ -54302,7 +54302,7 @@ const HG = (e) => {
               type: Ke.success
             }
           );
-          qr(Jn), Ot(ye), pt(!0), o(!1);
+          Yr(Jn), Ot(ye), pt(!0), o(!1);
         }
       }, G.readAsArrayBuffer(w);
     } else {
@@ -54310,7 +54310,7 @@ const HG = (e) => {
         msg: "Error Processing File",
         type: Ke.error
       });
-      qr(w), o(!1);
+      Yr(w), o(!1);
     }
     L.target.value = null;
   }, er = (L, Y) => {
@@ -54353,7 +54353,7 @@ const HG = (e) => {
   gr(() => {
     et.current = Wr, ai(Zn());
   }, [Wr]);
-  const [Or, qr] = rt(/* @__PURE__ */ new Map()), [Of, jt] = rt(
+  const [Or, Yr] = rt(/* @__PURE__ */ new Map()), [Of, jt] = rt(
     []
   ), an = pa(() => {
     let L = [];
@@ -54366,7 +54366,7 @@ const HG = (e) => {
             messageBarType: Y.type,
             onDismiss: () => {
               const G = new Map(Or);
-              G.delete(w), qr(G);
+              G.delete(w), Yr(G);
             },
             children: Y.msg
           },
@@ -54587,7 +54587,7 @@ const HG = (e) => {
         msg: "No Rows Selected - Please select some rows to perform this operation ",
         type: Ke.info
       });
-      qr(Y);
+      Yr(Y);
       return;
     }
     var L = "";
@@ -54605,7 +54605,7 @@ const HG = (e) => {
           msg: P.length + ` ${P.length == 1 ? "Row" : "Rows"} Copied To Clipboard`,
           type: Ke.success
         });
-        qr(Y);
+        Yr(Y);
       },
       function() {
       }
@@ -54617,7 +54617,7 @@ const HG = (e) => {
           e.id.toString(),
           { msg: "1 Row Copied To Clipboard", type: Ke.success }
         );
-        qr(Y);
+        Yr(Y);
       },
       function() {
       }
@@ -54630,7 +54630,7 @@ const HG = (e) => {
         msg: "Failed To Get Clipboard. Make sure permissions have been given.",
         type: Ke.error
       });
-      return qr(Y), !0;
+      return Yr(Y), !0;
     }
   }, qS = (L, Y) => {
     let w = [];
@@ -54694,7 +54694,7 @@ const HG = (e) => {
           msg: `Paste Error: ${se}`,
           type: Ke.error
         });
-        qr(ye);
+        Yr(ye);
       }), o(!1), null;
     return Y;
   }, Jp = kn(null), JS = () => {
@@ -54704,7 +54704,7 @@ const HG = (e) => {
           msg: "Nothing In Clipboard - Please copy this grid or an excel with the same columns and try again ",
           type: Ke.info
         });
-        qr(G);
+        Yr(G);
         return;
       }
     });
@@ -54719,7 +54719,7 @@ const HG = (e) => {
             type: Ke.error
           }
         );
-        qr(se);
+        Yr(se);
         return;
       }
       o(!0);
@@ -54738,7 +54738,7 @@ const HG = (e) => {
               type: Ke.error
             }
           );
-          qr(Jn), o(!1);
+          Yr(Jn), o(!1);
           return;
         }
         const Ct = ZS(
@@ -54760,14 +54760,14 @@ const HG = (e) => {
         msg: `Pasted ${L.length} Rows From Clipboard`,
         type: Ke.success
       });
-      qr(Re), Ot(ee), pt(!0), o(!1);
+      Yr(Re), Ot(ee), pt(!0), o(!1);
     }).catch((w) => {
       o(!1), pt(!1);
       const G = new Map(Or).set(e.id.toString(), {
         msg: "Failed To Paste Rows From Clipboard",
         type: Ke.error
       });
-      qr(G);
+      Yr(G);
     });
   }, Qp = pa(
     (L) => {
@@ -54815,7 +54815,7 @@ const HG = (e) => {
               type: Ke.info
             }
           );
-          qr(w);
+          Yr(w);
         }
         break;
       case Ra.ColumnEdit:
@@ -54829,7 +54829,7 @@ const HG = (e) => {
               type: Ke.info
             }
           );
-          return qr(w), !1;
+          return Yr(w), !1;
         }
         break;
       case Ra.AddRow:
@@ -54846,7 +54846,7 @@ const HG = (e) => {
               type: Ke.info
             }
           );
-          qr(w);
+          Yr(w);
         }
         break;
       case Ra.ColumnFilter:
@@ -55610,7 +55610,7 @@ const HG = (e) => {
       isResizable: !1,
       isIconOnly: !1,
       minWidth: e.actionsColumnMinWidth ?? 100,
-      onRender: (w, G) => /* @__PURE__ */ te.jsxs(Yr, { horizontal: !0, horizontalAlign: "center", children: [
+      onRender: (w, G) => /* @__PURE__ */ te.jsxs(Xr, { horizontal: !0, horizontalAlign: "center", children: [
         e.enableRowEdit && /* @__PURE__ */ te.jsx("div", { children: !e.enableSaveGridOnCellValueChange && k && k[Number(w._grid_row_id_)] && k[Number(w._grid_row_id_)].isActivated ? /* @__PURE__ */ te.jsxs("div", { children: [
           /* @__PURE__ */ te.jsx(
             Kn,
@@ -56021,7 +56021,7 @@ const HG = (e) => {
     ee,
     Ki
   ), cm = (L, Y, w, G, le, ee) => /* @__PURE__ */ te.jsx(
-    Yr,
+    Xr,
     {
       horizontalAlign: "center",
       id: `id-${L.id}-col-${Y}-row-${w}`,
@@ -56129,7 +56129,7 @@ const HG = (e) => {
       );
   }, [Pt]), IE = pa(() => {
     if (e.enableSaveGridOnCellValueChange && !e.enableUnsavedEditIndicator)
-      return parseInt(Qp(!0)) <= 0 ? /* @__PURE__ */ te.jsx(Yr, { horizontal: !0, horizontalAlign: "end", style: { marginBottom: 15 }, children: /* @__PURE__ */ te.jsxs(HU, { style: { borderBottom: "1px solid #d44040" }, children: [
+      return parseInt(Qp(!0)) <= 0 ? /* @__PURE__ */ te.jsx(Xr, { horizontal: !0, horizontalAlign: "end", style: { marginBottom: 15 }, children: /* @__PURE__ */ te.jsxs(HU, { style: { borderBottom: "1px solid #d44040" }, children: [
         /* @__PURE__ */ te.jsx("span", { style: { color: "#d44040" }, children: "0 Rows, " }),
         e.zeroRowsMsg
       ] }) }) : /* @__PURE__ */ te.jsx(te.Fragment, {});
@@ -56138,7 +56138,7 @@ const HG = (e) => {
     e.enableSaveGridOnCellValueChange,
     e.enableUnsavedEditIndicator
   ]);
-  return /* @__PURE__ */ te.jsx(Yr, { children: /* @__PURE__ */ te.jsxs("div", { ref: Jp, children: [
+  return /* @__PURE__ */ te.jsx(Xr, { children: /* @__PURE__ */ te.jsxs("div", { ref: Jp, children: [
     /* @__PURE__ */ te.jsx(
       Rh,
       {

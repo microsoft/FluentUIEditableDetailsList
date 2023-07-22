@@ -979,11 +979,16 @@ const EditableGrid = (props: EditableGridProps) => {
   }, [defaultGridData]);
 
   const onGridSave = (): boolean => {
+    if(props.onBeforeGridSave){
+      props.onBeforeGridSave()
+    }
     GlobalMessages.current = new Map();
     SetGlobalMessagesState(GlobalMessages.current);
     Messages.current = new Map();
     setMessagesState(Messages.current);
     setGridInError(false);
+
+    setInteralMessagesState(new Map())
 
     // Delete Blank Rows
     let blankRowsCount = 0;
