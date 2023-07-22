@@ -27,4 +27,5 @@ export type { IGridItemsType } from "./types/griditemstype";
 export type {
   IEnableMessageBarErrors,
   IContentScrollablePaneStyleProps,
+  IUserDefinedOperationKey
 } from "./types/editabledetailslistprops";

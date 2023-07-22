@@ -12,4 +12,4 @@ export type { IDetailsColumnRenderTooltipPropsExtra } from "./types/columnconfig
 export { DepColTypes, DisableColTypes } from "./types/columnconfigtype";
 export { EditControlType } from "./types/editcontroltype";
 export type { IGridItemsType } from "./types/griditemstype";
-export type { IEnableMessageBarErrors, IContentScrollablePaneStyleProps, } from "./types/editabledetailslistprops";
+export type { IEnableMessageBarErrors, IContentScrollablePaneStyleProps, IUserDefinedOperationKey } from "./types/editabledetailslistprops";

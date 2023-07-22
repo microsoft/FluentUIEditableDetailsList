@@ -225,7 +225,10 @@ const EditableGrid = (props: Props) => {
 
   useEffect(() => {
     if (props && props.items) {
-      var data: any[] = InitializeInternalGrid(JSON.parse(JSON.stringify(props.items)));
+      var data: any[] = InitializeInternalGrid(
+        JSON.parse(JSON.stringify(props.items)),
+        props.customOperationsKey
+      );
       setGridData(data);
       setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
       setGridEditState(false);
@@ -311,7 +314,10 @@ const EditableGrid = (props: Props) => {
       props.enableMessageBarErrors.enableSendGroupedErrorsToCallback
     ) {
       var message = `${props.gridLocation} has errors`;
-      GlobalMessages.current.set(props.id.toString(), props.customGroupedMsgError ?? message);
+      GlobalMessages.current.set(
+        props.id.toString(),
+        props.customGroupedMsgError ?? message
+      );
       SetGlobalMessagesState(GlobalMessages.current);
     }
     //return mapVar;
@@ -1077,17 +1083,22 @@ const EditableGrid = (props: Props) => {
       ];
 
       const removeIgnoredProperties = (obj: any) => {
-        return Object.keys(obj).reduce((acc:any, key:any) => {
+        return Object.keys(obj).reduce((acc: any, key: any) => {
           if (!ignoredProperties.includes(key)) {
             acc[key] = obj[key];
           }
           return acc;
         }, {});
-      }
+      };
 
-      const defaultGridDataTmpWithInternalPropsIgnored = defaultGridDataTmp.map(removeIgnoredProperties)
+      const defaultGridDataTmpWithInternalPropsIgnored = defaultGridDataTmp.map(
+        removeIgnoredProperties
+      );
 
-      props.onGridSave(defaultGridDataTmp, defaultGridDataTmpWithInternalPropsIgnored);
+      props.onGridSave(
+        defaultGridDataTmp,
+        defaultGridDataTmpWithInternalPropsIgnored
+      );
     }
 
     runGridValidations();
@@ -1187,6 +1198,10 @@ const EditableGrid = (props: Props) => {
             row[objKey] = data[objKey];
             if (row._grid_row_operation_ != Operation.Add) {
               row._grid_row_operation_ = Operation.Update;
+
+              if (props.customOperationsKey)
+                row[props.customOperationsKey.colKey] =
+                  props.customOperationsKey.options?.Update ?? Operation.Delete;
             }
           });
 
@@ -1274,6 +1289,9 @@ const EditableGrid = (props: Props) => {
         props.columns.forEach((item, index) => {
           if (item.autoGenerate) obj[item.key] = tempID++;
           else if (item.defaultOnAddRow) obj[item.key] = item.defaultOnAddRow;
+          else if (props.customOperationsKey)
+            obj[props.customOperationsKey.colKey] =
+              props.customOperationsKey.options?.Add ?? Operation.Add;
           else {
             obj[item.key] = GetDefault(item.dataType);
           }
@@ -1405,7 +1423,12 @@ const EditableGrid = (props: Props) => {
     selectedItems!.forEach((item, index) => {
       defaultGridDataTmp
         .filter((x) => x._grid_row_id_ == item._grid_row_id_)
-        .map((x) => (x._grid_row_operation_ = Operation.Delete));
+        .map((x) => {
+          x._grid_row_operation_ = Operation.Delete;
+          if (props.customOperationsKey)
+            x[props.customOperationsKey.colKey] =
+              props.customOperationsKey.options?.Delete ?? Operation.Delete;
+        });
     });
 
     if (props.enableSaveGridOnCellValueChange) {
@@ -1787,12 +1810,21 @@ const EditableGrid = (props: Props) => {
       if (
         JSON.stringify(defaultGridDataTmp) ===
         JSON.stringify(editChangeCompareData)
-      )
+      ) {
         defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
           Operation.None;
-      else {
+
+        if (props.customOperationsKey)
+          defaultGridDataTmp[internalRowNumDefaultGrid][
+            props.customOperationsKey.colKey
+          ] = props.customOperationsKey.options?.None ?? Operation.None;
+      } else {
         defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
           Operation.Update;
+        if (props.customOperationsKey)
+          defaultGridDataTmp[internalRowNumDefaultGrid][
+            props.customOperationsKey.colKey
+          ] = props.customOperationsKey.options?.Update ?? Operation.Update;
         setGridEditState(true);
       }
     }
@@ -2923,14 +2955,23 @@ const EditableGrid = (props: Props) => {
     if (props.enableSaveGridOnCellValueChange) {
       defaultGridDataTmp
         .filter((x) => x._grid_row_id_ === rowNum)
-        .map((x) => (x._grid_row_operation_ = Operation.Delete));
+        .map((x) => {
+          x._grid_row_operation_ = Operation.Delete;
+          if (props.customOperationsKey)
+            x[props.customOperationsKey.colKey] =
+              props.customOperationsKey.options?.Delete ?? Operation.Delete;
+        });
 
       setDefaultGridData(defaultGridDataTmp);
     } else {
       defaultGridDataTmp
         .filter((x) => x._grid_row_id_ == rowNum)
-        .map((x) => (x._grid_row_operation_ = Operation.Delete));
-
+        .map((x) => {
+          x._grid_row_operation_ = Operation.Delete;
+          if (props.customOperationsKey)
+            x[props.customOperationsKey.colKey] =
+              props.customOperationsKey.options?.Delete ?? Operation.Delete;
+        });
       SetGridItems(defaultGridDataTmp);
       setGridEditState(true);
     }
@@ -3403,14 +3444,19 @@ const EditableGrid = (props: Props) => {
                 }
               }
 
-              if(column.precision){
-                const checkNaN = parseFloat(item[column.key]).toFixed(column.precision)
+              if (column.precision) {
+                const checkNaN = parseFloat(item[column.key]).toFixed(
+                  column.precision
+                );
 
-                if(column.dataType === 'string')
-                item[column.key] = isNaN(parseFloat(checkNaN)) ? item[column.key] : checkNaN
-                else{
-                  item[column.key] = isNaN(parseFloat(checkNaN)) ? item[column.key] : parseFloat(checkNaN)
-
+                if (column.dataType === "string")
+                  item[column.key] = isNaN(parseFloat(checkNaN))
+                    ? item[column.key]
+                    : checkNaN;
+                else {
+                  item[column.key] = isNaN(parseFloat(checkNaN))
+                    ? item[column.key]
+                    : parseFloat(checkNaN);
                 }
               }
 
@@ -4230,7 +4276,8 @@ const EditableGrid = (props: Props) => {
                               ?.thousandSeparator
                           }
                           onRenderLabel={
-                            column.validations?.numericFormatProps?.onRenderLabel
+                            column.validations?.numericFormatProps
+                              ?.onRenderLabel
                           }
                           ariaLabel={
                             column.validations?.numericFormatProps?.ariaLabel ??
@@ -4261,8 +4308,7 @@ const EditableGrid = (props: Props) => {
                             activateCellEdit[rowNum!]["properties"][column.key]
                               ?.error
                           }
-                          onValueChange={(values, sourceInfo) =>{
-                            console.log(values)
+                          onValueChange={(values, sourceInfo) => {
                             onCellValueChange(
                               sourceInfo.event as any,
                               values.formattedValue ?? values.value,
@@ -4270,10 +4316,8 @@ const EditableGrid = (props: Props) => {
                               rowNum!,
                               column.key,
                               column
-                            )}
-                          }
-                      
-                          
+                            );
+                          }}
                           onKeyDown={(event) => {
                             if (
                               props.enableSingleCellEditOnDoubleClick === true
@@ -5091,8 +5135,6 @@ const EditableGrid = (props: Props) => {
     );
   };
 
-
-
   const RenderPickerSpan = (
     props: Props,
     index: number,
@@ -5349,12 +5391,15 @@ const EditableGrid = (props: Props) => {
   ): React.MouseEventHandler<HTMLSpanElement> | undefined {
     if (props.enableSingleCellEditOnDoubleClick == true) {
       return () =>
-      !props.disableInlineCellEdit &&
+        !props.disableInlineCellEdit &&
         props.enableSingleCellEditOnDoubleClick == true &&
         column.editable == true
           ? EditCellValue(column.key, rowNum!, true)
           : null;
-    } else if (!props.disableInlineCellEdit && props.enableSingleCellEditOnDoubleClick == false) {
+    } else if (
+      !props.disableInlineCellEdit &&
+      props.enableSingleCellEditOnDoubleClick == false
+    ) {
       return () => ShowRowEditMode(item, Number(item["_grid_row_id_"])!, true);
     }
   }
@@ -5370,7 +5415,9 @@ const EditableGrid = (props: Props) => {
     rowNum: number
   ): React.MouseEventHandler<HTMLSpanElement> | undefined {
     return () =>
-    !props.disableInlineCellEdit && props.enableSingleCellEditOnDoubleClick == true && column.editable == true
+      !props.disableInlineCellEdit &&
+      props.enableSingleCellEditOnDoubleClick == true &&
+      column.editable == true
         ? EditCellValue(column.key, rowNum!, true)
         : null;
   }

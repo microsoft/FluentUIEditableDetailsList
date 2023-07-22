@@ -228,6 +228,7 @@ const Consumer = () => {
     for (var i = 1; i <= 4; i++) {
       var randomInt = GetRandomInt(1, 3);
       dummyData.push({
+        otype: -1,
         id: i,
         combo: "Black Red",
         excluded: randomInt % 2 == 0 ? true : false,
@@ -322,22 +323,6 @@ const Consumer = () => {
     new Map()
   );
 
-  const fetchUserData = async (code: string, key: string) => {
-    fetch(`https://localhost:7172/api/DomainData/v1/companyName/${code}/1`, {
-      headers: {
-        Accept: "application/x-www-form-urlencoded",
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    })
-      .then((response) => {
-        console.log("responseJson");
-        return response.text();
-      })
-      .then((responseJson) => {
-        console.log(responseJson);
-        setAsyncValues(new Map(asyncValues).set(key, responseJson));
-      });
-  };
   const [col, setCol] = useState(GridColumnConfig);
   useEffect(() => {
     setCol(attachGridValueChangeCallbacks(GridColumnConfig));
@@ -353,10 +338,7 @@ const Consumer = () => {
       );
       for (let i = 0; i < filteredItems.length; i++) {
         const item = filteredItems[i];
-        fetchUserData(
-          item.designation,
-          callbackRequestParamObj.triggerkey + index
-        );
+       
         item.salary = asyncValues.get(
           callbackRequestParamObj.triggerkey + index
         );
@@ -779,7 +761,16 @@ const Consumer = () => {
           onClick={() => saveAction && saveAction()}
         />
         <EditableGrid
-        disableInlineCellEdit={gridConfigOptions.disableInlineCellEdit}
+          customOperationsKey={{
+            colKey: "otype",
+            options: {
+              Add: "Add",
+              Delete: "Delete",
+              None: "None",
+              Update: "Update",
+            },
+          }}
+          disableInlineCellEdit={gridConfigOptions.disableInlineCellEdit}
           enableInlineGridAdd={gridConfigOptions.enableInlineGridAdd}
           disableAllRowActions={gridConfigOptions.disableAllRowActions}
           id={100}

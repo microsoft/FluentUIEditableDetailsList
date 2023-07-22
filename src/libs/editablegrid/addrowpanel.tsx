@@ -224,7 +224,6 @@ const AddRowPanel = (props: Props) => {
                     searchPattern.test(item.text)
                   );
 
-                  console.log(searchResults);
                   setComboOptions(
                     searchResults?.concat([
                       { key: "64830f62-5ab8-490a-a0ed-971f977a3603", text: "" },

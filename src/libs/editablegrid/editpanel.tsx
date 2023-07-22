@@ -225,7 +225,6 @@ const EditPanel = (props: Props) => {
                       searchPattern.test(item.text)
                     );
 
-                    console.log(searchResults);
                     setComboOptions(
                       searchResults?.concat([
                         {

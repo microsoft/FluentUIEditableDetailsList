@@ -6,10 +6,11 @@ import { Operation } from "../types/operation";
 import { controlClass, textFieldStyles } from "../editablegrid/editablegridstyles";
 import { EditControlType } from "../types/editcontroltype";
 import { initializeIcons } from "@fluentui/react";
+import { IUserDefinedOperationKey } from "../types/editabledetailslistprops";
 
 initializeIcons(/* optional base url */);
 
-export const InitializeInternalGrid = (items : any[]) : any[] => {
+export const InitializeInternalGrid = (items : any[], operations?: IUserDefinedOperationKey) : any[] => {
     return items.map((obj, index) => {
         if(Object.keys(obj).indexOf('_grid_row_id_') == -1 && Object.keys(obj).indexOf('_grid_row_operation_') == -1)
         {
@@ -19,6 +20,8 @@ export const InitializeInternalGrid = (items : any[]) : any[] => {
             obj._is_filtered_in_grid_search_ = true;
             obj._is_filtered_in_column_filter_ = true;
         }
+        if(operations)
+        obj[operations.colKey] = operations.options?.None ?? Operation.None;
         return obj;
     })
 };
