@@ -364,33 +364,36 @@ const EditableGrid = (props: EditableGridProps) => {
       ignoredProperties.push(indentiferColumn.current);
     }
 
+    let key = "";
+
     makeEverythingAString.forEach((row: any, index: number) => {
-      const key = JSON.stringify(
-        Object.entries(row)
-          // .filter(([prop]) => prop !== "id")
-          // .filter(([prop]) => props.columns.map(obj => obj.key).includes(prop))
-          .filter(([prop]) => Object.keys(props.items[0]).includes(prop))
-          .filter(([prop]) =>
-            props.columns.map((obj) => obj.key).includes(prop)
-          )
-          .filter(([prop]) => !ignoredProperties.includes(prop))
-          .sort()
-      );
-      if (seen[key]) {
-        // Duplicate row found
-        indentiferColumn.current !== null
-          ? seen[key].ids.push(row[indentiferColumn.current])
-          : seen[key].ids.push(index);
-      } else {
-        if (indentiferColumn.current !== null) {
-          seen[key] = {
-            index: duplicates.length,
-            ids: [row[indentiferColumn.current]],
-          };
-          duplicates.push(seen[key].ids);
+      if (defaultGridData[0]) {
+        key = JSON.stringify(
+          Object.entries(row)
+            .filter(([prop]) => Object.keys(defaultGridData[0]).includes(prop))
+            .filter(([prop]) =>
+              props.columns.map((obj) => obj.key).includes(prop)
+            )
+            .filter(([prop]) => !ignoredProperties.includes(prop))
+            .sort()
+        );
+
+        if (seen[key]) {
+          // Duplicate row found
+          indentiferColumn.current !== null
+            ? seen[key].ids.push(row[indentiferColumn.current])
+            : seen[key].ids.push(index);
         } else {
-          seen[key] = { index: duplicates.length, ids: [index] };
-          duplicates.push(seen[key].ids);
+          if (indentiferColumn.current !== null) {
+            seen[key] = {
+              index: duplicates.length,
+              ids: [row[indentiferColumn.current]],
+            };
+            duplicates.push(seen[key].ids);
+          } else {
+            seen[key] = { index: duplicates.length, ids: [index] };
+            duplicates.push(seen[key].ids);
+          }
         }
       }
     });
@@ -412,13 +415,24 @@ const EditableGrid = (props: EditableGridProps) => {
     if (indentiferColumn.current !== null) {
       ignoredProperties.push(indentiferColumn.current);
     }
+    if (props.customOperationsKey) {
+      ignoredProperties.push(props.customOperationsKey.colKey);
+    }
 
-    const properties = Object.keys(obj).filter(
-      (key) => !ignoredProperties.includes(key)
-    );
+    const properties = Object.keys(obj)
+      .filter((key) => !ignoredProperties.includes(key))
+      .sort();
 
+    console.log(properties);
     for (const key of properties) {
-      if (obj[key] !== null && obj[key] !== "" && obj[key] !== false) {
+      console.log(obj);
+      console.log(obj[key]);
+      if (
+        obj[key] !== null &&
+        obj[key] !== "" &&
+        obj[key] !== " " &&
+        obj[key] !== false
+      ) {
         return false;
       }
     }
@@ -979,14 +993,13 @@ const EditableGrid = (props: EditableGridProps) => {
   }, [defaultGridData]);
 
   const onGridSave = (): boolean => {
-    
     GlobalMessages.current = new Map();
     SetGlobalMessagesState(GlobalMessages.current);
     Messages.current = new Map();
     setMessagesState(Messages.current);
     setGridInError(false);
 
-    setInteralMessagesState(new Map())
+    setInteralMessagesState(new Map());
 
     // Delete Blank Rows
     let blankRowsCount = 0;
@@ -1016,41 +1029,41 @@ const EditableGrid = (props: EditableGridProps) => {
           )
         : [];
 
-        const defaultGridDataTmpWithDeletedData = defaultGridData
+    const defaultGridDataTmpWithDeletedData = defaultGridData;
 
-        const ignoredProperties = [
-          "_grid_row_id_",
-          "_grid_row_operation_",
-          "_is_filtered_in_",
-          "_is_filtered_in_grid_search_",
-          "_is_filtered_in_column_filter_",
-        ];
-  
-        const removeIgnoredProperties = (obj: any) => {
-          return Object.keys(obj).reduce((acc: any, key: any) => {
-            if (!ignoredProperties.includes(key)) {
-              acc[key] = obj[key];
-            }
-            return acc;
-          }, {});
-        };
-  
-        const defaultGridDataTmpWithInternalPropsIgnored = defaultGridDataTmpWithDeletedData.map(
-          removeIgnoredProperties
-        );
+    const ignoredProperties = [
+      "_grid_row_id_",
+      "_grid_row_operation_",
+      "_is_filtered_in_",
+      "_is_filtered_in_grid_search_",
+      "_is_filtered_in_column_filter_",
+    ];
 
-        if(props.onBeforeGridSave){
-          props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored)
+    const removeIgnoredProperties = (obj: any) => {
+      return Object.keys(obj).reduce((acc: any, key: any) => {
+        if (!ignoredProperties.includes(key)) {
+          acc[key] = obj[key];
         }
-    
+        return acc;
+      }, {});
+    };
+
+    const defaultGridDataTmpWithInternalPropsIgnored =
+      defaultGridDataTmpWithDeletedData.map(removeIgnoredProperties);
+
+    if (props.onBeforeGridSave) {
+      props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
+    }
+
     if (props.onGridSave) {
       props.onGridSave(
         defaultGridDataTmp,
         defaultGridDataTmpWithInternalPropsIgnored
       );
     }
-
-    runGridValidations();
+    if (parseInt(getGridRecordLength(true)) > 0){
+    runGridValidations()
+  }
     return gridInError;
   };
 
@@ -1244,7 +1257,8 @@ const EditableGrid = (props: EditableGridProps) => {
         });
 
         if (props.customOperationsKey)
-            obj[props.customOperationsKey.colKey] = props.customOperationsKey.options?.Add ?? Operation.Add;
+          obj[props.customOperationsKey.colKey] =
+            props.customOperationsKey.options?.Add ?? Operation.Add;
         obj._grid_row_id_ = ++_new_grid_row_id_;
         obj._grid_row_operation_ = Operation.Add;
         obj._is_filtered_in_ = true;
@@ -2979,8 +2993,13 @@ const EditableGrid = (props: EditableGridProps) => {
           }
         }
 
-        if(lines.length !==( lines.length < (CurrentAutoGenID ) ? lines.length - (CurrentAutoGenID ) : (CurrentAutoGenID ) - lines.length )){
-          SetCurrentAutoGenID(lines.length + (CurrentAutoGenID ) - 1)
+        if (
+          lines.length !==
+          (lines.length < CurrentAutoGenID
+            ? lines.length - CurrentAutoGenID
+            : CurrentAutoGenID - lines.length)
+        ) {
+          SetCurrentAutoGenID(lines.length + CurrentAutoGenID - 1);
           // tempAutoGenId.current = lines.length + (CurrentAutoGenID ) - 1
         }
         var newGridData = [...defaultGridData];
@@ -3001,7 +3020,6 @@ const EditableGrid = (props: EditableGridProps) => {
         SetGridItems(newGridData);
         setGridEditState(true);
         setImportingStarted(false);
-
       })
       .catch((error) => {
         setImportingStarted(false);
@@ -3017,9 +3035,7 @@ const EditableGrid = (props: EditableGridProps) => {
           type: MessageBarType.error,
         });
         setInteralMessagesState(newMap);
-
       });
-
   };
 
   const getGridRecordLength = useCallback(
@@ -4844,7 +4860,6 @@ const EditableGrid = (props: EditableGridProps) => {
         title: "Pasted Copied Grid Rows",
         iconProps: { iconName: "Paste" },
         onClick: () => PasteGridRows(),
-        
       });
     }
 
