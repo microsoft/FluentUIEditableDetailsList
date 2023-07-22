@@ -1016,6 +1016,8 @@ const EditableGrid = (props: EditableGridProps) => {
           )
         : [];
 
+        const defaultGridDataTmpWithDeletedData = defaultGridData
+
         const ignoredProperties = [
           "_grid_row_id_",
           "_grid_row_operation_",
@@ -1033,7 +1035,7 @@ const EditableGrid = (props: EditableGridProps) => {
           }, {});
         };
   
-        const defaultGridDataTmpWithInternalPropsIgnored = defaultGridDataTmp.map(
+        const defaultGridDataTmpWithInternalPropsIgnored = defaultGridDataTmpWithDeletedData.map(
           removeIgnoredProperties
         );
 
