@@ -19,6 +19,8 @@ export const InitializeInternalGrid = (items : any[], operations?: IUserDefinedO
             obj._is_filtered_in_ = true;
             obj._is_filtered_in_grid_search_ = true;
             obj._is_filtered_in_column_filter_ = true;
+            obj._is_data_transformed = false
+
         }
         if(operations)
         obj[operations.colKey] = operations.options?.None ?? Operation.None;

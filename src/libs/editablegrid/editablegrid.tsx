@@ -423,10 +423,7 @@ const EditableGrid = (props: EditableGridProps) => {
       .filter((key) => !ignoredProperties.includes(key))
       .sort();
 
-    console.log(properties);
     for (const key of properties) {
-      console.log(obj);
-      console.log(obj[key]);
       if (
         obj[key] !== null &&
         obj[key] !== "" &&
@@ -1048,8 +1045,28 @@ const EditableGrid = (props: EditableGridProps) => {
       }, {});
     };
 
+    // Revert Transformed Data Back To Orginal Values
+    defaultGridDataTmpWithDeletedData.filter(
+      (x) => {if(x._is_data_transformed){
+        for (
+          let index = 0;
+          index < x._is_data_transformed.length;
+          index++
+        ) {
+          const element = x._is_data_transformed[index];
+          console.log()
+          if (
+            element.value.toLowerCase() ===
+            ( x[x._is_data_transformed.colkey]?.toLowerCase() ?? "")
+          ) {
+            x[x._is_data_transformed.colkey] = element.key;
+          }
+        }
+      }}
+    )
+
     const defaultGridDataTmpWithInternalPropsIgnored =
-      defaultGridDataTmpWithDeletedData.map(removeIgnoredProperties);
+      defaultGridDataTmpWithDeletedData.map(removeIgnoredProperties)
 
     if (props.onBeforeGridSave) {
       props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
@@ -1251,6 +1268,7 @@ const EditableGrid = (props: EditableGridProps) => {
         props.columns.forEach((item, index) => {
           if (item.autoGenerate) obj[item.key] = tempID++;
           else if (item.defaultOnAddRow) obj[item.key] = item.defaultOnAddRow;
+
           else {
             obj[item.key] = GetDefault(item.dataType);
           }
@@ -1264,6 +1282,7 @@ const EditableGrid = (props: EditableGridProps) => {
         obj._is_filtered_in_ = true;
         obj._is_filtered_in_grid_search_ = true;
         obj._is_filtered_in_column_filter_ = true;
+
 
         addedRows.push(obj);
       }
@@ -3584,6 +3603,7 @@ const EditableGrid = (props: EditableGridProps) => {
           : (item, rowNum) => {
               rowNum = Number(item["_grid_row_id_"]);
               if (column.transformBasedOnData) {
+                item._is_data_transformed = Object.assign(column.transformBasedOnData, {colkey: column.key })
                 for (
                   let index = 0;
                   index < column.transformBasedOnData.length;
@@ -3598,6 +3618,8 @@ const EditableGrid = (props: EditableGridProps) => {
                   }
                 }
               }
+
+              
 
               if (column.precision) {
                 const checkNaN = parseFloat(item[column.key]).toFixed(
@@ -3922,6 +3944,11 @@ const EditableGrid = (props: EditableGridProps) => {
                               (x) => x.text == item[column.key]
                             )[0]?.text ?? "Select an option"
                           }
+                          defaultSelectedKey={ // Keys Select Text
+                            column.dropdownValues
+                              ?.filter((x) => x?.key == item[column.key])[0]
+                              ?.key?.toString() ?? null
+                          }
                           options={column.dropdownValues ?? []}
                           styles={dropdownStyles}
                           onChange={(ev, selectedItem) =>
@@ -4054,7 +4081,7 @@ const EditableGrid = (props: EditableGridProps) => {
                               ?.key.toString() ??
                             "Start typing..."
                           }
-                          defaultSelectedKey={
+                          defaultSelectedKey={ // Text Selects Keys
                             column.comboBoxOptions
                               ?.filter((x) => x?.text == item[column.key])[0]
                               ?.key?.toString() ?? null

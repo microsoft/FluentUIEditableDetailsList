@@ -261,15 +261,15 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInSearch: true,
     inputType: EditControlType.DropDown,
     dropdownValues: [
-      { key: "weekly", text: "Weekly" },
-      { key: "biweekly", text: "Bi-Weekly" },
-      { key: "monthly", text: "Monthly" },
+      { key: "WK", text: "Weekly" },
+      { key: "BI", text: "Bi-Weekly" },
+      { key: "MT", text: "Monthly" },
     ],
     // disableDropdown: false,
-    disableDropdown: {
-      disableBasedOnThisColumnKey: "name",
-      type: DisableColTypes.DisableWhenColKeyHasData,
-    },
+    // disableDropdown: {
+    //   disableBasedOnThisColumnKey: "name",
+    //   type: DisableColTypes.DisableWhenColKeyHasData,
+    // },
   },
   {
     key: "employmenttype",
