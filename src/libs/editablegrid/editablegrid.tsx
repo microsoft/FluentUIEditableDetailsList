@@ -1229,14 +1229,13 @@ const EditableGrid = (props: EditableGridProps) => {
         props.columns.forEach((item, index) => {
           if (item.autoGenerate) obj[item.key] = tempID++;
           else if (item.defaultOnAddRow) obj[item.key] = item.defaultOnAddRow;
-          else if (props.customOperationsKey)
-            obj[props.customOperationsKey.colKey] =
-              props.customOperationsKey.options?.Add ?? Operation.Add;
           else {
             obj[item.key] = GetDefault(item.dataType);
           }
         });
 
+        if (props.customOperationsKey)
+            obj[props.customOperationsKey.colKey] = props.customOperationsKey.options?.Add ?? Operation.Add;
         obj._grid_row_id_ = ++_new_grid_row_id_;
         obj._grid_row_operation_ = Operation.Add;
         obj._is_filtered_in_ = true;
@@ -1263,7 +1262,7 @@ const EditableGrid = (props: EditableGridProps) => {
       );
       SetAddRowActive(false);
     }
-  }, [activateCellEdit]);
+  }, [activateCellEdit, CurrentAutoGenID, defaultGridData]);
 
   const AddRowsToGrid = (): void => {
     const updateItemName = (): void => {
@@ -2686,8 +2685,8 @@ const EditableGrid = (props: EditableGridProps) => {
           msg:
             selectedIndices.length +
             ` ${
-              selectedIndices.length == 1 ? "row" : "rows"
-            } copied to clipboard`,
+              selectedIndices.length == 1 ? "Row" : "Rows"
+            } Copied To Clipboard`,
           type: MessageBarType.success,
         });
         setInteralMessagesState(newMap);
@@ -2710,7 +2709,7 @@ const EditableGrid = (props: EditableGridProps) => {
           //   );
           const newMap = new Map(interalMessagesState).set(
             props.id.toString(),
-            { msg: "1 row copied to clipboard", type: MessageBarType.success }
+            { msg: "1 Row Copied To Clipboard", type: MessageBarType.success }
           );
           setInteralMessagesState(newMap);
         },
@@ -2890,7 +2889,7 @@ const EditableGrid = (props: EditableGridProps) => {
   //   };
   // }, []);
 
-  const PasteGridRows = (): number => {
+  const PasteGridRows = (): void => {
     isClipboardEmpty().then((empty) => {
       if (empty) {
         // ShowMessageDialog(
@@ -2949,9 +2948,9 @@ const EditableGrid = (props: EditableGridProps) => {
             const newMap = new Map(interalMessagesState).set(
               props.id.toString(),
               {
-                msg: `Cancelled. Looks Like Data Is Missing Columns. Approx ${
+                msg: `Cancelled Operation - Looks like data is missing columns. Approx ${
                   colKeys.length - rowData.length
-                } Columns Missing.`,
+                } columns missing.`,
                 type: MessageBarType.error,
               }
             );
@@ -2971,9 +2970,9 @@ const EditableGrid = (props: EditableGridProps) => {
           }
         }
 
-        if(lines.length < (CurrentAutoGenID ))
         if(lines.length !==( lines.length < (CurrentAutoGenID ) ? lines.length - (CurrentAutoGenID ) : (CurrentAutoGenID ) - lines.length )){
-          SetCurrentAutoGenID(lines.length + (CurrentAutoGenID ))
+          SetCurrentAutoGenID(lines.length + (CurrentAutoGenID ) - 1)
+          // tempAutoGenId.current = lines.length + (CurrentAutoGenID ) - 1
         }
         var newGridData = [...defaultGridData];
         ui.forEach((i) => {
@@ -2994,7 +2993,6 @@ const EditableGrid = (props: EditableGridProps) => {
         setGridEditState(true);
         setImportingStarted(false);
 
-        return lines.length;
       })
       .catch((error) => {
         setImportingStarted(false);
@@ -3011,10 +3009,8 @@ const EditableGrid = (props: EditableGridProps) => {
         });
         setInteralMessagesState(newMap);
 
-        return 0;
       });
 
-    return 0;
   };
 
   const getGridRecordLength = useCallback(
@@ -4838,11 +4834,8 @@ const EditableGrid = (props: EditableGridProps) => {
         ariaLabel: "Pasted Copied Grid Rows",
         title: "Pasted Copied Grid Rows",
         iconProps: { iconName: "Paste" },
-        onClick: () => {
-          const updateAutoId = PasteGridRows();
-          if (updateAutoId !== CurrentAutoGenID)
-            SetCurrentAutoGenID(updateAutoId);
-        },
+        onClick: () => PasteGridRows(),
+        
       });
     }
 
