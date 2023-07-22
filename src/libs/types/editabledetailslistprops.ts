@@ -40,7 +40,7 @@ export interface EditableGridProps extends IDetailsListProps {
   customOperationsKey?: IUserDefinedOperationKey;
 
   /** Actions to preform before the grid save process starts */
-  onBeforeGridSave?: any
+  onBeforeGridSave?: (updatedItems: any) => void;
 
   /** Changes the default msg given if you have  `enableSendGroupedErrorsToCallback` set to true on save grid*/
   customGroupedMsgError?: string;

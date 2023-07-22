@@ -979,9 +979,7 @@ const EditableGrid = (props: EditableGridProps) => {
   }, [defaultGridData]);
 
   const onGridSave = (): boolean => {
-    if(props.onBeforeGridSave){
-      props.onBeforeGridSave()
-    }
+    
     GlobalMessages.current = new Map();
     SetGlobalMessagesState(GlobalMessages.current);
     Messages.current = new Map();
@@ -1018,28 +1016,32 @@ const EditableGrid = (props: EditableGridProps) => {
           )
         : [];
 
+        const ignoredProperties = [
+          "_grid_row_id_",
+          "_grid_row_operation_",
+          "_is_filtered_in_",
+          "_is_filtered_in_grid_search_",
+          "_is_filtered_in_column_filter_",
+        ];
+  
+        const removeIgnoredProperties = (obj: any) => {
+          return Object.keys(obj).reduce((acc: any, key: any) => {
+            if (!ignoredProperties.includes(key)) {
+              acc[key] = obj[key];
+            }
+            return acc;
+          }, {});
+        };
+  
+        const defaultGridDataTmpWithInternalPropsIgnored = defaultGridDataTmp.map(
+          removeIgnoredProperties
+        );
+
+        if(props.onBeforeGridSave){
+          props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored)
+        }
+    
     if (props.onGridSave) {
-      const ignoredProperties = [
-        "_grid_row_id_",
-        "_grid_row_operation_",
-        "_is_filtered_in_",
-        "_is_filtered_in_grid_search_",
-        "_is_filtered_in_column_filter_",
-      ];
-
-      const removeIgnoredProperties = (obj: any) => {
-        return Object.keys(obj).reduce((acc: any, key: any) => {
-          if (!ignoredProperties.includes(key)) {
-            acc[key] = obj[key];
-          }
-          return acc;
-        }, {});
-      };
-
-      const defaultGridDataTmpWithInternalPropsIgnored = defaultGridDataTmp.map(
-        removeIgnoredProperties
-      );
-
       props.onGridSave(
         defaultGridDataTmp,
         defaultGridDataTmpWithInternalPropsIgnored
