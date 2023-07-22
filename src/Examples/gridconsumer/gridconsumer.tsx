@@ -775,7 +775,7 @@ const Consumer = () => {
           disableAllRowActions={gridConfigOptions.disableAllRowActions}
           id={100}
           gridLocation="Main Grid"
-          checkboxVisibility={CheckboxVisibility.hidden}
+          checkboxVisibility={CheckboxVisibility.always}
           enableSaveGridOnCellValueChange={
             gridConfigOptions.enableSaveGridOnCellValueChange
           }

@@ -20,7 +20,7 @@ export type IUserDefinedOperationKey = {
         Delete: string | number;
     };
 };
-export interface Props extends IDetailsListProps {
+export interface EditableGridProps extends IDetailsListProps {
     /** If `operationsKey` is enabled. This Key/Column will be updated with what operation has been preformed. `(Add, Delete, Updated, None)` */
     customOperationsKey?: IUserDefinedOperationKey;
     /** Changes the default msg given if you have  `enableSendGroupedErrorsToCallback` set to true on save grid*/

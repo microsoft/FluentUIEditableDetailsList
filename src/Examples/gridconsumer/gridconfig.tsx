@@ -178,7 +178,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     minWidth: 100,
     maxWidth: 100,
     isResizable: true,
-    includeColumnInExport: false,
+    includeColumnInExport: true,
     includeColumnInSearch: true,
     // maxLength: 5,
     precision: 2,
@@ -369,7 +369,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     maxWidth: 150,
     isResizable: true,
     columnNeededInImport: false,
-    includeColumnInExport: false,
+    includeColumnInExport: true,
     includeColumnInSearch: false,
     inputType: EditControlType.Link,
     linkOptions: {

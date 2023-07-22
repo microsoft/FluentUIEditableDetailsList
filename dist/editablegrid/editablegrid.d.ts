@@ -1,3 +1,3 @@
-import { Props } from "../types/editabledetailslistprops";
-declare const EditableGrid: (props: Props) => JSX.Element;
+import { EditableGridProps } from "../types/editabledetailslistprops";
+declare const EditableGrid: (props: EditableGridProps) => JSX.Element;
 export default EditableGrid;

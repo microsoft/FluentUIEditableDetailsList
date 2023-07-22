@@ -96,7 +96,7 @@ import {
   IFilterListProps,
   IGridColumnFilter,
 } from "../types/columnfilterstype";
-import { Props } from "../types/editabledetailslistprops";
+import { EditableGridProps } from "../types/editabledetailslistprops";
 import { EditControlType } from "../types/editcontroltype";
 import { EditType } from "../types/edittype";
 import { ExportType } from "../types/exporttype";
@@ -112,7 +112,7 @@ interface SortOptions {
   isEnabled: boolean;
 }
 
-const EditableGrid = (props: Props) => {
+const EditableGrid = (props: EditableGridProps) => {
   const [editMode, setEditMode] = useState(false);
   const [gridInError, setGridInError] = useState(false);
   const [importingStarted, setImportingStarted] = useState(false);
@@ -306,12 +306,14 @@ const EditableGrid = (props: Props) => {
   >(new Map());
   const GlobalMessages = useRef<Map<string, string>>(new Map());
 
-  const insertToMap = (mapVar: Map<any, any>, key: any, value: any) => {
+  const insertToMessageMap = (mapVar: Map<any, any>, key: any, value: any) => {
     mapVar.set(key, value);
     setMessagesState(mapVar);
+
     if (
       props.enableMessageBarErrors &&
-      props.enableMessageBarErrors.enableSendGroupedErrorsToCallback
+      props.enableMessageBarErrors.enableSendGroupedErrorsToCallback &&
+      !GlobalMessages.current.has(props.id.toString())
     ) {
       var message = `${props.gridLocation} has errors`;
       GlobalMessages.current.set(
@@ -320,14 +322,12 @@ const EditableGrid = (props: Props) => {
       );
       SetGlobalMessagesState(GlobalMessages.current);
     }
-    //return mapVar;
   };
 
-  const removeFromMap = (mapVar: Map<any, any>, key: any) => {
+  const removeFromMessageMap = (mapVar: Map<any, any>, key: any) => {
     mapVar.delete(key);
     const newMap = new Map(mapVar);
     setMessagesState(newMap);
-    //return mapVar;
   };
 
   const trimTheseValues = useRef<Map<string, any>>(new Map());
@@ -437,22 +437,18 @@ const EditableGrid = (props: Props) => {
     //Duplicate Rows
     const duplicates = findDuplicates(defaultGridDataTmp);
     if (duplicates.length > 0) {
-      if (
-        props.enableMessageBarErrors &&
-        props.enableMessageBarErrors.enableShowErrors
-      ) {
-        duplicates.forEach((dups, index) => {
-          var msg =
-            indentiferColumn.current !== null
-              ? `Rows Located At IDs: ${dups} are duplicated`
-              : `Rows Located At Indexes ${dups} are duplicated`;
+      duplicates.forEach((dups, index) => {
+        var msg =
+          indentiferColumn.current !== null
+            ? `Rows Located At IDs: ${dups} are duplicated`
+            : `Rows Located At Indexes ${dups} are duplicated`;
 
-          insertToMap(Messages.current, "dups" + index, {
-            msg: msg,
-            type: MessageBarType.error,
-          });
+        insertToMessageMap(Messages.current, "dups" + index, {
+          msg: msg,
+          type: MessageBarType.error,
         });
-      }
+      });
+
       setGridInError(true);
     }
 
@@ -500,7 +496,7 @@ const EditableGrid = (props: Props) => {
                   ? "With ID: " + (gridData as any)[indentiferColumn.current]
                   : "With Index:" + row + 1
               } Col: ${element.name} - ` + `${element.required.errorMessage}'.`;
-            insertToMap(Messages.current, element.key + row + "empty", {
+            insertToMessageMap(Messages.current, element.key + row + "empty", {
               msg: msg,
               type: MessageBarType.error,
             });
@@ -535,10 +531,14 @@ const EditableGrid = (props: Props) => {
                           : "With Index:" + row + 1
                       } Col: ${element.name} - ` +
                       `${element.required.errorMessage}'.`;
-                    insertToMap(Messages.current, element.key + row + "empty", {
-                      msg: msg,
-                      type: MessageBarType.error,
-                    });
+                    insertToMessageMap(
+                      Messages.current,
+                      element.key + row + "empty",
+                      {
+                        msg: msg,
+                        type: MessageBarType.error,
+                      }
+                    );
                   } else if (!emptyReqCol.includes(" " + element.name)) {
                     emptyReqCol.push(" " + element.name);
                     break;
@@ -566,10 +566,14 @@ const EditableGrid = (props: Props) => {
                       : "With Index:" + row + 1
                   } Col: ${element.name} - ` +
                   `${element.required.errorMessage}'.`;
-                insertToMap(Messages.current, element.key + row + "empty", {
-                  msg: msg,
-                  type: MessageBarType.error,
-                });
+                insertToMessageMap(
+                  Messages.current,
+                  element.key + row + "empty",
+                  {
+                    msg: msg,
+                    type: MessageBarType.error,
+                  }
+                );
               }
             }
           }
@@ -580,23 +584,19 @@ const EditableGrid = (props: Props) => {
           ) {
             if (element.dataType === "number") {
               if (isNaN(parseInt(rowCol)) && rowCol !== "") {
-                if (
-                  props.enableMessageBarErrors &&
-                  props.enableMessageBarErrors.enableShowErrors
-                ) {
-                  var msg =
-                    `Row ${
-                      indentiferColumn.current
-                        ? "With ID: " +
-                          (gridData as any)[indentiferColumn.current]
-                        : "With Index:" + row + 1
-                    } Col: ${element.name} - ` +
-                    `Value is not a '${element.dataType}'.`;
-                  insertToMap(Messages.current, element.key + row, {
-                    msg: msg,
-                    type: MessageBarType.error,
-                  });
-                }
+                var msg =
+                  `Row ${
+                    indentiferColumn.current
+                      ? "With ID: " +
+                        (gridData as any)[indentiferColumn.current]
+                      : "With Index:" + row + 1
+                  } Col: ${element.name} - ` +
+                  `Value is not a '${element.dataType}'.`;
+                insertToMessageMap(Messages.current, element.key + row, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
+
                 setGridInError(true);
               } else if (
                 element.validations &&
@@ -607,65 +607,53 @@ const EditableGrid = (props: Props) => {
 
                 if (min && max) {
                   if (!(min <= parseInt(rowCol) && max >= parseInt(rowCol))) {
-                    if (
-                      props.enableMessageBarErrors &&
-                      props.enableMessageBarErrors.enableShowErrors
-                    ) {
-                      var msg =
-                        `Row ${
-                          indentiferColumn.current
-                            ? "With ID: " +
-                              (gridData as any)[indentiferColumn.current]
-                            : "With Index:" + row + 1
-                        } Col: ${element.name} - ` +
-                        `Value outside of range '${min} - ${max}'. Entered value ${rowCol}`;
-                      insertToMap(Messages.current, element.key + row, {
-                        msg: msg,
-                        type: MessageBarType.error,
-                      });
-                    }
+                    var msg =
+                      `Row ${
+                        indentiferColumn.current
+                          ? "With ID: " +
+                            (gridData as any)[indentiferColumn.current]
+                          : "With Index:" + row + 1
+                      } Col: ${element.name} - ` +
+                      `Value outside of range '${min} - ${max}'. Entered value ${rowCol}`;
+                    insertToMessageMap(Messages.current, element.key + row, {
+                      msg: msg,
+                      type: MessageBarType.error,
+                    });
+
                     setGridInError(true);
                   }
                 } else if (min) {
                   if (!(min <= parseInt(rowCol))) {
-                    if (
-                      props.enableMessageBarErrors &&
-                      props.enableMessageBarErrors.enableShowErrors
-                    ) {
-                      var msg =
-                        `Row ${
-                          indentiferColumn.current
-                            ? "With ID: " +
-                              (gridData as any)[indentiferColumn.current]
-                            : "With Index:" + row + 1
-                        } Col: ${element.name} - ` +
-                        `Value is lower than required range: '${min}'. Entered value ${rowCol}`;
-                      insertToMap(Messages.current, element.key + row, {
-                        msg: msg,
-                        type: MessageBarType.error,
-                      });
-                    }
+                    var msg =
+                      `Row ${
+                        indentiferColumn.current
+                          ? "With ID: " +
+                            (gridData as any)[indentiferColumn.current]
+                          : "With Index:" + row + 1
+                      } Col: ${element.name} - ` +
+                      `Value is lower than required range: '${min}'. Entered value ${rowCol}`;
+                    insertToMessageMap(Messages.current, element.key + row, {
+                      msg: msg,
+                      type: MessageBarType.error,
+                    });
+
                     setGridInError(true);
                   }
                 } else if (max) {
                   if (!(max >= parseInt(rowCol))) {
-                    if (
-                      props.enableMessageBarErrors &&
-                      props.enableMessageBarErrors.enableShowErrors
-                    ) {
-                      var msg =
-                        `Row ${
-                          indentiferColumn.current
-                            ? "With ID: " +
-                              (gridData as any)[indentiferColumn.current]
-                            : "With Index:" + row + 1
-                        } Col: ${element.name} - ` +
-                        `Value is greater than required range: '${max}'. Entered value ${rowCol}`;
-                      insertToMap(Messages.current, element.key + row, {
-                        msg: msg,
-                        type: MessageBarType.error,
-                      });
-                    }
+                    var msg =
+                      `Row ${
+                        indentiferColumn.current
+                          ? "With ID: " +
+                            (gridData as any)[indentiferColumn.current]
+                          : "With Index:" + row + 1
+                      } Col: ${element.name} - ` +
+                      `Value is greater than required range: '${max}'. Entered value ${rowCol}`;
+                    insertToMessageMap(Messages.current, element.key + row, {
+                      msg: msg,
+                      type: MessageBarType.error,
+                    });
+
                     setGridInError(true);
                   }
                 }
@@ -674,23 +662,19 @@ const EditableGrid = (props: Props) => {
               try {
                 Boolean(rowCol);
               } catch (error) {
-                if (
-                  props.enableMessageBarErrors &&
-                  props.enableMessageBarErrors.enableShowErrors
-                ) {
-                  var msg =
-                    `Row ${
-                      indentiferColumn.current
-                        ? "With ID: " +
-                          (gridData as any)[indentiferColumn.current]
-                        : "With Index:" + row + 1
-                    } Col: ${element.name} - ` +
-                    `Value is not a '${element.dataType}'.`;
-                  insertToMap(Messages.current, element.key + row, {
-                    msg: msg,
-                    type: MessageBarType.error,
-                  });
-                }
+                var msg =
+                  `Row ${
+                    indentiferColumn.current
+                      ? "With ID: " +
+                        (gridData as any)[indentiferColumn.current]
+                      : "With Index:" + row + 1
+                  } Col: ${element.name} - ` +
+                  `Value is not a '${element.dataType}'.`;
+                insertToMessageMap(Messages.current, element.key + row, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
+
                 setGridInError(true);
               }
             } else if (element.dataType === "date") {
@@ -701,23 +685,19 @@ const EditableGrid = (props: Props) => {
                   continue;
                 }
               } catch (error) {
-                if (
-                  props.enableMessageBarErrors &&
-                  props.enableMessageBarErrors.enableShowErrors
-                ) {
-                  var msg =
-                    `Row ${
-                      indentiferColumn.current
-                        ? "With ID: " +
-                          (gridData as any)[indentiferColumn.current]
-                        : "With Index:" + row + 1
-                    } Col: ${element.name} - ` +
-                    `Value is not a '${element.dataType}'.`;
-                  insertToMap(Messages.current, element.key + row, {
-                    msg: msg,
-                    type: MessageBarType.error,
-                  });
-                }
+                var msg =
+                  `Row ${
+                    indentiferColumn.current
+                      ? "With ID: " +
+                        (gridData as any)[indentiferColumn.current]
+                      : "With Index:" + row + 1
+                  } Col: ${element.name} - ` +
+                  `Value is not a '${element.dataType}'.`;
+                insertToMessageMap(Messages.current, element.key + row, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
+
                 setGridInError(true);
               }
             }
@@ -729,7 +709,7 @@ const EditableGrid = (props: Props) => {
             //     var msg =
             //       `Row: ${row + 1} Col: ${element.name} - ` +
             //       `Value is not a '${element.dataType}'.`;
-            //     insertToMap(Messages.current, element.key + row, {
+            //     insertToMessageMap(Messages.current, element.key + row, {
             //       msg: msg,
             //       type: MessageBarType.error,
             //     });
@@ -744,7 +724,7 @@ const EditableGrid = (props: Props) => {
             //     var msg =
             //       `Row: ${row + 1} Col: ${element.name} - ` +
             //       `Value is not a '${element.dataType}'.`;
-            //     insertToMap(Messages.current, element.key + row, {
+            //     insertToMessageMap(Messages.current, element.key + row, {
             //       msg: msg,
             //       type: MessageBarType.error,
             //     });
@@ -809,27 +789,26 @@ const EditableGrid = (props: Props) => {
                       colDep.type === DepColTypes.MustBeEmpty
                     ) {
                       if (rowCol !== null && rowCol.length > 0) {
-                        if (
-                          props.enableMessageBarErrors &&
-                          props.enableMessageBarErrors.enableShowErrors
-                        ) {
-                          var msg =
-                            `Row ${
-                              indentiferColumn.current
-                                ? "With ID: " +
-                                  (gridData as any)[indentiferColumn.current]
-                                : "With Index:" + row + 1
-                            } Col: ${element.name} - ` +
-                            (colDep.errorMessage ??
-                              ` Data cannot be entered here and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
+                        var msg =
+                          `Row ${
+                            indentiferColumn.current
+                              ? "With ID: " +
+                                (gridData as any)[indentiferColumn.current]
+                              : "With Index:" + row + 1
+                          } Col: ${element.name} - ` +
+                          (colDep.errorMessage ??
+                            ` Data cannot be entered here and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
 
-                          insertToMap(Messages.current, element.key + row, {
+                        insertToMessageMap(
+                          Messages.current,
+                          element.key + row,
+                          {
                             msg: msg,
                             type: MessageBarType.error,
-                          });
+                          }
+                        );
 
-                          setGridInError(true);
-                        }
+                        setGridInError(true);
                       }
                     }
                   }
@@ -840,25 +819,20 @@ const EditableGrid = (props: Props) => {
                       (str && str.toString().length <= 0)) &&
                     colDep.type === DepColTypes.MustHaveData
                   ) {
-                    if (
-                      props.enableMessageBarErrors &&
-                      props.enableMessageBarErrors.enableShowErrors
-                    ) {
-                      var msg =
-                        `Row ${
-                          indentiferColumn.current
-                            ? "With ID: " +
-                              (gridData as any)[indentiferColumn.current]
-                            : "With Index:" + row + 1
-                        } Col: ${colDep.dependentColumnName} - ` +
-                        (colDep.errorMessage ??
-                          ` Data needs to entered here and in ${element.name} Column.`);
-                      insertToMap(Messages.current, element.key + row, {
-                        msg: msg,
-                        type: MessageBarType.error,
-                      });
-                      setGridInError(true);
-                    }
+                    var msg =
+                      `Row ${
+                        indentiferColumn.current
+                          ? "With ID: " +
+                            (gridData as any)[indentiferColumn.current]
+                          : "With Index:" + row + 1
+                      } Col: ${colDep.dependentColumnName} - ` +
+                      (colDep.errorMessage ??
+                        ` Data needs to entered here and in ${element.name} Column.`);
+                    insertToMessageMap(Messages.current, element.key + row, {
+                      msg: msg,
+                      type: MessageBarType.error,
+                    });
+                    setGridInError(true);
                   }
                 }
               }
@@ -873,22 +847,17 @@ const EditableGrid = (props: Props) => {
             ) {
               const data = element.validations.regexValidation[index];
               if (!data.regex.test(rowCol)) {
-                if (
-                  props.enableMessageBarErrors &&
-                  props.enableMessageBarErrors.enableShowErrors
-                ) {
-                  var msg =
-                    `Row ${
-                      indentiferColumn.current
-                        ? "With ID: " +
-                          (gridData as any)[indentiferColumn.current]
-                        : "With Index:" + row + 1
-                    } Col: ${element.name} - ` + `${data.errorMessage}`;
-                  insertToMap(Messages.current, element.key + row, {
-                    msg: msg,
-                    type: MessageBarType.error,
-                  });
-                }
+                var msg =
+                  `Row ${
+                    indentiferColumn.current
+                      ? "With ID: " +
+                        (gridData as any)[indentiferColumn.current]
+                      : "With Index:" + row + 1
+                  } Col: ${element.name} - ` + `${data.errorMessage}`;
+                insertToMessageMap(Messages.current, element.key + row, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
 
                 setGridInError(true);
               }
@@ -904,9 +873,25 @@ const EditableGrid = (props: Props) => {
                 element.validations.stringValidations?.conditionCantEqual.toLowerCase() ===
                   rowCol.toString().toLowerCase()
               ) {
+                var msg =
+                  `Row ${
+                    indentiferColumn.current
+                      ? "With ID: " +
+                        (gridData as any)[indentiferColumn.current]
+                      : "With Index:" + row + 1
+                  } Col: ${element.name} - ` +
+                  `${element.validations.stringValidations?.errMsg}`;
+                insertToMessageMap(Messages.current, element.key + row, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
+
+                setGridInError(true);
+              } else {
                 if (
-                  props.enableMessageBarErrors &&
-                  props.enableMessageBarErrors.enableShowErrors
+                  rowCol !== null &&
+                  element.validations.stringValidations?.conditionCantEqual ===
+                    rowCol.toString()
                 ) {
                   var msg =
                     `Row ${
@@ -916,35 +901,11 @@ const EditableGrid = (props: Props) => {
                         : "With Index:" + row + 1
                     } Col: ${element.name} - ` +
                     `${element.validations.stringValidations?.errMsg}`;
-                  insertToMap(Messages.current, element.key + row, {
+                  insertToMessageMap(Messages.current, element.key + row, {
                     msg: msg,
                     type: MessageBarType.error,
                   });
-                }
-                setGridInError(true);
-              } else {
-                if (
-                  rowCol !== null &&
-                  element.validations.stringValidations?.conditionCantEqual ===
-                    rowCol.toString()
-                ) {
-                  if (
-                    props.enableMessageBarErrors &&
-                    props.enableMessageBarErrors.enableShowErrors
-                  ) {
-                    var msg =
-                      `Row ${
-                        indentiferColumn.current
-                          ? "With ID: " +
-                            (gridData as any)[indentiferColumn.current]
-                          : "With Index:" + row + 1
-                      } Col: ${element.name} - ` +
-                      `${element.validations.stringValidations?.errMsg}`;
-                    insertToMap(Messages.current, element.key + row, {
-                      msg: msg,
-                      type: MessageBarType.error,
-                    });
-                  }
+
                   setGridInError(true);
                 }
               }
@@ -954,74 +915,58 @@ const EditableGrid = (props: Props) => {
       }
 
       if (emptyReqCol.length > 1) {
-        if (
-          props.enableMessageBarErrors &&
-          props.enableMessageBarErrors.enableShowErrors
-        ) {
-          var msg = `Row ${
-            indentiferColumn.current
-              ? "With ID: " + (gridData as any)[indentiferColumn.current]
-              : "With Index:" + row + 1
-          } - ${emptyReqCol} cannot all be empty`;
+        var msg = `Row ${
+          indentiferColumn.current
+            ? "With ID: " + (gridData as any)[indentiferColumn.current]
+            : "With Index:" + row + 1
+        } - ${emptyReqCol} cannot all be empty`;
 
-          insertToMap(Messages.current, row + "erc", {
-            msg: msg,
-            type: MessageBarType.error,
-          });
-        }
+        insertToMessageMap(Messages.current, row + "erc", {
+          msg: msg,
+          type: MessageBarType.error,
+        });
+
         setGridInError(true);
       } else if (emptyReqCol.length == 1) {
-        if (
-          props.enableMessageBarErrors &&
-          props.enableMessageBarErrors.enableShowErrors
-        ) {
-          var msg = `Row: ${
-            indentiferColumn.current
-              ? "With ID:" + (gridData as any)[indentiferColumn.current]
-              : row + 1
-          } - ${emptyReqCol} cannot be empty`;
+        var msg = `Row: ${
+          indentiferColumn.current
+            ? "With ID:" + (gridData as any)[indentiferColumn.current]
+            : row + 1
+        } - ${emptyReqCol} cannot be empty`;
 
-          insertToMap(Messages.current, row + "erc", {
-            msg: msg,
-            type: MessageBarType.error,
-          });
-        }
+        insertToMessageMap(Messages.current, row + "erc", {
+          msg: msg,
+          type: MessageBarType.error,
+        });
+
         setGridInError(true);
       }
 
       if (emptyCol.length > 1) {
-        if (
-          props.enableMessageBarErrors &&
-          props.enableMessageBarErrors.enableShowErrors
-        ) {
-          var msg = `Row ${
-            indentiferColumn.current
-              ? "With ID: " + (gridData as any)[indentiferColumn.current]
-              : "With Index:" + row + 1
-          } - ${emptyCol.toString()} cannot be empty at all`;
+        var msg = `Row ${
+          indentiferColumn.current
+            ? "With ID: " + (gridData as any)[indentiferColumn.current]
+            : "With Index:" + row + 1
+        } - ${emptyCol.toString()} cannot be empty at all`;
 
-          insertToMap(Messages.current, row + "ec", {
-            msg: msg,
-            type: MessageBarType.error,
-          });
-        }
+        insertToMessageMap(Messages.current, row + "ec", {
+          msg: msg,
+          type: MessageBarType.error,
+        });
+
         setGridInError(true);
       } else if (emptyCol.length == 1) {
-        if (
-          props.enableMessageBarErrors &&
-          props.enableMessageBarErrors.enableShowErrors
-        ) {
-          var msg = `Row ${
-            indentiferColumn.current
-              ? "With ID: " + (gridData as any)[indentiferColumn.current]
-              : "With Index:" + row + 1
-          } - ${emptyCol.toString()} cannot be empty`;
+        var msg = `Row ${
+          indentiferColumn.current
+            ? "With ID: " + (gridData as any)[indentiferColumn.current]
+            : "With Index:" + row + 1
+        } - ${emptyCol.toString()} cannot be empty`;
 
-          insertToMap(Messages.current, row + "ec", {
-            msg: msg,
-            type: MessageBarType.error,
-          });
-        }
+        insertToMessageMap(Messages.current, row + "ec", {
+          msg: msg,
+          type: MessageBarType.error,
+        });
+
         setGridInError(true);
       }
     }
@@ -1049,19 +994,14 @@ const EditableGrid = (props: Props) => {
     });
 
     if (blankRowsCount > 0) {
-      if (
-        props.enableMessageBarErrors &&
-        props.enableMessageBarErrors.enableShowErrors
-      ) {
-        var msg = `Auto Deleted ${blankRowsCount} Blank Row${
-          blankRowsCount == 1 ? "" : "s"
-        }`;
+      var msg = `Auto Deleted ${blankRowsCount} Blank Row${
+        blankRowsCount == 1 ? "" : "s"
+      }`;
 
-        insertToMap(Messages.current, "blanks", {
-          msg: msg,
-          type: MessageBarType.warning,
-        });
-      }
+      insertToMessageMap(Messages.current, "blanks", {
+        msg: msg,
+        type: MessageBarType.warning,
+      });
     }
 
     setEditMode(false);
@@ -1459,7 +1399,16 @@ const EditableGrid = (props: Props) => {
         )
         .forEach((item1, index1) => {
           exportableColumns.forEach((item2, index2) => {
-            exportableObj[item2.text] = item1[item2.key];
+            /* Change Column Header On Export 
+            Below is key to key, but you can also do
+            name to key, for example
+
+            exportableObj[item2.name] = item1[item2.key];
+
+            So now the header will be whatever the column config has
+            for that item for the name variable
+            */
+            exportableObj[item2.key] = item1[item2.key];
           });
           exportableData.push(exportableObj);
           exportableObj = {};
@@ -1593,6 +1542,10 @@ const EditableGrid = (props: Props) => {
     var ImportedHeader = Object.keys(excelKeys);
     var CurrentHeaders = Object.keys(columnValuesObj);
 
+    const autoGenerateCol = props.columns.filter(
+      (x) => x.autoGenerate === true
+    );
+
     const unImportableCol = props.columns.filter(
       (x) => x.columnNeededInImport === false
     );
@@ -1610,21 +1563,34 @@ const EditableGrid = (props: Props) => {
           (CurrentHeaders.includes(header.toLowerCase()) &&
             (CurrentHeaders.length === ImportedHeader.length ||
               CurrentHeaders.length ===
-                ImportedHeader.length - unImportableCol.length ||
+                ImportedHeader.length -
+                  unImportableCol.length -
+                  autoGenerateCol.length ||
               CurrentHeaders.length ===
-                ImportedHeader.length + unImportableCol.length))
+                ImportedHeader.length +
+                  unImportableCol.length +
+                  autoGenerateCol.length))
         )
       ) {
-        if (props.onGridStatusMessageCallback)
-          props.onGridStatusMessageCallback(
+        // if (props.onGridStatusMessageCallback)
+        //   props.onGridStatusMessageCallback(
+        //     "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Rename / Add  " +
+        //       "`" +
+        //       header +
+        //       "`" +
+        //       " column",
+        //     GridToastTypes.ERROR
+        //   );
+        const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+          msg:
             "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Rename / Add  " +
-              "`" +
-              header +
-              "`" +
-              " column",
-            GridToastTypes.ERROR
-          );
-        console.warn("Your imported file is missing columns");
+            "`" +
+            header +
+            "`" +
+            " column",
+          type: MessageBarType.error,
+        });
+        setInteralMessagesState(newMap);
         return false;
       }
     }
@@ -1651,7 +1617,7 @@ const EditableGrid = (props: Props) => {
           if (element.dataType === "number") {
             if (isNaN(parseInt(rowCol))) {
               errMsg.push(
-                `Data type error, Column: ${element.key}. Expected ${
+                `Data type error, Column: ${element.name}. Expected ${
                   element.dataType
                 }. Got ${typeof rowCol}`
               );
@@ -1661,7 +1627,7 @@ const EditableGrid = (props: Props) => {
               Boolean(rowCol);
             } catch (error) {
               errMsg.push(
-                `Data type error, Column: ${element.key}. Expected ${
+                `Data type error, Column: ${element.name}. Expected ${
                   element.dataType
                 }. Got ${typeof rowCol}`
               );
@@ -1675,19 +1641,19 @@ const EditableGrid = (props: Props) => {
               }
             } catch (error) {
               errMsg.push(
-                `Data type error, Column: ${element.key}. Expected ${
+                `Data type error, Column: ${element.name}. Expected ${
                   element.dataType
                 }. Got ${typeof rowCol}`
               );
             }
           } else if (typeof rowCol !== element.dataType) {
             errMsg.push(
-              `Data type error, Column: ${element.key}. Expected ${
+              `Data type error, Column: ${element.name}. Expected ${
                 element.dataType
               }. Got ${typeof rowCol}`
             );
           } else {
-            errMsg.push(`Data type error, Column: ${element.key}.`);
+            errMsg.push(`Data type error, Column: ${element.name}.`);
           }
         }
       }
@@ -1711,11 +1677,19 @@ const EditableGrid = (props: Props) => {
           const excelJSON = XLSX.utils.sheet_to_json(wb.Sheets[sheets[0]]);
 
           if (excelJSON.length <= 0) {
-            if (props.onGridStatusMessageCallback)
-              props.onGridStatusMessageCallback(
-                "Selected file has 0 rows of data. Please try again.",
-                GridToastTypes.INFO
-              );
+            // if (props.onGridStatusMessageCallback)
+            //   props.onGridStatusMessageCallback(
+            //     "Selected file has 0 rows of data. Please try again.",
+            //     GridToastTypes.INFO
+            //   );
+            const newMap = new Map(interalMessagesState).set(
+              props.id.toString(),
+              {
+                msg: "Selected file has 0 rows of data. Please try again.",
+                type: MessageBarType.error,
+              }
+            );
+            setInteralMessagesState(newMap);
             setImportingStarted(false);
             return;
           }
@@ -1734,12 +1708,17 @@ const EditableGrid = (props: Props) => {
               );
             else {
               verifyDataTypes.forEach((str) => {
-                console.warn(`Import Error: ${str}`);
-                if (props.onGridStatusMessageCallback)
-                  props.onGridStatusMessageCallback(
-                    `Import Error: ${str}`,
-                    GridToastTypes.ERROR
-                  );
+                // console.warn(`Import Error: ${str}`);
+                // if (props.onGridStatusMessageCallback)
+                //   props.onGridStatusMessageCallback(
+                //     `Import Error: ${str}`,
+                //     GridToastTypes.ERROR
+                //   );
+                const newMap = new Map(interalMessagesState).set(
+                  props.id.toString(),
+                  { msg: `Import Error: ${str}`, type: MessageBarType.error }
+                );
+                setInteralMessagesState(newMap);
               });
               setImportingStarted(false);
               return;
@@ -1749,11 +1728,19 @@ const EditableGrid = (props: Props) => {
           ui.forEach((i) => {
             newGridData.splice(0, 0, i[0]);
           });
-          if (props.onGridStatusMessageCallback)
-            props.onGridStatusMessageCallback(
-              `Imported ${ui.length} Rows From File`,
-              GridToastTypes.SUCCESS
-            );
+          // if (props.onGridStatusMessageCallback)
+          //   props.onGridStatusMessageCallback(
+          //     `Imported ${ui.length} Rows From File`,
+          //     GridToastTypes.SUCCESS
+          //   );
+          const newMap = new Map(interalMessagesState).set(
+            props.id.toString(),
+            {
+              msg: `Imported ${ui.length} Rows From File`,
+              type: MessageBarType.success,
+            }
+          );
+          setInteralMessagesState(newMap);
           SetGridItems(newGridData);
           setGridEditState(true);
           setImportingStarted(false);
@@ -1761,11 +1748,16 @@ const EditableGrid = (props: Props) => {
       };
       reader.readAsArrayBuffer(file);
     } else {
-      if (props.onGridStatusMessageCallback)
-        props.onGridStatusMessageCallback(
-          `Error Processing File`,
-          GridToastTypes.ERROR
-        );
+      // if (props.onGridStatusMessageCallback)
+      //   props.onGridStatusMessageCallback(
+      //     `Error Processing File`,
+      //     GridToastTypes.ERROR
+      //   );
+      const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+        msg: `Error Processing File`,
+        type: MessageBarType.error,
+      });
+      setInteralMessagesState(newMap);
       setImportingStarted(false);
     }
     event.target.value = null;
@@ -1845,7 +1837,7 @@ const EditableGrid = (props: Props) => {
           styles={{ root: { marginBottom: 5 } }}
           key={key}
           messageBarType={value.type}
-          onDismiss={() => removeFromMap(Messages.current, key)}
+          onDismiss={() => removeFromMessageMap(Messages.current, key)}
         >
           {value.msg}
         </MessageBar>
@@ -1858,6 +1850,38 @@ const EditableGrid = (props: Props) => {
     Messages.current = messagesState;
     setMessagesJSXState(onRenderMsg());
   }, [messagesState]);
+
+  const [interalMessagesState, setInteralMessagesState] = useState<
+    Map<string, any>
+  >(new Map());
+  const [interalMsgJSXState, setinteralMsgJSXState] = useState<JSX.Element[]>(
+    []
+  );
+
+  const onRenderInternalMsg = useCallback(() => {
+    let interalMsgTmp: JSX.Element[] = [];
+    interalMessagesState.forEach(function (value, key) {
+      interalMsgTmp.push(
+        <MessageBar
+          styles={{ root: { marginBottom: 5 } }}
+          key={key}
+          messageBarType={value.type}
+          onDismiss={() => {
+            const newMap = new Map(interalMessagesState);
+            newMap.delete(key);
+            setInteralMessagesState(newMap);
+          }}
+        >
+          {value.msg}
+        </MessageBar>
+      );
+    });
+    return interalMsgTmp;
+  }, [interalMessagesState]);
+
+  useEffect(() => {
+    setinteralMsgJSXState(onRenderInternalMsg());
+  }, [interalMessagesState]);
 
   // const checkForDependencies = (key: string, item: any, text: string) => {
   //   for (let index = 0; index < props.columns.length; index++) {
@@ -1953,7 +1977,7 @@ const EditableGrid = (props: Props) => {
     //     var msg =
     //       `Row: ${row + 1} Col: ${column.name} - ` +
     //       `Value you just entered is not a '${column.dataType}'. We will re-evaluate on save or next character entered.`;
-    //     insertToMap(Messages.current, key + row, {
+    //     insertToMessageMap(Messages.current, key + row, {
     //       msg: msg,
     //       type: MessageBarType.error,
     //     });
@@ -2003,7 +2027,7 @@ const EditableGrid = (props: Props) => {
     //               `Row: ${row + 1} Col: ${column.name} - ` +
     //               (element.errorMessage ??
     //                 ` Data cannot be entered here and in ${element.dependentColumnName} Column. Remove data in ${element.dependentColumnName} Column to enter data here.`);
-    //                 insertToMap(Messages.current, key+row, {
+    //                 insertToMessageMap(Messages.current, key+row, {
     //                   msg: msg,
     //                   type: MessageBarType.error,
     //                 })
@@ -2016,7 +2040,7 @@ const EditableGrid = (props: Props) => {
     //                 `Row: ${row + 1} Col: ${column.name} - ` +
     //                 (element.errorMessage ??
     //                   ` Data needs to entered here and in ${element.dependentColumnName} Column.`);
-    //                   insertToMap(Messages.current, key+row, {
+    //                   insertToMessageMap(Messages.current, key+row, {
     //                     msg: msg,
     //                     type: MessageBarType.error,
     //                   })
@@ -2069,21 +2093,16 @@ const EditableGrid = (props: Props) => {
           });
         } else {
           if (err && err.split(" ").length >= 4) {
-            if (
-              props.enableMessageBarErrors &&
-              props.enableMessageBarErrors.enableShowErrors
-            ) {
-              var msg =
-                `Row ${
-                  indentiferColumn.current
-                    ? "With ID: " + (gridData as any)[indentiferColumn.current]
-                    : "With Index:" + row + 1
-                } Col: ${column.name} - ` + err;
-              insertToMap(Messages.current, key + row, {
-                msg: msg,
-                type: MessageBarType.error,
-              });
-            }
+            var msg =
+              `Row ${
+                indentiferColumn.current
+                  ? "With ID: " + (gridData as any)[indentiferColumn.current]
+                  : "With Index:" + row + 1
+              } Col: ${column.name} - ` + err;
+            insertToMessageMap(Messages.current, key + row, {
+              msg: msg,
+              type: MessageBarType.error,
+            });
           } else {
             item.properties[key].error = err ?? null;
           }
@@ -2630,10 +2649,15 @@ const EditableGrid = (props: Props) => {
 
   const CopyGridRows = (): void => {
     if (selectedIndices.length == 0) {
-      ShowMessageDialog(
-        "No Rows Selected",
-        "Please select some rows to perform this operation"
-      );
+      // ShowMessageDialog(
+      //   "No Rows Selected",
+      //   "Please select some rows to perform this operation"
+      // );
+      const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+        msg: "No Rows Selected - Please select some rows to perform this operation ",
+        type: MessageBarType.info,
+      });
+      setInteralMessagesState(newMap);
       return;
     }
 
@@ -2650,14 +2674,23 @@ const EditableGrid = (props: Props) => {
 
     navigator.clipboard.writeText(copyText).then(
       function () {
-        if (props.onGridStatusMessageCallback)
-          props.onGridStatusMessageCallback(
+        // if (props.onGridStatusMessageCallback)
+        //   props.onGridStatusMessageCallback(
+        //     selectedIndices.length +
+        //       ` ${
+        //         selectedIndices.length == 1 ? "row" : "rows"
+        //       } copied to clipboard`,
+        //     GridToastTypes.INFO
+        //   );
+        const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+          msg:
             selectedIndices.length +
-              ` ${
-                selectedIndices.length == 1 ? "row" : "rows"
-              } copied to clipboard`,
-            GridToastTypes.INFO
-          );
+            ` ${
+              selectedIndices.length == 1 ? "row" : "rows"
+            } copied to clipboard`,
+          type: MessageBarType.success,
+        });
+        setInteralMessagesState(newMap);
       },
       function () {
         /* clipboard write failed */
@@ -2670,11 +2703,16 @@ const EditableGrid = (props: Props) => {
       .writeText(ConvertObjectToText(defaultGridData[rowNum], props.columns))
       .then(
         function () {
-          if (props.onGridStatusMessageCallback)
-            props.onGridStatusMessageCallback(
-              "1 row copied to clipboard",
-              GridToastTypes.INFO
-            );
+          // if (props.onGridStatusMessageCallback)
+          //   props.onGridStatusMessageCallback(
+          //     "1 row copied to clipboard",
+          //     GridToastTypes.INFO
+          //   );
+          const newMap = new Map(interalMessagesState).set(
+            props.id.toString(),
+            { msg: "1 row copied to clipboard", type: MessageBarType.success }
+          );
+          setInteralMessagesState(newMap);
         },
         function () {
           /* clipboard write failed */
@@ -2687,11 +2725,17 @@ const EditableGrid = (props: Props) => {
       const clipboardItems = await navigator.clipboard.read();
       return clipboardItems.length === 0;
     } catch (error) {
-      if (props.onGridStatusMessageCallback)
-        props.onGridStatusMessageCallback(
-          `Failed To Get Clipboard. Make sure permissions have been given.`,
-          GridToastTypes.ERROR
-        );
+      // if (props.onGridStatusMessageCallback)
+      //   props.onGridStatusMessageCallback(
+      //     `Failed To Get Clipboard. Make sure permissions have been given.`,
+      //     GridToastTypes.ERROR
+      //   );
+      const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+        msg: "Failed To Get Clipboard. Make sure permissions have been given.",
+        type: MessageBarType.error,
+      });
+      setInteralMessagesState(newMap);
+
       return true;
     }
   };
@@ -2708,7 +2752,7 @@ const EditableGrid = (props: Props) => {
         if (element.dataType === "number") {
           if (isNaN(parseInt(rowCol))) {
             errMsg.push(
-              `Data type error, Column: ${element.key}. Expected ${
+              `Data type error, Column: ${element.name}. Expected ${
                 element.dataType
               }. Got ${typeof rowCol}`
             );
@@ -2725,7 +2769,7 @@ const EditableGrid = (props: Props) => {
             }
           } catch (error) {
             errMsg.push(
-              `Data type error, Column: ${element.key}. Expected ${
+              `Data type error, Column: ${element.name}. Expected ${
                 element.dataType
               }. Got ${typeof rowCol}`
             );
@@ -2739,19 +2783,19 @@ const EditableGrid = (props: Props) => {
             }
           } catch (error) {
             errMsg.push(
-              `Data type error, Column: ${element.key}. Expected ${
+              `Data type error, Column: ${element.name}. Expected ${
                 element.dataType
               }. Got ${typeof rowCol}`
             );
           }
         } else if (typeof rowCol !== element.dataType) {
           errMsg.push(
-            `Data type error, Column: ${element.key}. Expected ${
+            `Data type error, Column: ${element.name}. Expected ${
               element.dataType
             }. Got ${typeof rowCol}`
           );
         } else {
-          errMsg.push(`Data type error, Column: ${element.key}.`);
+          errMsg.push(`Data type error, Column: ${element.name}.`);
         }
       }
     }
@@ -2759,7 +2803,11 @@ const EditableGrid = (props: Props) => {
     return errMsg;
   };
 
-  const setupPastedData = (rowData: string[], addedRows: any) => {
+  const setupPastedData = (
+    rowData: string[],
+    addedRows: any,
+    genId?: number
+  ) => {
     const newColObj: any = {};
     var colKeys = Object.keys(columnValuesObj);
 
@@ -2773,9 +2821,14 @@ const EditableGrid = (props: Props) => {
     //    CurrentHeaders = CurrentHeaders.filter((x) => x !== header.key);
     //  }
 
+    let localAutoGen = genId ?? 0;
     for (let index = 0; index < rowData.length; index++) {
       const currentVal = rowData[index];
       const colKeysVal = colKeys[index];
+      if (indentiferColumn.current && indentiferColumn.current === colKeysVal) {
+        newColObj[colKeysVal] = localAutoGen++;
+        continue;
+      }
       if (currentVal.toLowerCase() === "false") {
         newColObj[colKeysVal] = false;
       } else if (currentVal.toLowerCase() === "true") {
@@ -2796,12 +2849,17 @@ const EditableGrid = (props: Props) => {
       });
     } else {
       verifyDataTypes.forEach((str) => {
-        console.warn(`Import Error: ${str}`);
-        if (props.onGridStatusMessageCallback)
-          props.onGridStatusMessageCallback(
-            `Paste Error: ${str}`,
-            GridToastTypes.ERROR
-          );
+        // console.warn(`Import Error: ${str}`);
+        // if (props.onGridStatusMessageCallback)
+        //   props.onGridStatusMessageCallback(
+        //     `Paste Error: ${str}`,
+        //     GridToastTypes.ERROR
+        //   );
+        const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+          msg: `Paste Error: ${str}`,
+          type: MessageBarType.error,
+        });
+        setInteralMessagesState(newMap);
       });
       setImportingStarted(false);
       return null;
@@ -2832,13 +2890,18 @@ const EditableGrid = (props: Props) => {
   //   };
   // }, []);
 
-  const PasteGridRows = (): void => {
+  const PasteGridRows = (): number => {
     isClipboardEmpty().then((empty) => {
       if (empty) {
-        ShowMessageDialog(
-          "Nothing In Clipboard",
-          "Please copy this grid or an excel with the same columns and try again."
-        );
+        // ShowMessageDialog(
+        //   "Nothing In Clipboard",
+        //   "Please copy this grid or an excel with the same columns and try again."
+        // );
+        const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+          msg: "Nothing In Clipboard - Please copy this grid or an excel with the same columns and try again ",
+          type: MessageBarType.info,
+        });
+        setInteralMessagesState(newMap);
         return;
       }
     });
@@ -2852,13 +2915,23 @@ const EditableGrid = (props: Props) => {
         pastedData = text;
         lines = text.split("\n");
         if (lines.length <= 0) {
-          ShowMessageDialog(
-            "Unable To Add This Data",
-            "Please try again. Data is not sufficient "
+          // ShowMessageDialog(
+          //   "Unable To Add This Data",
+          //   "Please try again. Data is not sufficient "
+          // );
+          const newMap = new Map(interalMessagesState).set(
+            props.id.toString(),
+            {
+              msg: "Unable To Add This Data - Please try again. Data is not sufficient ",
+              type: MessageBarType.error,
+            }
           );
+          setInteralMessagesState(newMap);
           return;
         }
         setImportingStarted(true);
+
+        let genId = CurrentAutoGenID;
 
         var colKeys = Object.keys(columnValuesObj);
         for (let index = 0; index < lines.length; index++) {
@@ -2866,46 +2939,82 @@ const EditableGrid = (props: Props) => {
           if (row.length <= 0) continue;
           const rowData = row.split("\t");
           if (rowData.length < colKeys.length) {
-            if (props.onGridStatusMessageCallback)
-              props.onGridStatusMessageCallback(
-                `Cancelled. Looks Like Data Is Missing Columns. Approx ${
+            // if (props.onGridStatusMessageCallback)
+            //   props.onGridStatusMessageCallback(
+            //     `Cancelled. Looks Like Data Is Missing Columns. Approx ${
+            //       colKeys.length - rowData.length
+            //     } Columns Missing.`,
+            //     GridToastTypes.ERROR
+            //   );
+            const newMap = new Map(interalMessagesState).set(
+              props.id.toString(),
+              {
+                msg: `Cancelled. Looks Like Data Is Missing Columns. Approx ${
                   colKeys.length - rowData.length
                 } Columns Missing.`,
-                GridToastTypes.ERROR
-              );
+                type: MessageBarType.error,
+              }
+            );
+            setInteralMessagesState(newMap);
             setImportingStarted(false);
             return;
           }
-          const startPush = setupPastedData(rowData, GetDefaultRowObject(1));
+          const startPush = setupPastedData(
+            rowData,
+            GetDefaultRowObject(1),
+            genId++
+          );
           if (startPush !== null) {
             ui.push(startPush);
           } else {
             return;
           }
         }
+
+        if(lines.length < (CurrentAutoGenID ))
+        if(lines.length !==( lines.length < (CurrentAutoGenID ) ? lines.length - (CurrentAutoGenID ) : (CurrentAutoGenID ) - lines.length )){
+          SetCurrentAutoGenID(lines.length + (CurrentAutoGenID ))
+        }
         var newGridData = [...defaultGridData];
         ui.forEach((i) => {
           newGridData.splice(0, 0, i[0]);
         });
 
-        if (props.onGridStatusMessageCallback)
-          props.onGridStatusMessageCallback(
-            `Pasted ${ui.length} Rows From Clipboard`,
-            GridToastTypes.SUCCESS
-          );
+        // if (props.onGridStatusMessageCallback)
+        //   props.onGridStatusMessageCallback(
+        //     `Pasted ${ui.length} Rows From Clipboard`,
+        //     GridToastTypes.SUCCESS
+        //   );
+        const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+          msg: `Pasted ${ui.length} Rows From Clipboard`,
+          type: MessageBarType.success,
+        });
+        setInteralMessagesState(newMap);
         SetGridItems(newGridData);
         setGridEditState(true);
         setImportingStarted(false);
+
+        return lines.length;
       })
       .catch((error) => {
         setImportingStarted(false);
         setGridEditState(false);
-        if (props.onGridStatusMessageCallback)
-          props.onGridStatusMessageCallback(
-            `Failed To Paste Rows From Clipboard`,
-            GridToastTypes.ERROR
-          );
+        // if (props.onGridStatusMessageCallback)
+        //   props.onGridStatusMessageCallback(
+        //     `Failed To Paste Rows From Clipboard`,
+        //     GridToastTypes.ERROR
+        //   );
+
+        const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+          msg: "Failed To Paste Rows From Clipboard",
+          type: MessageBarType.error,
+        });
+        setInteralMessagesState(newMap);
+
+        return 0;
       });
+
+    return 0;
   };
 
   const getGridRecordLength = useCallback(
@@ -2985,20 +3094,36 @@ const EditableGrid = (props: Props) => {
         if (selectedIndices.length > 0) {
           setIsOpenForEdit(true);
         } else {
-          ShowMessageDialog(
-            "No Rows Selected",
-            "Please select some rows to perform this operation"
+          // ShowMessageDialog(
+          //   "No Rows Selected",
+          //   "Please select some rows to perform this operation"
+          // );
+          const newMap = new Map(interalMessagesState).set(
+            props.id.toString(),
+            {
+              msg: "No Rows Selected - Please select some rows to perform this operation ",
+              type: MessageBarType.info,
+            }
           );
+          setInteralMessagesState(newMap);
         }
         break;
       case EditType.ColumnEdit:
         if (selectedIndices.length > 0) {
           ShowColumnUpdate();
         } else {
-          ShowMessageDialog(
-            "No Rows Selected",
-            "Please select some rows to perform this operation"
+          // ShowMessageDialog(
+          //   "No Rows Selected",
+          //   "Please select some rows to perform this operation"
+          // );
+          const newMap = new Map(interalMessagesState).set(
+            props.id.toString(),
+            {
+              msg: "No Rows Selected - Please select some rows to perform this operation ",
+              type: MessageBarType.info,
+            }
           );
+          setInteralMessagesState(newMap);
           return false;
         }
         break;
@@ -3010,10 +3135,19 @@ const EditableGrid = (props: Props) => {
         if (selectedIndices.length > 0) {
           DeleteSelectedRows();
         } else {
-          ShowMessageDialog(
-            "No Rows Selected",
-            "Please select some rows to perform this operation"
+          // ShowMessageDialog(
+          //   "No Rows Selected",
+          //   "Please select some rows to perform this operation"
+          // );
+
+          const newMap = new Map(interalMessagesState).set(
+            props.id.toString(),
+            {
+              msg: "No Rows Selected - Please select some rows to perform this operation ",
+              type: MessageBarType.info,
+            }
           );
+          setInteralMessagesState(newMap);
         }
         break;
       case EditType.ColumnFilter:
@@ -4704,7 +4838,11 @@ const EditableGrid = (props: Props) => {
         ariaLabel: "Pasted Copied Grid Rows",
         title: "Pasted Copied Grid Rows",
         iconProps: { iconName: "Paste" },
-        onClick: () => PasteGridRows(),
+        onClick: () => {
+          const updateAutoId = PasteGridRows();
+          if (updateAutoId !== CurrentAutoGenID)
+            SetCurrentAutoGenID(updateAutoId);
+        },
       });
     }
 
@@ -5024,7 +5162,7 @@ const EditableGrid = (props: Props) => {
 
   /* #region [Span Renders] */
   const RenderLinkSpan = (
-    props: Props,
+    props: EditableGridProps,
     index: number,
     rowNum: number,
     column: IColumnConfig,
@@ -5081,7 +5219,7 @@ const EditableGrid = (props: Props) => {
   };
 
   const RenderTextFieldSpan = (
-    props: Props,
+    props: EditableGridProps,
     index: number,
     rowNum: number,
     column: IColumnConfig,
@@ -5105,7 +5243,7 @@ const EditableGrid = (props: Props) => {
   };
 
   const RenderPasswordFieldSpan = (
-    props: Props,
+    props: EditableGridProps,
     index: number,
     rowNum: number,
     column: IColumnConfig,
@@ -5136,7 +5274,7 @@ const EditableGrid = (props: Props) => {
   };
 
   const RenderPickerSpan = (
-    props: Props,
+    props: EditableGridProps,
     index: number,
     rowNum: number,
     column: IColumnConfig,
@@ -5160,7 +5298,7 @@ const EditableGrid = (props: Props) => {
   };
 
   const RenderDropdownSpan = (
-    props: Props,
+    props: EditableGridProps,
     index: number,
     rowNum: number,
     column: IColumnConfig,
@@ -5184,7 +5322,7 @@ const EditableGrid = (props: Props) => {
   };
 
   const RenderComboBoxSpan = (
-    props: Props,
+    props: EditableGridProps,
     index: number,
     rowNum: number,
     column: IColumnConfig,
@@ -5208,7 +5346,7 @@ const EditableGrid = (props: Props) => {
   };
 
   const RenderCheckboxSpan = (
-    props: Props,
+    props: EditableGridProps,
     index: number,
     rowNum: number,
     column: IColumnConfig,
@@ -5266,7 +5404,7 @@ const EditableGrid = (props: Props) => {
   };
 
   const RenderDateSpan = (
-    props: Props,
+    props: EditableGridProps,
     index: number,
     rowNum: number,
     column: IColumnConfig,
@@ -5299,7 +5437,7 @@ const EditableGrid = (props: Props) => {
   };
 
   const RenderMultilineTextFieldSpan = (
-    props: Props,
+    props: EditableGridProps,
     index: number,
     rowNum: number,
     column: IColumnConfig,
@@ -5323,13 +5461,13 @@ const EditableGrid = (props: Props) => {
   };
 
   const RenderSpan = (
-    props: Props,
+    props: EditableGridProps,
     index: number,
     rowNum: number,
     column: IColumnConfig,
     item: any,
     HandleCellOnClick: (
-      props: Props,
+      props: EditableGridProps,
       column: IColumnConfig,
       EditCellValue: (
         key: string,
@@ -5346,7 +5484,7 @@ const EditableGrid = (props: Props) => {
     HandleCellOnDoubleClick: (
       item: any,
       _grid_row_id_: number,
-      props: Props,
+      props: EditableGridProps,
       column: IColumnConfig,
       EditCellValue: (
         key: string,
@@ -5380,7 +5518,7 @@ const EditableGrid = (props: Props) => {
   function HandleCellOnDoubleClick(
     item: any,
     _grid_row_id_: number,
-    props: Props,
+    props: EditableGridProps,
     column: IColumnConfig,
     EditCellValue: (
       key: string,
@@ -5405,7 +5543,7 @@ const EditableGrid = (props: Props) => {
   }
 
   function HandleCellOnClick(
-    props: Props,
+    props: EditableGridProps,
     column: IColumnConfig,
     EditCellValue: (
       key: string,
@@ -5502,6 +5640,10 @@ const EditableGrid = (props: Props) => {
             onChange={onFilterTagListChanged}
           />
         ) : null}
+
+        <div style={{ marginBottom: 15 }}>
+          {interalMsgJSXState.map((element) => element)}
+        </div>
 
         {props.enableMessageBarErrors ? (
           <div style={{ marginBottom: 15 }}>
