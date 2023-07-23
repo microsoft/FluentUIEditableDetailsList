@@ -53926,8 +53926,7 @@ const UG = (e) => {
       "_is_filtered_in_grid_search_",
       "_is_filtered_in_column_filter_",
       "_is_data_transformed"
-    ], Re = (st) => Object.keys(st).reduce((Qe, Et) => (ee.includes(Et) || (Qe[Et] = st[Et]), Qe), {});
-    ne.filter(
+    ], Re = (st) => Object.keys(st).reduce((Qe, Et) => (ee.includes(Et) || (Qe[Et] = st[Et]), Qe), {}), le = ne.filter(
       (st) => {
         var Qe;
         if (st._is_data_transformed)
@@ -53936,8 +53935,7 @@ const UG = (e) => {
             console.log(), Dr.value.toLowerCase() === (((Qe = st[st._is_data_transformed.colkey]) == null ? void 0 : Qe.toLowerCase()) ?? "") && (st[st._is_data_transformed.colkey] = Dr.key);
           }
       }
-    );
-    const le = ne.map(Re);
+    ).map(Re);
     e.onBeforeGridSave && e.onBeforeGridSave(le), e.onGridSave && e.onGridSave(
       Z,
       le

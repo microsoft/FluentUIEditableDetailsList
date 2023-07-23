@@ -1064,7 +1064,7 @@ const EditableGrid = (props: EditableGridProps) => {
           )
         : [];
 
-    const defaultGridDataTmpWithDeletedData = defaultGridData;
+    const defaultGridDataTmpWithDeletedData =  defaultGridData; // DeepCopy
 
     const ignoredProperties = [
       "_grid_row_id_",
@@ -1084,29 +1084,27 @@ const EditableGrid = (props: EditableGridProps) => {
       }, {});
     };
 
-    // Revert Transformed Data Back To Orginal Values
-    defaultGridDataTmpWithDeletedData.filter(
-      (x) => {if(x._is_data_transformed){
-        for (
-          let index = 0;
-          index < x._is_data_transformed.length;
-          index++
-        ) {
-          const element = x._is_data_transformed[index];
-          console.log()
-          if (
-            element.value.toLowerCase() ===
-            ( x[x._is_data_transformed.colkey]?.toLowerCase() ?? "")
-          ) {
-            x[x._is_data_transformed.colkey] = element.key;
-          }
-        }
-      }}
-    )
-
+    // Revert Transformed Data Back To Orginal Values & Remove Ignored Props
     const defaultGridDataTmpWithInternalPropsIgnored =
-      defaultGridDataTmpWithDeletedData.map(removeIgnoredProperties)
-
+      defaultGridDataTmpWithDeletedData.filter(
+        (x) => {if(x._is_data_transformed){
+          for (
+            let index = 0;
+            index < x._is_data_transformed.length;
+            index++
+          ) {
+            const element = x._is_data_transformed[index];
+            console.log()
+            if (
+              element.value.toLowerCase() ===
+              ( x[x._is_data_transformed.colkey]?.toLowerCase() ?? "")
+            ) {
+              x[x._is_data_transformed.colkey] = element.key;
+            }
+          }
+        }}
+      ).map(removeIgnoredProperties)
+      
     if (props.onBeforeGridSave) {
        props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
     }
