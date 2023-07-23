@@ -54014,7 +54014,7 @@ const KG = (e) => {
     N((P) => !P);
   }, ut = x.useCallback(() => {
     he(void 0);
-  }, []), [Bt, J] = rt(0), ke = wn(0), Be = wn(0);
+  }, []), [Bt, J] = rt(0), ke = wn(1), Be = wn(1);
   vr(() => {
     J(ke.current), Be.current = ke.current;
   }, [ke.current]);

@@ -1286,8 +1286,8 @@ const EditableGrid = (props: EditableGridProps) => {
     setDialogContent(undefined);
   }, []);
   const [CurrentAutoGenID, SetCurrentAutoGenID] = useState(0);
-  const tempAutoGenId = useRef(0);
-  const fallBackAutoGenId = useRef(0);
+  const tempAutoGenId = useRef(1);
+  const fallBackAutoGenId = useRef(1);
 
   useEffect(() => {
     // Ref only updates once
