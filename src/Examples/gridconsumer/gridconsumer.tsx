@@ -230,7 +230,7 @@ const Consumer = () => {
       dummyData.push({
         otype: -1,
         id: i,
-        combo: "Black Red",
+        combo: "1010",
         excluded: randomInt % 2 == 0 ? true : false,
         customerhovercol: "Hover Me",
         name: "co",
@@ -770,6 +770,7 @@ const Consumer = () => {
               Update: "Update",
             },
           }}
+          onBeforeGridSave={(upd)=> console.log(upd)}
           disableInlineCellEdit={gridConfigOptions.disableInlineCellEdit}
           enableInlineGridAdd={gridConfigOptions.enableInlineGridAdd}
           disableAllRowActions={gridConfigOptions.disableAllRowActions}

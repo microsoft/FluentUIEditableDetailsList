@@ -235,7 +235,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInSearch: true,
     inputType: EditControlType.ComboBox,
     comboBoxOptions: [
-      { key: "1111", text: "Black Red" },
+      { key: "1010", text: "1010 - Black Red" },
       { key: "Blue", text: "Blue" },
       { key: "brown", text: "Brown" },
     ],

@@ -4128,6 +4128,8 @@ const EditableGrid = (props: EditableGridProps) => {
                           defaultSelectedKey={ // Text Selects Keys
                             column.comboBoxOptions
                               ?.filter((x) => x?.text == item[column.key])[0]
+                              ?.key?.toString() ?? column.comboBoxOptions
+                              ?.filter((x) => x?.key == item[column.key])[0]
                               ?.key?.toString() ?? null
                           }
                           allowFreeInput
