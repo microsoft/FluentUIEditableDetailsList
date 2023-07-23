@@ -439,7 +439,8 @@ const EditableGrid = (props: EditableGridProps) => {
     return true;
   }
 
-  const runGridValidations = (): void => {
+  const runGridValidations = (): boolean => {
+    let localError = false
     const defaultGridDataTmp =
       defaultGridData.length > 0
         ? defaultGridData.filter(
@@ -463,6 +464,7 @@ const EditableGrid = (props: EditableGridProps) => {
       });
 
       setGridInError(true);
+      localError = true
     }
 
     for (let row = 0; row < defaultGridDataTmp.length; row++) {
@@ -611,6 +613,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 });
 
                 setGridInError(true);
+                localError = true
               } else if (
                 element.validations &&
                 element.validations.numberBoundaries
@@ -634,6 +637,8 @@ const EditableGrid = (props: EditableGridProps) => {
                     });
 
                     setGridInError(true);
+                    localError = true
+
                   }
                 } else if (min) {
                   if (!(min <= parseInt(rowCol))) {
@@ -651,6 +656,8 @@ const EditableGrid = (props: EditableGridProps) => {
                     });
 
                     setGridInError(true);
+                    localError = true
+
                   }
                 } else if (max) {
                   if (!(max >= parseInt(rowCol))) {
@@ -668,6 +675,8 @@ const EditableGrid = (props: EditableGridProps) => {
                     });
 
                     setGridInError(true);
+                    localError = true
+
                   }
                 }
               }
@@ -689,6 +698,8 @@ const EditableGrid = (props: EditableGridProps) => {
                 });
 
                 setGridInError(true);
+                localError = true
+
               }
             } else if (element.dataType === "date") {
               try {
@@ -712,6 +723,8 @@ const EditableGrid = (props: EditableGridProps) => {
                 });
 
                 setGridInError(true);
+                localError = true
+
               }
             }
             // } else if (typeof rowCol !== element.dataType) {
@@ -728,6 +741,8 @@ const EditableGrid = (props: EditableGridProps) => {
             //     });
             //   }
             //   setGridInError(true);
+            //   localError = true
+
             // }
             // } else {
             //   if (
@@ -743,6 +758,7 @@ const EditableGrid = (props: EditableGridProps) => {
             //     });
             //   }
             //   setGridInError(true);
+            //         localError = true
             // }
           }
 
@@ -822,6 +838,8 @@ const EditableGrid = (props: EditableGridProps) => {
                         );
 
                         setGridInError(true);
+                        localError = true
+
                       }
                     }
                   }
@@ -846,6 +864,8 @@ const EditableGrid = (props: EditableGridProps) => {
                       type: MessageBarType.error,
                     });
                     setGridInError(true);
+                    localError = true
+
                   }
                 }
               }
@@ -873,6 +893,8 @@ const EditableGrid = (props: EditableGridProps) => {
                 });
 
                 setGridInError(true);
+                localError = true
+
               }
             }
           }
@@ -900,6 +922,8 @@ const EditableGrid = (props: EditableGridProps) => {
                 });
 
                 setGridInError(true);
+                localError = true
+
               } else {
                 if (
                   rowCol !== null &&
@@ -920,6 +944,8 @@ const EditableGrid = (props: EditableGridProps) => {
                   });
 
                   setGridInError(true);
+                  localError = true
+
                 }
               }
             }
@@ -940,6 +966,8 @@ const EditableGrid = (props: EditableGridProps) => {
         });
 
         setGridInError(true);
+        localError = true
+
       } else if (emptyReqCol.length == 1) {
         var msg = `Row: ${
           indentiferColumn.current
@@ -953,6 +981,8 @@ const EditableGrid = (props: EditableGridProps) => {
         });
 
         setGridInError(true);
+        localError = true
+
       }
 
       if (emptyCol.length > 1) {
@@ -968,6 +998,8 @@ const EditableGrid = (props: EditableGridProps) => {
         });
 
         setGridInError(true);
+        localError = true
+
       } else if (emptyCol.length == 1) {
         var msg = `Row ${
           indentiferColumn.current
@@ -981,17 +1013,21 @@ const EditableGrid = (props: EditableGridProps) => {
         });
 
         setGridInError(true);
+        localError = true
+
       }
     }
+
+    return localError
   };
 
   useEffect(() => {
     if (props.GridSaveAction && defaultGridData.length > 0) {
-      props.GridSaveAction(() =>  onGridSave);
+      props.GridSaveAction( () => onGridSave);
     }
   }, [defaultGridData]);
 
-  const onGridSave = async (): Promise<boolean> => {
+  const onGridSave = (): [boolean, any[]] => {
     GlobalMessages.current = new Map();
     SetGlobalMessagesState(GlobalMessages.current);
     Messages.current = new Map();
@@ -1072,7 +1108,7 @@ const EditableGrid = (props: EditableGridProps) => {
       defaultGridDataTmpWithDeletedData.map(removeIgnoredProperties)
 
     if (props.onBeforeGridSave) {
-      await props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
+       props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
     }
 
     if (props.onGridSave) {
@@ -1081,10 +1117,13 @@ const EditableGrid = (props: EditableGridProps) => {
         defaultGridDataTmpWithInternalPropsIgnored
       );
     }
+
+    let localError = false
     if (parseInt(getGridRecordLength(true)) > 0){
-    runGridValidations()
+      localError = runGridValidations()
   }
-    return gridInError;
+  if(localError === true) setGridInError(true)
+    return [localError, defaultGridDataTmpWithInternalPropsIgnored];
   };
 
   const onGridUpdate = async (): Promise<void> => {

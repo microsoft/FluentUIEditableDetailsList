@@ -40,7 +40,7 @@ export interface EditableGridProps extends IDetailsListProps {
   customOperationsKey?: IUserDefinedOperationKey;
 
   /** Actions to preform before the grid save process starts */
-  onBeforeGridSave?: (updatedItems: any) =>  Promise<void>;
+  onBeforeGridSave?: (updatedItems: any) => void;
 
   /** Changes the default msg given if you have  `enableSendGroupedErrorsToCallback` set to true on save grid*/
   customGroupedMsgError?: string;
@@ -63,7 +63,7 @@ export interface EditableGridProps extends IDetailsListProps {
   zeroRowsMsg?: string;
 
   /** Returns a button to save the grid, along with if validations are in error */
-  GridSaveAction?: (save: () => () => Promise<boolean>) => void;
+  GridSaveAction?: (save: () => () => [boolean, any[]]) => void;
 
   /** Sets the color + styles of the icons in the Actions Column */
   actionIconStylesInGrid?: IButtonStyles;
