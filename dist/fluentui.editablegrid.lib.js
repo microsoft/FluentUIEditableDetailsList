@@ -53937,7 +53937,7 @@ const UG = (e) => {
         return ot;
       }
     ).map(Re);
-    console.log(le), e.onBeforeGridSave && e.onBeforeGridSave(le), e.onGridSave && e.onGridSave(
+    e.onBeforeGridSave && e.onBeforeGridSave(le), e.onGridSave && e.onGridSave(
       Z,
       le
     );
