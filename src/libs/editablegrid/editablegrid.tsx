@@ -1107,10 +1107,6 @@ const EditableGrid = (props: EditableGridProps) => {
     }
     ).map(removeIgnoredProperties)
 
-    
-      console.log(defaultGridDataTmpWithInternalPropsIgnored)
-
-
       
     if (props.onBeforeGridSave) {
        props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
