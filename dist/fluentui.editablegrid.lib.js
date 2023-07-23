@@ -53636,7 +53636,8 @@ const UG = (e) => {
       "_grid_row_operation_",
       "_is_filtered_in_",
       "_is_filtered_in_grid_search_",
-      "_is_filtered_in_column_filter_"
+      "_is_filtered_in_column_filter_",
+      "_is_data_transformed"
     ];
     yt.current !== null && ce.push(yt.current);
     let ee = "";
@@ -53659,7 +53660,8 @@ const UG = (e) => {
       "_grid_row_operation_",
       "_is_filtered_in_",
       "_is_filtered_in_grid_search_",
-      "_is_filtered_in_column_filter_"
+      "_is_filtered_in_column_filter_",
+      "_is_data_transformed"
     ];
     yt.current !== null && Y.push(yt.current), e.customOperationsKey && Y.push(e.customOperationsKey.colKey);
     const w = Object.keys(L).filter((G) => !Y.includes(G)).sort();
@@ -53920,7 +53922,8 @@ const UG = (e) => {
       "_grid_row_operation_",
       "_is_filtered_in_",
       "_is_filtered_in_grid_search_",
-      "_is_filtered_in_column_filter_"
+      "_is_filtered_in_column_filter_",
+      "_is_data_transformed"
     ], Re = (le) => Object.keys(le).reduce((Ge, mt) => (ee.includes(mt) || (Ge[mt] = le[mt]), Ge), {});
     ce.filter(
       (le) => {

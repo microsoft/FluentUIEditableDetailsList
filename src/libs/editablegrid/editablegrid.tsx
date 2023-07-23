@@ -358,6 +358,7 @@ const EditableGrid = (props: EditableGridProps) => {
       "_is_filtered_in_",
       "_is_filtered_in_grid_search_",
       "_is_filtered_in_column_filter_",
+      "_is_data_transformed"
     ];
 
     if (indentiferColumn.current !== null) {
@@ -411,6 +412,7 @@ const EditableGrid = (props: EditableGridProps) => {
       "_is_filtered_in_",
       "_is_filtered_in_grid_search_",
       "_is_filtered_in_column_filter_",
+      "_is_data_transformed"
     ];
     if (indentiferColumn.current !== null) {
       ignoredProperties.push(indentiferColumn.current);
@@ -1034,6 +1036,7 @@ const EditableGrid = (props: EditableGridProps) => {
       "_is_filtered_in_",
       "_is_filtered_in_grid_search_",
       "_is_filtered_in_column_filter_",
+      "_is_data_transformed"
     ];
 
     const removeIgnoredProperties = (obj: any) => {

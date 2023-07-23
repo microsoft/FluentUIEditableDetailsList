@@ -761,6 +761,8 @@ const Consumer = () => {
           onClick={() => saveAction && saveAction()}
         />
         <EditableGrid
+        onBeforeGridSave={(h)=>       console.log(h)
+        }
           customOperationsKey={{
             colKey: "otype",
             options: {
