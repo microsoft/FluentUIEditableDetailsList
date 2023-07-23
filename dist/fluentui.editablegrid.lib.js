@@ -53902,7 +53902,7 @@ const UG = (e) => {
   gr(() => {
     e.GridSaveAction && m.length > 0 && e.GridSaveAction(() => hr);
   }, [m]);
-  const hr = () => {
+  const hr = async () => {
     Me.current = /* @__PURE__ */ new Map(), Je(Me.current), et.current = /* @__PURE__ */ new Map(), Fa(et.current), a(!1), Yr(/* @__PURE__ */ new Map());
     let L = 0;
     if (m.filter((le) => Ct(le)).forEach((le) => {
@@ -53936,7 +53936,7 @@ const UG = (e) => {
       }
     );
     const se = ce.map(Re);
-    return e.onBeforeGridSave && e.onBeforeGridSave(se), e.onGridSave && e.onGridSave(
+    return e.onBeforeGridSave && await e.onBeforeGridSave(se), e.onGridSave && e.onGridSave(
       G,
       se
     ), parseInt(Wf(!0)) > 0 && qt(), r;

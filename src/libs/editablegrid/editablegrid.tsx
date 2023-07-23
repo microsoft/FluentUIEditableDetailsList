@@ -987,11 +987,11 @@ const EditableGrid = (props: EditableGridProps) => {
 
   useEffect(() => {
     if (props.GridSaveAction && defaultGridData.length > 0) {
-      props.GridSaveAction(() => onGridSave);
+      props.GridSaveAction(() =>  onGridSave);
     }
   }, [defaultGridData]);
 
-  const onGridSave = (): boolean => {
+  const onGridSave = async (): Promise<boolean> => {
     GlobalMessages.current = new Map();
     SetGlobalMessagesState(GlobalMessages.current);
     Messages.current = new Map();
@@ -1072,7 +1072,7 @@ const EditableGrid = (props: EditableGridProps) => {
       defaultGridDataTmpWithDeletedData.map(removeIgnoredProperties)
 
     if (props.onBeforeGridSave) {
-      props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
+      await props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
     }
 
     if (props.onGridSave) {

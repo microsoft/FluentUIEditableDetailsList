@@ -24,7 +24,7 @@ export interface EditableGridProps extends IDetailsListProps {
     /** If `customOperationsKey` is enabled. This Key/Column will be updated with what operation has been preformed. `(Add, Delete, Updated, None)` */
     customOperationsKey?: IUserDefinedOperationKey;
     /** Actions to preform before the grid save process starts */
-    onBeforeGridSave?: (updatedItems: any) => void;
+    onBeforeGridSave?: (updatedItems: any) => Promise<void>;
     /** Changes the default msg given if you have  `enableSendGroupedErrorsToCallback` set to true on save grid*/
     customGroupedMsgError?: string;
     /** Determines if a panel is shown for adding new rows is shown or done in grid*/
@@ -41,7 +41,7 @@ export interface EditableGridProps extends IDetailsListProps {
     /** Message to display when the grid has no data. Example: `this grid is empty` */
     zeroRowsMsg?: string;
     /** Returns a button to save the grid, along with if validations are in error */
-    GridSaveAction?: (save: () => () => boolean) => boolean | void;
+    GridSaveAction?: (save: () => () => Promise<boolean>) => void;
     /** Sets the color + styles of the icons in the Actions Column */
     actionIconStylesInGrid?: IButtonStyles;
     items: any[];

@@ -239,7 +239,12 @@ const Consumer = () => {
         designation: "Designation" + GetRandomInt(1, 15),
         salary: GetRandomInt(35000, 75000),
         // dateofjoining: new Date(),
-        payrolltype: randomInt % 3 == 0 ? 'Weekly' : randomInt % 3 == 1 ? 'Bi-Weekly' : 'Monthly',
+        payrolltype:
+          randomInt % 3 == 0
+            ? "Weekly"
+            : randomInt % 3 == 1
+            ? "Bi-Weekly"
+            : "Monthly",
         employmenttype: "Employment Type" + GetRandomInt(1, 12),
         // employeelink: "Link",
       });
@@ -338,7 +343,7 @@ const Consumer = () => {
       );
       for (let i = 0; i < filteredItems.length; i++) {
         const item = filteredItems[i];
-       
+
         item.salary = asyncValues.get(
           callbackRequestParamObj.triggerkey + index
         );
@@ -506,7 +511,7 @@ const Consumer = () => {
     return messageTmp;
   }, [Messages]);
 
-  const [saveAction, setSaveAction] = useState<() => void>();
+  const [saveAction, setSaveAction] = useState<() => Promise<boolean | void>>();
 
   return (
     <Stack grow horizontalAlign="center">
@@ -758,11 +763,9 @@ const Consumer = () => {
       >
         <PrimaryButton
           text="Save Grid"
-          onClick={() => saveAction && saveAction()}
+          onClick={async () => saveAction && (await saveAction())}
         />
         <EditableGrid
-        onBeforeGridSave={(h)=>       console.log(h)
-        }
           customOperationsKey={{
             colKey: "otype",
             options: {
@@ -782,6 +785,7 @@ const Consumer = () => {
             gridConfigOptions.enableSaveGridOnCellValueChange
           }
           GridSaveAction={(saveActionMethod) => setSaveAction(saveActionMethod)}
+          onBeforeGridSave={async (data) =>  console.log(data)}
           enableMessageBarErrors={gridConfigOptions.enableMessageBarErrors}
           zeroRowsMsg={"This Rule Will Not Run"}
           commandBarStyles={{
