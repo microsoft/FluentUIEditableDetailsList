@@ -1084,26 +1084,33 @@ const EditableGrid = (props: EditableGridProps) => {
       }, {});
     };
 
-    // Revert Transformed Data Back To Orginal Values & Remove Ignored Props
     const defaultGridDataTmpWithInternalPropsIgnored =
-      defaultGridDataTmpWithDeletedData.filter(
-        (x) => {if(x._is_data_transformed){
-          for (
-            let index = 0;
-            index < x._is_data_transformed.length;
-            index++
+    defaultGridDataTmpWithDeletedData.filter(
+      (x) => {if(x._is_data_transformed){
+        for (
+          let index = 0;
+          index < x._is_data_transformed.length;
+          index++
+        ) {
+          const element = x._is_data_transformed[index];
+          if (
+            element.value.toLowerCase() ===
+            ( x[x._is_data_transformed.colkey]?.toLowerCase() ?? "")
           ) {
-            const element = x._is_data_transformed[index];
-            console.log()
-            if (
-              element.value.toLowerCase() ===
-              ( x[x._is_data_transformed.colkey]?.toLowerCase() ?? "")
-            ) {
-              x[x._is_data_transformed.colkey] = element.key;
-            }
+            x[x._is_data_transformed.colkey] = element.key;
           }
-        }}
-      ).map(removeIgnoredProperties)
+        }
+      }
+
+      return x
+    
+    }
+    ).map(removeIgnoredProperties)
+
+    
+      console.log(defaultGridDataTmpWithInternalPropsIgnored)
+
+
       
     if (props.onBeforeGridSave) {
        props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
