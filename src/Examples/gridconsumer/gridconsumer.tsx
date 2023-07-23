@@ -506,7 +506,7 @@ const Consumer = () => {
     return messageTmp;
   }, [Messages]);
 
-  const [saveAction, setSaveAction] = useState<() => [boolean, any[]]>();
+  const [saveAction, setSaveAction] = useState<() => boolean|void>();
 
   return (
     <Stack grow horizontalAlign="center">
@@ -758,7 +758,7 @@ const Consumer = () => {
       >
         <PrimaryButton
           text="Save Grid"
-          onClick={() => saveAction && console.log(saveAction())}
+          onClick={() => saveAction && saveAction()}
         />
         <EditableGrid
           customOperationsKey={{

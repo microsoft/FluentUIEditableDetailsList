@@ -41,7 +41,7 @@ export interface EditableGridProps extends IDetailsListProps {
     /** Message to display when the grid has no data. Example: `this grid is empty` */
     zeroRowsMsg?: string;
     /** Returns a button to save the grid, along with if validations are in error */
-    GridSaveAction?: (save: () => () => [boolean, any[]]) => void;
+    GridSaveAction?: (save: () => () => boolean) => void;
     /** Sets the color + styles of the icons in the Actions Column */
     actionIconStylesInGrid?: IButtonStyles;
     items: any[];

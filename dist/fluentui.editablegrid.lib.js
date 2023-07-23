@@ -53943,7 +53943,7 @@ const UG = (e) => {
       le
     );
     let ge = !1;
-    return parseInt(Vf(!0)) > 0 && (ge = Zt()), ge === !0 && a(!0), [ge, le];
+    return parseInt(Vf(!0)) > 0 && (ge = Zt()), ge === !0 && a(!0), ge;
   }, Sr = async () => {
     e.onGridUpdate && await e.onGridUpdate(m);
   }, or = () => {
