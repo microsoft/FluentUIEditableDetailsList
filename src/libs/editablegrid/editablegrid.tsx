@@ -226,7 +226,7 @@ const EditableGrid = (props: EditableGridProps) => {
   useEffect(() => {
     if (props && props.items) {
       var data: any[] = InitializeInternalGrid(
-        props.items,
+        JSON.parse(JSON.stringify(props.items)),
         props.customOperationsKey
       );
       setGridData(data);
@@ -358,7 +358,7 @@ const EditableGrid = (props: EditableGridProps) => {
       "_is_filtered_in_",
       "_is_filtered_in_grid_search_",
       "_is_filtered_in_column_filter_",
-      "_is_data_transformed",
+      "_is_data_transformed"
     ];
 
     if (indentiferColumn.current !== null) {
@@ -412,7 +412,7 @@ const EditableGrid = (props: EditableGridProps) => {
       "_is_filtered_in_",
       "_is_filtered_in_grid_search_",
       "_is_filtered_in_column_filter_",
-      "_is_data_transformed",
+      "_is_data_transformed"
     ];
     if (indentiferColumn.current !== null) {
       ignoredProperties.push(indentiferColumn.current);
@@ -440,7 +440,7 @@ const EditableGrid = (props: EditableGridProps) => {
   }
 
   const runGridValidations = (): boolean => {
-    let localError = false;
+    let localError = false
     const defaultGridDataTmp =
       defaultGridData.length > 0
         ? defaultGridData.filter(
@@ -464,7 +464,7 @@ const EditableGrid = (props: EditableGridProps) => {
       });
 
       setGridInError(true);
-      localError = true;
+      localError = true
     }
 
     for (let row = 0; row < defaultGridDataTmp.length; row++) {
@@ -613,7 +613,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 });
 
                 setGridInError(true);
-                localError = true;
+                localError = true
               } else if (
                 element.validations &&
                 element.validations.numberBoundaries
@@ -637,7 +637,8 @@ const EditableGrid = (props: EditableGridProps) => {
                     });
 
                     setGridInError(true);
-                    localError = true;
+                    localError = true
+
                   }
                 } else if (min) {
                   if (!(min <= parseInt(rowCol))) {
@@ -655,7 +656,8 @@ const EditableGrid = (props: EditableGridProps) => {
                     });
 
                     setGridInError(true);
-                    localError = true;
+                    localError = true
+
                   }
                 } else if (max) {
                   if (!(max >= parseInt(rowCol))) {
@@ -673,7 +675,8 @@ const EditableGrid = (props: EditableGridProps) => {
                     });
 
                     setGridInError(true);
-                    localError = true;
+                    localError = true
+
                   }
                 }
               }
@@ -695,7 +698,8 @@ const EditableGrid = (props: EditableGridProps) => {
                 });
 
                 setGridInError(true);
-                localError = true;
+                localError = true
+
               }
             } else if (element.dataType === "date") {
               try {
@@ -719,7 +723,8 @@ const EditableGrid = (props: EditableGridProps) => {
                 });
 
                 setGridInError(true);
-                localError = true;
+                localError = true
+
               }
             }
             // } else if (typeof rowCol !== element.dataType) {
@@ -833,7 +838,8 @@ const EditableGrid = (props: EditableGridProps) => {
                         );
 
                         setGridInError(true);
-                        localError = true;
+                        localError = true
+
                       }
                     }
                   }
@@ -858,7 +864,8 @@ const EditableGrid = (props: EditableGridProps) => {
                       type: MessageBarType.error,
                     });
                     setGridInError(true);
-                    localError = true;
+                    localError = true
+
                   }
                 }
               }
@@ -886,7 +893,8 @@ const EditableGrid = (props: EditableGridProps) => {
                 });
 
                 setGridInError(true);
-                localError = true;
+                localError = true
+
               }
             }
           }
@@ -914,7 +922,8 @@ const EditableGrid = (props: EditableGridProps) => {
                 });
 
                 setGridInError(true);
-                localError = true;
+                localError = true
+
               } else {
                 if (
                   rowCol !== null &&
@@ -935,7 +944,8 @@ const EditableGrid = (props: EditableGridProps) => {
                   });
 
                   setGridInError(true);
-                  localError = true;
+                  localError = true
+
                 }
               }
             }
@@ -956,7 +966,8 @@ const EditableGrid = (props: EditableGridProps) => {
         });
 
         setGridInError(true);
-        localError = true;
+        localError = true
+
       } else if (emptyReqCol.length == 1) {
         var msg = `Row: ${
           indentiferColumn.current
@@ -970,7 +981,8 @@ const EditableGrid = (props: EditableGridProps) => {
         });
 
         setGridInError(true);
-        localError = true;
+        localError = true
+
       }
 
       if (emptyCol.length > 1) {
@@ -986,7 +998,8 @@ const EditableGrid = (props: EditableGridProps) => {
         });
 
         setGridInError(true);
-        localError = true;
+        localError = true
+
       } else if (emptyCol.length == 1) {
         var msg = `Row ${
           indentiferColumn.current
@@ -1000,16 +1013,17 @@ const EditableGrid = (props: EditableGridProps) => {
         });
 
         setGridInError(true);
-        localError = true;
+        localError = true
+
       }
     }
 
-    return localError;
+    return localError
   };
 
   useEffect(() => {
     if (props.GridSaveAction && defaultGridData.length > 0) {
-      props.GridSaveAction(() => onGridSave);
+      props.GridSaveAction( () => onGridSave);
     }
   }, [defaultGridData]);
 
@@ -1050,7 +1064,7 @@ const EditableGrid = (props: EditableGridProps) => {
           )
         : [];
 
-    const defaultGridDataTmpWithDeletedData = defaultGridData; // DeepCopy
+    const defaultGridDataTmpWithDeletedData =  defaultGridData; // DeepCopy
 
     const ignoredProperties = [
       "_grid_row_id_",
@@ -1058,7 +1072,7 @@ const EditableGrid = (props: EditableGridProps) => {
       "_is_filtered_in_",
       "_is_filtered_in_grid_search_",
       "_is_filtered_in_column_filter_",
-      "_is_data_transformed",
+      "_is_data_transformed"
     ];
 
     const removeIgnoredProperties = (obj: any) => {
@@ -1071,30 +1085,31 @@ const EditableGrid = (props: EditableGridProps) => {
     };
 
     const defaultGridDataTmpWithInternalPropsIgnored =
-      defaultGridDataTmpWithDeletedData
-        .filter((x) => {
-          if (x._is_data_transformed) {
-            for (
-              let index = 0;
-              index < x._is_data_transformed.length;
-              index++
-            ) {
-              const element = x._is_data_transformed[index];
-              if (
-                element.value.toLowerCase() ===
-                (x[x._is_data_transformed.colkey]?.toLowerCase() ?? "")
-              ) {
-                x[x._is_data_transformed.colkey] = element.key;
-              }
-            }
+    defaultGridDataTmpWithDeletedData.filter(
+      (x) => {if(x._is_data_transformed){
+        for (
+          let index = 0;
+          index < x._is_data_transformed.length;
+          index++
+        ) {
+          const element = x._is_data_transformed[index];
+          if (
+            element.value.toLowerCase() ===
+            ( x[x._is_data_transformed.colkey]?.toLowerCase() ?? "")
+          ) {
+            x[x._is_data_transformed.colkey] = element.key;
           }
+        }
+      }
 
-          return x;
-        })
-        .map(removeIgnoredProperties);
+      return x
+    
+    }
+    ).map(removeIgnoredProperties)
 
+      
     if (props.onBeforeGridSave) {
-      props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
+       props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
     }
 
     if (props.onGridSave) {
@@ -1104,13 +1119,13 @@ const EditableGrid = (props: EditableGridProps) => {
       );
     }
 
-    let localError = false;
-    if (parseInt(getGridRecordLength(true)) > 0) {
-      localError = runGridValidations();
-    }
-    if (localError === true) setGridInError(true);
+    let localError = false
+    if (parseInt(getGridRecordLength(true)) > 0){
+      localError = runGridValidations()
+  }
+  if(localError === true) setGridInError(true)
     // return [localError, defaultGridDataTmpWithInternalPropsIgnored];
-    return localError;
+    return localError
   };
 
   const onGridUpdate = async (): Promise<void> => {
@@ -1297,6 +1312,7 @@ const EditableGrid = (props: EditableGridProps) => {
         props.columns.forEach((item, index) => {
           if (item.autoGenerate) obj[item.key] = tempID++;
           else if (item.defaultOnAddRow) obj[item.key] = item.defaultOnAddRow;
+
           else {
             obj[item.key] = GetDefault(item.dataType);
           }
@@ -1310,6 +1326,7 @@ const EditableGrid = (props: EditableGridProps) => {
         obj._is_filtered_in_ = true;
         obj._is_filtered_in_grid_search_ = true;
         obj._is_filtered_in_column_filter_ = true;
+
 
         addedRows.push(obj);
       }
@@ -3630,10 +3647,7 @@ const EditableGrid = (props: EditableGridProps) => {
           : (item, rowNum) => {
               rowNum = Number(item["_grid_row_id_"]);
               if (column.transformBasedOnData) {
-                item._is_data_transformed = Object.assign(
-                  column.transformBasedOnData,
-                  { colkey: column.key }
-                );
+                item._is_data_transformed = Object.assign(column.transformBasedOnData, {colkey: column.key })
                 for (
                   let index = 0;
                   index < column.transformBasedOnData.length;
@@ -3648,6 +3662,8 @@ const EditableGrid = (props: EditableGridProps) => {
                   }
                 }
               }
+
+              
 
               if (column.precision) {
                 const checkNaN = parseFloat(item[column.key]).toFixed(
@@ -3972,8 +3988,7 @@ const EditableGrid = (props: EditableGridProps) => {
                               (x) => x.text == item[column.key]
                             )[0]?.text ?? "Select an option"
                           }
-                          defaultSelectedKey={
-                            // Keys Select Text
+                          defaultSelectedKey={ // Keys Select Text
                             column.dropdownValues
                               ?.filter((x) => x?.key == item[column.key])[0]
                               ?.key?.toString() ?? null
@@ -4110,15 +4125,12 @@ const EditableGrid = (props: EditableGridProps) => {
                               ?.key.toString() ??
                             "Start typing..."
                           }
-                          defaultSelectedKey={
-                            // Text Selects Keys
+                          defaultSelectedKey={ // Text Selects Keys
                             column.comboBoxOptions
                               ?.filter((x) => x?.text == item[column.key])[0]
-                              ?.key?.toString() ??
-                            column.comboBoxOptions
+                              ?.key?.toString() ?? column.comboBoxOptions
                               ?.filter((x) => x?.key == item[column.key])[0]
-                              ?.key?.toString() ??
-                            null
+                              ?.key?.toString() ?? null
                           }
                           allowFreeInput
                           allowFreeform={false}
