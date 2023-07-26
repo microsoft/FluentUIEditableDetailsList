@@ -897,8 +897,8 @@ const EditableGrid = (props: EditableGridProps) => {
             if (caseInsensitive) {
               if (
                 rowCol !== null &&
-                element.validations.stringValidations?.conditionCantEqual.toLowerCase() ===
-                  rowCol.toString().toLowerCase()
+                element.validations.stringValidations?.conditionCantEqual?.toLowerCase() ===
+                  rowCol?.toString().toLowerCase()
               ) {
                 var msg =
                   `Row ${
@@ -1081,7 +1081,7 @@ const EditableGrid = (props: EditableGridProps) => {
             ) {
               const element = x._is_data_transformed[index];
               if (
-                element.value.toLowerCase() ===
+                element?.value?.toLowerCase() ===
                 (x[x._is_data_transformed.colkey]?.toLowerCase() ?? "")
               ) {
                 x[x._is_data_transformed.colkey] = element.key;
@@ -1628,7 +1628,7 @@ const EditableGrid = (props: EditableGridProps) => {
       if (
         !(
           CurrentHeaders.includes(header) ||
-          (CurrentHeaders.includes(header.toLowerCase()) &&
+          (CurrentHeaders.includes(header?.toLowerCase()) &&
             (CurrentHeaders.length === ImportedHeader.length ||
               CurrentHeaders.length ===
                 ImportedHeader.length -
@@ -2828,8 +2828,8 @@ const EditableGrid = (props: EditableGridProps) => {
         } else if (element.dataType === "boolean") {
           try {
             if (
-              rowCol.toString().toLowerCase() === "false" ||
-              rowCol.toString().toLowerCase() === "true"
+              rowCol?.toString()?.toLowerCase() === "false" ||
+              rowCol?.toString()?.toLowerCase() === "true"
             )
               continue;
             else {
@@ -2897,9 +2897,9 @@ const EditableGrid = (props: EditableGridProps) => {
         newColObj[colKeysVal] = localAutoGen++;
         continue;
       }
-      if (currentVal.toLowerCase() === "false") {
+      if (currentVal?.toLowerCase() === "false") {
         newColObj[colKeysVal] = false;
-      } else if (currentVal.toLowerCase() === "true") {
+      } else if (currentVal?.toLowerCase() === "true") {
         newColObj[colKeysVal] = true;
       } else {
         newColObj[colKeysVal] = currentVal;
@@ -3641,7 +3641,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 ) {
                   const element = column.transformBasedOnData[index];
                   if (
-                    element.key.toLowerCase() ===
+                    element?.key?.toLowerCase() ===
                     (item[column.key]?.toLowerCase() ?? "")
                   ) {
                     item[column.key] = element.value;
