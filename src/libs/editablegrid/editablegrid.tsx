@@ -359,6 +359,8 @@ const EditableGrid = (props: EditableGridProps) => {
       "_is_filtered_in_grid_search_",
       "_is_filtered_in_column_filter_",
       "_is_data_transformed",
+      "_udf_custom_vaule_store_a",
+      "_udf_custom_vaule_store_b"
     ];
 
     if (indentiferColumn.current !== null) {
@@ -413,6 +415,8 @@ const EditableGrid = (props: EditableGridProps) => {
       "_is_filtered_in_grid_search_",
       "_is_filtered_in_column_filter_",
       "_is_data_transformed",
+      "_udf_custom_vaule_store_a",
+      "_udf_custom_vaule_store_b"
     ];
     if (indentiferColumn.current !== null) {
       ignoredProperties.push(indentiferColumn.current);
@@ -1059,6 +1063,8 @@ const EditableGrid = (props: EditableGridProps) => {
       "_is_filtered_in_grid_search_",
       "_is_filtered_in_column_filter_",
       "_is_data_transformed",
+      "_udf_custom_vaule_store_a",
+      "_udf_custom_vaule_store_b"
     ];
 
     const removeIgnoredProperties = (obj: any) => {
