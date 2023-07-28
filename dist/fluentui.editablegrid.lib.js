@@ -53100,7 +53100,7 @@ JV(
 );
 const MG = (e, n) => e.map((t, r) => {
   var a;
-  return Object.keys(t).indexOf("_grid_row_id_") == -1 && Object.keys(t).indexOf("_grid_row_operation_") == -1 && (t._grid_row_id_ = r, t._grid_row_operation_ = nr.None, t._is_filtered_in_ = !0, t._is_filtered_in_grid_search_ = !0, t._is_filtered_in_column_filter_ = !0, t._is_data_transformed = !1, t._udf_custom_vaule_store_a = 0, t._udf_custom_vaule_store_b = 0), n && (t[n.colKey] = ((a = n.options) == null ? void 0 : a.None) ?? nr.None), t;
+  return Object.keys(t).indexOf("_grid_row_id_") == -1 && Object.keys(t).indexOf("_grid_row_operation_") == -1 && (t._grid_row_id_ = r, t._grid_row_operation_ = nr.None, n && (t[n.colKey] == null || t[n.colKey] == null || t[n.colKey] == "") && (t[n.colKey] = ((a = n.options) == null ? void 0 : a.None) ?? nr.None), t._is_filtered_in_ = !0, t._is_filtered_in_grid_search_ = !0, t._is_filtered_in_column_filter_ = !0, t._is_data_transformed = !1, t._udf_custom_vaule_store_a = 0, t._udf_custom_vaule_store_b = 0), t;
 }), OG = (e) => e.map((n, t) => (n._grid_row_id_ = t, n)), LG = (e) => {
   let n = [];
   return e.forEach((t, r) => {

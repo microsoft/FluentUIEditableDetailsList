@@ -16,6 +16,8 @@ export const InitializeInternalGrid = (items : any[], operations?: IUserDefinedO
         {
             obj._grid_row_id_ = index; 
             obj._grid_row_operation_ = Operation.None;
+            if(operations && (obj[operations.colKey] == null || obj[operations.colKey] == undefined || obj[operations.colKey] == ''))
+            obj[operations.colKey] = operations.options?.None ?? Operation.None;
             obj._is_filtered_in_ = true;
             obj._is_filtered_in_grid_search_ = true;
             obj._is_filtered_in_column_filter_ = true;
@@ -24,8 +26,7 @@ export const InitializeInternalGrid = (items : any[], operations?: IUserDefinedO
             obj._udf_custom_vaule_store_b = 0
 
         }
-        if(operations)
-        obj[operations.colKey] = operations.options?.None ?? Operation.None;
+    
 
         return obj;
     })
