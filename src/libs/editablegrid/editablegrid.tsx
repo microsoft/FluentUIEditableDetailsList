@@ -1088,8 +1088,8 @@ const EditableGrid = (props: EditableGridProps) => {
               ) {
                 const element = value.values[index];
                 if (
-                  element?.text?.toLowerCase() ===
-                  (x[key]?.toLowerCase() ?? "")
+                  element?.text?.toString()?.toLowerCase() ===
+                  (x[key]?.toString()?.toLowerCase() ?? "")
                 ) {
                   x[key] = element?.key;
                 }
