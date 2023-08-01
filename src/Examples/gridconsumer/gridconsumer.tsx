@@ -239,7 +239,7 @@ const Consumer = () => {
         designation: "Designation" + GetRandomInt(1, 15),
         salary: GetRandomInt(35000, 75000),
         // dateofjoining: new Date(),
-        payrolltype: randomInt % 3 == 0 ? 'WK' : randomInt % 3 == 1 ? 'Bi-Weekly' : 'Monthly',
+        payrolltype: randomInt % 3 == 0 ? 'Weekly' : randomInt % 3 == 1 ? 'Bi-Weekly' : 'Monthly',
         employmenttype: "Employment Type" + GetRandomInt(1, 12),
         // employeelink: "Link",
       });

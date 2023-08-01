@@ -24,8 +24,6 @@ export interface IColumnConfig extends IColumn {
   /** Enable For One Column Only. When enabled, that column id will be used to auto increate up by 1 when creating new rows*/
   autoGenerate?: true;
 
-  
-
   /** Determines if the column can be edited or updated */
   editable?: boolean;
 
@@ -99,7 +97,7 @@ export interface IColumnConfig extends IColumn {
 
   onChange?: any;
 
-  /** Adds decimals to given depth to freshly loaded data */ 
+  /** Adds decimals to given depth to freshly loaded data */
   precision?: number;
 
   /**Sets the max amount of characters you can entered for that column */

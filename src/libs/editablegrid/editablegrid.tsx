@@ -1079,20 +1079,22 @@ const EditableGrid = (props: EditableGridProps) => {
     const defaultGridDataTmpWithInternalPropsIgnored =
       defaultGridDataTmpWithDeletedData
         .filter((x) => {
-          if (x._is_data_transformed) {
-            for (
-              let index = 0;
-              index < x._is_data_transformed.values.length;
-              index++
-            ) {
-              const element = x._is_data_transformed.values[index];
-              if (
-                element?.text?.toLowerCase() ===
-                (x[x._is_data_transformed.colkey]?.toLowerCase() ?? "")
+          if (trackTransformedData.current) {
+            trackTransformedData.current.forEach(function (value:any, key:string) {
+              for (
+                let index = 0;
+                index < value.values.length;
+                index++
               ) {
-                x[x._is_data_transformed.colkey] = element.key;
+                const element = value.values[index];
+                if (
+                  element?.text?.toLowerCase() ===
+                  (x[key]?.toLowerCase() ?? "")
+                ) {
+                  x[key] = element?.key;
+                }
               }
-            }
+            });
           }
 
           return x;
@@ -3575,6 +3577,7 @@ const EditableGrid = (props: EditableGridProps) => {
     new Map()
   );
   const indentiferColumn = useRef<string | null>(null);
+  const trackTransformedData = useRef<any>(new Map());
 
   const CreateColumnConfigs = (): IColumn[] => {
     let columnConfigs: IColumnIToolTip[] = [];
@@ -3635,11 +3638,16 @@ const EditableGrid = (props: EditableGridProps) => {
           : (item, rowNum) => {
               rowNum = Number(item["_grid_row_id_"]);
 
-              if (column.dropdownValues) {
-                item._is_data_transformed = {
+              if (
+                column.dropdownValues &&
+                column.inputType == EditControlType.DropDown
+              ) {
+                trackTransformedData.current = new Map(
+                  trackTransformedData.current
+                ).set(column.key, {
                   colkey: column.key,
                   values: column.dropdownValues,
-                };
+                });
               }
 
               if (column.precision) {
