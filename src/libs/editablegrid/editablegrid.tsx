@@ -360,7 +360,7 @@ const EditableGrid = (props: EditableGridProps) => {
       "_is_filtered_in_column_filter_",
       "_is_data_transformed",
       "_udf_custom_vaule_store_a",
-      "_udf_custom_vaule_store_b"
+      "_udf_custom_vaule_store_b",
     ];
 
     if (indentiferColumn.current !== null) {
@@ -416,7 +416,7 @@ const EditableGrid = (props: EditableGridProps) => {
       "_is_filtered_in_column_filter_",
       "_is_data_transformed",
       "_udf_custom_vaule_store_a",
-      "_udf_custom_vaule_store_b"
+      "_udf_custom_vaule_store_b",
     ];
     if (indentiferColumn.current !== null) {
       ignoredProperties.push(indentiferColumn.current);
@@ -1064,7 +1064,7 @@ const EditableGrid = (props: EditableGridProps) => {
       "_is_filtered_in_column_filter_",
       "_is_data_transformed",
       "_udf_custom_vaule_store_a",
-      "_udf_custom_vaule_store_b"
+      "_udf_custom_vaule_store_b",
     ];
 
     const removeIgnoredProperties = (obj: any) => {
@@ -2141,14 +2141,6 @@ const EditableGrid = (props: EditableGridProps) => {
     //   if (column.extraValidations?.condition === text) {
     //     `${column.extraValidations?.errMsg}`;
     //   }
-    // }
-
-    // if (column.transformBasedOnData) {
-    //   const colChosen = (item as any)['designation'];
-    //   runAsync((column.key+row), colChosen);
-
-    //   (item as any)['name'] = asyncValuesState.get(column.key+row)
-
     // }
 
     activateCellEditTmp = [];
@@ -3642,25 +3634,6 @@ const EditableGrid = (props: EditableGridProps) => {
           ? column.onRender
           : (item, rowNum) => {
               rowNum = Number(item["_grid_row_id_"]);
-              if (column.transformBasedOnData) {
-                item._is_data_transformed = Object.assign(
-                  column.transformBasedOnData,
-                  { colkey: column.key }
-                );
-                for (
-                  let index = 0;
-                  index < column.transformBasedOnData.length;
-                  index++
-                ) {
-                  const element = column.transformBasedOnData[index];
-                  if (
-                    element?.key?.toLowerCase() ===
-                    (item[column.key]?.toLowerCase() ?? "")
-                  ) {
-                    item[column.key] = element.value;
-                  }
-                }
-              }
 
               if (column.precision) {
                 const checkNaN = parseFloat(item[column.key]).toFixed(
@@ -3681,13 +3654,6 @@ const EditableGrid = (props: EditableGridProps) => {
               if (column.dataType == "date" && item[column.key]) {
                 item[column.key] = new Date(item[column.key]).toDateString();
               }
-
-              // if (column.transformBasedOnData) {
-              //   var colChosen = item['designation']
-              //   runAsync(column.key+rowNum, colChosen)
-              //   item[column.key] = asyncValuesState.get(column.key+rowNum)
-
-              // }
 
               if (column.autoGenerate) {
                 tempAutoGenId.current =
@@ -3989,8 +3955,13 @@ const EditableGrid = (props: EditableGridProps) => {
                             // Keys Select Text
                             column.dropdownValues
                               ?.filter((x) => x?.key == item[column.key])[0]
-                              ?.key?.toString() ?? null
+                              ?.key?.toString() ??
+                            column.dropdownValues
+                              ?.filter((x) => x?.text == item[column.key])[0]
+                              ?.key?.toString() ??
+                            null
                           }
+                          onRenderPlaceholder={(props) => <span>88484JE</span>}
                           options={column.dropdownValues ?? []}
                           styles={dropdownStyles}
                           onChange={(ev, selectedItem) =>
@@ -5400,6 +5371,13 @@ const EditableGrid = (props: EditableGridProps) => {
       activateCurrentCell: boolean
     ) => void
   ): React.ReactNode => {
+    let maskText = item[column.key];
+    if (column.dropdownValues) {
+      maskText =
+        column.dropdownValues
+          ?.filter((x) => x?.key == item[column.key])[0]
+          ?.text?.toString() ?? item[column.key];
+    }
     return RenderSpan(
       props,
       index,
@@ -5408,7 +5386,8 @@ const EditableGrid = (props: EditableGridProps) => {
       item,
       HandleCellOnClick,
       EditCellValue,
-      HandleCellOnDoubleClick
+      HandleCellOnDoubleClick,
+      maskText
     );
   };
 
@@ -5583,7 +5562,8 @@ const EditableGrid = (props: EditableGridProps) => {
         activateCurrentCell: boolean
       ) => void,
       rowNum: number
-    ) => React.MouseEventHandler<HTMLSpanElement> | undefined
+    ) => React.MouseEventHandler<HTMLSpanElement> | undefined,
+    maskText?: string
   ): React.ReactNode => {
     return (
       <span
@@ -5599,7 +5579,7 @@ const EditableGrid = (props: EditableGridProps) => {
           rowNum
         )}
       >
-        {item[column.key]}
+        {maskText ? maskText : item[column.key]}
       </span>
     );
   };

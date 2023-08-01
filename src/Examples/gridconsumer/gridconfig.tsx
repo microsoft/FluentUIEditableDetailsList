@@ -72,7 +72,6 @@ export const GridColumnConfig: IColumnConfig[] = [
     toolTipText: "Name Must Be In All CAPS",
     minWidth: 100,
     maxWidth: 100,
-    transformBasedOnData: [{ key: "co", value: "Consol" }],
     validations: {
       columnDependent: [
         {

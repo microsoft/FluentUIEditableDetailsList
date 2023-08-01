@@ -17,7 +17,6 @@ export type {
   IRequiredColumnsOptions,
   IRegexValidation,
   IColumnConfig,
-  ITransformBasedOnData,
   IDisableDropCellOptions,
 } from "./types/columnconfigtype";
 export type { IDetailsColumnRenderTooltipPropsExtra } from "./types/columnconfigtype";

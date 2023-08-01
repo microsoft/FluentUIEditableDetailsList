@@ -20,8 +20,6 @@ export interface IColumnConfig extends IColumn {
     toolTipText?: string;
     /** Default value you desire to see on add row */
     defaultOnAddRow?: any;
-    /** Transforms data in the Selected column. If Data comes in as TO, KY you can use this to say if TO change to Tall Order */
-    transformBasedOnData?: ITransformBasedOnData[];
     /** Majority of properties to be set for the validation engine to run against during save */
     validations?: {
         /** Column Dependent: If two columns can NOT have data or If two columns MUST have data */
@@ -137,10 +135,6 @@ export interface IDetailsColumnRenderTooltipPropsExtra extends ITooltipHostProps
 export interface IGridErrorCallbacks {
     key: string;
     msg: string;
-}
-export interface ITransformBasedOnData {
-    key: string;
-    value: any;
 }
 export interface IRegexValidation {
     regex: RegExp;
