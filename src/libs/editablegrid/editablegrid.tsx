@@ -3961,7 +3961,6 @@ const EditableGrid = (props: EditableGridProps) => {
                               ?.key?.toString() ??
                             null
                           }
-                          onRenderPlaceholder={(props) => <span>88484JE</span>}
                           options={column.dropdownValues ?? []}
                           styles={dropdownStyles}
                           onChange={(ev, selectedItem) =>

@@ -55187,7 +55187,6 @@ const jG = (e) => {
                     // Keys Select Text
                     ((jr = (Ut = ($e = w.dropdownValues) == null ? void 0 : $e.filter((Le) => (Le == null ? void 0 : Le.key) == le[w.key])[0]) == null ? void 0 : Ut.key) == null ? void 0 : jr.toString()) ?? ((Xi = (ea = (cr = w.dropdownValues) == null ? void 0 : cr.filter((Le) => (Le == null ? void 0 : Le.text) == le[w.key])[0]) == null ? void 0 : ea.key) == null ? void 0 : Xi.toString()) ?? null
                   ),
-                  onRenderPlaceholder: (Le) => /* @__PURE__ */ ee.jsx("span", { children: "88484JE" }),
                   options: w.dropdownValues ?? [],
                   styles: JU,
                   onChange: (Le, pr) => XS(
