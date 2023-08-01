@@ -2912,8 +2912,15 @@ const EditableGrid = (props: EditableGridProps) => {
       }
     }
 
-    const verifyDataTypes = verifyColumnsDataOnPaste(rowData, newColObj);
-    if (verifyDataTypes.length <= 0) {
+    // const verifyDataTypes = verifyColumnsDataOnPaste(rowData, newColObj);
+    addedRows.map((row: any) => {
+      var objectKeys = Object.keys(newColObj);
+      objectKeys.forEach((key) => {
+        row[key] = newColObj[key];
+      });
+      return row;
+    });
+    /* if (verifyDataTypes.length <= 0) {
       addedRows.map((row: any) => {
         var objectKeys = Object.keys(newColObj);
         objectKeys.forEach((key) => {
@@ -2937,7 +2944,7 @@ const EditableGrid = (props: EditableGridProps) => {
       });
       setImportingStarted(false);
       return null;
-    }
+    } */
 
     return addedRows;
   };
