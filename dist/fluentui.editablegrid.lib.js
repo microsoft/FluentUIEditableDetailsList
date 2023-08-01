@@ -53932,9 +53932,9 @@ const jG = (e) => {
     ], Re = (mt) => Object.keys(mt).reduce((kr, ot) => (ie.includes(ot) || (kr[ot] = mt[ot]), kr), {}), le = ne.filter((mt) => {
       var kr, ot;
       if (mt._is_data_transformed)
-        for (let yt = 0; yt < mt._is_data_transformed.length; yt++) {
-          const mn = mt._is_data_transformed[yt];
-          ((kr = mn == null ? void 0 : mn.value) == null ? void 0 : kr.toLowerCase()) === (((ot = mt[mt._is_data_transformed.colkey]) == null ? void 0 : ot.toLowerCase()) ?? "") && (mt[mt._is_data_transformed.colkey] = mn.key);
+        for (let yt = 0; yt < mt._is_data_transformed.values.length; yt++) {
+          const mn = mt._is_data_transformed.values[yt];
+          ((kr = mn == null ? void 0 : mn.text) == null ? void 0 : kr.toLowerCase()) === (((ot = mt[mt._is_data_transformed.colkey]) == null ? void 0 : ot.toLowerCase()) ?? "") && (mt[mt._is_data_transformed.colkey] = mn.key);
         }
       return mt;
     }).map(Re);
@@ -55006,7 +55006,10 @@ const jG = (e) => {
         sortDescendingAriaLabel: "Sorted Z to A",
         onRender: w.onRender ? w.onRender : (le, de) => {
           var kr, ot, yt, mn, Aa, ko, jl, $l, wo, $e, Ut, jr, cr, ea, Xi, Ga, za, mm, gm, vm, _m, xm, bm, ym, Cm, Sm, Em, km, wm, Fm, Dm, Tm, Im, Am, Rm, Pm, Nm, Bm, Mm, Om, Lm, Hm, Wm, Vm, Um, Gm, zm, Km, jm, $m, Ym, Xm, qm, Zm, Jm, Qm, eg, tg, rg, ng, ag, ig, og, sg, lg, ug, cg, dg, fg, hg, pg, mg, gg, vg, _g, xg, bg, yg, Cg, Sg, Eg, kg, wg, Fg, Dg, Tg, Ig, Ag, Rg, Pg, Ng, Bg, Mg, Og, Lg, Hg, Wg, Vg;
-          if (de = Number(le._grid_row_id_), w.precision) {
+          if (de = Number(le._grid_row_id_), w.dropdownValues && (le._is_data_transformed = {
+            colkey: w.key,
+            values: w.dropdownValues
+          }), w.precision) {
             const Le = parseFloat(le[w.key]).toFixed(
               w.precision
             );

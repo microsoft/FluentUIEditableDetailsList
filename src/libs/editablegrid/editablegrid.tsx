@@ -1082,12 +1082,12 @@ const EditableGrid = (props: EditableGridProps) => {
           if (x._is_data_transformed) {
             for (
               let index = 0;
-              index < x._is_data_transformed.length;
+              index < x._is_data_transformed.values.length;
               index++
             ) {
-              const element = x._is_data_transformed[index];
+              const element = x._is_data_transformed.values[index];
               if (
-                element?.value?.toLowerCase() ===
+                element?.text?.toLowerCase() ===
                 (x[x._is_data_transformed.colkey]?.toLowerCase() ?? "")
               ) {
                 x[x._is_data_transformed.colkey] = element.key;
@@ -3634,6 +3634,13 @@ const EditableGrid = (props: EditableGridProps) => {
           ? column.onRender
           : (item, rowNum) => {
               rowNum = Number(item["_grid_row_id_"]);
+
+              if (column.dropdownValues) {
+                item._is_data_transformed = {
+                  colkey: column.key,
+                  values: column.dropdownValues,
+                };
+              }
 
               if (column.precision) {
                 const checkNaN = parseFloat(item[column.key]).toFixed(
