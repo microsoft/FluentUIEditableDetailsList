@@ -331,8 +331,6 @@ const Consumer = () => {
   const onDesignationChangedTest = (
     callbackRequestParamObj: ICallBackParams
   ): any[] => {
-    console.log("item")
-
     for (let j = 0; j < callbackRequestParamObj.rowindex.length; j++) {
       const index = callbackRequestParamObj.rowindex[j];
       const filteredItems = callbackRequestParamObj.data.filter(
@@ -340,9 +338,7 @@ const Consumer = () => {
       );
       for (let i = 0; i < filteredItems.length; i++) {
         const item = filteredItems[i];
-        console.log(item)
         item._udf_custom_vaule_store_a = item._udf_custom_vaule_store_a + 99
-        console.log(item._udf_custom_vaule_store_a)
 
         item.salary = asyncValues.get(
           callbackRequestParamObj.triggerkey + index

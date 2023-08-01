@@ -28585,7 +28585,7 @@ var p_ = !1, vd = 0, d4 = { empty: !0 }, c0 = {}, Ku = typeof WeakMap > "u" ? nu
 function f4() {
   vd++;
 }
-function ar(e, n, t) {
+function nr(e, n, t) {
   if (n === void 0 && (n = 100), t === void 0 && (t = !1), !Ku)
     return e;
   if (!p_) {
@@ -30171,7 +30171,7 @@ var $u = function(e, n, t, r) {
   border: 0,
   overflow: "hidden",
   whiteSpace: "nowrap"
-}, fL = ar(function(e, n) {
+}, fL = nr(function(e, n) {
   var t = ai.getInstance();
   return n ? Object.keys(e).reduce(function(r, a) {
     return r[a] = t.getClassName(e[a]), r;
@@ -31293,7 +31293,7 @@ function x3() {
   var e;
   return (e = _.useContext(lC)) !== null && e !== void 0 ? e : _3;
 }
-var b3 = gt(), y3 = ar(function(e, n) {
+var b3 = gt(), y3 = nr(function(e, n) {
   return yc(S(S({}, e), { rtl: n }));
 }), C3 = function(e) {
   var n = e.theme, t = e.dir, r = Kt(n) ? "rtl" : "ltr", a = Kt() ? "rtl" : "ltr", i = t || r;
@@ -32104,7 +32104,7 @@ var Ds = Ua({
       i && i.imageContainer
     ]
   };
-}, pC = ar(
+}, pC = nr(
   function(e) {
     var n = xO(e) || {
       subset: {},
@@ -32136,7 +32136,7 @@ var Ds = Ua({
     style: S({ fontFamily: l }, a)
   }), h);
 };
-ar(function(e, n, t) {
+nr(function(e, n, t) {
   return ts({ iconName: e, className: n, "aria-label": t });
 });
 var l8 = gt({
@@ -33060,7 +33060,7 @@ var L_ = function(e) {
       );
     }, n;
   }(_.Component)
-), R8 = ar(
+), R8 = nr(
   // eslint-disable-next-line deprecation/deprecation
   function(e) {
     return Ua({
@@ -33076,7 +33076,7 @@ var L_ = function(e) {
       }
     });
   }
-), Uo = 36, H_ = Ef(0, $y), P8 = ar(function(e) {
+), Uo = 36, H_ = Ef(0, $y), P8 = nr(function(e) {
   var n, t, r, a, i, o = e.semanticColors, s = e.fonts, l = e.palette, u = o.menuItemBackgroundHovered, c = o.menuItemTextHovered, d = o.menuItemBackgroundPressed, f = o.bodyDivider, h = {
     item: [
       s.medium,
@@ -33250,7 +33250,7 @@ var L_ = function(e) {
     ]
   };
   return fa(h);
-}), W_ = "28px", N8 = Ef(0, $y), B8 = ar(
+}), W_ = "28px", N8 = Ef(0, $y), B8 = nr(
   /* eslint-disable deprecation/deprecation */
   function(e) {
     var n;
@@ -33287,7 +33287,7 @@ var L_ = function(e) {
   secondaryText: "ms-ContextualMenu-secondaryText",
   splitMenu: "ms-ContextualMenu-splitMenu",
   screenReaderText: "ms-ContextualMenu-screenReaderText"
-}, O8 = ar(function(e, n, t, r, a, i, o, s, l, u, c, d) {
+}, O8 = nr(function(e, n, t, r, a, i, o, s, l, u, c, d) {
   var f, h, p, m, v = P8(e), g = wt(M8, e);
   return Ua({
     item: [g.item, v.item, o],
@@ -33530,7 +33530,7 @@ var Ju = function(e) {
     dt(n, e);
     function n() {
       var t = e !== null && e.apply(this, arguments) || this;
-      return t._anchor = _.createRef(), t._getMemoizedMenuButtonKeytipProps = ar(function(r) {
+      return t._anchor = _.createRef(), t._getMemoizedMenuButtonKeytipProps = nr(function(r) {
         return S(S({}, r), { hasMenu: !0 });
       }), t._getSubmenuTarget = function() {
         return t._anchor.current ? t._anchor.current : void 0;
@@ -33588,7 +33588,7 @@ var Ju = function(e) {
     dt(n, e);
     function n() {
       var t = e !== null && e.apply(this, arguments) || this;
-      return t._btn = _.createRef(), t._getMemoizedMenuButtonKeytipProps = ar(function(r) {
+      return t._btn = _.createRef(), t._getMemoizedMenuButtonKeytipProps = nr(function(r) {
         return S(S({}, r), { hasMenu: !0 });
       }), t._renderAriaDescription = function(r, a) {
         return r ? _.createElement("span", { id: t._ariaDescriptionId, className: a }, r) : null;
@@ -33681,7 +33681,7 @@ var q8 = vt(CC, Y8, void 0, {
     dt(n, e);
     function n(t) {
       var r = e.call(this, t) || this;
-      return r._getMemoizedMenuButtonKeytipProps = ar(function(a) {
+      return r._getMemoizedMenuButtonKeytipProps = nr(function(a) {
         return S(S({}, a), { hasMenu: !0 });
       }), r._onItemKeyDown = function(a) {
         var i = r.props, o = i.item, s = i.onItemKeyDown;
@@ -33902,7 +33902,7 @@ function i6(e) {
     }));
   });
 }
-var DC = 250, Eh = "ContextualMenu", o6 = ar(function() {
+var DC = 250, Eh = "ContextualMenu", o6 = nr(function() {
   for (var e = [], n = 0; n < arguments.length; n++)
     e[n] = arguments[n];
   return function(t) {
@@ -34462,7 +34462,7 @@ var Gn = {
   msButtonScreenReaderText: "ms-Button-screenReaderText",
   msButtonFlexContainer: "ms-Button-flexContainer",
   msButtonTextContainer: "ms-Button-textContainer"
-}, x6 = ar(function(e, n, t, r, a, i, o, s, l, u, c) {
+}, x6 = nr(function(e, n, t, r, a, i, o, s, l, u, c) {
   var d, f, h = wt(Gn, e || {}), p = u && !c;
   return Ua({
     root: [
@@ -34527,7 +34527,7 @@ var Gn = {
     ],
     screenReaderText: [h.msButtonScreenReaderText, n.screenReaderText]
   });
-}), b6 = ar(function(e, n, t, r, a) {
+}), b6 = nr(function(e, n, t, r, a) {
   return {
     root: Br(e.splitButtonMenuButton, t && [e.splitButtonMenuButtonExpanded], n && [e.splitButtonMenuButtonDisabled], r && !n && [e.splitButtonMenuButtonChecked], a && !n && [
       {
@@ -34561,7 +34561,7 @@ var Gn = {
     dt(n, e);
     function n(t) {
       var r = e.call(this, t) || this;
-      return r._buttonElement = _.createRef(), r._splitButtonContainer = _.createRef(), r._mergedRef = Gy(), r._renderedVisibleMenu = !1, r._getMemoizedMenuButtonKeytipProps = ar(function(a) {
+      return r._buttonElement = _.createRef(), r._splitButtonContainer = _.createRef(), r._mergedRef = Gy(), r._renderedVisibleMenu = !1, r._getMemoizedMenuButtonKeytipProps = nr(function(a) {
         return S(S({}, a), { hasMenu: !0 });
       }), r._onRenderIcon = function(a, i) {
         var o = r.props.iconProps;
@@ -34840,7 +34840,7 @@ var Gn = {
     textAlign: "center",
     flexShrink: 0
   };
-}, If = ar(function(e) {
+}, If = nr(function(e) {
   var n, t, r = e.semanticColors, a = e.effects, i = e.fonts, o = r.buttonBorder, s = r.disabledBackground, l = r.disabledText, u = {
     left: -2,
     top: -2,
@@ -34920,7 +34920,7 @@ var Gn = {
     },
     screenReaderText: Gi
   };
-}), Gp = ar(function(e, n) {
+}), Gp = nr(function(e, n) {
   var t, r, a, i, o, s, l, u, c, d, f, h, p, m = e.effects, v = e.palette, g = e.semanticColors, b = {
     left: -2,
     top: -2,
@@ -35287,7 +35287,7 @@ function S6(e) {
     }
   };
 }
-var E6 = "32px", k6 = "80px", w6 = ar(function(e, n, t) {
+var E6 = "32px", k6 = "80px", w6 = nr(function(e, n, t) {
   var r = If(e), a = Gp(e), i = {
     root: {
       minWidth: k6,
@@ -35312,7 +35312,7 @@ var E6 = "32px", k6 = "80px", w6 = ar(function(e, n, t) {
       Wl("DefaultButton", ["theme", "styles"], !0)
     ], n), n;
   }(_.Component)
-), F6 = "40px", D6 = "0 4px", T6 = ar(function(e, n) {
+), F6 = "40px", D6 = "0 4px", T6 = nr(function(e, n) {
   var t, r, a, i = If(e), o = {
     root: {
       padding: D6,
@@ -35387,7 +35387,7 @@ var E6 = "32px", k6 = "80px", w6 = ar(function(e, n, t) {
       Wl("ActionButton", ["theme", "styles"], !0)
     ], n), n;
   }(_.Component)
-), I6 = ar(function(e, n) {
+), I6 = nr(function(e, n) {
   var t, r = If(e), a = Gp(e), i = e.palette, o = e.semanticColors, s = {
     root: {
       padding: "0 4px",
@@ -35456,7 +35456,7 @@ var E6 = "32px", k6 = "80px", w6 = ar(function(e, n, t) {
       Wl("PrimaryButton", ["theme", "styles"], !0)
     ], n), n;
   }(_.Component)
-), A6 = ar(function(e, n, t, r) {
+), A6 = nr(function(e, n, t, r) {
   var a, i, o, s, l, u, c, d, f, h, p, m, v, g, b = If(e), x = Gp(e), y = e.palette, k = e.semanticColors, E = {
     left: 4,
     top: 4,
@@ -38535,7 +38535,7 @@ function sH(e) {
 }
 var xn = vt(nH, sH, void 0, {
   scope: "TextField"
-}), F0, D0, lH = 32, uH = 30, oS = 32, Th = 36, Ih = ar(function(e) {
+}), F0, D0, lH = 32, uH = 30, oS = 32, Th = 36, Ih = nr(function(e) {
   var n, t = e.semanticColors;
   return {
     backgroundColor: t.disabledBackground,
@@ -38558,7 +38558,7 @@ var xn = vt(nH, sH, void 0, {
   selectors: (F0 = {}, F0[ge] = S({ backgroundColor: "Highlight", borderColor: "Highlight", color: "HighlightText" }, _t()), F0)
 }, T0 = {
   selectors: (D0 = {}, D0[ge] = S({ color: "WindowText", backgroundColor: "Window" }, _t()), D0)
-}, cH = ar(function(e, n, t, r, a, i) {
+}, cH = nr(function(e, n, t, r, a, i) {
   var o, s = e.palette, l = e.semanticColors, u = {
     textHoveredColor: l.menuItemTextHovered,
     textSelectedColor: s.neutralDark,
@@ -38645,7 +38645,7 @@ var xn = vt(nH, sH, void 0, {
     }
   };
   return fa(c, n, t);
-}), dH = ar(function(e, n) {
+}), dH = nr(function(e, n) {
   var t, r, a = e.semanticColors, i = e.fonts, o = {
     buttonTextColor: a.bodySubtext,
     buttonTextHoveredCheckedColor: a.buttonTextChecked,
@@ -38707,7 +38707,7 @@ var xn = vt(nH, sH, void 0, {
     ]
   };
   return fa(l, n);
-}), fH = ar(function(e, n, t) {
+}), fH = nr(function(e, n, t) {
   var r, a, i, o, s, l, u = e.semanticColors, c = e.fonts, d = e.effects, f = {
     textColor: u.inputText,
     borderColor: u.inputBorder,
@@ -38900,7 +38900,7 @@ var xn = vt(nH, sH, void 0, {
     }
   };
   return fa(y, n);
-}), hH = ar(function(e, n, t, r, a, i, o, s) {
+}), hH = nr(function(e, n, t, r, a, i, o, s) {
   return {
     container: Br("ms-ComboBox-container", n, e.container),
     label: Br(e.label, r && e.labelDisabled),
@@ -38920,7 +38920,7 @@ var xn = vt(nH, sH, void 0, {
     divider: Br("ms-ComboBox-divider", e.divider),
     screenReaderText: Br(e.screenReaderText)
   };
-}), I0 = ar(function(e) {
+}), I0 = nr(function(e) {
   return {
     optionText: Br("ms-ComboBox-optionText", e.optionText),
     root: Br("ms-ComboBox-option", e.root, {
@@ -40182,7 +40182,7 @@ var MH = 44, OH = function(e) {
       }
     ]
   };
-}, LH = ar(function(e) {
+}, LH = nr(function(e) {
   var n = {
     height: "100%"
   }, t = {
@@ -41837,7 +41837,7 @@ var x9 = gt(), b9 = (
   root: "ms-Spinner",
   circle: "ms-Spinner-circle",
   label: "ms-Spinner-label"
-}, C9 = ar(function() {
+}, C9 = nr(function() {
   return Fa({
     "0%": {
       transform: "rotate(0deg)"
@@ -43421,7 +43421,7 @@ var _7 = gt(), x7 = "DetailsList", Oo = 100, b7 = 2, y7 = 2, C7 = { tabIndex: 0 
       headerProps: S(S({}, d == null ? void 0 : d.headerProps), { selectAllButtonProps: S({ "aria-label": sr }, (Yt = d == null ? void 0 : d.headerProps) === null || Yt === void 0 ? void 0 : Yt.selectAllButtonProps) })
     });
   }, [d, Te, it, sr, Tt]), tr = Ln(function() {
-    return ar(function(Yt) {
+    return nr(function(Yt) {
       var on = 0;
       return Yt.forEach(function(Pr) {
         return on += Pr.calculatedWidth || Pr.minWidth;
@@ -44030,7 +44030,7 @@ var mS = ao.durationValue2, R7 = {
   };
 }, gS = vt(B7, O7, void 0, {
   scope: "Overlay"
-}), L7 = ar(function(e, n) {
+}), L7 = nr(function(e, n) {
   return {
     root: Br(e, n && {
       touchAction: "none",
@@ -50449,7 +50449,7 @@ var Po, No, Bo, Mo, uU = {
       return t ? t.offsetHeight - t.clientHeight : 0;
     }, n;
   }(_.Component)
-), $p = vt(xU, gU, void 0, { scope: "ScrollablePane" }), wS = 23, bU = 8, K0 = 32, j0 = 86, Nx = 10, $0 = ar(function(e) {
+), $p = vt(xU, gU, void 0, { scope: "ScrollablePane" }), wS = 23, bU = 8, K0 = 32, j0 = 86, Nx = 10, $0 = nr(function(e) {
   var n, t = e.semanticColors, r = t.disabledText, a = t.disabledBackground;
   return {
     backgroundColor: a,
@@ -50464,7 +50464,7 @@ var Po, No, Bo, Mo, uU = {
       color: "GrayText"
     }, n)
   };
-}), Bx = ar(function(e, n, t) {
+}), Bx = nr(function(e, n, t) {
   var r, a, i, o = e.palette, s = e.semanticColors, l = e.effects, u = o.neutralSecondary, c = s.buttonText, d = s.buttonText, f = s.buttonBackgroundHovered, h = s.buttonBackgroundPressed, p = {
     root: {
       outline: "none",
@@ -50852,7 +50852,7 @@ function TS(e, n) {
   };
   return a;
 }
-var IU = ar(function(e) {
+var IU = nr(function(e) {
   return TS(e);
 });
 function Xp(e, n) {
@@ -53094,14 +53094,11 @@ const BG = (e) => {
     }
   );
 };
-var nr = /* @__PURE__ */ ((e) => (e[e.None = 1] = "None", e[e.Add = 2] = "Add", e[e.Update = 3] = "Update", e[e.Delete = 4] = "Delete", e))(nr || {});
+var ar = /* @__PURE__ */ ((e) => (e[e.None = 1] = "None", e[e.Add = 2] = "Add", e[e.Update = 3] = "Update", e[e.Delete = 4] = "Delete", e))(ar || {});
 JV(
   /* optional base url */
 );
-const MG = (e, n) => e.map((t, r) => {
-  var a;
-  return Object.keys(t).indexOf("_grid_row_id_") == -1 && Object.keys(t).indexOf("_grid_row_operation_") == -1 && (t._grid_row_id_ = r, t._grid_row_operation_ = nr.None, n && (t[n.colKey] == null || t[n.colKey] == null || t[n.colKey] == "") && (t[n.colKey] = ((a = n.options) == null ? void 0 : a.None) ?? nr.None), t._is_filtered_in_ = !0, t._is_filtered_in_grid_search_ = !0, t._is_filtered_in_column_filter_ = !0, t._is_data_transformed = !1, t._udf_custom_vaule_store_a = 0, t._udf_custom_vaule_store_b = 0), t;
-}), OG = (e) => e.map((n, t) => (n._grid_row_id_ = t, n)), LG = (e) => {
+const MG = (e, n) => e.map((t, r) => (Object.keys(t).indexOf("_grid_row_id_") == -1 && Object.keys(t).indexOf("_grid_row_operation_") == -1 && (t._grid_row_id_ = r, t._grid_row_operation_ = ar.None, t._is_filtered_in_ = !0, t._is_filtered_in_grid_search_ = !0, t._is_filtered_in_column_filter_ = !0, t._is_data_transformed = !1, t._udf_custom_vaule_store_a = 0, t._udf_custom_vaule_store_b = 0), t)), OG = (e) => e.map((n, t) => (n._grid_row_id_ = t, n)), LG = (e) => {
   let n = [];
   return e.forEach((t, r) => {
     let a = { isActivated: !1, properties: {} };
@@ -53124,7 +53121,7 @@ const MG = (e, n) => e.map((t, r) => {
   if (r >= 0) {
     var a = Object.keys(t.properties);
     a.forEach((i) => {
-      e[r][i] != t.properties[i].value && (e[r][i] = t.properties[i].value, e[r]._grid_row_operation_ != nr.Add && e[r]._grid_row_operation_ != nr.Update && (e[r]._grid_row_operation_ = nr.Update));
+      e[r][i] != t.properties[i].value && (e[r][i] = t.properties[i].value, e[r]._grid_row_operation_ != ar.Add && e[r]._grid_row_operation_ != ar.Update && (e[r]._grid_row_operation_ = ar.Update));
     });
   }
 }), e), HG = (e) => {
@@ -53595,7 +53592,7 @@ const jG = (e) => {
   }, [e.items]), vr(() => {
   }, [g]), vr(() => {
     (async () => {
-      m.filter((j) => j._grid_row_operation_ != nr.None).length > 0 && await Sr();
+      m.filter((j) => j._grid_row_operation_ != ar.None).length > 0 && await Sr();
     })();
   }, [m]), vr(() => {
     sr(), e.enableDefaultEditMode && v(
@@ -53678,7 +53675,7 @@ const jG = (e) => {
     var ie, Re, le, ue, at, Ur;
     let N = !1;
     const j = m.length > 0 ? m.filter(
-      (st) => st._grid_row_operation_ != nr.Delete
+      (st) => st._grid_row_operation_ != ar.Delete
     ) : [], w = qe(j);
     w.length > 0 && (w.forEach((st, yt) => {
       var mn = Ct.current !== null ? `Rows Located At IDs: ${st} are duplicated` : `Rows Located At Indexes ${st} are duplicated`;
@@ -53922,7 +53919,7 @@ const jG = (e) => {
     }
     t(!1), mt(!1);
     const Z = m.length > 0 ? m.filter(
-      (at) => at._grid_row_operation_ != nr.Delete
+      (at) => at._grid_row_operation_ != ar.Delete
     ) : [], ne = m, ie = [
       "_grid_row_id_",
       "_grid_row_operation_",
@@ -53989,7 +53986,7 @@ const jG = (e) => {
         var Re = Object.keys(N);
         return Re.forEach((le) => {
           var ue;
-          ie[le] = N[le], ie._grid_row_operation_ != nr.Add && (ie._grid_row_operation_ = nr.Update, e.customOperationsKey && (ie[e.customOperationsKey.colKey] = ((ue = e.customOperationsKey.options) == null ? void 0 : ue.Update) ?? nr.Delete));
+          ie[le] = N[le], ie._grid_row_operation_ != ar.Add && (ie._grid_row_operation_ = ar.Update, e.customOperationsKey && (ie[e.customOperationsKey.colKey] = ((ue = e.customOperationsKey.options) == null ? void 0 : ue.Update) ?? ar.Delete));
         }), ie;
       });
     }), mt(!0), w;
@@ -54034,7 +54031,7 @@ const jG = (e) => {
       for (var ne = Bt, ie = 1; ie <= N; ie++)
         j = {}, e.columns.forEach((le, ue) => {
           le.autoGenerate ? j[le.key] = ne++ : le.defaultOnAddRow ? j[le.key] = le.defaultOnAddRow : j[le.key] = lc(le.dataType);
-        }), e.customOperationsKey && (j[e.customOperationsKey.colKey] = ((Re = e.customOperationsKey.options) == null ? void 0 : Re.Add) ?? nr.Add), j._grid_row_id_ = ++Z, j._grid_row_operation_ = nr.Add, j._is_filtered_in_ = !0, j._is_filtered_in_grid_search_ = !0, j._is_filtered_in_column_filter_ = !0, w.push(j);
+        }), e.customOperationsKey && (j[e.customOperationsKey.colKey] = ((Re = e.customOperationsKey.options) == null ? void 0 : Re.Add) ?? ar.Add), j._grid_row_id_ = ++Z, j._grid_row_operation_ = ar.Add, j._is_filtered_in_ = !0, j._is_filtered_in_grid_search_ = !0, j._is_filtered_in_column_filter_ = !0, w.push(j);
       return J(ne), w;
     },
     [Bt, e.columns, m]
@@ -54110,7 +54107,7 @@ const jG = (e) => {
     D.forEach((j, w) => {
       N.filter((Z) => Z._grid_row_id_ == j._grid_row_id_).map((Z) => {
         var ne;
-        Z._grid_row_operation_ = nr.Delete, e.customOperationsKey && (Z[e.customOperationsKey.colKey] = ((ne = e.customOperationsKey.options) == null ? void 0 : ne.Delete) ?? nr.Delete);
+        Z._grid_row_operation_ = ar.Delete, e.customOperationsKey && (Z[e.customOperationsKey.colKey] = ((ne = e.customOperationsKey.options) == null ? void 0 : ne.Delete) ?? ar.Delete);
       });
     }), e.enableSaveGridOnCellValueChange ? v(N) : (mt(!0), Lt(N));
   }, z = () => {
@@ -54118,14 +54115,14 @@ const jG = (e) => {
       (Z) => Z.includeColumnInExport == !0
     ), j = [], w = {};
     return !D || D.length == 0 ? m.filter(
-      (Z) => Z._grid_row_operation_ != nr.Delete && Z._is_filtered_in_ && Z._is_filtered_in_column_filter_ && Z._is_filtered_in_grid_search_
+      (Z) => Z._grid_row_operation_ != ar.Delete && Z._is_filtered_in_ && Z._is_filtered_in_column_filter_ && Z._is_filtered_in_grid_search_
     ).forEach((Z, ne) => {
       N.forEach((ie, Re) => {
         w[ie.key] = Z[ie.key];
       }), j.push(w), w = {};
     }) : D.forEach((Z, ne) => {
       m.filter(
-        (ie) => ie._grid_row_operation_ != nr.Delete && ie._is_filtered_in_ && ie._is_filtered_in_column_filter_ && ie._is_filtered_in_grid_search_
+        (ie) => ie._grid_row_operation_ != ar.Delete && ie._is_filtered_in_ && ie._is_filtered_in_column_filter_ && ie._is_filtered_in_grid_search_
       ).forEach((ie, Re) => {
         Z._grid_row_id_ == ie._grid_row_id_ && (N.forEach((le, ue) => {
           w[le.text] = ie[le.key];
@@ -54344,7 +54341,7 @@ const jG = (e) => {
     ), ie = k.findIndex(
       (ue) => ue.properties._grid_row_id_.value == j
     );
-    return Z[ne][N] = k[ie].properties[N].value, Z[ne]._grid_row_operation_ != nr.Add && (JSON.stringify(Z) === JSON.stringify(x) ? (Z[ne]._grid_row_operation_ = nr.None, e.customOperationsKey && (Z[ne][e.customOperationsKey.colKey] = ((Re = e.customOperationsKey.options) == null ? void 0 : Re.None) ?? nr.None)) : (Z[ne]._grid_row_operation_ = nr.Update, e.customOperationsKey && (Z[ne][e.customOperationsKey.colKey] = ((le = e.customOperationsKey.options) == null ? void 0 : le.Update) ?? nr.Update), mt(!0))), Z;
+    return Z[ne][N] = k[ie].properties[N].value, Z[ne]._grid_row_operation_ != ar.Add && (JSON.stringify(Z) === JSON.stringify(x) ? (Z[ne]._grid_row_operation_ = ar.None, e.customOperationsKey && (Z[ne][e.customOperationsKey.colKey] = ((Re = e.customOperationsKey.options) == null ? void 0 : Re.None) ?? ar.None)) : (Z[ne]._grid_row_operation_ = ar.Update, e.customOperationsKey && (Z[ne][e.customOperationsKey.colKey] = ((le = e.customOperationsKey.options) == null ? void 0 : le.Update) ?? ar.Update), mt(!0))), Z;
   }, [Vr, Da] = tt(
     /* @__PURE__ */ new Map()
   ), [Ta, oi] = tt([]), Qn = ma(() => {
@@ -54789,21 +54786,21 @@ const jG = (e) => {
       if (N)
         if (m) {
           const j = m.filter(
-            (w) => w._grid_row_operation_ === nr.Delete
+            (w) => w._grid_row_operation_ === ar.Delete
           ).length;
           return (m.length - j).toString();
         } else
           return "0";
       if (e.enableSaveGridOnCellValueChange === !1)
         return `${m.filter(
-          (j) => j._grid_row_operation_ != nr.Delete && j._is_filtered_in_ == !0 && j._is_filtered_in_grid_search_ == !0 && j._is_filtered_in_column_filter_ == !0
+          (j) => j._grid_row_operation_ != ar.Delete && j._is_filtered_in_ == !0 && j._is_filtered_in_grid_search_ == !0 && j._is_filtered_in_column_filter_ == !0
         ).length}/${m.length}`;
       {
         const j = m.filter(
-          (w) => w._grid_row_operation_ === nr.Delete
+          (w) => w._grid_row_operation_ === ar.Delete
         ).length;
         return `${m.filter(
-          (w) => w._grid_row_operation_ != nr.Delete && w._is_filtered_in_ == !0 && w._is_filtered_in_grid_search_ == !0 && w._is_filtered_in_column_filter_ == !0
+          (w) => w._grid_row_operation_ != ar.Delete && w._is_filtered_in_ == !0 && w._is_filtered_in_grid_search_ == !0 && w._is_filtered_in_column_filter_ == !0
         ).length}/${m.length - j}`;
       }
     },
@@ -54812,10 +54809,10 @@ const jG = (e) => {
     let j = [...m];
     e.enableSaveGridOnCellValueChange ? (j.filter((w) => w._grid_row_id_ === N).map((w) => {
       var Z;
-      w._grid_row_operation_ = nr.Delete, e.customOperationsKey && (w[e.customOperationsKey.colKey] = ((Z = e.customOperationsKey.options) == null ? void 0 : Z.Delete) ?? nr.Delete);
+      w._grid_row_operation_ = ar.Delete, e.customOperationsKey && (w[e.customOperationsKey.colKey] = ((Z = e.customOperationsKey.options) == null ? void 0 : Z.Delete) ?? ar.Delete);
     }), v(j)) : (j.filter((w) => w._grid_row_id_ == N).map((w) => {
       var Z;
-      w._grid_row_operation_ = nr.Delete, e.customOperationsKey && (w[e.customOperationsKey.colKey] = ((Z = e.customOperationsKey.options) == null ? void 0 : Z.Delete) ?? nr.Delete);
+      w._grid_row_operation_ = ar.Delete, e.customOperationsKey && (w[e.customOperationsKey.colKey] = ((Z = e.customOperationsKey.options) == null ? void 0 : Z.Delete) ?? ar.Delete);
     }), Lt(j), mt(!0));
   }, Zs = (N, j) => {
     switch (N) {
@@ -55000,13 +54997,13 @@ const jG = (e) => {
     var w = [
       ...new Set(
         m.filter(
-          (ie) => ie._grid_row_operation_ != nr.Delete && ie._is_filtered_in_column_filter_ == !0 && ie._is_filtered_in_grid_search_ == !0
+          (ie) => ie._grid_row_operation_ != ar.Delete && ie._is_filtered_in_column_filter_ == !0 && ie._is_filtered_in_grid_search_ == !0
         ).map((ie) => ie[N.fieldName])
       )
     ], Z = [
       ...new Set(
         m.filter(
-          (ie) => ie._grid_row_operation_ != nr.Delete && (ie._is_filtered_in_column_filter_ == !1 || ie._is_filtered_in_grid_search_ == !1)
+          (ie) => ie._grid_row_operation_ != ar.Delete && (ie._is_filtered_in_column_filter_ == !1 || ie._is_filtered_in_grid_search_ == !1)
         ).map((ie) => ie[N.fieldName])
       )
     ], ne = [];
@@ -56256,7 +56253,7 @@ const jG = (e) => {
               {
                 compact: !0,
                 items: m.length > 0 ? m.filter(
-                  (N) => N._grid_row_operation_ != nr.Delete && N._is_filtered_in_ == !0 && N._is_filtered_in_grid_search_ == !0 && N._is_filtered_in_column_filter_ == !0
+                  (N) => N._grid_row_operation_ != ar.Delete && N._is_filtered_in_ == !0 && N._is_filtered_in_grid_search_ == !0 && N._is_filtered_in_column_filter_ == !0
                 ) : [],
                 columns: om,
                 selectionMode: e.selectionMode,
@@ -56430,7 +56427,7 @@ export {
   $x as EventType,
   zG as GridToastTypes,
   eG as NumberAndDateOperators,
-  nr as Operation,
+  ar as Operation,
   LS as StringOperators
 };
 //# sourceMappingURL=fluentui.editablegrid.lib.js.map
