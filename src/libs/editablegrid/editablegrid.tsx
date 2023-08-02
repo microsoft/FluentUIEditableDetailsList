@@ -1080,12 +1080,11 @@ const EditableGrid = (props: EditableGridProps) => {
       defaultGridDataTmpWithDeletedData
         .filter((x) => {
           if (trackTransformedData.current) {
-            trackTransformedData.current.forEach(function (value:any, key:string) {
-              for (
-                let index = 0;
-                index < value.values.length;
-                index++
-              ) {
+            trackTransformedData.current.forEach(function (
+              value: any,
+              key: string
+            ) {
+              for (let index = 0; index < value.values.length; index++) {
                 const element = value.values[index];
                 if (
                   element?.text?.toString()?.toLowerCase() ===
@@ -3246,16 +3245,18 @@ const EditableGrid = (props: EditableGridProps) => {
   };
 
   /* #region [Column Click] */
-  const onColumnClick = (
-    ev: React.MouseEvent<HTMLElement>,
-    column: IColumn,
+  const onColumnContextMenu = (
+    ev: React.MouseEvent<HTMLElement> | undefined,
+    column: IColumn | undefined,
     index: number
   ) => {
-    ev.preventDefault();
-    ShowFilterForColumn(column, index);
+    if (ev && column) {
+      ev.preventDefault();
+      ShowFilterForColumn(column, index);
+    }
   };
 
-  const onColumnContextMenu = (
+  const onColumnClick = (
     column: IColumn | undefined,
     ev: React.MouseEvent<HTMLElement> | undefined
   ) => {
@@ -3558,10 +3559,6 @@ const EditableGrid = (props: EditableGridProps) => {
   };
   /* #endregion [Grid Column Filter] */
 
-  interface IColumnIToolTip extends IColumn {
-    toolTipText?: string;
-  }
-
   const [comboOptions, setComboOptions] = useState<
     Map<string, IComboBoxOption[]>
   >(new Map());
@@ -3580,7 +3577,7 @@ const EditableGrid = (props: EditableGridProps) => {
   const trackTransformedData = useRef<any>(new Map());
 
   const CreateColumnConfigs = (): IColumn[] => {
-    let columnConfigs: IColumnIToolTip[] = [];
+    let columnConfigs: IColumn[] = [];
     let columnFilterArrTmp: IGridColumnFilter[] = [];
 
     props.columns.forEach((column, index) => {
@@ -3592,7 +3589,6 @@ const EditableGrid = (props: EditableGridProps) => {
       columnConfigs.push({
         key: colKey,
         name: column.text,
-        toolTipText: column.toolTipText,
         headerClassName: colHeaderClassName,
         data: column.data,
         ariaLabel: column.text,
@@ -3603,18 +3599,18 @@ const EditableGrid = (props: EditableGridProps) => {
         flexGrow: column.flexGrow,
         targetWidthProportion: column.targetWidthProportion,
         calculatedWidth: column.calculatedWidth,
+        isPadded: column.isPadded,
         onColumnContextMenu:
-          !column.disableSort && !(isGridInEdit || editMode)
-            ? (col, ev) => onColumnContextMenu(col, ev)
-            : undefined,
-        onColumnClick:
-          !(isGridInEdit || editMode) &&
+          // !(isGridInEdit || editMode) &&
           isDataTypeSupportedForFilter &&
           column.applyColumnFilter &&
           props.enableColumnFilters
-            ? (ev, col) => onColumnClick(ev, col, index)
+            ? (col, ev) => onColumnContextMenu(ev, col, index)
             : undefined,
-        //data: item.dataType,
+        onColumnClick:
+          !column.disableSort //&& !(isGridInEdit || editMode)
+            ? (ev, col) => onColumnClick(col, ev)
+            : undefined,
         isSorted: sortColObj.isEnabled && sortColObj.key == colKey,
         isSortedDescending:
           !(sortColObj.isEnabled && sortColObj.key == colKey) ||
@@ -4152,10 +4148,13 @@ const EditableGrid = (props: EditableGridProps) => {
                           }}
                           onInputValueChange={(text) => {
                             try {
-                              const searchPattern = new RegExp(text, "i");
+                              const searchPattern = new RegExp(
+                                text?.trim(),
+                                "i"
+                              );
                               const searchResults =
                                 column.comboBoxOptions?.filter((item) =>
-                                  searchPattern.test(item.text)
+                                  searchPattern.test(item.text?.trim())
                                 );
 
                               const newMap = new Map();

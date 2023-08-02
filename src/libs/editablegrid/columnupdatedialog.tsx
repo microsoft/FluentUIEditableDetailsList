@@ -290,9 +290,9 @@ const ColumnUpdateDialog = (props: Props) => {
               }}
               onInputValueChange={(text) => {
                 try {
-                  const searchPattern = new RegExp(text, "i");
+                  const searchPattern = new RegExp(text?.trim(), "i");
                   const searchResults = column[0].comboBoxOptions?.filter(
-                    (item) => searchPattern.test(item.text)
+                    (item) => searchPattern.test(item.text?.trim())
                   );
 
                   setComboOptions(
@@ -347,9 +347,13 @@ const ColumnUpdateDialog = (props: Props) => {
                 column[0].validations?.numericFormatProps?.formatBase?.inputMode
               }
               renderText={
-                column[0].validations?.numericFormatProps?.formatBase?.renderText
+                column[0].validations?.numericFormatProps?.formatBase
+                  ?.renderText
               }
-              label={column[0].validations?.numericFormatProps?.label ?? column[0].text}
+              label={
+                column[0].validations?.numericFormatProps?.label ??
+                column[0].text
+              }
               decimalScale={
                 column[0].validations?.numericFormatProps?.formatProps
                   ?.decimalScale
@@ -377,7 +381,10 @@ const ColumnUpdateDialog = (props: Props) => {
               onRenderLabel={
                 column[0].validations?.numericFormatProps?.onRenderLabel
               }
-              ariaLabel={column[0].validations?.numericFormatProps?.ariaLabel ?? column[0].text}
+              ariaLabel={
+                column[0].validations?.numericFormatProps?.ariaLabel ??
+                column[0].text
+              }
               customInput={TextField}
               suffix={
                 column[0].validations?.numericFormatProps?.formatProps?.suffix

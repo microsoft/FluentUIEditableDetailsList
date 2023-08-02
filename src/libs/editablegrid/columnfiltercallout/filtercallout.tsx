@@ -23,7 +23,9 @@ const FilterCallout = (props: Props) => {
         target={`.${props.columnClass}`}
         isBeakVisible={true}
         directionalHint={DirectionalHint.topCenter}
-      >
+        onDismiss={props.onCancel}
+        setInitialFocus
+        >
         <FilterList
           onCancel={props.onCancel}
           onApply={props.onApply}

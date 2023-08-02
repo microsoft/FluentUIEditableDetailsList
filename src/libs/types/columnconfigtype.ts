@@ -42,9 +42,6 @@ export interface IColumnConfig extends IColumn {
   /** Tells the valdation engine that runs on save if the column is required to have data or not */
   required: boolean | IRequiredColumnsOptions;
 
-  /** Changes the text you see when you hover over the column header */
-  toolTipText?: string;
-
   /** Default value you desire to see on add row */
   defaultOnAddRow?: any;
 

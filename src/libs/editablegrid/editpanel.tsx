@@ -220,9 +220,10 @@ const EditPanel = (props: Props) => {
                 }}
                 onInputValueChange={(text) => {
                   try {
-                    const searchPattern = new RegExp(text, "i");
+                    const searchPattern = new RegExp(text?.trim(), "i");
                     const searchResults = item.comboBoxOptions?.filter((item) =>
-                      searchPattern.test(item.text)
+                      searchPattern.test(item.text?.trim())
+
                     );
 
                     setComboOptions(

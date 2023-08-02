@@ -11,16 +11,6 @@ import {
   IColumnConfig,
 } from "../../libs/types/columnconfigtype";
 import { EditControlType } from "../../libs/types/editcontroltype";
-import { CellHover } from "../../libs/editablegrid/hoverComponent";
-
-import React from "react";
-import {
-  Checkbox,
-  IColumn,
-  IDetailsColumnStyleProps,
-  IDetailsColumnStyles,
-  Stack,
-} from "@fluentui/react";
 
 export const GridColumnConfig: IColumnConfig[] = [
   {
@@ -37,7 +27,8 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInExport: true,
     includeColumnInSearch: true,
     applyColumnFilter: true,
-    disableSort: true,
+    disableSort: false,
+    isPadded: false
   },
   // {
   //   key: "customerhovercol",
@@ -63,13 +54,12 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Name",
     text: "Name",
     editable: true,
-    defaultOnAddRow: 'Mr. Keneedy',
+    defaultOnAddRow: "Mr. Keneedy",
     required: {
       alwaysRequired: false,
-      requiredOnlyIfTheseColumnsAreEmpty: {colKeys: ['age', 'salary']}
+      requiredOnlyIfTheseColumnsAreEmpty: { colKeys: ["age", "salary"] },
     },
     dataType: "string",
-    toolTipText: "Name Must Be In All CAPS",
     minWidth: 100,
     maxWidth: 100,
     validations: {
@@ -79,7 +69,6 @@ export const GridColumnConfig: IColumnConfig[] = [
           dependentColumnName: "Age",
           // skipCheckIfTheseColumnsHaveData: {colKeys: ['salary', 'password'], partial: false},
           type: DepColTypes.MustBeEmpty,
-          
         },
       ],
       //regexValidation: [{regex: new RegExp('^[a-zA-Z0-9_]+$'), errorMessage: 'Special Char Invalid'}],
@@ -99,7 +88,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Exclued",
     text: "Excluded",
     editable: true,
-    required:true,
+    required: true,
     dataType: "boolean",
     minWidth: 100,
     maxWidth: 100,
@@ -183,18 +172,18 @@ export const GridColumnConfig: IColumnConfig[] = [
     precision: 2,
     applyColumnFilter: true,
     inputType: EditControlType.NumericFormat,
-    validations:{
+    validations: {
       numericFormatProps: {
         // formatBase: {
         //   displayType: 'text',
-          
+
         // },
         formatProps: {
           decimalScale: 3,
           fixedDecimalScale: true,
-          allowNegative: false
-        }
-      }
+          allowNegative: false,
+        },
+      },
     },
     cellStyleRule: {
       enable: true,
@@ -251,8 +240,9 @@ export const GridColumnConfig: IColumnConfig[] = [
     editable: true,
     required: {
       alwaysRequired: false,
-      requiredOnlyIfTheseColumnsAreEmpty: {colKeys: ['age', 'salary']},
-    },    dataType: "string",
+      requiredOnlyIfTheseColumnsAreEmpty: { colKeys: ["age", "salary"] },
+    },
+    dataType: "string",
     minWidth: 150,
     maxWidth: 150,
     isResizable: true,

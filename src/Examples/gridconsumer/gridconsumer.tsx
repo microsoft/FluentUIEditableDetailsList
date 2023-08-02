@@ -449,7 +449,7 @@ const Consumer = () => {
       return (
         <TooltipHost
           {...tooltipHostProps}
-          content={tooltipHostProps?.column?.toolTipText ?? ""}
+          content={tooltipHostProps?.column?.name ?? ""}
         />
       );
     };
