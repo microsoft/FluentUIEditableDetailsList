@@ -24,8 +24,11 @@ export const GridColumnConfig: IColumnConfig[] = [
     minWidth: 50,
     maxWidth: 50,
     isResizable: true,
-    includeColumnInExport: true,
+    includeColumnInExport: false,
     includeColumnInSearch: true,
+    columnNeededInImport: false,
+    includeColumnInCopy: false,
+    
     applyColumnFilter: true,
     disableSort: false,
     isPadded: false

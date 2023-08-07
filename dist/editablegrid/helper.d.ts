@@ -10,3 +10,5 @@ export declare const EvaluateRule: (datatType: string, cellValue: string | numbe
 export declare const ConvertObjectToText: (obj: any, columns: IColumnConfig[]) => string;
 export declare const ParseType: (type: string | undefined, text: string, udf_trim?: number) => any;
 export declare const GetDefault: (type: string | undefined) => any;
+export declare const IsValidRegex: (regexExpression: RegExp, text: string) => boolean;
+export declare const ConvertTextToObject: (text: string, columns: IColumnConfig[]) => any[];

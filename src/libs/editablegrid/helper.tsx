@@ -146,7 +146,11 @@ export const ConvertObjectToText = (
   return text.substring(0, text.lastIndexOf("\t"));
 };
 
-export const ParseType = (type: string | undefined, text: string, udf_trim?: number): any => {
+export const ParseType = (
+  type: string | undefined,
+  text: string,
+  udf_trim?: number
+): any => {
   if (text.trim().length == 0) {
     return null;
   }
@@ -160,11 +164,11 @@ export const ParseType = (type: string | undefined, text: string, udf_trim?: num
 
   switch (type) {
     case "number":
-      if(udf_trim && !isNaN(parseInt(text))){
-        const newNum = parseInt(text)
-        return newNum.toFixed(udf_trim)
+      if (udf_trim && !isNaN(parseInt(text))) {
+        const newNum = parseInt(text);
+        return newNum.toFixed(udf_trim);
       }
-      return (text)
+      return text;
     case "date":
       return Date.parse(text);
   }
@@ -174,11 +178,36 @@ export const ParseType = (type: string | undefined, text: string, udf_trim?: num
 
 export const GetDefault = (type: string | undefined): any => {
   switch (type) {
-    case 'boolean':
-      return false
+    case "boolean":
+      return false;
     case "date":
       return new Date();
     default:
       return null;
   }
 };
+
+export const IsValidRegex = (
+  regexExpression: RegExp,
+  text: string
+): boolean => {
+  return regexExpression.test(text);
+};
+
+export const ConvertTextToObject = (text : string, columns: IColumnConfig[]) : any[] => {
+  var objArr : any[] = [];
+
+  var rows : any[] = text.split('\r\n');
+
+  rows.forEach((rowText) => {
+      var textArr : string[] = rowText.split('\t');
+      var obj : any = {};
+      columns.forEach((col, ind) => {
+          obj[col.key] = ParseType(col.dataType as string, textArr[ind]);
+      });
+      objArr.push(obj);
+  });
+  
+  return objArr;
+}
+

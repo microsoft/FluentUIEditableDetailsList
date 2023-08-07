@@ -81,8 +81,14 @@ export interface IColumnConfig extends IColumn {
   /** Determines if the user needs to include this column when importing from Excel, CSV, etc. */
   columnNeededInImport?: boolean;
 
+  /** Determines if the user needs to include this column when importing from Excel, CSV, etc. @default true*/
+  columnNeededInPaste?: boolean;
+
   /** Determines if you want this column to show up when you do export to excel, CSV, etc */
   includeColumnInExport?: boolean;
+
+  /** Determines if you want this column to show up when you do a grid or row copy @default true */
+  includeColumnInCopy?: boolean;
 
   /** Determines if you want this column to show up when you search*/
   includeColumnInSearch?: boolean;
@@ -99,6 +105,8 @@ export interface IColumnConfig extends IColumn {
 
   /**Sets the max amount of characters you can entered for that column */
   maxLength?: number;
+
+  regexValidation?: IRegexValidation;
 
   /** Determines if a filter can be applied*/
   applyColumnFilter?: boolean;
