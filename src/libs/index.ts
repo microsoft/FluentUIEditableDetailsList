@@ -27,4 +27,5 @@ export type {
   IEnableMessageBarErrors,
   IContentScrollablePaneStyleProps,
   IUserDefinedOperationKey,
+  ICustomKeysToAddOnNewRow,
 } from "./types/editabledetailslistprops";

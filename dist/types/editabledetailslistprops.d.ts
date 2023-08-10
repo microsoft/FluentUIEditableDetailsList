@@ -20,9 +20,15 @@ export type IUserDefinedOperationKey = {
         Delete: string | number;
     };
 };
+export type ICustomKeysToAddOnNewRow = {
+    key: string;
+    defaultValue: string;
+};
 export interface EditableGridProps extends IDetailsListProps {
     /** If `customOperationsKey` is enabled. This Key/Column will be updated with what operation has been preformed. `(Add, Delete, Updated, None)` */
     customOperationsKey?: IUserDefinedOperationKey;
+    /** If `customKeysToAddOnNewRow` is enabled. These Keys/Columns won't be updated, but they will added and assigned the default value given when creating a new row` */
+    customKeysToAddOnNewRow?: ICustomKeysToAddOnNewRow[];
     /** Actions to preform before the grid save process starts */
     onBeforeGridSave?: (updatedItems: any) => void;
     /** Changes the default msg given if you have  `enableSendGroupedErrorsToCallback` set to true on save grid*/

@@ -714,7 +714,6 @@ const EditableGrid = (props: EditableGridProps) => {
                 localError = true;
               }
             }
-          
           }
 
           if (element.validations && element.validations.columnDependent) {
@@ -1265,6 +1264,13 @@ const EditableGrid = (props: EditableGridProps) => {
         if (props.customOperationsKey)
           obj[props.customOperationsKey.colKey] =
             props.customOperationsKey.options?.Add ?? Operation.Add;
+
+        if (props.customKeysToAddOnNewRow) {
+          for (let index = 0; index < props.customKeysToAddOnNewRow.length; index++) {
+            const hiddenKey = props.customKeysToAddOnNewRow[index];
+            obj[hiddenKey.key] = hiddenKey.defaultValue;
+          }
+        }
         obj._grid_row_id_ = ++_new_grid_row_id_;
         obj._grid_row_operation_ = Operation.Add;
         obj._is_filtered_in_ = true;
@@ -1322,10 +1328,7 @@ const EditableGrid = (props: EditableGridProps) => {
             decrementButtonAriaLabel={"Decrease value by 1"}
           />
           <DialogFooter>
-            <PrimaryButton
-              onClick={updateItemName}
-              text="Save"
-            />
+            <PrimaryButton onClick={updateItemName} text="Save" />
           </DialogFooter>
         </>
       );
@@ -1534,7 +1537,6 @@ const EditableGrid = (props: EditableGridProps) => {
         />
       </Stack>
     );
-
   };
 
   const [columnValuesObj, setColumnValuesObj] = useState<any>(null);
@@ -1591,7 +1593,6 @@ const EditableGrid = (props: EditableGridProps) => {
                   autoGenerateCol.length))
         )
       ) {
-  
         const newMap = new Map(interalMessagesState).set(props.id.toString(), {
           msg:
             "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Rename / Add  " +
@@ -1688,7 +1689,6 @@ const EditableGrid = (props: EditableGridProps) => {
           const excelJSON = XLSX.utils.sheet_to_json(wb.Sheets[sheets[0]]);
 
           if (excelJSON.length <= 0) {
-        
             const newMap = new Map(interalMessagesState).set(
               props.id.toString(),
               {
@@ -1715,7 +1715,6 @@ const EditableGrid = (props: EditableGridProps) => {
               );
             else {
               verifyDataTypes.forEach((str) => {
-          
                 const newMap = new Map(interalMessagesState).set(
                   props.id.toString(),
                   { msg: `Import Error: ${str}`, type: MessageBarType.error }
@@ -1730,7 +1729,7 @@ const EditableGrid = (props: EditableGridProps) => {
           ui.forEach((i) => {
             newGridData.splice(0, 0, i[0]);
           });
-       
+
           const newMap = new Map(interalMessagesState).set(
             props.id.toString(),
             {
@@ -1746,7 +1745,6 @@ const EditableGrid = (props: EditableGridProps) => {
       };
       reader.readAsArrayBuffer(file);
     } else {
-  
       const newMap = new Map(interalMessagesState).set(props.id.toString(), {
         msg: `Error Processing File`,
         type: MessageBarType.error,
@@ -1877,13 +1875,11 @@ const EditableGrid = (props: EditableGridProps) => {
     setinteralMsgJSXState(onRenderInternalMsg());
   }, [interalMessagesState]);
 
- 
   const [reset, setReset] = useState(false);
   const asyncValues = useRef<Map<string, string>>(new Map());
   const [asyncValuesState, SetAsyncValuesState] = useState<Map<string, string>>(
     new Map()
   );
-
 
   const onCellValueChange = (
     ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -1896,7 +1892,6 @@ const EditableGrid = (props: EditableGridProps) => {
     let activateCellEditTmp: any[] = [...activateCellEdit];
     let err: null | string = null;
     let clearThisDependent: any[] = [];
-
 
     activateCellEditTmp = [];
     activateCellEdit.forEach((item, index) => {
@@ -1931,7 +1926,6 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (column.onChange) {
       HandleColumnOnChange(activateCellEditTmp, row, column);
-
     }
 
     setActivateCellEdit(activateCellEditTmp);
@@ -2050,7 +2044,6 @@ const EditableGrid = (props: EditableGridProps) => {
     column: IColumnConfig,
     item: any
   ): void => {
-
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
@@ -2339,7 +2332,6 @@ const EditableGrid = (props: EditableGridProps) => {
     }
   };
 
-
   const CancelRowEditMode = (item: any, rowNum: number): void => {
     let activateCellEditTmp: any[] = ChangeRowState(item, rowNum, false);
     activateCellEditTmp = RevertRowEditValues(rowNum, activateCellEditTmp);
@@ -2607,7 +2599,7 @@ const EditableGrid = (props: EditableGridProps) => {
       });
       return row;
     });
-    
+
     return addedRows;
   };
 
@@ -2656,7 +2648,6 @@ const EditableGrid = (props: EditableGridProps) => {
         pastedData = text;
         lines = text.split("\n");
         if (lines.length <= 0) {
-   
           const newMap = new Map(interalMessagesState).set(
             props.id.toString(),
             {
@@ -2704,7 +2695,6 @@ const EditableGrid = (props: EditableGridProps) => {
           newGridData.splice(0, 0, i[0]);
         });
 
-       
         let newMap = new Map(interalMessagesState);
 
         if (rowData.length > colKeys.length) {
@@ -2737,7 +2727,7 @@ const EditableGrid = (props: EditableGridProps) => {
       .catch((error) => {
         setImportingStarted(false);
         setGridEditState(false);
-      
+
         console.log(error);
         const newMap = new Map(interalMessagesState).set(props.id.toString(), {
           msg: "Failed To Paste Rows From Clipboard",
@@ -2824,7 +2814,6 @@ const EditableGrid = (props: EditableGridProps) => {
         if (selectedIndices.length > 0) {
           setIsOpenForEdit(true);
         } else {
-          
           const newMap = new Map(interalMessagesState).set(
             props.id.toString(),
             {
@@ -2839,7 +2828,6 @@ const EditableGrid = (props: EditableGridProps) => {
         if (selectedIndices.length > 0) {
           ShowColumnUpdate();
         } else {
-         
           const newMap = new Map(interalMessagesState).set(
             props.id.toString(),
             {
@@ -2858,8 +2846,6 @@ const EditableGrid = (props: EditableGridProps) => {
         if (selectedIndices.length > 0) {
           DeleteSelectedRows();
         } else {
-          
-
           const newMap = new Map(interalMessagesState).set(
             props.id.toString(),
             {

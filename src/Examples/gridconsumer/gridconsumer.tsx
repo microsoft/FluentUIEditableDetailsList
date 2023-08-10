@@ -239,7 +239,12 @@ const Consumer = () => {
         designation: "Designation" + GetRandomInt(1, 15),
         salary: GetRandomInt(35000, 75000),
         // dateofjoining: new Date(),
-        payrolltype: randomInt % 3 == 0 ? 'Weekly' : randomInt % 3 == 1 ? 'Bi-Weekly' : 'Monthly',
+        payrolltype:
+          randomInt % 3 == 0
+            ? "Weekly"
+            : randomInt % 3 == 1
+            ? "Bi-Weekly"
+            : "Monthly",
         employmenttype: "Employment Type" + GetRandomInt(1, 12),
         // employeelink: "Link",
       });
@@ -254,13 +259,13 @@ const Consumer = () => {
   const onGridSave = (internalGridData: any[], updatedItems: any): void => {
     alert("Grid Data Saved");
     LogRows(internalGridData);
-    // setItems([
-    //   ...internalGridData
-    //     .filter((y) => y._grid_row_operation_ != Operation.Delete)
-    //     .map((x) => {
-    //       return { ...x, _grid_row_operation_: Operation.None };
-    //     }),
-    // ]);
+    setItems([
+      ...internalGridData
+        .filter((y) => y._grid_row_operation_ != Operation.Delete)
+        .map((x) => {
+          return { ...x, _grid_row_operation_: Operation.None };
+        }),
+    ]);
   };
 
   const onGridUpdate = async (internalGridData: any[]): Promise<void> => {
@@ -338,7 +343,7 @@ const Consumer = () => {
       );
       for (let i = 0; i < filteredItems.length; i++) {
         const item = filteredItems[i];
-        item._udf_custom_vaule_store_a = item._udf_custom_vaule_store_a + 99
+        item._udf_custom_vaule_store_a = item._udf_custom_vaule_store_a + 99;
 
         item.salary = asyncValues.get(
           callbackRequestParamObj.triggerkey + index
@@ -507,7 +512,7 @@ const Consumer = () => {
     return messageTmp;
   }, [Messages]);
 
-  const [saveAction, setSaveAction] = useState<() => boolean|void>();
+  const [saveAction, setSaveAction] = useState<() => boolean | void>();
 
   return (
     <Stack grow horizontalAlign="center">
@@ -762,6 +767,7 @@ const Consumer = () => {
           onClick={() => saveAction && saveAction()}
         />
         <EditableGrid
+          customHiddenKeys={[{ key: "RuleId", defaultValue: "BaM" }]}
           customOperationsKey={{
             colKey: "otype",
             options: {
@@ -771,7 +777,7 @@ const Consumer = () => {
               Update: "Update",
             },
           }}
-          onBeforeGridSave={(upd)=> console.log(upd)}
+          onBeforeGridSave={(upd) => console.log(upd)}
           disableInlineCellEdit={gridConfigOptions.disableInlineCellEdit}
           enableInlineGridAdd={gridConfigOptions.enableInlineGridAdd}
           disableAllRowActions={gridConfigOptions.disableAllRowActions}
