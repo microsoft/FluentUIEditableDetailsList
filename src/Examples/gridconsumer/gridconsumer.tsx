@@ -254,13 +254,13 @@ const Consumer = () => {
   const onGridSave = (internalGridData: any[], updatedItems: any): void => {
     alert("Grid Data Saved");
     LogRows(internalGridData);
-    setItems([
-      ...internalGridData
-        .filter((y) => y._grid_row_operation_ != Operation.Delete)
-        .map((x) => {
-          return { ...x, _grid_row_operation_: Operation.None };
-        }),
-    ]);
+    // setItems([
+    //   ...internalGridData
+    //     .filter((y) => y._grid_row_operation_ != Operation.Delete)
+    //     .map((x) => {
+    //       return { ...x, _grid_row_operation_: Operation.None };
+    //     }),
+    // ]);
   };
 
   const onGridUpdate = async (internalGridData: any[]): Promise<void> => {

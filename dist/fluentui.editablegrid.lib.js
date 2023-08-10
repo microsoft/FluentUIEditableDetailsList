@@ -53601,7 +53601,7 @@ const qG = (e) => {
   })), dr(() => {
     if (e && e.items) {
       var N = WG(
-        e.items,
+        JSON.parse(JSON.stringify(e.items)),
         e.customOperationsKey
       );
       p(N), b(N.map((z) => ({ ...z }))), lt(!1), Gt(N);
