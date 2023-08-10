@@ -1114,19 +1114,19 @@ const EditableGrid = (props: EditableGridProps) => {
       props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
     }
 
-    if (props.onGridSave) {
-      props.onGridSave(
-        defaultGridDataTmp,
-        defaultGridDataTmpWithInternalPropsIgnored
-      );
-    }
-
     let localError = false;
     if (parseInt(getGridRecordLength(true)) > 0) {
       localError = runGridValidations();
     }
     if (localError === true) setGridInError(true);
     // return [localError, defaultGridDataTmpWithInternalPropsIgnored];
+
+    if (props.onGridSave) {
+      props.onGridSave(
+        defaultGridDataTmp,
+        defaultGridDataTmpWithInternalPropsIgnored
+      );
+    }
     return localError;
   };
 

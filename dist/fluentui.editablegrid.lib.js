@@ -53953,12 +53953,12 @@ const qG = (e) => {
         ((In = (bt = Ha == null ? void 0 : Ha.text) == null ? void 0 : bt.toString()) == null ? void 0 : In.toLowerCase()) === (((ii = (Ln = St[it]) == null ? void 0 : Ln.toString()) == null ? void 0 : ii.toLowerCase()) ?? "") && (St[it] = Ha == null ? void 0 : Ha.key);
       }
     }), St)).map(Re);
-    e.onBeforeGridSave && e.onBeforeGridSave(de), e.onGridSave && e.onGridSave(
+    e.onBeforeGridSave && e.onBeforeGridSave(de);
+    let le = !1;
+    return parseInt(Gf(!0)) > 0 && (le = Tt()), le === !0 && a(!0), e.onGridSave && e.onGridSave(
       Z,
       de
-    );
-    let le = !1;
-    return parseInt(Gf(!0)) > 0 && (le = Tt()), le === !0 && a(!0), le;
+    ), le;
   }, vt = async () => {
     e.onGridUpdate && await e.onGridUpdate(m);
   }, Tr = () => {
