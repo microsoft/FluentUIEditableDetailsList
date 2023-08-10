@@ -502,7 +502,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 indentiferColumn.current
                   ? "With ID: " + (gridData as any)[indentiferColumn.current]
                   : "With Index:" + row + 1
-              } Col: ${element.name} - ` + `${element.required.errorMessage}'.`;
+              } - ` + `${element.required.errorMessage}'.`;
             insertToMessageMap(Messages.current, element.key + row + "empty", {
               msg: msg,
               type: MessageBarType.error,
@@ -536,7 +536,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           ? "With ID: " +
                             (gridData as any)[indentiferColumn.current]
                           : "With Index:" + row + 1
-                      } Col: ${element.name} - ` +
+                      } - ` +
                       `${element.required.errorMessage}'.`;
                     insertToMessageMap(
                       Messages.current,
@@ -571,7 +571,7 @@ const EditableGrid = (props: EditableGridProps) => {
                       ? "With ID: " +
                         (gridData as any)[indentiferColumn.current]
                       : "With Index:" + row + 1
-                  } Col: ${element.name} - ` +
+                  } - ` +
                   `${element.required.errorMessage}'.`;
                 insertToMessageMap(
                   Messages.current,
@@ -778,9 +778,9 @@ const EditableGrid = (props: EditableGridProps) => {
                               ? "With ID: " +
                                 (gridData as any)[indentiferColumn.current]
                               : "With Index:" + row + 1
-                          } Col: ${element.name} - ` +
+                          } - ` +
                           (colDep.errorMessage ??
-                            ` Data cannot be entered here and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
+                            `Data cannot be entered in ${element.name} and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
 
                         insertToMessageMap(
                           Messages.current,
@@ -809,9 +809,9 @@ const EditableGrid = (props: EditableGridProps) => {
                           ? "With ID: " +
                             (gridData as any)[indentiferColumn.current]
                           : "With Index:" + row + 1
-                      } Col: ${colDep.dependentColumnName} - ` +
+                      } - ` +
                       (colDep.errorMessage ??
-                        ` Data needs to entered here and in ${element.name} Column.`);
+                        ` Data needs to entered in ${colDep.dependentColumnName} and in ${element.name} Column.`);
                     insertToMessageMap(Messages.current, element.key + row, {
                       msg: msg,
                       type: MessageBarType.error,
@@ -838,7 +838,7 @@ const EditableGrid = (props: EditableGridProps) => {
                       ? "With ID: " +
                         (gridData as any)[indentiferColumn.current]
                       : "With Index:" + row + 1
-                  } Col: ${element.name} - ` + `${data.errorMessage}`;
+                  } - ` + `${data.errorMessage}`;
                 insertToMessageMap(Messages.current, element.key + row, {
                   msg: msg,
                   type: MessageBarType.error,
@@ -865,7 +865,7 @@ const EditableGrid = (props: EditableGridProps) => {
                       ? "With ID: " +
                         (gridData as any)[indentiferColumn.current]
                       : "With Index:" + row + 1
-                  } Col: ${element.name} - ` +
+                  } - ` +
                   `${element.validations.stringValidations?.errMsg}`;
                 insertToMessageMap(Messages.current, element.key + row, {
                   msg: msg,
@@ -886,7 +886,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         ? "With ID: " +
                           (gridData as any)[indentiferColumn.current]
                         : "With Index:" + row + 1
-                    } Col: ${element.name} - ` +
+                    } - ` +
                     `${element.validations.stringValidations?.errMsg}`;
                   insertToMessageMap(Messages.current, element.key + row, {
                     msg: msg,
