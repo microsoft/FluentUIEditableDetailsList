@@ -146,11 +146,7 @@ export const ConvertObjectToText = (
   return text.substring(0, text.lastIndexOf("\t"));
 };
 
-export const ParseType = (
-  type: string | undefined,
-  text: string,
-  udf_trim?: number
-): any => {
+export const ParseType = (type: string | undefined, text: string): any => {
   if (text.trim().length == 0) {
     return null;
   }
@@ -164,9 +160,9 @@ export const ParseType = (
 
   switch (type) {
     case "number":
-      if (udf_trim && !isNaN(parseInt(text))) {
-        const newNum = parseInt(text);
-        return newNum.toFixed(udf_trim);
+      if (!isNaN(parseFloat(text.toString().replace(',', '')))) {
+        const newNum = parseFloat(text.toString().replace(',', ''));
+        return newNum;
       }
       return text;
     case "date":
@@ -194,20 +190,22 @@ export const IsValidRegex = (
   return regexExpression.test(text);
 };
 
-export const ConvertTextToObject = (text : string, columns: IColumnConfig[]) : any[] => {
-  var objArr : any[] = [];
+export const ConvertTextToObject = (
+  text: string,
+  columns: IColumnConfig[]
+): any[] => {
+  var objArr: any[] = [];
 
-  var rows : any[] = text.split('\r\n');
+  var rows: any[] = text.split("\r\n");
 
   rows.forEach((rowText) => {
-      var textArr : string[] = rowText.split('\t');
-      var obj : any = {};
-      columns.forEach((col, ind) => {
-          obj[col.key] = ParseType(col.dataType as string, textArr[ind]);
-      });
-      objArr.push(obj);
+    var textArr: string[] = rowText.split("\t");
+    var obj: any = {};
+    columns.forEach((col, ind) => {
+      obj[col.key] = ParseType(col.dataType as string, textArr[ind]);
+    });
+    objArr.push(obj);
   });
-  
-  return objArr;
-}
 
+  return objArr;
+};

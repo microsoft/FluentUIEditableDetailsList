@@ -165,7 +165,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     text: "Salary",
     editable: true,
     required: false,
-    dataType: "string",
+    dataType: "number",
     minWidth: 100,
     maxWidth: 100,
     isResizable: true,
@@ -185,6 +185,8 @@ export const GridColumnConfig: IColumnConfig[] = [
           decimalScale: 3,
           fixedDecimalScale: true,
           allowNegative: false,
+          thousandSeparator: ',',
+          thousandsGroupStyle: 'thousand'
         },
       },
     },

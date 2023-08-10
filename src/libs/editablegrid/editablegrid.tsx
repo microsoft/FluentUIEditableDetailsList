@@ -356,7 +356,7 @@ const EditableGrid = (props: EditableGridProps) => {
       for (const key in obj) {
         if (obj[key] == null || obj[key] == undefined) convertedObj[key] = "";
         else {
-          convertedObj[key] = String(obj[key]);
+          convertedObj[key] = String(obj[key]).toLowerCase();
         }
       }
       return convertedObj;
@@ -2884,7 +2884,6 @@ const EditableGrid = (props: EditableGridProps) => {
     //    const header = unImportableCol[index];
     //    CurrentHeaders = CurrentHeaders.filter((x) => x !== header.key);
     //  }
- 
 
     if (indentiferColumn.current) {
       rowData.splice(0, 0, indentiferColumn.current);
@@ -2967,7 +2966,6 @@ const EditableGrid = (props: EditableGridProps) => {
   }, [cursorFlashing, columnValuesObj, indentiferColumn, CurrentAutoGenID]);
 
   const PasteGridRows = (): void => {
-
     isClipboardEmpty().then((empty) => {
       if (empty) {
         // ShowMessageDialog(
@@ -2985,7 +2983,7 @@ const EditableGrid = (props: EditableGridProps) => {
     let ui: any[] = [];
     let pastedData = "";
     let lines: string[] = [];
-    let rowData = []
+    let rowData = [];
 
     navigator.clipboard
       .readText()
@@ -3017,7 +3015,7 @@ const EditableGrid = (props: EditableGridProps) => {
         for (let index = 0; index < lines.length; index++) {
           const row = lines[index];
           if (row.length <= 0) continue;
-           rowData = row.trim().split("\t");
+          rowData = row.trim().split("\t");
 
           const startPush = setupPastedData(
             rowData,
@@ -3050,25 +3048,30 @@ const EditableGrid = (props: EditableGridProps) => {
         //     `Pasted ${ui.length} Rows From Clipboard`,
         //     GridToastTypes.SUCCESS
         //   );
-        let newMap = new Map(interalMessagesState)
+        let newMap = new Map(interalMessagesState);
 
         if (rowData.length > colKeys.length) {
           newMap.set(props.id.toString(), {
-            msg: `Pasted ${ui.length} ${ui.length > 1 ? 'rows' : 'row'} from clipboard. You pasted in more columns than this grid contains. ${
+            msg: `Pasted ${ui.length} ${
+              ui.length > 1 ? "rows" : "row"
+            } from clipboard. You pasted in more columns than this grid contains. ${
               rowData.length - colKeys.length
             } ${
-              rowData.length - colKeys.length > 1 ? 'columns have' : 'column has'} been removed.`,
+              rowData.length - colKeys.length > 1
+                ? "columns have"
+                : "column has"
+            } been removed.`,
             type: MessageBarType.success,
           });
-        }else{
+        } else {
           newMap.set(props.id.toString(), {
-            msg: `Pasted ${ui.length} ${ui.length > 1 ? 'Rows' : 'Row'} From Clipboard`,
+            msg: `Pasted ${ui.length} ${
+              ui.length > 1 ? "Rows" : "Row"
+            } From Clipboard`,
             type: MessageBarType.success,
           });
         }
 
-
-        
         setInteralMessagesState(newMap);
         SetGridItems(newGridData);
         setGridEditState(true);
@@ -3650,15 +3653,9 @@ const EditableGrid = (props: EditableGridProps) => {
                   column.precision
                 );
 
-                if (column.dataType === "string")
-                  item[column.key] = isNaN(parseFloat(checkNaN))
-                    ? item[column.key]
-                    : checkNaN;
-                else {
-                  item[column.key] = isNaN(parseFloat(checkNaN))
-                    ? item[column.key]
-                    : parseFloat(checkNaN);
-                }
+                item[column.key] = isNaN(parseFloat(checkNaN))
+                  ? item[column.key]
+                  : checkNaN;
               }
 
               if (column.dataType == "date" && item[column.key]) {
@@ -4449,7 +4446,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           }
                           valueIsNumericString={
                             column.validations?.numericFormatProps?.formatBase
-                              ?.valueIsNumericString ?? true
+                              ?.valueIsNumericString ?? false
                           }
                           type={
                             column.validations?.numericFormatProps?.formatBase
