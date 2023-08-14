@@ -51558,7 +51558,6 @@ const Gx = [
     justifyContent: "center"
   }
 }, nG = {
-  dropdown: { width: "90%" },
   root: {
     alignContent: "center",
     alignItems: "center",
@@ -55250,6 +55249,7 @@ const ZG = (e) => {
                   ),
                   options: w.dropdownValues ?? [],
                   styles: nG,
+                  dropdownWidth: "auto",
                   onChange: (We, _r) => rE(
                     We,
                     _r,

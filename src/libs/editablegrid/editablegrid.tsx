@@ -3599,6 +3599,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           }
                           options={column.dropdownValues ?? []}
                           styles={dropdownStyles}
+                          dropdownWidth={'auto'}
                           onChange={(ev, selectedItem) =>
                             onDropDownChange(
                               ev,

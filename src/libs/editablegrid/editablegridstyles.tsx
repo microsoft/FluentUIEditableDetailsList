@@ -128,7 +128,6 @@ export const textFieldStyles: Partial<ITextFieldStyles> = {
 };
 
 export const dropdownStyles: Partial<IDropdownStyles> = {
-  dropdown: { width: "90%" },
   root: {
     alignContent: "center",
     alignItems: "center",
