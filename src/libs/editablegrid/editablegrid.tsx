@@ -16,6 +16,7 @@ import {
   DetailsListLayoutMode,
   Dialog,
   DialogFooter,
+  DirectionalHint,
   Dropdown,
   HoverCard,
   HoverCardType,
@@ -46,6 +47,7 @@ import {
   TagPicker,
   Text,
   TextField,
+  VirtualizedComboBox,
 } from "@fluentui/react";
 import AddRowPanel from "../editablegrid/addrowpanel";
 import FilterCallout from "../editablegrid/columnfiltercallout/filtercallout";
@@ -536,8 +538,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           ? "With ID: " +
                             (gridData as any)[indentiferColumn.current]
                           : "With Index:" + row + 1
-                      } - ` +
-                      `${element.required.errorMessage}'.`;
+                      } - ` + `${element.required.errorMessage}'.`;
                     insertToMessageMap(
                       Messages.current,
                       element.key + row + "empty",
@@ -571,8 +572,7 @@ const EditableGrid = (props: EditableGridProps) => {
                       ? "With ID: " +
                         (gridData as any)[indentiferColumn.current]
                       : "With Index:" + row + 1
-                  } - ` +
-                  `${element.required.errorMessage}'.`;
+                  } - ` + `${element.required.errorMessage}'.`;
                 insertToMessageMap(
                   Messages.current,
                   element.key + row + "empty",
@@ -865,8 +865,7 @@ const EditableGrid = (props: EditableGridProps) => {
                       ? "With ID: " +
                         (gridData as any)[indentiferColumn.current]
                       : "With Index:" + row + 1
-                  } - ` +
-                  `${element.validations.stringValidations?.errMsg}`;
+                  } - ` + `${element.validations.stringValidations?.errMsg}`;
                 insertToMessageMap(Messages.current, element.key + row, {
                   msg: msg,
                   type: MessageBarType.error,
@@ -886,8 +885,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         ? "With ID: " +
                           (gridData as any)[indentiferColumn.current]
                         : "With Index:" + row + 1
-                    } - ` +
-                    `${element.validations.stringValidations?.errMsg}`;
+                    } - ` + `${element.validations.stringValidations?.errMsg}`;
                   insertToMessageMap(Messages.current, element.key + row, {
                     msg: msg,
                     type: MessageBarType.error,
@@ -1266,7 +1264,11 @@ const EditableGrid = (props: EditableGridProps) => {
             props.customOperationsKey.options?.Add ?? Operation.Add;
 
         if (props.customKeysToAddOnNewRow) {
-          for (let index = 0; index < props.customKeysToAddOnNewRow.length; index++) {
+          for (
+            let index = 0;
+            index < props.customKeysToAddOnNewRow.length;
+            index++
+          ) {
             const hiddenKey = props.customKeysToAddOnNewRow[index];
             obj[hiddenKey.key] = hiddenKey.defaultValue;
           }
@@ -3708,7 +3710,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           )
                         )
                       ) : (
-                        <ComboBox
+                        <VirtualizedComboBox
                           disabled={
                             disableComboBox.current.get(column.key + rowNum) ??
                             (typeof column.disableComboBox == "boolean"
@@ -3737,6 +3739,11 @@ const EditableGrid = (props: EditableGridProps) => {
                               ?.key?.toString() ??
                             null
                           }
+                          
+                          calloutProps={{
+                            calloutMaxHeight: 300,
+                            directionalHint: DirectionalHint.bottomCenter,
+                          }}
                           allowFreeInput
                           allowFreeform={false}
                           autoComplete="on"

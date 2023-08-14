@@ -1,6 +1,5 @@
 import {
   Checkbox,
-  ComboBox,
   DatePicker,
   Dropdown,
   IComboBox,
@@ -10,6 +9,7 @@ import {
   PrimaryButton,
   Stack,
   TextField,
+  VirtualizedComboBox,
 } from "@fluentui/react";
 import { DayPickerStrings } from "../editablegrid/datepickerconfig";
 import {
@@ -190,7 +190,7 @@ const AddRowPanel = (props: Props) => {
           break;
         case EditControlType.ComboBox:
           tmpRenderObj.push(
-            <ComboBox
+            <VirtualizedComboBox
               key={item.key}
               label={item.text}
               allowFreeInput

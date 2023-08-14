@@ -248,7 +248,7 @@ export const GridColumnConfig: IColumnConfig[] = [
       requiredOnlyIfTheseColumnsAreEmpty: { colKeys: ["age", "salary"] },
     },
     dataType: "string",
-    minWidth: 150,
+    minWidth: 0,
     maxWidth: 150,
     isResizable: true,
     includeColumnInExport: true,

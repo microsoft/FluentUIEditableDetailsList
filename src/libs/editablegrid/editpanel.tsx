@@ -3,7 +3,6 @@
 
 import {
   Checkbox,
-  ComboBox,
   DatePicker,
   Dropdown,
   IComboBox,
@@ -13,6 +12,7 @@ import {
   PrimaryButton,
   Stack,
   TextField,
+  VirtualizedComboBox,
 } from "@fluentui/react";
 import { DayPickerStrings } from "../editablegrid/datepickerconfig";
 import {
@@ -24,7 +24,6 @@ import {
 } from "../editablegrid/editablegridstyles";
 import { GetDefault, IsValidDataType, ParseType } from "../editablegrid/helper";
 import PickerControl from "../editablegrid/pickercontrol/picker";
-import SearchableDropdown from "../editablegrid/searchabledropdown/searchabledropdown";
 import { IColumnConfig } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
 import React, { SyntheticEvent, useEffect, useState } from "react";
@@ -202,7 +201,7 @@ const EditPanel = (props: Props) => {
               ]) ?? []
             );
             tmpRenderObj.push(
-              <ComboBox
+              <VirtualizedComboBox
                 label={item.text}
                 options={comboOptions}
                 onClick={() => {
@@ -223,7 +222,6 @@ const EditPanel = (props: Props) => {
                     const searchPattern = new RegExp(text?.trim(), "i");
                     const searchResults = item.comboBoxOptions?.filter((item) =>
                       searchPattern.test(item.text?.trim())
-
                     );
 
                     setComboOptions(

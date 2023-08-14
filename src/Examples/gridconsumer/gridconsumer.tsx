@@ -465,7 +465,7 @@ const Consumer = () => {
           ...props,
           onRenderColumnHeaderTooltip:
             onRenderColumnHeaderTooltip as IRenderFunction<IDetailsColumnRenderTooltipProps>,
-          styles: tableHeaderStyles,
+           styles: tableHeaderStyles,
         })}
       </Sticky>
     );
@@ -482,7 +482,7 @@ const Consumer = () => {
     defaultRender?: IRenderFunction<IDetailsRowProps>
   ) => {
     if (!props || !defaultRender) return null;
-    return <DetailsRow {...props} styles={tableDetailsRowsStyles()} />;
+    return <DetailsRow {...props} /* styles={tableDetailsRowsStyles()} */ />;
   };
 
   const insertToMap = (mapVar: Map<any, any>, key: any, value: any) => {
@@ -767,7 +767,7 @@ const Consumer = () => {
           onClick={() => saveAction && saveAction()}
         />
         <EditableGrid
-          customHiddenKeys={[{ key: "RuleId", defaultValue: "BaM" }]}
+          customKeysToAddOnNewRow={[{ key: "RuleId", defaultValue: "BaM" }]}
           customOperationsKey={{
             colKey: "otype",
             options: {

@@ -3,7 +3,6 @@
 
 import {
   Checkbox,
-  ComboBox,
   DatePicker,
   DefaultButton,
   Dialog,
@@ -20,6 +19,7 @@ import {
   PrimaryButton,
   Stack,
   TextField,
+  VirtualizedComboBox,
 } from "@fluentui/react";
 import { DayPickerStrings } from "../editablegrid/datepickerconfig";
 import { GetDefault, IsValidDataType, ParseType } from "../editablegrid/helper";
@@ -274,7 +274,7 @@ const ColumnUpdateDialog = (props: Props) => {
             ]) ?? []
           );
           return (
-            <ComboBox
+            <VirtualizedComboBox
               key={uuidv4()}
               label={column[0].text}
               options={comboOptions}
