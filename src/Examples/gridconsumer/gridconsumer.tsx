@@ -8,6 +8,8 @@ import {
   DetailsRow,
   DirectionalHint,
   Fabric,
+  FocusZoneDirection,
+  FocusZoneTabbableElements,
   FontIcon,
   FontSizes,
   FontWeights,
@@ -465,7 +467,7 @@ const Consumer = () => {
           ...props,
           onRenderColumnHeaderTooltip:
             onRenderColumnHeaderTooltip as IRenderFunction<IDetailsColumnRenderTooltipProps>,
-           styles: tableHeaderStyles,
+          styles: tableHeaderStyles,
         })}
       </Sticky>
     );
@@ -482,7 +484,16 @@ const Consumer = () => {
     defaultRender?: IRenderFunction<IDetailsRowProps>
   ) => {
     if (!props || !defaultRender) return null;
-    return <DetailsRow {...props} /* styles={tableDetailsRowsStyles()} */ />;
+    return (
+      <DetailsRow
+        {...props}
+        focusZoneProps={{
+          direction: FocusZoneDirection.bidirectional,
+          handleTabKey: FocusZoneTabbableElements.all,
+          // isCircularNavigation: true
+        }} /* styles={tableDetailsRowsStyles()} */
+      />
+    );
   };
 
   const insertToMap = (mapVar: Map<any, any>, key: any, value: any) => {
