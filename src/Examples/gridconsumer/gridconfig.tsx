@@ -66,14 +66,14 @@ export const GridColumnConfig: IColumnConfig[] = [
     minWidth: 100,
     maxWidth: 100,
     validations: {
-      columnDependent: [
-        {
-          dependentColumnKey: "age",
-          dependentColumnName: "Age",
-          // skipCheckIfTheseColumnsHaveData: {colKeys: ['salary', 'password'], partial: false},
-          type: DepColTypes.MustBeEmpty,
-        },
-      ],
+      // columnDependent: [
+      //   {
+      //     dependentColumnKey: "age",
+      //     dependentColumnName: "Age",
+      //     // skipCheckIfTheseColumnsHaveData: {colKeys: ['salary', 'password'], partial: false},
+      //     type: DepColTypes.MustBeEmpty,
+      //   },
+      // ],
       //regexValidation: [{regex: new RegExp('^[a-zA-Z0-9_]+$'), errorMessage: 'Special Char Invalid'}],
       stringValidations: {
         conditionCantEqual: "NOT_FOUND",
@@ -91,7 +91,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Exclued",
     text: "Excluded",
     editable: true,
-    required: true,
+    required: false,
     dataType: "boolean",
     minWidth: 100,
     maxWidth: 100,
@@ -126,16 +126,16 @@ export const GridColumnConfig: IColumnConfig[] = [
     validations: {
       columnDependent: [
         {
-          dependentColumnKey: "name",
-          dependentColumnName: "name",
+          dependentColumnKey: "salary",
+          dependentColumnName: "salary",
           type: DepColTypes.MustHaveData,
         },
       ],
-      numberBoundaries: {
-        minRange: 10,
-        maxRange: 20,
-        trimDecimalPointBy: 4,
-      },
+      // numberBoundaries: {
+      //   minRange: 10,
+      //   maxRange: 20,
+      //   trimDecimalPointBy: 4,
+      // },
     },
     minWidth: 100,
     maxWidth: 100,
@@ -176,11 +176,19 @@ export const GridColumnConfig: IColumnConfig[] = [
     applyColumnFilter: true,
     inputType: EditControlType.NumericFormat,
     validations: {
+      columnDependent: [
+        {
+          dependentColumnKey: "age",
+          dependentColumnName: "age",
+          type: DepColTypes.MustHaveData,
+        },
+      ],
       numericFormatProps: {
         // formatBase: {
         //   displayType: 'text',
 
         // },
+        
         formatProps: {
           decimalScale: 3,
           fixedDecimalScale: true,

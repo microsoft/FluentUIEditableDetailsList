@@ -172,13 +172,20 @@ const EditableGrid = (props: EditableGridProps) => {
     onSelectionChanged: () => setSelectionDetails(_getSelectionDetails()),
   });
 
-  const [cursorFlashing, setCursorFlashing] = useState(false);
-  const handleFocus = () => {
-    setCursorFlashing(true);
+  const [cursorFlashingCopyFunc, setCursorFlashingCopyFunc] = useState(false);
+
+  const columnKeyPasteRef = useRef<string | null>(null);
+
+  const handleFocus = (columnKey: string) => {
+    setCursorFlashingCopyFunc(true);
+
+    columnKeyPasteRef.current = columnKey;
   };
 
   const handleBlur = () => {
-    setCursorFlashing(false);
+    setCursorFlashingCopyFunc(false);
+
+    columnKeyPasteRef.current = null;
   };
 
   const onSearchHandler = (event: any) => {
@@ -360,7 +367,11 @@ const EditableGrid = (props: EditableGridProps) => {
     }
 
     if (props.customKeysToAddOnNewRow) {
-      for (let index = 0; index < props.customKeysToAddOnNewRow.length; index++) {
+      for (
+        let index = 0;
+        index < props.customKeysToAddOnNewRow.length;
+        index++
+      ) {
         const element = props.customKeysToAddOnNewRow[index];
         ignoredProperties.push(element.key);
       }
@@ -420,24 +431,27 @@ const EditableGrid = (props: EditableGridProps) => {
     if (indentiferColumn.current !== null) {
       ignoredProperties.push(indentiferColumn.current);
     }
-    
+
     if (props.customOperationsKey) {
       ignoredProperties.push(props.customOperationsKey.colKey);
     }
 
     if (props.customKeysToAddOnNewRow) {
-      for (let index = 0; index < props.customKeysToAddOnNewRow.length; index++) {
+      for (
+        let index = 0;
+        index < props.customKeysToAddOnNewRow.length;
+        index++
+      ) {
         const element = props.customKeysToAddOnNewRow[index];
         ignoredProperties.push(element.key);
       }
     }
 
-
     const properties = Object.keys(obj)
       .filter((key) => !ignoredProperties.includes(key))
       .sort();
 
-    console.log(properties)
+    console.log(properties);
 
     for (const key of properties) {
       if (
@@ -791,7 +805,8 @@ const EditableGrid = (props: EditableGridProps) => {
                       str.toString().length > 0 &&
                       colDep.type === DepColTypes.MustBeEmpty
                     ) {
-                      if (rowCol !== null && rowCol.length > 0) {
+                      console.log(rowCol);
+                      if (rowCol !== null && rowCol.toString().length > 0) {
                         var msg =
                           `Row ${
                             indentiferColumn.current
@@ -802,14 +817,25 @@ const EditableGrid = (props: EditableGridProps) => {
                           (colDep.errorMessage ??
                             `Data cannot be entered in ${element.name} and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
 
-                        insertToMessageMap(
-                          Messages.current,
-                          element.key + row,
-                          {
-                            msg: msg,
-                            type: MessageBarType.error,
-                          }
-                        );
+                        if (
+                          !Messages.current.has(
+                            `[${element.key},${colDep.dependentColumnKey}]` +
+                              row
+                          ) &&
+                          !Messages.current.has(
+                            `[${colDep.dependentColumnKey},${element.key}]` +
+                              row
+                          )
+                        )
+                          insertToMessageMap(
+                            Messages.current,
+                            `[${element.key},${colDep.dependentColumnKey}]` +
+                              row,
+                            {
+                              msg: msg,
+                              type: MessageBarType.error,
+                            }
+                          );
 
                         setGridInError(true);
                         localError = true;
@@ -832,10 +858,23 @@ const EditableGrid = (props: EditableGridProps) => {
                       } - ` +
                       (colDep.errorMessage ??
                         ` Data needs to entered in ${colDep.dependentColumnName} and in ${element.name} Column.`);
-                    insertToMessageMap(Messages.current, element.key + row, {
-                      msg: msg,
-                      type: MessageBarType.error,
-                    });
+
+                    if (
+                      !Messages.current.has(
+                        `[${element.key},${colDep.dependentColumnKey}]` + row
+                      ) &&
+                      !Messages.current.has(
+                        `[${colDep.dependentColumnKey},${element.key}]` + row
+                      )
+                    )
+                      insertToMessageMap(
+                        Messages.current,
+                        `[${element.key},${colDep.dependentColumnKey}]` + row,
+                        {
+                          msg: msg,
+                          type: MessageBarType.error,
+                        }
+                      );
                     setGridInError(true);
                     localError = true;
                   }
@@ -1002,18 +1041,17 @@ const EditableGrid = (props: EditableGridProps) => {
     // Delete Blank Rows
     let blankRowsCount = 0;
 
-    const blankDeletedObjects = defaultGridData.filter(
-      (x) => x._grid_row_operation_ == Operation.Delete
-    ).filter((obj: any) => isRowBlank(obj));
+    const blankDeletedObjects = defaultGridData
+      .filter((x) => x._grid_row_operation_ == Operation.Delete)
+      .filter((obj: any) => isRowBlank(obj));
 
     blankDeletedObjects.forEach((element) => {
       HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
     });
 
-
-    const blankObjects = defaultGridData.filter(
-      (x) => x._grid_row_operation_ != Operation.Delete
-    ).filter((obj: any) => isRowBlank(obj));
+    const blankObjects = defaultGridData
+      .filter((x) => x._grid_row_operation_ != Operation.Delete)
+      .filter((obj: any) => isRowBlank(obj));
     blankObjects.forEach((element) => {
       HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
       blankRowsCount = blankRowsCount + 1;
@@ -1931,7 +1969,7 @@ const EditableGrid = (props: EditableGridProps) => {
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
         item.properties[key].value =
-          ParseType(column.dataType, text?.toString()?.trim()) ?? "";
+          ParseType(column.dataType, text) ?? "";
 
         if (clearThisDependent.length > 0) {
           clearThisDependent.forEach((element) => {
@@ -2446,7 +2484,7 @@ const EditableGrid = (props: EditableGridProps) => {
   const activateEditRef = useRef<any>(null);
   useEffect(() => {
     const handleCopy = (event: any) => {
-      if (event.key === "Enter" && !cursorFlashing && selectedItems) {
+      if (event.key === "Enter" && !cursorFlashingCopyFunc && selectedItems) {
         if (!props.disableInlineCellEdit) {
           ShowRowEditMode(
             selectedItems[0],
@@ -2468,14 +2506,14 @@ const EditableGrid = (props: EditableGridProps) => {
         activate.removeEventListener("keydown", handleCopy);
       }
     };
-  }, [cursorFlashing, selectedIndices]);
+  }, [cursorFlashingCopyFunc, selectedIndices]);
 
   /* #region [Grid Copy Functions] */
 
   const copyRef = useRef<any>(null);
   useEffect(() => {
     const handleCopy = (event: any) => {
-      if (event.ctrlKey && event.key === "c" && !cursorFlashing) {
+      if (event.ctrlKey && event.key === "c" && !cursorFlashingCopyFunc) {
         if (props.gridCopyOptions && props.gridCopyOptions.enableGridCopy) {
           CopyGridRows();
         }
@@ -2493,7 +2531,7 @@ const EditableGrid = (props: EditableGridProps) => {
         copyOutGrid.removeEventListener("keydown", handleCopy);
       }
     };
-  }, [cursorFlashing, selectedIndices]);
+  }, [cursorFlashingCopyFunc, selectedIndices]);
 
   const CopyGridRows = (): void => {
     if (selectedIndices.length == 0) {
@@ -2633,10 +2671,30 @@ const EditableGrid = (props: EditableGridProps) => {
     const newColObj: any = {};
     var colKeys = Object.keys(columnValuesObj);
 
+
+    if (columnKeyPasteRef.current) {
+      const valueIndex = colKeys.findIndex(
+        (element) => element == columnKeyPasteRef.current
+      );
+      const copyRowData = [...rowData]
+
+      for (let index = 0; index < colKeys.length; index++) {
+        const element = colKeys[index];
+        if (index == valueIndex) {
+          for (let j = 0; j < copyRowData.length; j++) {
+            rowData.splice(index + j - 1, 1, copyRowData[j]);
+          }
+          break;
+        } else if (element != columnKeyPasteRef.current)
+          rowData.splice(index, 1, "");
+      }
+    }
+
     if (indentiferColumn.current) {
       rowData.splice(0, 0, indentiferColumn.current);
     }
 
+    console.log(rowData)
     for (let index = 0; index < rowData.length; index++) {
       const currentVal = rowData[index];
       const colKeysVal = colKeys[index];
@@ -2667,7 +2725,7 @@ const EditableGrid = (props: EditableGridProps) => {
   const pasteRef = useRef<any>(null);
   useEffect(() => {
     const handlePaste = (event: any) => {
-      if (event.ctrlKey && event.key === "v" && !cursorFlashing) {
+      if (event.ctrlKey && event.key === "v" ) {
         if (props.gridCopyOptions && props.gridCopyOptions.enableGridPaste) {
           PasteGridRows();
         }
@@ -2685,7 +2743,7 @@ const EditableGrid = (props: EditableGridProps) => {
         gridToPasteInto.removeEventListener("keydown", handlePaste);
       }
     };
-  }, [cursorFlashing, columnValuesObj, indentiferColumn, CurrentAutoGenID]);
+  }, [ columnValuesObj, indentiferColumn, CurrentAutoGenID]);
 
   const PasteGridRows = (): void => {
     isClipboardEmpty().then((empty) => {
@@ -2719,7 +2777,6 @@ const EditableGrid = (props: EditableGridProps) => {
           setInteralMessagesState(newMap);
           return;
         }
-        setImportingStarted(true);
 
         let genId = CurrentAutoGenID;
 
@@ -2729,7 +2786,14 @@ const EditableGrid = (props: EditableGridProps) => {
         for (let index = 0; index < lines.length; index++) {
           const row = lines[index];
           if (row.length <= 0) continue;
+
+          if(!row.includes('\t')){
+            setGridEditState(false);
+            return
+          }
+
           rowData = row.trim().split("\t");
+
 
           const startPush = setupPastedData(
             [...rowData],
@@ -2783,10 +2847,8 @@ const EditableGrid = (props: EditableGridProps) => {
         setInteralMessagesState(newMap);
         SetGridItems(newGridData);
         setGridEditState(true);
-        setImportingStarted(false);
       })
       .catch((error) => {
-        setImportingStarted(false);
         setGridEditState(false);
 
         console.log(error);
@@ -3436,8 +3498,8 @@ const EditableGrid = (props: EditableGridProps) => {
                           maxLength={
                             column.maxLength != null ? column.maxLength : 10000
                           }
-                          onFocus={handleFocus}
-                          onBlur={handleBlur}
+                          onFocus={(ev) => handleFocus(column.key)}
+                          onBlur={(ev) => handleBlur()}
                         />
                       )}
                     </span>
@@ -3490,6 +3552,8 @@ const EditableGrid = (props: EditableGridProps) => {
                           onSelectDate={(date) =>
                             onCellDateChange(date, item, rowNum!, column)
                           }
+                          onFocus={(ev) => handleFocus(column.key)}
+                          onBlur={(ev) => handleBlur()}
                         />
                       )}
                     </span>
@@ -3889,7 +3953,6 @@ const EditableGrid = (props: EditableGridProps) => {
                                 Number(item["_grid_row_id_"])!
                               );
                           }}
-
                           // onDoubleClick={() =>
                           //   !activateCellEdit[rowNum!].isActivated
                           //     ? onComboBoxDoubleClickEvent(
@@ -3899,6 +3962,9 @@ const EditableGrid = (props: EditableGridProps) => {
                           //       )
                           //     : null
                           // }
+
+                          onFocus={(ev) => handleFocus(column.key)}
+                          onBlur={(ev) => handleBlur()}
                         />
                       )}
                     </span>
@@ -4085,8 +4151,8 @@ const EditableGrid = (props: EditableGridProps) => {
                           }
                           type="password"
                           canRevealPassword
-                          onFocus={handleFocus}
-                          onBlur={handleBlur}
+                          onFocus={(ev) => handleFocus(column.key)}
+                          onBlur={(ev) => handleBlur()}
                         />
                       )}
                     </span>
@@ -4235,6 +4301,8 @@ const EditableGrid = (props: EditableGridProps) => {
                                 Number(item["_grid_row_id_"])!
                               );
                           }}
+                          onFocus={(ev) => handleFocus(column.key)}
+                          onBlur={(ev) => handleBlur()}
                         />
                       )}
                     </span>
@@ -4318,8 +4386,8 @@ const EditableGrid = (props: EditableGridProps) => {
                           maxLength={
                             column.maxLength != null ? column.maxLength : 1000
                           }
-                          onFocus={handleFocus}
-                          onBlur={handleBlur}
+                          onFocus={(ev) => handleFocus(column.key)}
+                          onBlur={(ev) => handleBlur()}
                         />
                       )}
                     </span>
