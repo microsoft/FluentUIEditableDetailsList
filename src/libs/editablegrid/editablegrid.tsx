@@ -451,8 +451,6 @@ const EditableGrid = (props: EditableGridProps) => {
       .filter((key) => !ignoredProperties.includes(key))
       .sort();
 
-    console.log(properties);
-
     for (const key of properties) {
       if (
         obj[key] !== null &&
@@ -805,7 +803,6 @@ const EditableGrid = (props: EditableGridProps) => {
                       str.toString().length > 0 &&
                       colDep.type === DepColTypes.MustBeEmpty
                     ) {
-                      console.log(rowCol);
                       if (rowCol !== null && rowCol.toString().length > 0) {
                         var msg =
                           `Row ${
@@ -817,20 +814,10 @@ const EditableGrid = (props: EditableGridProps) => {
                           (colDep.errorMessage ??
                             `Data cannot be entered in ${element.name} and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
 
-                        if (
-                          !Messages.current.has(
-                            `[${element.key},${colDep.dependentColumnKey}]` +
-                              row
-                          ) &&
-                          !Messages.current.has(
-                            `[${colDep.dependentColumnKey},${element.key}]` +
-                              row
-                          )
-                        )
+     
                           insertToMessageMap(
                             Messages.current,
-                            `[${element.key},${colDep.dependentColumnKey}]` +
-                              row,
+                            row+'ColDep',
                             {
                               msg: msg,
                               type: MessageBarType.error,
@@ -859,17 +846,9 @@ const EditableGrid = (props: EditableGridProps) => {
                       (colDep.errorMessage ??
                         ` Data needs to entered in ${colDep.dependentColumnName} and in ${element.name} Column.`);
 
-                    if (
-                      !Messages.current.has(
-                        `[${element.key},${colDep.dependentColumnKey}]` + row
-                      ) &&
-                      !Messages.current.has(
-                        `[${colDep.dependentColumnKey},${element.key}]` + row
-                      )
-                    )
                       insertToMessageMap(
                         Messages.current,
-                        `[${element.key},${colDep.dependentColumnKey}]` + row,
+                        row+'ColDep',
                         {
                           msg: msg,
                           type: MessageBarType.error,
@@ -1969,7 +1948,7 @@ const EditableGrid = (props: EditableGridProps) => {
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
         item.properties[key].value =
-          ParseType(column.dataType, text) ?? "";
+          ParseType(column.dataType, text?.toString()?.split(/[\t\r]+/).map(part => part.trim())[0].trim()) ?? "";
 
         if (clearThisDependent.length > 0) {
           clearThisDependent.forEach((element) => {
@@ -2694,7 +2673,6 @@ const EditableGrid = (props: EditableGridProps) => {
       rowData.splice(0, 0, indentiferColumn.current);
     }
 
-    console.log(rowData)
     for (let index = 0; index < rowData.length; index++) {
       const currentVal = rowData[index];
       const colKeysVal = colKeys[index];
@@ -2787,7 +2765,7 @@ const EditableGrid = (props: EditableGridProps) => {
           const row = lines[index];
           if (row.length <= 0) continue;
 
-          if(!row.includes('\t')){
+          if(!row.includes('\t') && !row.includes('\r')){
             setGridEditState(false);
             return
           }
@@ -2851,7 +2829,6 @@ const EditableGrid = (props: EditableGridProps) => {
       .catch((error) => {
         setGridEditState(false);
 
-        console.log(error);
         const newMap = new Map(interalMessagesState).set(props.id.toString(), {
           msg: "Failed To Paste Rows From Clipboard",
           type: MessageBarType.error,
