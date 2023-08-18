@@ -55551,7 +55551,7 @@ const QG = (e) => {
                 }
               ) });
             case sr.NumericFormat:
-              return /* @__PURE__ */ te.jsx("span", { children: Rt() ? (Wm = w == null ? void 0 : w.hoverComponentOptions) != null && Wm.enable ? /* @__PURE__ */ te.jsx(
+              return (ue[w.key].toString() || "").match(/\d/) || (ue[w.key] = 0), /* @__PURE__ */ te.jsx("span", { children: Rt() ? (Wm = w == null ? void 0 : w.hoverComponentOptions) != null && Wm.enable ? /* @__PURE__ */ te.jsx(
                 di,
                 {
                   type: ea.plain,

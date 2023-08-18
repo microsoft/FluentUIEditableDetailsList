@@ -4138,6 +4138,8 @@ const EditableGrid = (props: EditableGridProps) => {
                     </span>
                   );
                 case EditControlType.NumericFormat:
+                  if(!!(item[column.key].toString() || '').match(/\d/) == false)
+                  item[column.key] = 0
                   return (
                     <span>
                       {ShouldRenderSpan() ? (
