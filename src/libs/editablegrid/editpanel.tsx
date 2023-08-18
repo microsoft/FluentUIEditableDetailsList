@@ -265,7 +265,7 @@ const EditPanel = (props: Props) => {
             tmpRenderObj.push(
               <NumericFormat
                 key={item.key}
-                value={columnValuesObj[item.key].value || ""}
+                value={columnValuesObj[item.key].value.toString() || ""}
                 placeholder={
                   item.validations?.numericFormatProps?.formatBase?.placeholder
                 }

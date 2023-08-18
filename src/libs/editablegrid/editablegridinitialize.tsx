@@ -1,23 +1,17 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { IColumnConfig } from "../types/columnconfigtype";
 import { Operation } from "../types/operation";
-import { controlClass, textFieldStyles } from "../editablegrid/editablegridstyles";
-import { EditControlType } from "../types/editcontroltype";
 import { initializeIcons } from "@fluentui/react";
-import { IUserDefinedOperationKey } from "../types/editabledetailslistprops";
 
 initializeIcons(/* optional base url */);
 
-export const InitializeInternalGrid = (items : any[], operations?: IUserDefinedOperationKey) : any[] => {
+export const InitializeInternalGrid = (items : any[]) : any[] => {
     return items.map((obj, index) => {
         if(Object.keys(obj).indexOf('_grid_row_id_') == -1 && Object.keys(obj).indexOf('_grid_row_operation_') == -1)
         { 
             obj._grid_row_id_ = index; 
             obj._grid_row_operation_ = Operation.None;
-            // if(operations && (obj[operations.colKey] == null || obj[operations.colKey] == undefined || obj[operations.colKey] == ''))
-            // obj[operations.colKey] = operations.options?.None ?? Operation.None;
             obj._is_filtered_in_ = true;
             obj._is_filtered_in_grid_search_ = true;
             obj._is_filtered_in_column_filter_ = true;

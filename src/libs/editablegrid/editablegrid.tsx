@@ -243,9 +243,7 @@ const EditableGrid = (props: EditableGridProps) => {
   useEffect(() => {
     if (props && props.items) {
       var data: any[] = InitializeInternalGrid(
-        JSON.parse(JSON.stringify(props.items)),
-        props.customOperationsKey
-      );
+        JSON.parse(JSON.stringify(props.items))      );
       setGridData(data);
       setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
       setGridEditState(false);
@@ -814,8 +812,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           (colDep.errorMessage ??
                             `Data cannot be entered in ${element.name} and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
 
-     
-                          insertToMessageMap(
+                            insertToMessageMap(
                             Messages.current,
                             row+'ColDep',
                             {
@@ -1017,9 +1014,9 @@ const EditableGrid = (props: EditableGridProps) => {
 
     setInteralMessagesState(new Map());
 
-    // Delete Blank Rows
-    let blankRowsCount = 0;
+    // Delete Blank Rows -------
 
+    // Blank and the user has deleted the row
     const blankDeletedObjects = defaultGridData
       .filter((x) => x._grid_row_operation_ == Operation.Delete)
       .filter((obj: any) => isRowBlank(obj));
@@ -1028,17 +1025,23 @@ const EditableGrid = (props: EditableGridProps) => {
       HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
     });
 
-    const blankObjects = defaultGridData
+    let blankNonDeletedRowsCount = 0;
+
+    // Blank and the user has not deleted the row
+    const blankNonDeletedObjects = defaultGridData
       .filter((x) => x._grid_row_operation_ != Operation.Delete)
-      .filter((obj: any) => isRowBlank(obj));
-    blankObjects.forEach((element) => {
+      .filter((obj: any) => isRowBlank(obj))
+      .map((x) => {
+        x._grid_row_operation_ = Operation.Delete;
+      })
+      blankNonDeletedObjects.forEach((element: any) => {
       HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
-      blankRowsCount = blankRowsCount + 1;
+      blankNonDeletedRowsCount = blankNonDeletedRowsCount + 1;
     });
 
-    if (blankRowsCount > 0) {
-      var msg = `Auto Deleted ${blankRowsCount} Blank Row${
-        blankRowsCount == 1 ? "" : "s"
+    if (blankNonDeletedRowsCount > 0) {
+      var msg = `Auto Deleted ${blankNonDeletedRowsCount} Blank Row${
+        blankNonDeletedRowsCount == 1 ? "" : "s"
       }`;
 
       insertToMessageMap(Messages.current, "blanks", {
@@ -4171,7 +4174,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           key={item.key}
                           value={
                             activateCellEdit[rowNum!]["properties"][column.key]
-                              ?.value ?? ""
+                              ?.value.toString() ?? ""
                           }
                           placeholder={
                             column.validations?.numericFormatProps?.formatBase
