@@ -56,7 +56,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     key: "name",
     name: "Name",
     text: "Name",
-    editable: true,
+    editable: false,
     defaultOnAddRow: "Mr. Keneedy",
     required: {
       alwaysRequired: false,
@@ -85,6 +85,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInExport: true,
     includeColumnInSearch: true,
     applyColumnFilter: true,
+    
   },
   {
     key: "excluded",

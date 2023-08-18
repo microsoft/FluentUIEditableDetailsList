@@ -134,7 +134,6 @@ const EditableGrid = (props: EditableGridProps) => {
   const [selectionDetails, setSelectionDetails] = useState("");
   const [selectedItems, setSelectedItems] = useState<any[]>();
   const [cancellableRows, setCancellableRows] = useState<any[]>([]);
-  const [selectionCount, setSelectionCount] = useState(0);
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
   const [isGridInEdit, setIsGridInEdit] = useState(false);
   const [dialogContent, setDialogContent] = useState<JSX.Element | undefined>(
@@ -168,9 +167,11 @@ const EditableGrid = (props: EditableGridProps) => {
   let filterStoreRef: any = React.useRef<IFilter[]>([]);
   const indentiferColumn = useRef<string | null>(null);
 
-  let _selection: Selection = new Selection({
-    onSelectionChanged: () => setSelectionDetails(_getSelectionDetails()),
-  });
+  const [_selection, _setSelection] = React.useState(
+    new Selection({
+      onSelectionChanged: () => setSelectionDetails(_getSelectionDetails()),
+    })
+  );
 
   const [cursorFlashingCopyFunc, setCursorFlashingCopyFunc] = useState(false);
 
@@ -186,6 +187,10 @@ const EditableGrid = (props: EditableGridProps) => {
     setCursorFlashingCopyFunc(false);
 
     columnKeyPasteRef.current = null;
+  };
+
+  const clearSelectedItems = () => {
+    _selection.setAllSelected(false);
   };
 
   const onSearchHandler = (event: any) => {
@@ -243,7 +248,8 @@ const EditableGrid = (props: EditableGridProps) => {
   useEffect(() => {
     if (props && props.items) {
       var data: any[] = InitializeInternalGrid(
-        JSON.parse(JSON.stringify(props.items))      );
+        JSON.parse(JSON.stringify(props.items))
+      );
       setGridData(data);
       setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
       setGridEditState(false);
@@ -812,14 +818,10 @@ const EditableGrid = (props: EditableGridProps) => {
                           (colDep.errorMessage ??
                             `Data cannot be entered in ${element.name} and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
 
-                            insertToMessageMap(
-                            Messages.current,
-                            row+'ColDep',
-                            {
-                              msg: msg,
-                              type: MessageBarType.error,
-                            }
-                          );
+                        insertToMessageMap(Messages.current, row + "ColDep", {
+                          msg: msg,
+                          type: MessageBarType.error,
+                        });
 
                         setGridInError(true);
                         localError = true;
@@ -843,14 +845,10 @@ const EditableGrid = (props: EditableGridProps) => {
                       (colDep.errorMessage ??
                         ` Data needs to entered in ${colDep.dependentColumnName} and in ${element.name} Column.`);
 
-                      insertToMessageMap(
-                        Messages.current,
-                        row+'ColDep',
-                        {
-                          msg: msg,
-                          type: MessageBarType.error,
-                        }
-                      );
+                    insertToMessageMap(Messages.current, row + "ColDep", {
+                      msg: msg,
+                      type: MessageBarType.error,
+                    });
                     setGridInError(true);
                     localError = true;
                   }
@@ -1033,8 +1031,8 @@ const EditableGrid = (props: EditableGridProps) => {
       .filter((obj: any) => isRowBlank(obj))
       .map((x) => {
         x._grid_row_operation_ = Operation.Delete;
-      })
-      blankNonDeletedObjects.forEach((element: any) => {
+      });
+    blankNonDeletedObjects.forEach((element: any) => {
       HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
       blankNonDeletedRowsCount = blankNonDeletedRowsCount + 1;
     });
@@ -1234,7 +1232,8 @@ const EditableGrid = (props: EditableGridProps) => {
 
   const CheckBulkUpdateOnChangeCallBack = (
     data: any,
-    defaultGridDataTmp: any[]
+    defaultGridDataTmp: any[],
+    pastedData?: any[]
   ): any[] => {
     var columns: IColumnConfig[] = [];
     for (var key in data) {
@@ -1244,13 +1243,23 @@ const EditableGrid = (props: EditableGridProps) => {
       }
     }
 
-    columns.forEach((column) => {
-      defaultGridDataTmp = CheckCellOnChangeCallBack(
-        defaultGridDataTmp,
-        selectedItems!.map((item) => item._grid_row_id_),
-        column
-      );
-    });
+    if (pastedData) {
+      columns.forEach((column) => {
+        defaultGridDataTmp = CheckCellOnChangeCallBack(
+          defaultGridDataTmp,
+          pastedData!.map((item) => item._grid_row_id_),
+          column
+        );
+      });
+    } else {
+      columns.forEach((column) => {
+        defaultGridDataTmp = CheckCellOnChangeCallBack(
+          defaultGridDataTmp,
+          selectedItems!.map((item) => item._grid_row_id_),
+          column
+        );
+      });
+    }
 
     return defaultGridDataTmp;
   };
@@ -1601,6 +1610,8 @@ const EditableGrid = (props: EditableGridProps) => {
         value: GetDefault(item.dataType),
         isChanged: false,
         error: null,
+        columnEditable: item?.editable ?? false,
+        defaultValueOnNewRow: item?.defaultOnAddRow ?? null,
       };
     });
     setColumnValuesObj(tmpColumnValuesObj);
@@ -1951,7 +1962,14 @@ const EditableGrid = (props: EditableGridProps) => {
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
         item.properties[key].value =
-          ParseType(column.dataType, text?.toString()?.split(/[\t\r]+/).map(part => part.trim())[0].trim()) ?? "";
+          ParseType(
+            column.dataType,
+            text
+              ?.toString()
+              ?.split(/[\t\r]+/)
+              .map((part) => part.trim())[0]
+              .trim()
+          ) ?? "";
 
         if (clearThisDependent.length > 0) {
           clearThisDependent.forEach((element) => {
@@ -2653,12 +2671,11 @@ const EditableGrid = (props: EditableGridProps) => {
     const newColObj: any = {};
     var colKeys = Object.keys(columnValuesObj);
 
-
     if (columnKeyPasteRef.current) {
       const valueIndex = colKeys.findIndex(
         (element) => element == columnKeyPasteRef.current
       );
-      const copyRowData = [...rowData]
+      const copyRowData = [...rowData];
 
       for (let index = 0; index < colKeys.length; index++) {
         const element = colKeys[index];
@@ -2683,12 +2700,18 @@ const EditableGrid = (props: EditableGridProps) => {
         newColObj[indentiferColumn.current] = genId;
         continue;
       }
-      if (currentVal?.toLowerCase() === "false") {
-        newColObj[colKeysVal] = false;
-      } else if (currentVal?.toLowerCase() === "true") {
-        newColObj[colKeysVal] = true;
+
+      if (columnValuesObj[colKeysVal].columnEditable) {
+        if (currentVal?.toLowerCase() === "false") {
+          newColObj[colKeysVal] = false;
+        } else if (currentVal?.toLowerCase() === "true") {
+          newColObj[colKeysVal] = true;
+        } else {
+          newColObj[colKeysVal] = currentVal?.toString()?.trim();
+        }
       } else {
-        newColObj[colKeysVal] = currentVal?.toString()?.trim();
+        newColObj[colKeysVal] =
+          columnValuesObj[colKeysVal].defaultValueOnNewRow ?? "";
       }
     }
 
@@ -2706,7 +2729,7 @@ const EditableGrid = (props: EditableGridProps) => {
   const pasteRef = useRef<any>(null);
   useEffect(() => {
     const handlePaste = (event: any) => {
-      if (event.ctrlKey && event.key === "v" ) {
+      if (event.ctrlKey && event.key === "v") {
         if (props.gridCopyOptions && props.gridCopyOptions.enableGridPaste) {
           PasteGridRows();
         }
@@ -2724,7 +2747,7 @@ const EditableGrid = (props: EditableGridProps) => {
         gridToPasteInto.removeEventListener("keydown", handlePaste);
       }
     };
-  }, [ columnValuesObj, indentiferColumn, CurrentAutoGenID]);
+  }, [columnValuesObj, indentiferColumn, CurrentAutoGenID]);
 
   const PasteGridRows = (): void => {
     isClipboardEmpty().then((empty) => {
@@ -2768,13 +2791,12 @@ const EditableGrid = (props: EditableGridProps) => {
           const row = lines[index];
           if (row.length <= 0) continue;
 
-          if(!row.includes('\t') && !row.includes('\r')){
+          if (!row.includes("\t") && !row.includes("\r")) {
             setGridEditState(false);
-            return
+            return;
           }
 
           rowData = row.trim().split("\t");
-
 
           const startPush = setupPastedData(
             [...rowData],
@@ -2826,12 +2848,22 @@ const EditableGrid = (props: EditableGridProps) => {
         }
 
         setInteralMessagesState(newMap);
-        SetGridItems(newGridData);
+        SetGridItems(
+          CheckBulkUpdateOnChangeCallBack(
+            Object.keys(columnValuesObj).reduce(
+              (a, v) => ({ ...a, [v]: v }),
+              {}
+            ),
+            newGridData,
+            ui[0]
+          )
+        );
+
+        clearSelectedItems();
         setGridEditState(true);
       })
       .catch((error) => {
         setGridEditState(false);
-
         const newMap = new Map(interalMessagesState).set(props.id.toString(), {
           msg: "Failed To Paste Rows From Clipboard",
           type: MessageBarType.error,
@@ -4138,8 +4170,10 @@ const EditableGrid = (props: EditableGridProps) => {
                     </span>
                   );
                 case EditControlType.NumericFormat:
-                  if(!!(item[column.key].toString() || '').match(/\d/) == false)
-                  item[column.key] = 0
+                  if (
+                    !!(item[column.key]?.toString() || "").match(/\d/) == false
+                  )
+                    item[column.key] = 0;
                   return (
                     <span>
                       {ShouldRenderSpan() ? (
@@ -4175,8 +4209,9 @@ const EditableGrid = (props: EditableGridProps) => {
                         <NumericFormat
                           key={item.key}
                           value={
-                            activateCellEdit[rowNum!]["properties"][column.key]
-                              ?.value.toString() ?? ""
+                            activateCellEdit[rowNum!]["properties"][
+                              column.key
+                            ]?.value?.toString() ?? ""
                           }
                           placeholder={
                             column.validations?.numericFormatProps?.formatBase
@@ -4632,13 +4667,13 @@ const EditableGrid = (props: EditableGridProps) => {
         text: "Copy Grid",
         disabled: props.enableSaveGridOnCellValueChange
           ? undefined
-          : isGridInEdit || editMode || selectionCount == 0,
+          : isGridInEdit || editMode || _selection.count == 0,
         ariaLabel:
-          isGridInEdit || editMode || selectionCount == 0
+          isGridInEdit || editMode || _selection.count == 0
             ? "Make A Selection In The Grid To Copy"
             : "Copy Selected Grid Row",
         title:
-          isGridInEdit || editMode || selectionCount == 0
+          isGridInEdit || editMode || _selection.count == 0
             ? "Make A Selection In The Grid To Copy"
             : "Copy Selected Grid Row",
         iconProps: { iconName: "Documentation" },
@@ -4685,10 +4720,10 @@ const EditableGrid = (props: EditableGridProps) => {
       commandBarItems.push({
         id: "deleterows",
         key: "deleterows",
-        text: selectionCount > 1 ? "Delete Rows" : "Delete Row",
+        text: _selection.count > 1 ? "Delete Rows" : "Delete Row",
         disabled: props.enableSaveGridOnCellValueChange
           ? undefined
-          : isGridInEdit || editMode || selectionCount == 0,
+          : isGridInEdit || editMode || _selection.count == 0,
         iconProps: { iconName: "trash" },
         onClick: () => RowSelectOperations(EditType.DeleteRow, {}),
       });
@@ -4795,7 +4830,7 @@ const EditableGrid = (props: EditableGridProps) => {
         id: "bulkedit",
         key: "bulkedit",
         text: "Bulk Edit",
-        disabled: isGridInEdit || editMode || selectionCount == 0,
+        disabled: isGridInEdit || editMode || _selection.count == 0,
         iconProps: { iconName: "TripleColumnEdit" },
         onClick: () => RowSelectOperations(EditType.BulkEdit, {}),
       });
@@ -4821,7 +4856,7 @@ const EditableGrid = (props: EditableGridProps) => {
       commandBarItems.push({
         id: "updatecolumn",
         key: "updatecolumn",
-        disabled: isGridInEdit || editMode || selectionCount == 0,
+        disabled: isGridInEdit || editMode || _selection.count == 0,
         text: !isUpdateColumnClicked ? "Update Column" : "Save Column Update",
         iconProps: { iconName: "SingleColumnEdit" },
         onClick: () => RowSelectOperations(EditType.ColumnEdit, {}),
@@ -4939,7 +4974,6 @@ const EditableGrid = (props: EditableGridProps) => {
   const CommandBarOverflowItemsProps = CreateCommandBarOverflowItemsProps();
   function _getSelectionDetails(): string {
     const count = _selection.getSelectedCount();
-    setSelectionCount(count);
     setSelectedItems(_selection.getSelection());
     setSelectedIndices(_selection.getSelectedIndices());
     if (props.onGridSelectionChange) {

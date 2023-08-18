@@ -268,11 +268,6 @@ const ColumnUpdateDialog = (props: Props) => {
           );
 
         case EditControlType.ComboBox:
-          setComboOptions(
-            [...(column[0].comboBoxOptions ?? [])].concat([
-              { key: "b0af6b90-1c51-4938-a7cf-63567ba5daed", text: "" },
-            ]) ?? []
-          );
           return (
             <VirtualizedComboBox
               key={uuidv4()}

@@ -28,6 +28,7 @@ import { IColumnConfig } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import { NumericFormat } from "react-number-format";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   onChange: any;
@@ -154,6 +155,7 @@ const EditPanel = (props: Props) => {
           case EditControlType.Date:
             tmpRenderObj.push(
               <DatePicker
+                key={item.key}
                 label={item.text}
                 strings={DayPickerStrings}
                 placeholder="Select a date..."
@@ -166,7 +168,7 @@ const EditPanel = (props: Props) => {
             break;
           case EditControlType.Picker:
             tmpRenderObj.push(
-              <div>
+              <div key={item.key}>
                 <span className={controlClass.pickerLabel}>{item.text}</span>
                 <PickerControl
                   arialabel={item.text}
@@ -186,6 +188,7 @@ const EditPanel = (props: Props) => {
           case EditControlType.DropDown:
             tmpRenderObj.push(
               <Dropdown
+                key={item.key}
                 label={item.text}
                 options={item.dropdownValues ?? []}
                 onChange={(ev, selected) =>
@@ -195,13 +198,9 @@ const EditPanel = (props: Props) => {
             );
             break;
           case EditControlType.ComboBox:
-            setComboOptions(
-              [...(item.comboBoxOptions ?? [])].concat([
-                { key: "b0af6b90-1c51-4938-a7cf-63567ba5daed", text: "" },
-              ]) ?? []
-            );
             tmpRenderObj.push(
               <VirtualizedComboBox
+                key={item.key}
                 label={item.text}
                 options={comboOptions}
                 onClick={() => {
@@ -254,6 +253,7 @@ const EditPanel = (props: Props) => {
           case EditControlType.CheckBox:
             tmpRenderObj.push(
               <Checkbox
+                key={item.key}
                 label={item.text}
                 onChange={(ev, isChecked) => {
                   if (ev && isChecked) onCheckBoxChange(ev, isChecked, item);
@@ -265,7 +265,7 @@ const EditPanel = (props: Props) => {
             tmpRenderObj.push(
               <NumericFormat
                 key={item.key}
-                value={columnValuesObj[item.key].value.toString() || ""}
+                value={columnValuesObj[item.key].value?.toString() || ""}
                 placeholder={
                   item.validations?.numericFormatProps?.formatBase?.placeholder
                 }
@@ -342,6 +342,7 @@ const EditPanel = (props: Props) => {
           case EditControlType.MultilineTextField:
             tmpRenderObj.push(
               <TextField
+              key={item.key}
                 errorMessage={columnValuesObj[item.key].error}
                 name={item.text}
                 multiline={true}
@@ -357,6 +358,7 @@ const EditPanel = (props: Props) => {
           default:
             tmpRenderObj.push(
               <TextField
+                key={item.key}
                 errorMessage={columnValuesObj[item.key].error}
                 name={item.text}
                 id={item.key}
