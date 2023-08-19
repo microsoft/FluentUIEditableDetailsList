@@ -53143,9 +53143,17 @@ const jG = (e) => {
 var Lt = /* @__PURE__ */ ((e) => (e[e.None = 1] = "None", e[e.Add = 2] = "Add", e[e.Update = 3] = "Update", e[e.Delete = 4] = "Delete", e))(Lt || {});
 uU(void 0, { disableWarnings: !0 });
 const $G = (e, n) => e.map((t, r) => {
-  if (Object.keys(t).indexOf("_grid_row_id_") == -1 && Object.keys(t).indexOf("_grid_row_operation_") == -1)
-    if (t._grid_row_id_ = r, t._is_filtered_in_ = !0, t._is_filtered_in_grid_search_ = !0, t._is_filtered_in_column_filter_ = !0, t._is_data_transformed = !1, t._udf_custom_vaule_store_a = 0, t._udf_custom_vaule_store_b = 0, n && e[r][n.colKey])
-      switch (e[r][n.colKey]) {
+  if (Object.keys(t).indexOf("_grid_row_id_") == -1 && Object.keys(t).indexOf("_grid_row_operation_") == -1) {
+    if (t._grid_row_id_ = r, t._is_filtered_in_ = !0, t._is_filtered_in_grid_search_ = !0, t._is_filtered_in_column_filter_ = !0, t._is_data_transformed = !1, t._udf_custom_vaule_store_a = 0, t._udf_custom_vaule_store_b = 0, n)
+      console.log(n), console.log(e[r][n.colKey]);
+    else
+      try {
+        console.log(n), console.log(e[r][n.colKey]);
+      } catch {
+        console.log("EMPTY");
+      }
+    if (n && e[r][n.colKey])
+      switch (console.log(n), console.log(e[r][n.colKey]), e[r][n.colKey]) {
         case n.options.Add:
           t._grid_row_operation_ = Lt.Add;
           break;
@@ -53160,7 +53168,8 @@ const $G = (e, n) => e.map((t, r) => {
           break;
       }
     else
-      t._grid_row_operation_ = Lt.None;
+      n && (console.log(e[r][n.colKey]), console.log(n)), t._grid_row_operation_ = Lt.None;
+  }
   return t;
 }), YG = (e) => e.map((n, t) => (n._grid_row_id_ = t, n)), XG = (e) => {
   let n = [];

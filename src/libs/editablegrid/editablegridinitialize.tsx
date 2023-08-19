@@ -25,7 +25,22 @@ export const InitializeInternalGrid = (
         (obj._udf_custom_vaule_store_a = 0),
         (obj._udf_custom_vaule_store_b = 0);
 
+        if(customOperationsKey){
+            console.log(customOperationsKey)
+        console.log(items[index][customOperationsKey.colKey])}
+        else{
+            try {
+                console.log(customOperationsKey)
+                console.log(items[index][customOperationsKey!.colKey])
+            } catch (error) {
+                console.log('EMPTY')
+            }
+        }
+
       if (customOperationsKey && items[index][customOperationsKey.colKey]) {
+        console.log(customOperationsKey)
+        console.log(items[index][customOperationsKey.colKey])
+
         switch (items[index][customOperationsKey.colKey]) {
           case customOperationsKey.options.Add:
             obj._grid_row_operation_ = _Operation.Add;
@@ -42,6 +57,10 @@ export const InitializeInternalGrid = (
             break;
         }
       } else {
+        if(customOperationsKey){
+        console.log(items[index][customOperationsKey.colKey])
+        console.log(customOperationsKey)}
+
         obj._grid_row_operation_ = _Operation.None;
       }
     }
