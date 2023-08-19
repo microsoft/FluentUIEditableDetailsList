@@ -1220,7 +1220,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
               if (props.customOperationsKey)
                 row[props.customOperationsKey.colKey] =
-                  props.customOperationsKey.options?.Update ?? Operation.Delete;
+                  props.customOperationsKey.options?.Update ?? Operation.Update;
             }
           });
 
@@ -1862,6 +1862,7 @@ const EditableGrid = (props: EditableGridProps) => {
         JSON.stringify(defaultGridDataTmp) ===
         JSON.stringify(editChangeCompareData)
       ) {
+
         defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
           Operation.None;
 
@@ -1870,14 +1871,16 @@ const EditableGrid = (props: EditableGridProps) => {
             props.customOperationsKey.colKey
           ] = props.customOperationsKey.options?.None ?? Operation.None;
       } else {
+
         defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
           Operation.Update;
         if (props.customOperationsKey)
           defaultGridDataTmp[internalRowNumDefaultGrid][
             props.customOperationsKey.colKey
           ] = props.customOperationsKey.options?.Update ?? Operation.Update;
+        }
         setGridEditState(true);
-      }
+      
     }
     return defaultGridDataTmp;
   };

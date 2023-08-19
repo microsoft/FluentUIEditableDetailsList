@@ -264,9 +264,7 @@ const Consumer = () => {
     setItems([
       ...internalGridData
         .filter((y) => y._grid_row_operation_ != Operation.Delete)
-        .map((x) => {
-          return { ...x, _grid_row_operation_: Operation.None };
-        }),
+        ,
     ]);
   };
 

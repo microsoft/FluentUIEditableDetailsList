@@ -54046,7 +54046,7 @@ const nz = (e) => {
         var Fe = Object.keys(P);
         return Fe.forEach((ue) => {
           var le;
-          se[ue] = P[ue], se._grid_row_operation_ != qt.Add && (se._grid_row_operation_ = qt.Update, e.customOperationsKey && (se[e.customOperationsKey.colKey] = ((le = e.customOperationsKey.options) == null ? void 0 : le.Update) ?? qt.Delete));
+          se[ue] = P[ue], se._grid_row_operation_ != qt.Add && (se._grid_row_operation_ = qt.Update, e.customOperationsKey && (se[e.customOperationsKey.colKey] = ((le = e.customOperationsKey.options) == null ? void 0 : le.Update) ?? qt.Update));
         }), se;
       });
     }), Yt(!0), w;
@@ -54412,7 +54412,7 @@ const nz = (e) => {
     ), se = k.findIndex(
       (le) => le.properties._grid_row_id_.value == G
     );
-    return Y[ee][P] = k[se].properties[P].value, Y[ee]._grid_row_operation_ != qt.Add && (JSON.stringify(Y) === JSON.stringify(x) ? (Y[ee]._grid_row_operation_ = qt.None, e.customOperationsKey && (Y[ee][e.customOperationsKey.colKey] = ((Fe = e.customOperationsKey.options) == null ? void 0 : Fe.None) ?? qt.None)) : (Y[ee]._grid_row_operation_ = qt.Update, e.customOperationsKey && (Y[ee][e.customOperationsKey.colKey] = ((ue = e.customOperationsKey.options) == null ? void 0 : ue.Update) ?? qt.Update), Yt(!0))), Y;
+    return Y[ee][P] = k[se].properties[P].value, Y[ee]._grid_row_operation_ != qt.Add && (JSON.stringify(Y) === JSON.stringify(x) ? (Y[ee]._grid_row_operation_ = qt.None, e.customOperationsKey && (Y[ee][e.customOperationsKey.colKey] = ((Fe = e.customOperationsKey.options) == null ? void 0 : Fe.None) ?? qt.None)) : (Y[ee]._grid_row_operation_ = qt.Update, e.customOperationsKey && (Y[ee][e.customOperationsKey.colKey] = ((ue = e.customOperationsKey.options) == null ? void 0 : ue.Update) ?? qt.Update)), Yt(!0)), Y;
   }, [Ys, zl] = nt(
     /* @__PURE__ */ new Map()
   ), [Xt, un] = nt([]), jr = Na(() => {
