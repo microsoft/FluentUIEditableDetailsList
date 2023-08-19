@@ -628,7 +628,7 @@ const EditableGrid = (props: EditableGridProps) => {
             (typeof rowCol !== element.dataType || typeof rowCol === "number")
           ) {
             if (element.dataType === "number") {
-              if (isNaN(parseInt(rowCol)) && rowCol !== "") {
+              if (rowCol && isNaN(parseInt(rowCol)) && rowCol !== "") {
                 var msg =
                   `Row ${
                     indentiferColumn.current
@@ -2841,7 +2841,6 @@ const EditableGrid = (props: EditableGridProps) => {
         }
   
        setInteralMessagesState(newMap);
-       console.log(newGridData)
         SetGridItems(
           CheckBulkUpdateOnChangeCallBack(
             Object.keys(columnValuesObj).reduce(

@@ -53613,12 +53613,12 @@ const nz = (e) => {
       if (w) {
         let Y = e.columns.filter((se) => se.includeColumnInSearch == !0).map((se) => se.key), ee = [...m];
         ee.filter((se, Fe) => {
-          var le = {};
+          var ue = {};
           try {
-            Y.forEach((ue, bt) => {
+            Y.forEach((le, bt) => {
               var lt, tt, kt, Tr;
-              if (se[ue] && ((tt = (lt = se[ue]) == null ? void 0 : lt.toString()) != null && tt.toLowerCase()) && ((Tr = (kt = se[ue]) == null ? void 0 : kt.toString()) != null && Tr.toLowerCase().includes(w.trim().toLowerCase())))
-                throw se._is_filtered_in_grid_search_ = !0, le;
+              if (se[le] && ((tt = (lt = se[le]) == null ? void 0 : lt.toString()) != null && tt.toLowerCase()) && ((Tr = (kt = se[le]) == null ? void 0 : kt.toString()) != null && Tr.toLowerCase().includes(w.trim().toLowerCase())))
+                throw se._is_filtered_in_grid_search_ = !0, ue;
               se._is_filtered_in_grid_search_ = !1;
             });
           } catch {
@@ -53678,10 +53678,10 @@ const nz = (e) => {
   }, [r, Ct]);
   function Dr(P) {
     const G = [], w = {}, Y = P.map((Fe) => {
-      const le = {};
-      for (const ue in Fe)
-        Fe[ue] == null || Fe[ue] == null ? le[ue] = "" : le[ue] = String(Fe[ue]).toLowerCase();
-      return le;
+      const ue = {};
+      for (const le in Fe)
+        Fe[le] == null || Fe[le] == null ? ue[le] = "" : ue[le] = String(Fe[le]).toLowerCase();
+      return ue;
     }), ee = [
       "_grid_row_id_",
       "_grid_row_operation_",
@@ -53694,20 +53694,20 @@ const nz = (e) => {
     ];
     if (Ne.current !== null && ee.push(Ne.current), e.customKeysToAddOnNewRow)
       for (let Fe = 0; Fe < e.customKeysToAddOnNewRow.length; Fe++) {
-        const le = e.customKeysToAddOnNewRow[Fe];
-        ee.push(le.key);
+        const ue = e.customKeysToAddOnNewRow[Fe];
+        ee.push(ue.key);
       }
     let se = "";
-    return Y.forEach((Fe, le) => {
+    return Y.forEach((Fe, ue) => {
       m[0] && (se = JSON.stringify(
-        Object.entries(Fe).filter(([ue]) => Object.keys(m[0]).includes(ue)).filter(
-          ([ue]) => e.columns.map((bt) => bt.key).includes(ue)
-        ).filter(([ue]) => !ee.includes(ue)).sort()
-      ), w[se] ? Ne.current !== null ? w[se].ids.push(Fe[Ne.current]) : w[se].ids.push(le) : Ne.current !== null ? (w[se] = {
+        Object.entries(Fe).filter(([le]) => Object.keys(m[0]).includes(le)).filter(
+          ([le]) => e.columns.map((bt) => bt.key).includes(le)
+        ).filter(([le]) => !ee.includes(le)).sort()
+      ), w[se] ? Ne.current !== null ? w[se].ids.push(Fe[Ne.current]) : w[se].ids.push(ue) : Ne.current !== null ? (w[se] = {
         index: G.length,
         ids: [Fe[Ne.current]]
-      }, G.push(w[se].ids)) : (w[se] = { index: G.length, ids: [le] }, G.push(w[se].ids)));
-    }), G.filter((Fe) => Fe.length > 1).map((Fe) => Fe.sort((le, ue) => le - ue));
+      }, G.push(w[se].ids)) : (w[se] = { index: G.length, ids: [ue] }, G.push(w[se].ids)));
+    }), G.filter((Fe) => Fe.length > 1).map((Fe) => Fe.sort((ue, le) => ue - le));
   }
   function Ur(P) {
     if (!P || P.length < 0)
@@ -53734,7 +53734,7 @@ const nz = (e) => {
     return !0;
   }
   const Le = () => {
-    var se, Fe, le, ue, bt, lt;
+    var se, Fe, ue, le, bt, lt;
     let P = !1;
     const G = m.length > 0 ? m.filter(
       (tt) => tt._grid_row_operation_ != qt.Delete
@@ -53808,7 +53808,7 @@ const nz = (e) => {
           }
           if (yt !== null && (typeof yt !== Ze.dataType || typeof yt == "number")) {
             if (Ze.dataType === "number") {
-              if (isNaN(parseInt(yt)) && yt !== "") {
+              if (yt && isNaN(parseInt(yt)) && yt !== "") {
                 var ee = `Row ${Ne.current ? "With ID: " + kt[Ne.current] : "With Index:" + tt + 1} Col: ${Ze.name} - Value is not a '${Ze.dataType}'.`;
                 St(Ue.current, Ze.key + tt, {
                   msg: ee,
@@ -53915,8 +53915,8 @@ const nz = (e) => {
               }
             }
           if (Ze.validations && Ze.validations.stringValidations && Ze.validations.stringValidations.caseInsensitive) {
-            if (yt !== null && ((le = (Fe = Ze.validations.stringValidations) == null ? void 0 : Fe.conditionCantEqual) == null ? void 0 : le.toLowerCase()) === (yt == null ? void 0 : yt.toString().toLowerCase())) {
-              var ee = `Row ${Ne.current ? "With ID: " + kt[Ne.current] : "With Index:" + tt + 1} - ${(ue = Ze.validations.stringValidations) == null ? void 0 : ue.errMsg}`;
+            if (yt !== null && ((ue = (Fe = Ze.validations.stringValidations) == null ? void 0 : Fe.conditionCantEqual) == null ? void 0 : ue.toLowerCase()) === (yt == null ? void 0 : yt.toString().toLowerCase())) {
+              var ee = `Row ${Ne.current ? "With ID: " + kt[Ne.current] : "With Index:" + tt + 1} - ${(le = Ze.validations.stringValidations) == null ? void 0 : le.errMsg}`;
               St(Ue.current, Ze.key + tt, {
                 msg: ee,
                 type: Ye.error
@@ -53991,18 +53991,18 @@ const nz = (e) => {
       "_is_data_transformed",
       "_udf_custom_vaule_store_a",
       "_udf_custom_vaule_store_b"
-    ], le = (lt) => Object.keys(lt).reduce((tt, kt) => (Fe.includes(kt) || (tt[kt] = lt[kt]), tt), {}), ue = se.filter((lt) => (Dc.current && Dc.current.forEach(function(tt, kt) {
+    ], ue = (lt) => Object.keys(lt).reduce((tt, kt) => (Fe.includes(kt) || (tt[kt] = lt[kt]), tt), {}), le = se.filter((lt) => (Dc.current && Dc.current.forEach(function(tt, kt) {
       var Tr, Wn, Zr, oi;
       for (let si = 0; si < tt.values.length; si++) {
         const Pn = tt.values[si];
         ((Wn = (Tr = Pn == null ? void 0 : Pn.text) == null ? void 0 : Tr.toString()) == null ? void 0 : Wn.toLowerCase()) === (((oi = (Zr = lt[kt]) == null ? void 0 : Zr.toString()) == null ? void 0 : oi.toLowerCase()) ?? "") && (lt[kt] = Pn == null ? void 0 : Pn.key);
       }
-    }), lt)).map(le);
-    e.onBeforeGridSave && e.onBeforeGridSave(ue);
+    }), lt)).map(ue);
+    e.onBeforeGridSave && e.onBeforeGridSave(le);
     let bt = !1;
     return parseInt(jf(!0)) > 0 && (bt = Le()), bt === !0 && a(!0), e.onGridSave && e.onGridSave(
       ee,
-      ue
+      le
     ), bt;
   }, Nr = async () => {
     e.onGridUpdate && await e.onGridUpdate(m);
@@ -54044,9 +54044,9 @@ const nz = (e) => {
     return D.forEach((Y, ee) => {
       w.filter((se) => se._grid_row_id_ == Y._grid_row_id_).map((se) => {
         var Fe = Object.keys(P);
-        return Fe.forEach((le) => {
-          var ue;
-          se[le] = P[le], se._grid_row_operation_ != qt.Add && (se._grid_row_operation_ = qt.Update, e.customOperationsKey && (se[e.customOperationsKey.colKey] = ((ue = e.customOperationsKey.options) == null ? void 0 : ue.Update) ?? qt.Delete));
+        return Fe.forEach((ue) => {
+          var le;
+          se[ue] = P[ue], se._grid_row_operation_ != qt.Add && (se._grid_row_operation_ = qt.Update, e.customOperationsKey && (se[e.customOperationsKey.colKey] = ((le = e.customOperationsKey.options) == null ? void 0 : le.Update) ?? qt.Delete));
         }), se;
       });
     }), Yt(!0), w;
@@ -54059,13 +54059,13 @@ const nz = (e) => {
     return w ? Y.forEach((Fe) => {
       G = qs(
         G,
-        w.map((le) => le._grid_row_id_),
+        w.map((ue) => ue._grid_row_id_),
         Fe
       );
     }) : Y.forEach((Fe) => {
       G = qs(
         G,
-        D.map((le) => le._grid_row_id_),
+        D.map((ue) => ue._grid_row_id_),
         Fe
       );
     }), G;
@@ -54090,17 +54090,17 @@ const nz = (e) => {
       var Fe;
       let G = {}, w = [], Y = Math.max.apply(
         Math,
-        m.map(function(le) {
-          return le._grid_row_id_;
+        m.map(function(ue) {
+          return ue._grid_row_id_;
         })
       );
       for (var ee = T, se = 1; se <= P; se++) {
-        if (G = {}, e.columns.forEach((le, ue) => {
-          le.autoGenerate ? G[le.key] = ee++ : le.defaultOnAddRow ? G[le.key] = le.defaultOnAddRow : G[le.key] = uc(le.dataType);
+        if (G = {}, e.columns.forEach((ue, le) => {
+          ue.autoGenerate ? G[ue.key] = ee++ : ue.defaultOnAddRow ? G[ue.key] = ue.defaultOnAddRow : G[ue.key] = uc(ue.dataType);
         }), e.customOperationsKey && (G[e.customOperationsKey.colKey] = ((Fe = e.customOperationsKey.options) == null ? void 0 : Fe.Add) ?? qt.Add), e.customKeysToAddOnNewRow)
-          for (let le = 0; le < e.customKeysToAddOnNewRow.length; le++) {
-            const ue = e.customKeysToAddOnNewRow[le];
-            G[ue.key] = ue.defaultValue;
+          for (let ue = 0; ue < e.customKeysToAddOnNewRow.length; ue++) {
+            const le = e.customKeysToAddOnNewRow[ue];
+            G[le.key] = le.defaultValue;
           }
         G._grid_row_id_ = Y, G._grid_row_operation_ = qt.Add, G._is_filtered_in_ = !0, G._is_filtered_in_grid_search_ = !0, G._is_filtered_in_column_filter_ = !0, w.push(G);
       }
@@ -54190,8 +54190,8 @@ const nz = (e) => {
       m.filter(
         (se) => se._grid_row_operation_ != qt.Delete && se._is_filtered_in_ && se._is_filtered_in_column_filter_ && se._is_filtered_in_grid_search_
       ).forEach((se, Fe) => {
-        Y._grid_row_id_ == se._grid_row_id_ && (P.forEach((le, ue) => {
-          w[le.text] = se[le.key];
+        Y._grid_row_id_ == se._grid_row_id_ && (P.forEach((ue, le) => {
+          w[ue.text] = se[ue.key];
         }), G.push(w), w = {});
       });
     }), G;
@@ -54277,13 +54277,13 @@ const nz = (e) => {
       (Fe) => Fe.columnNeededInImport === !1
     );
     for (let Fe = 0; Fe < G.length; Fe++) {
-      const le = G[Fe];
-      if (!(w.includes(le) || w.includes(le == null ? void 0 : le.toLowerCase()) && (w.length === G.length || w.length === G.length - ee.length - Y.length || w.length === G.length + ee.length + Y.length))) {
-        const ue = new Map(Qt).set((se = e.id) == null ? void 0 : se.toString(), {
-          msg: "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Rename / Add  `" + le + "` column",
+      const ue = G[Fe];
+      if (!(w.includes(ue) || w.includes(ue == null ? void 0 : ue.toLowerCase()) && (w.length === G.length || w.length === G.length - ee.length - Y.length || w.length === G.length + ee.length + Y.length))) {
+        const le = new Map(Qt).set((se = e.id) == null ? void 0 : se.toString(), {
+          msg: "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Rename / Add  `" + ue + "` column",
           type: Ye.error
         });
-        return ir(ue), !1;
+        return ir(le), !1;
       }
     }
     return !0;
@@ -54296,35 +54296,35 @@ const nz = (e) => {
     let G = [];
     var w = Object.keys(P);
     for (let Y = 0; Y < w.length; Y++) {
-      const ee = w[Y], se = P[w[Y]], Fe = e.columns.filter((le) => le.key === ee);
-      for (let le = 0; le < Fe.length; le++) {
-        const ue = Fe[le];
-        if (typeof se !== ue.dataType)
-          if (ue.dataType === "number")
+      const ee = w[Y], se = P[w[Y]], Fe = e.columns.filter((ue) => ue.key === ee);
+      for (let ue = 0; ue < Fe.length; ue++) {
+        const le = Fe[ue];
+        if (typeof se !== le.dataType)
+          if (le.dataType === "number")
             isNaN(parseInt(se)) && G.push(
-              `Data type error, Column: ${ue.name}. Expected ${ue.dataType}. Got ${typeof se}`
+              `Data type error, Column: ${le.name}. Expected ${le.dataType}. Got ${typeof se}`
             );
-          else if (ue.dataType === "boolean")
+          else if (le.dataType === "boolean")
             try {
             } catch {
               G.push(
-                `Data type error, Column: ${ue.name}. Expected ${ue.dataType}. Got ${typeof se}`
+                `Data type error, Column: ${le.name}. Expected ${le.dataType}. Got ${typeof se}`
               );
             }
-          else if (ue.dataType === "date")
+          else if (le.dataType === "date")
             try {
               if (qr(se))
                 continue;
               throw {};
             } catch {
               G.push(
-                `Data type error, Column: ${ue.name}. Expected ${ue.dataType}. Got ${typeof se}`
+                `Data type error, Column: ${le.name}. Expected ${le.dataType}. Got ${typeof se}`
               );
             }
           else
-            typeof se !== ue.dataType ? G.push(
-              `Data type error, Column: ${ue.name}. Expected ${ue.dataType}. Got ${typeof se}`
-            ) : G.push(`Data type error, Column: ${ue.name}.`);
+            typeof se !== le.dataType ? G.push(
+              `Data type error, Column: ${le.name}. Expected ${le.dataType}. Got ${typeof se}`
+            ) : G.push(`Data type error, Column: ${le.name}.`);
       }
     }
     return G;
@@ -54335,10 +54335,10 @@ const nz = (e) => {
       const Y = G[0], ee = new FileReader();
       ee.onload = (se) => {
         var lt, tt, kt;
-        const Fe = Gu((lt = se.target) == null ? void 0 : lt.result), le = Fe.SheetNames;
-        let ue = [];
-        if (le.length) {
-          const Tr = hy.sheet_to_json(Fe.Sheets[le[0]]);
+        const Fe = Gu((lt = se.target) == null ? void 0 : lt.result), ue = Fe.SheetNames;
+        let le = [];
+        if (ue.length) {
+          const Tr = hy.sheet_to_json(Fe.Sheets[ue[0]]);
           if (Tr.length <= 0) {
             const Zr = new Map(Qt).set(
               (tt = e.id) == null ? void 0 : tt.toString(),
@@ -54358,7 +54358,7 @@ const nz = (e) => {
           for (let Zr = 0; Zr < Tr.length; Zr++) {
             const oi = ai(Tr[Zr]);
             if (oi.length <= 0)
-              ue.push(
+              le.push(
                 Br(Tr[Zr], U(1))
               );
             else {
@@ -54374,13 +54374,13 @@ const nz = (e) => {
             }
           }
           var bt = [...m];
-          ue.forEach((Zr) => {
+          le.forEach((Zr) => {
             bt.splice(0, 0, Zr[0]);
           });
           const Wn = new Map(Qt).set(
             (kt = e.id) == null ? void 0 : kt.toString(),
             {
-              msg: `Imported ${ue.length} Rows From File`,
+              msg: `Imported ${le.length} Rows From File`,
               type: Ye.success
             }
           );
@@ -54404,15 +54404,15 @@ const nz = (e) => {
         break;
     }
   }, Gl = (P, G, w) => {
-    var Fe, le;
+    var Fe, ue;
     let Y = [];
     Y = [...w];
     var ee = Y.findIndex(
-      (ue) => ue._grid_row_id_ == G
+      (le) => le._grid_row_id_ == G
     ), se = k.findIndex(
-      (ue) => ue.properties._grid_row_id_.value == G
+      (le) => le.properties._grid_row_id_.value == G
     );
-    return Y[ee][P] = k[se].properties[P].value, Y[ee]._grid_row_operation_ != qt.Add && (JSON.stringify(Y) === JSON.stringify(x) ? (Y[ee]._grid_row_operation_ = qt.None, e.customOperationsKey && (Y[ee][e.customOperationsKey.colKey] = ((Fe = e.customOperationsKey.options) == null ? void 0 : Fe.None) ?? qt.None)) : (Y[ee]._grid_row_operation_ = qt.Update, e.customOperationsKey && (Y[ee][e.customOperationsKey.colKey] = ((le = e.customOperationsKey.options) == null ? void 0 : le.Update) ?? qt.Update), Yt(!0))), Y;
+    return Y[ee][P] = k[se].properties[P].value, Y[ee]._grid_row_operation_ != qt.Add && (JSON.stringify(Y) === JSON.stringify(x) ? (Y[ee]._grid_row_operation_ = qt.None, e.customOperationsKey && (Y[ee][e.customOperationsKey.colKey] = ((Fe = e.customOperationsKey.options) == null ? void 0 : Fe.None) ?? qt.None)) : (Y[ee]._grid_row_operation_ = qt.Update, e.customOperationsKey && (Y[ee][e.customOperationsKey.colKey] = ((ue = e.customOperationsKey.options) == null ? void 0 : ue.Update) ?? qt.Update), Yt(!0))), Y;
   }, [Ys, zl] = nt(
     /* @__PURE__ */ new Map()
   ), [Xt, un] = nt([]), jr = Na(() => {
@@ -54463,18 +54463,18 @@ const nz = (e) => {
     /* @__PURE__ */ new Map()
   );
   const Xs = (P, G, w, Y, ee, se) => {
-    let Fe = [...k], le = [];
-    if (Fe = [], k.forEach((ue, bt) => {
+    let Fe = [...k], ue = [];
+    if (Fe = [], k.forEach((le, bt) => {
       var lt;
-      Y == bt && (ue.properties[ee].value = lc(
+      Y == bt && (le.properties[ee].value = lc(
         se.dataType,
         (lt = G == null ? void 0 : G.toString()) == null ? void 0 : lt.split(/[\t\r]+/).map((tt) => tt.trim())[0].trim()
-      ) ?? "", le.length > 0 ? le.forEach((tt) => {
-        ue.properties[tt].error = null;
-      }) : ue.properties[ee].error = null), Fe.push(ue);
+      ) ?? "", ue.length > 0 ? ue.forEach((tt) => {
+        le.properties[tt].error = null;
+      }) : le.properties[ee].error = null), Fe.push(le);
     }), se.onChange && ss(Fe, Y, se), E(Fe), e.enableSaveGridOnCellValueChange) {
-      let ue = $i(w, Y, m);
-      v(ue);
+      let le = $i(w, Y, m);
+      v(le);
     }
   }, qs = (P, G, w) => {
     var Y = {
@@ -54500,11 +54500,11 @@ const nz = (e) => {
     let ee = [];
     if (k.forEach((se, Fe) => {
       if (G == Fe) {
-        se.properties[w.key].value = "", P && P.length > 0 && P.forEach((ue) => {
-          se.properties[w.key].value += ue.name + ";";
+        se.properties[w.key].value = "", P && P.length > 0 && P.forEach((le) => {
+          se.properties[w.key].value += le.name + ";";
         });
-        let le = se.properties[w.key].value;
-        se.properties[w.key].value = le.length > 0 ? le.substring(0, le.length - 1) : le;
+        let ue = se.properties[w.key].value;
+        se.properties[w.key].value = ue.length > 0 ? ue.substring(0, ue.length - 1) : ue;
       }
       ee.push(se);
     }), w.onChange && ss(ee, G, w), E(ee), e.enableSaveGridOnCellValueChange) {
@@ -54513,16 +54513,16 @@ const nz = (e) => {
     }
   }, oE = (P, G, w, Y, ee) => {
     let se = [];
-    if (k.forEach((Fe, le) => {
-      w == le && (Fe.properties[Y.key].value = G == null ? void 0 : G.text), se.push(Fe);
+    if (k.forEach((Fe, ue) => {
+      w == ue && (Fe.properties[Y.key].value = G == null ? void 0 : G.text), se.push(Fe);
     }), Y.onChange && ss(se, w, Y), E(se), e.enableSaveGridOnCellValueChange) {
       let Fe = $i(ee, w, m);
       v(Fe);
     }
   }, sE = (P, G, w, Y, ee) => {
     let se = [];
-    if (k.forEach((Fe, le) => {
-      w == le && (Fe.properties[Y.key].value = G == null ? void 0 : G.text), se.push(Fe);
+    if (k.forEach((Fe, ue) => {
+      w == ue && (Fe.properties[Y.key].value = G == null ? void 0 : G.text), se.push(Fe);
     }), Y.onChange && ss(se, w, Y), E(se), e.enableSaveGridOnCellValueChange) {
       let Fe = $i(ee, w, m);
       v(Fe);
@@ -54537,8 +54537,8 @@ const nz = (e) => {
     }
   }, uE = (P, G, w, Y, ee) => {
     let se = [];
-    if (k.forEach((Fe, le) => {
-      G == le && (Fe.properties[w.key].value = Y), se.push(Fe);
+    if (k.forEach((Fe, ue) => {
+      G == ue && (Fe.properties[w.key].value = Y), se.push(Fe);
     }), w.onChange && ss(se, G, w), E(se), e.enableSaveGridOnCellValueChange) {
       let Fe = $i(ee, G, m);
       v(Fe);
@@ -54568,10 +54568,10 @@ const nz = (e) => {
   }, ss = (P, G, w) => {
     var Y = [];
     P.forEach((se, Fe) => {
-      var le = {}, ue = Object.keys(se.properties);
-      ue.forEach((bt) => {
-        le[bt] = se.properties[bt].value;
-      }), Y.push(le);
+      var ue = {}, le = Object.keys(se.properties);
+      le.forEach((bt) => {
+        ue[bt] = se.properties[bt].value;
+      }), Y.push(ue);
     });
     var ee = qs(Y, [G], w);
     v(ee), P = nh(
@@ -54733,31 +54733,31 @@ const nz = (e) => {
     var ee = Object.keys(Pt);
     if (It.current) {
       const Fe = ee.findIndex(
-        (ue) => ue == It.current
-      ), le = [...P];
-      for (let ue = 0; ue < ee.length; ue++) {
-        const bt = ee[ue];
-        if (ue == Fe) {
-          for (let lt = 0; lt < le.length; lt++)
-            P.splice(ue + lt - 1, 1, le[lt]);
+        (le) => le == It.current
+      ), ue = [...P];
+      for (let le = 0; le < ee.length; le++) {
+        const bt = ee[le];
+        if (le == Fe) {
+          for (let lt = 0; lt < ue.length; lt++)
+            P.splice(le + lt - 1, 1, ue[lt]);
           break;
         } else
-          bt != It.current && P.splice(ue, 1, "");
+          bt != It.current && P.splice(le, 1, "");
       }
     }
     Ne.current && P.splice(0, 0, Ne.current);
     for (let Fe = 0; Fe < P.length; Fe++) {
-      const le = P[Fe], ue = ee[Fe];
-      if (Ne.current && ue == Ne.current) {
+      const ue = P[Fe], le = ee[Fe];
+      if (Ne.current && le == Ne.current) {
         Y[Ne.current] = w;
         continue;
       }
-      Pt[ue].columnEditable ? (le == null ? void 0 : le.toLowerCase()) === "false" ? Y[ue] = !1 : (le == null ? void 0 : le.toLowerCase()) === "true" ? Y[ue] = !0 : Y[ue] = ((se = le == null ? void 0 : le.toString()) == null ? void 0 : se.trim()) ?? null : Y[ue] = Pt[ue].defaultValueOnNewRow ?? null;
+      Pt[le].columnEditable ? (ue == null ? void 0 : ue.toLowerCase()) === "false" ? Y[le] = !1 : (ue == null ? void 0 : ue.toLowerCase()) === "true" ? Y[le] = !0 : Y[le] = ((se = ue == null ? void 0 : ue.toString()) == null ? void 0 : se.trim()) ?? null : Y[le] = Pt[le].defaultValueOnNewRow ?? null;
     }
     return G.map((Fe) => {
-      var le = Object.keys(Y);
-      return le.forEach((ue) => {
-        Fe[ue] = Y[ue];
+      var ue = Object.keys(Y);
+      return ue.forEach((le) => {
+        Fe[le] = Y[le];
       }), Fe;
     }), G;
   }, om = Jr(null);
@@ -54809,24 +54809,24 @@ const nz = (e) => {
             return;
         }
         w.length !== (w.length < T ? w.length - T : T - w.length) && H(w.length + T - 1);
-        var le = [...m];
+        var ue = [...m];
         P.forEach((bt) => {
-          le.splice(0, 0, bt[0]);
+          ue.splice(0, 0, bt[0]);
         });
-        let ue = new Map(Qt);
-        Y.length > Fe.length ? ue.set(e.id.toString(), {
+        let le = new Map(Qt);
+        Y.length > Fe.length ? le.set(e.id.toString(), {
           msg: `Pasted ${P.length} ${P.length > 1 ? "rows" : "row"} from clipboard. You pasted in more columns than this grid contains. ${Y.length - Fe.length} ${Y.length - Fe.length > 1 ? "columns have" : "column has"} been removed.`,
           type: Ye.success
-        }) : ue.set(e.id.toString(), {
+        }) : le.set(e.id.toString(), {
           msg: `Pasted ${P.length} ${P.length > 1 ? "Rows" : "Row"} From Clipboard`,
           type: Ye.success
-        }), ir(ue), console.log(le), dt(
+        }), ir(le), dt(
           Z(
             Object.keys(Pt).reduce(
               (bt, lt) => ({ ...bt, [lt]: lt }),
               {}
             ),
-            le,
+            ue,
             P[0]
           )
         ), Et(), Yt(!0);
@@ -55081,7 +55081,7 @@ const nz = (e) => {
       )
     ], ee = [];
     return !G || G.length == 0 ? ee = w.map((se) => ({ text: se, isChecked: !0 })) : ee = w.map((se) => {
-      var Fe = G.filter((le) => le.text == se);
+      var Fe = G.filter((ue) => ue.text == se);
       return {
         text: se,
         isChecked: Fe.length > 0 ? Fe[0].isChecked : !0
@@ -55119,30 +55119,30 @@ const nz = (e) => {
         isPadded: w.isPadded,
         onColumnContextMenu: (
           // !(isGridInEdit || editMode) &&
-          Fe && w.applyColumnFilter && e.enableColumnFilters ? (le, ue) => _E(ue, le, Y) : void 0
+          Fe && w.applyColumnFilter && e.enableColumnFilters ? (ue, le) => _E(le, ue, Y) : void 0
         ),
-        onColumnClick: w.disableSort ? void 0 : (le, ue) => xE(ue),
+        onColumnClick: w.disableSort ? void 0 : (ue, le) => xE(le),
         isSorted: be.isEnabled && be.key == se,
         isSortedDescending: !(be.isEnabled && be.key == se) || !be.isAscending,
-        isFiltered: !!(Fe && w.applyColumnFilter && e.enableColumnFilters && Eo() && Eo().length > 0 && Eo().filter((le) => le.column.key == w.key).length > 0 && Eo().filter((le) => le.column.key == w.key)[0].isApplied),
+        isFiltered: !!(Fe && w.applyColumnFilter && e.enableColumnFilters && Eo() && Eo().length > 0 && Eo().filter((ue) => ue.column.key == w.key).length > 0 && Eo().filter((ue) => ue.column.key == w.key)[0].isApplied),
         sortAscendingAriaLabel: "Sorted A to Z",
         sortDescendingAriaLabel: "Sorted Z to A",
-        onRender: w.onRender ? w.onRender : (le, ue) => {
+        onRender: w.onRender ? w.onRender : (ue, le) => {
           var lt, tt, kt, Tr, Wn, Zr, oi, si, Pn, Ze, yt, $r, gr, _n, qi, Vn, Un, bm, ym, Cm, Sm, Em, km, wm, Fm, Dm, Tm, Im, Am, Rm, Pm, Nm, Bm, Mm, Om, Lm, Hm, Wm, Vm, Um, Gm, zm, Km, jm, $m, Ym, Xm, qm, Zm, Jm, Qm, eg, tg, rg, ng, ag, ig, og, sg, lg, ug, cg, dg, fg, hg, pg, mg, gg, vg, _g, xg, bg, yg, Cg, Sg, Eg, kg, wg, Fg, Dg, Tg, Ig, Ag, Rg, Pg, Ng, Bg, Mg, Og, Lg, Hg, Wg, Vg, Ug, Gg, zg, Kg, jg, $g, Yg, Xg;
-          if (ue = Number(le._grid_row_id_), w.dropdownValues && w.inputType == lr.DropDown && (Dc.current = new Map(
+          if (le = Number(ue._grid_row_id_), w.dropdownValues && w.inputType == lr.DropDown && (Dc.current = new Map(
             Dc.current
           ).set(w.key, {
             colkey: w.key,
             values: w.dropdownValues
           })), w.precision) {
-            const Pe = parseFloat(le[w.key]).toFixed(
+            const Pe = parseFloat(ue[w.key]).toFixed(
               w.precision
             );
-            le[w.key] = isNaN(parseFloat(Pe)) ? le[w.key] : Pe;
+            ue[w.key] = isNaN(parseFloat(Pe)) ? ue[w.key] : Pe;
           }
-          if (w.dataType == "date" && le[w.key] && (le[w.key] = new Date(le[w.key]).toDateString()), w.autoGenerate && (M.current = isNaN(parseInt(le[w.key])) === !1 ? parseInt(le[w.key]) + 1 : W.current++), w.comboBoxOptions) {
+          if (w.dataType == "date" && ue[w.key] && (ue[w.key] = new Date(ue[w.key]).toDateString()), w.autoGenerate && (M.current = isNaN(parseInt(ue[w.key])) === !1 ? parseInt(ue[w.key]) + 1 : W.current++), w.comboBoxOptions) {
             const Pe = /* @__PURE__ */ new Map();
-            Pe.set(w.key + ue, w.comboBoxOptions ?? []), LE.current = Pe;
+            Pe.set(w.key + le, w.comboBoxOptions ?? []), LE.current = Pe;
           }
           switch (w.inputType) {
             case lr.MultilineTextField:
@@ -55151,30 +55151,30 @@ const nz = (e) => {
                 {
                   type: na.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => ki(w, ue, le)
+                    onRenderPlainCard: () => ki(w, le, ue)
                   },
                   instantOpenOnClick: !0,
                   children: xm(
                     e,
                     Y,
-                    ue,
-                    w,
                     le,
+                    w,
+                    ue,
                     rn
                   )
                 }
               ) : xm(
                 e,
                 Y,
-                ue,
-                w,
                 le,
+                w,
+                ue,
                 rn
               ) : /* @__PURE__ */ te.jsx(
                 Cn,
                 {
-                  errorMessage: (tt = k[ue].properties[w.key]) == null ? void 0 : tt.error,
-                  label: le.text,
+                  errorMessage: (tt = k[le].properties[w.key]) == null ? void 0 : tt.error,
+                  label: ue.text,
                   ariaLabel: w.key,
                   multiline: !0,
                   rows: 1,
@@ -55182,13 +55182,13 @@ const nz = (e) => {
                   onChange: (Pe, dr) => Xs(
                     Pe,
                     dr,
-                    le,
                     ue,
+                    le,
                     w.key,
                     w
                   ),
-                  autoFocus: !e.enableDefaultEditMode && !n && !(k && k[Number(le._grid_row_id_)] && k[Number(le._grid_row_id_)].isActivated),
-                  value: ((kt = k[ue].properties[w.key]) == null ? void 0 : kt.value) ?? "",
+                  autoFocus: !e.enableDefaultEditMode && !n && !(k && k[Number(ue._grid_row_id_)] && k[Number(ue._grid_row_id_)].isActivated),
+                  value: ((kt = k[le].properties[w.key]) == null ? void 0 : kt.value) ?? "",
                   maxLength: w.maxLength != null ? w.maxLength : 1e4,
                   onFocus: (Pe) => qe(w.key),
                   onBlur: (Pe) => Oe()
@@ -55200,24 +55200,24 @@ const nz = (e) => {
                 {
                   type: na.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => ki(w, ue, le)
+                    onRenderPlainCard: () => ki(w, le, ue)
                   },
                   instantOpenOnClick: !0,
                   children: _m(
                     e,
                     Y,
-                    ue,
-                    w,
                     le,
+                    w,
+                    ue,
                     rn
                   )
                 }
               ) : _m(
                 e,
                 Y,
-                ue,
-                w,
                 le,
+                w,
+                ue,
                 rn
               ) : /* @__PURE__ */ te.jsx(
                 Of,
@@ -55226,51 +55226,51 @@ const nz = (e) => {
                   placeholder: "Select a date...",
                   ariaLabel: w.key,
                   value: new Date(
-                    k[ue].properties[w.key].value
+                    k[le].properties[w.key].value
                   ),
-                  onSelectDate: (Pe) => aE(Pe, le, ue, w),
+                  onSelectDate: (Pe) => aE(Pe, ue, le, w),
                   onFocus: (Pe) => qe(w.key),
                   onBlur: (Pe) => Oe()
                 }
               ) });
             case lr.CheckBox:
-              return /* @__PURE__ */ te.jsx("span", { className: "row-" + ue + "-col-" + Y, children: bt() ? (Wn = w == null ? void 0 : w.hoverComponentOptions) != null && Wn.enable ? /* @__PURE__ */ te.jsx(
+              return /* @__PURE__ */ te.jsx("span", { className: "row-" + le + "-col-" + Y, children: bt() ? (Wn = w == null ? void 0 : w.hoverComponentOptions) != null && Wn.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => ki(w, ue, le)
+                    onRenderPlainCard: () => ki(w, le, ue)
                   },
                   instantOpenOnClick: !0,
                   children: vm(
                     e,
                     Y,
-                    ue,
-                    w,
                     le,
+                    w,
+                    ue,
                     rn
                   )
                 }
               ) : vm(
                 e,
                 Y,
-                ue,
-                w,
                 le,
+                w,
+                ue,
                 rn
               ) : /* @__PURE__ */ te.jsx(
                 Wi,
                 {
                   styles: { root: { justifyContent: "center" } },
                   ariaLabel: w.key,
-                  defaultChecked: (Zr = k[ue].properties[w.key]) == null ? void 0 : Zr.value,
+                  defaultChecked: (Zr = k[le].properties[w.key]) == null ? void 0 : Zr.value,
                   onChange: (Pe, dr) => {
                     Pe && uE(
                       Pe,
-                      ue,
+                      le,
                       w,
                       dr,
-                      le
+                      ue
                     );
                   }
                 }
@@ -55279,45 +55279,45 @@ const nz = (e) => {
               if (w.disableDropdown && typeof w.disableDropdown != "boolean") {
                 let Pe = new Map(Kl.current);
                 for (let dr = 0; dr < [w.disableDropdown].length; dr++) {
-                  const Gn = [w.disableDropdown][dr], Ot = le[Gn.disableBasedOnThisColumnKey];
-                  Gn.type === lu.DisableWhenColKeyHasData ? Ot && (Ot == null ? void 0 : Ot.toString().length) > 0 && (Pe.get(w.key + ue) ?? !1) === !1 ? (Pe.set(w.key + ue, !0), Kl.current = Pe) : Pe.get(w.key + ue) == !0 && !Ot && (Pe.set(w.key + ue, !1), Kl.current = Pe) : Gn.type === lu.DisableWhenColKeyIsEmpty && (Ot == "" || Ot && (Ot == null ? void 0 : Ot.toString().length) <= 0 || Ot == null && (Pe.get(w.key + ue) ?? !1) === !1 ? Pe.set(w.key + ue, !0) : (Pe.get(w.key + ue) ?? !0) !== !1 && Ot && (Ot == null ? void 0 : Ot.toString().length) > 0 && Pe.set(w.key + ue, !1));
+                  const Gn = [w.disableDropdown][dr], Ot = ue[Gn.disableBasedOnThisColumnKey];
+                  Gn.type === lu.DisableWhenColKeyHasData ? Ot && (Ot == null ? void 0 : Ot.toString().length) > 0 && (Pe.get(w.key + le) ?? !1) === !1 ? (Pe.set(w.key + le, !0), Kl.current = Pe) : Pe.get(w.key + le) == !0 && !Ot && (Pe.set(w.key + le, !1), Kl.current = Pe) : Gn.type === lu.DisableWhenColKeyIsEmpty && (Ot == "" || Ot && (Ot == null ? void 0 : Ot.toString().length) <= 0 || Ot == null && (Pe.get(w.key + le) ?? !1) === !1 ? Pe.set(w.key + le, !0) : (Pe.get(w.key + le) ?? !0) !== !1 && Ot && (Ot == null ? void 0 : Ot.toString().length) > 0 && Pe.set(w.key + le, !1));
                 }
                 Kl.current = Pe;
               }
-              return /* @__PURE__ */ te.jsx("span", { className: "row-" + ue + "-col-" + Y, children: bt() ? (oi = w == null ? void 0 : w.hoverComponentOptions) != null && oi.enable ? /* @__PURE__ */ te.jsx(
+              return /* @__PURE__ */ te.jsx("span", { className: "row-" + le + "-col-" + Y, children: bt() ? (oi = w == null ? void 0 : w.hoverComponentOptions) != null && oi.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => ki(w, ue, le)
+                    onRenderPlainCard: () => ki(w, le, ue)
                   },
                   instantOpenOnClick: !0,
                   children: mm(
                     e,
                     Y,
-                    ue,
-                    w,
                     le,
+                    w,
+                    ue,
                     rn
                   )
                 }
               ) : mm(
                 e,
                 Y,
-                ue,
-                w,
                 le,
+                w,
+                ue,
                 rn
               ) : /* @__PURE__ */ te.jsx(
                 Ba,
                 {
                   ariaLabel: w.key,
                   placeholder: ((Pn = (si = w.dropdownValues) == null ? void 0 : si.filter(
-                    (Pe) => Pe.text == le[w.key]
+                    (Pe) => Pe.text == ue[w.key]
                   )[0]) == null ? void 0 : Pn.text) ?? "Select an option",
                   defaultSelectedKey: (
                     // Keys Select Text
-                    (($r = (yt = (Ze = w.dropdownValues) == null ? void 0 : Ze.filter((Pe) => (Pe == null ? void 0 : Pe.key) == le[w.key])[0]) == null ? void 0 : yt.key) == null ? void 0 : $r.toString()) ?? ((qi = (_n = (gr = w.dropdownValues) == null ? void 0 : gr.filter((Pe) => (Pe == null ? void 0 : Pe.text) == le[w.key])[0]) == null ? void 0 : _n.key) == null ? void 0 : qi.toString()) ?? null
+                    (($r = (yt = (Ze = w.dropdownValues) == null ? void 0 : Ze.filter((Pe) => (Pe == null ? void 0 : Pe.key) == ue[w.key])[0]) == null ? void 0 : yt.key) == null ? void 0 : $r.toString()) ?? ((qi = (_n = (gr = w.dropdownValues) == null ? void 0 : gr.filter((Pe) => (Pe == null ? void 0 : Pe.text) == ue[w.key])[0]) == null ? void 0 : _n.key) == null ? void 0 : qi.toString()) ?? null
                   ),
                   options: w.dropdownValues ?? [],
                   styles: uG,
@@ -55325,62 +55325,62 @@ const nz = (e) => {
                   onChange: (Pe, dr) => oE(
                     Pe,
                     dr,
-                    ue,
+                    le,
                     w,
-                    le
+                    ue
                   ),
-                  disabled: Kl.current.get(w.key + ue) ?? (typeof w.disableDropdown == "boolean" ? w.disableDropdown : !1)
+                  disabled: Kl.current.get(w.key + le) ?? (typeof w.disableDropdown == "boolean" ? w.disableDropdown : !1)
                 }
               ) });
             case lr.ComboBox:
               if (w.disableComboBox && typeof w.disableComboBox != "boolean") {
                 let Pe = new Map(jl.current);
                 for (let dr = 0; dr < [w.disableComboBox].length; dr++) {
-                  const Gn = [w.disableComboBox][dr], Ot = le[Gn.disableBasedOnThisColumnKey];
-                  Gn.type === lu.DisableWhenColKeyHasData ? Ot && (Ot == null ? void 0 : Ot.toString().length) > 0 && (Pe.get(w.key + ue) ?? !1) === !1 ? (Pe.set(w.key + ue, !0), jl.current = Pe) : Pe.get(w.key + ue) == !0 && !Ot && (Pe.set(w.key + ue, !1), jl.current = Pe) : Gn.type === lu.DisableWhenColKeyIsEmpty && (Ot == "" || Ot && (Ot == null ? void 0 : Ot.toString().length) <= 0 || Ot == null && (Pe.get(w.key + ue) ?? !1) === !1 ? Pe.set(w.key + ue, !0) : (Pe.get(w.key + ue) ?? !0) !== !1 && Ot && (Ot == null ? void 0 : Ot.toString().length) > 0 && Pe.set(w.key + ue, !1));
+                  const Gn = [w.disableComboBox][dr], Ot = ue[Gn.disableBasedOnThisColumnKey];
+                  Gn.type === lu.DisableWhenColKeyHasData ? Ot && (Ot == null ? void 0 : Ot.toString().length) > 0 && (Pe.get(w.key + le) ?? !1) === !1 ? (Pe.set(w.key + le, !0), jl.current = Pe) : Pe.get(w.key + le) == !0 && !Ot && (Pe.set(w.key + le, !1), jl.current = Pe) : Gn.type === lu.DisableWhenColKeyIsEmpty && (Ot == "" || Ot && (Ot == null ? void 0 : Ot.toString().length) <= 0 || Ot == null && (Pe.get(w.key + le) ?? !1) === !1 ? Pe.set(w.key + le, !0) : (Pe.get(w.key + le) ?? !0) !== !1 && Ot && (Ot == null ? void 0 : Ot.toString().length) > 0 && Pe.set(w.key + le, !1));
                 }
                 jl.current = Pe;
               }
-              return /* @__PURE__ */ te.jsx("span", { className: "row-" + ue + "-col-" + Y, children: bt() ? (Vn = w == null ? void 0 : w.hoverComponentOptions) != null && Vn.enable ? /* @__PURE__ */ te.jsx(
+              return /* @__PURE__ */ te.jsx("span", { className: "row-" + le + "-col-" + Y, children: bt() ? (Vn = w == null ? void 0 : w.hoverComponentOptions) != null && Vn.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => ki(w, ue, le)
+                    onRenderPlainCard: () => ki(w, le, ue)
                   },
                   instantOpenOnClick: !0,
                   children: gm(
                     e,
                     Y,
-                    ue,
-                    w,
                     le,
+                    w,
+                    ue,
                     rn
                   )
                 }
               ) : gm(
                 e,
                 Y,
-                ue,
-                w,
                 le,
+                w,
+                ue,
                 rn
               ) : /* @__PURE__ */ te.jsx(
                 Mf,
                 {
-                  disabled: jl.current.get(w.key + ue) ?? (typeof w.disableComboBox == "boolean" ? w.disableComboBox : !1),
+                  disabled: jl.current.get(w.key + le) ?? (typeof w.disableComboBox == "boolean" ? w.disableComboBox : !1),
                   ariaLabel: w.key,
                   placeholder: ((bm = (Un = w.comboBoxOptions) == null ? void 0 : Un.filter(
-                    (Pe) => Pe.text == le[w.key]
+                    (Pe) => Pe.text == ue[w.key]
                   )[0]) == null ? void 0 : bm.text) ?? ((Sm = (Cm = (ym = w.comboBoxOptions) == null ? void 0 : ym.filter(
                     (Pe) => {
                       var dr;
-                      return ((dr = Pe.key) == null ? void 0 : dr.toString()) == le[w.key];
+                      return ((dr = Pe.key) == null ? void 0 : dr.toString()) == ue[w.key];
                     }
                   )[0]) == null ? void 0 : Cm.key) == null ? void 0 : Sm.toString()) ?? "Start typing...",
                   defaultSelectedKey: (
                     // Text Selects Keys
-                    ((wm = (km = (Em = w.comboBoxOptions) == null ? void 0 : Em.filter((Pe) => (Pe == null ? void 0 : Pe.text) == le[w.key])[0]) == null ? void 0 : km.key) == null ? void 0 : wm.toString()) ?? ((Tm = (Dm = (Fm = w.comboBoxOptions) == null ? void 0 : Fm.filter((Pe) => (Pe == null ? void 0 : Pe.key) == le[w.key])[0]) == null ? void 0 : Dm.key) == null ? void 0 : Tm.toString()) ?? null
+                    ((wm = (km = (Em = w.comboBoxOptions) == null ? void 0 : Em.filter((Pe) => (Pe == null ? void 0 : Pe.text) == ue[w.key])[0]) == null ? void 0 : km.key) == null ? void 0 : wm.toString()) ?? ((Tm = (Dm = (Fm = w.comboBoxOptions) == null ? void 0 : Fm.filter((Pe) => (Pe == null ? void 0 : Pe.key) == ue[w.key])[0]) == null ? void 0 : Dm.key) == null ? void 0 : Tm.toString()) ?? null
                   ),
                   calloutProps: {
                     calloutMaxHeight: 300,
@@ -55390,14 +55390,14 @@ const nz = (e) => {
                   allowFreeform: !1,
                   autoComplete: "on",
                   scrollSelectedToTop: !0,
-                  options: BE.get(w.key + ue) ?? w.comboBoxOptions ?? [],
+                  options: BE.get(w.key + le) ?? w.comboBoxOptions ?? [],
                   onClick: () => {
-                    if (!ME.get(w.key + ue)) {
+                    if (!ME.get(w.key + le)) {
                       const Pe = /* @__PURE__ */ new Map();
-                      Pe.set(w.key + ue, !0), OE(Pe);
+                      Pe.set(w.key + le, !0), OE(Pe);
                       const dr = w.comboBoxOptions ? [...w.comboBoxOptions] : [], Gn = /* @__PURE__ */ new Map();
                       Gn.set(
-                        w.key + ue,
+                        w.key + le,
                         dr.concat([
                           {
                             key: "8509984a-3d7f-45ff-90dc-b560f5b321d9",
@@ -55420,18 +55420,18 @@ const nz = (e) => {
                         }
                       ), qg = /* @__PURE__ */ new Map();
                       qg.set(
-                        w.key + ue,
+                        w.key + le,
                         (Ot == null ? void 0 : Ot.concat([
                           {
                             key: "64830f62-5ab8-490a-a0ed-971f977a3603",
                             text: ""
                           }
                         ])) ?? []
-                      ), qf(qg), lE(Pe, ue, w, le);
+                      ), qf(qg), lE(Pe, le, w, ue);
                     } catch {
                       const Ot = /* @__PURE__ */ new Map();
                       Ot.set(
-                        w.key + ue,
+                        w.key + le,
                         [...w.comboBoxOptions ?? []].concat([
                           {
                             key: "64830f62-5ab8-490a-a0ed-971f977a3603",
@@ -55441,12 +55441,12 @@ const nz = (e) => {
                       ), qf(Ot);
                     }
                   },
-                  onChange: (Pe, dr) => sE(Pe, dr, ue, w, le),
+                  onChange: (Pe, dr) => sE(Pe, dr, le, w, ue),
                   onKeyDown: (Pe) => {
-                    e.enableSingleCellEditOnDoubleClick === !0 ? wc(Pe, w, ue, !1) : e.enableSingleCellEditOnDoubleClick === !1 && Fc(
+                    e.enableSingleCellEditOnDoubleClick === !0 ? wc(Pe, w, le, !1) : e.enableSingleCellEditOnDoubleClick === !1 && Fc(
                       Pe,
-                      le,
-                      Number(le._grid_row_id_)
+                      ue,
+                      Number(ue._grid_row_id_)
                     );
                   },
                   onFocus: (Pe) => qe(w.key),
@@ -55459,24 +55459,24 @@ const nz = (e) => {
                 {
                   type: na.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => ki(w, ue, le)
+                    onRenderPlainCard: () => ki(w, le, ue)
                   },
                   instantOpenOnClick: !0,
                   children: pm(
                     e,
                     Y,
-                    ue,
-                    w,
                     le,
+                    w,
+                    ue,
                     rn
                   )
                 }
               ) : pm(
                 e,
                 Y,
-                ue,
-                w,
                 le,
+                w,
+                ue,
                 rn
               ) : /* @__PURE__ */ te.jsx("span", { children: /* @__PURE__ */ te.jsx(
                 Hf,
@@ -55484,13 +55484,13 @@ const nz = (e) => {
                   arialabel: w.key,
                   selectedItemsLimit: (Am = w.pickerOptions) == null ? void 0 : Am.tagsLimit,
                   pickerTags: ((Rm = w.pickerOptions) == null ? void 0 : Rm.pickerTags) ?? [],
-                  defaultTags: le[w.key] ? le[w.key].split(";") : [],
+                  defaultTags: ue[w.key] ? ue[w.key].split(";") : [],
                   minCharLimitForSuggestions: (Pm = w.pickerOptions) == null ? void 0 : Pm.minCharLimitForSuggestions,
                   onTaglistChanged: (Pe) => iE(
                     Pe,
-                    ue,
+                    le,
                     w,
-                    le
+                    ue
                   ),
                   pickerDescriptionOptions: (Nm = w.pickerOptions) == null ? void 0 : Nm.pickerDescriptionOptions,
                   suggestionRule: (Bm = w.pickerOptions) == null ? void 0 : Bm.suggestionsRule
@@ -55502,24 +55502,24 @@ const nz = (e) => {
                 {
                   type: na.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => ki(w, ue, le)
+                    onRenderPlainCard: () => ki(w, le, ue)
                   },
                   instantOpenOnClick: !0,
                   children: fm(
                     e,
                     Y,
-                    ue,
-                    w,
                     le,
+                    w,
+                    ue,
                     rn
                   )
                 }
               ) : fm(
                 e,
                 Y,
-                ue,
-                w,
                 le,
+                w,
+                ue,
                 rn
               ) });
             case lr.Password:
@@ -55528,47 +55528,47 @@ const nz = (e) => {
                 {
                   type: na.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => ki(w, ue, le)
+                    onRenderPlainCard: () => ki(w, le, ue)
                   },
                   instantOpenOnClick: !0,
                   children: hm(
                     e,
                     Y,
-                    ue,
-                    w,
                     le,
+                    w,
+                    ue,
                     rn
                   )
                 }
               ) : hm(
                 e,
                 Y,
-                ue,
-                w,
                 le,
+                w,
+                ue,
                 rn
               ) : /* @__PURE__ */ te.jsx(
                 Cn,
                 {
-                  errorMessage: (Lm = k[ue].properties[w.key]) == null ? void 0 : Lm.error,
-                  label: le.text,
+                  errorMessage: (Lm = k[le].properties[w.key]) == null ? void 0 : Lm.error,
+                  label: ue.text,
                   ariaLabel: w.key,
                   styles: co,
                   onChange: (Pe, dr) => Xs(
                     Pe,
                     dr,
-                    le,
                     ue,
+                    le,
                     w.key,
                     w
                   ),
-                  autoFocus: !e.enableDefaultEditMode && !n && !((Hm = k == null ? void 0 : k[Number(le._grid_row_id_)]) != null && Hm.isActivated),
-                  value: ((Wm = k[ue].properties[w.key]) == null ? void 0 : Wm.value) ?? "",
+                  autoFocus: !e.enableDefaultEditMode && !n && !((Hm = k == null ? void 0 : k[Number(ue._grid_row_id_)]) != null && Hm.isActivated),
+                  value: ((Wm = k[le].properties[w.key]) == null ? void 0 : Wm.value) ?? "",
                   onKeyDown: (Pe) => {
-                    e.enableSingleCellEditOnDoubleClick === !0 ? wc(Pe, w, ue, !1) : e.enableSingleCellEditOnDoubleClick === !1 && Fc(
+                    e.enableSingleCellEditOnDoubleClick === !0 ? wc(Pe, w, le, !1) : e.enableSingleCellEditOnDoubleClick === !1 && Fc(
                       Pe,
-                      le,
-                      Number(le._grid_row_id_)
+                      ue,
+                      Number(ue._grid_row_id_)
                     );
                   },
                   maxLength: w.maxLength != null ? w.maxLength : 1e3,
@@ -55579,40 +55579,40 @@ const nz = (e) => {
                 }
               ) });
             case lr.NumericFormat:
-              return (((Vm = le[w.key]) == null ? void 0 : Vm.toString()) || "").match(/\d/) || (le[w.key] = 0), /* @__PURE__ */ te.jsx("span", { children: bt() ? (Um = w == null ? void 0 : w.hoverComponentOptions) != null && Um.enable ? /* @__PURE__ */ te.jsx(
+              return (((Vm = ue[w.key]) == null ? void 0 : Vm.toString()) || "").match(/\d/) || (ue[w.key] = 0), /* @__PURE__ */ te.jsx("span", { children: bt() ? (Um = w == null ? void 0 : w.hoverComponentOptions) != null && Um.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => ki(w, ue, le)
+                    onRenderPlainCard: () => ki(w, le, ue)
                   },
                   instantOpenOnClick: !0,
                   children: Tc(
                     e,
                     Y,
-                    ue,
-                    w,
                     le,
+                    w,
+                    ue,
                     rn
                   )
                 }
               ) : Tc(
                 e,
                 Y,
-                ue,
-                w,
                 le,
+                w,
+                ue,
                 rn
               ) : /* @__PURE__ */ te.jsx(
                 Vf,
                 {
-                  value: ((zm = (Gm = k[ue].properties[w.key]) == null ? void 0 : Gm.value) == null ? void 0 : zm.toString()) ?? "",
+                  value: ((zm = (Gm = k[le].properties[w.key]) == null ? void 0 : Gm.value) == null ? void 0 : zm.toString()) ?? "",
                   placeholder: ($m = (jm = (Km = w.validations) == null ? void 0 : Km.numericFormatProps) == null ? void 0 : jm.formatBase) == null ? void 0 : $m.placeholder,
                   valueIsNumericString: ((qm = (Xm = (Ym = w.validations) == null ? void 0 : Ym.numericFormatProps) == null ? void 0 : Xm.formatBase) == null ? void 0 : qm.valueIsNumericString) ?? !1,
                   type: (Qm = (Jm = (Zm = w.validations) == null ? void 0 : Zm.numericFormatProps) == null ? void 0 : Jm.formatBase) == null ? void 0 : Qm.type,
                   inputMode: (rg = (tg = (eg = w.validations) == null ? void 0 : eg.numericFormatProps) == null ? void 0 : tg.formatBase) == null ? void 0 : rg.inputMode,
                   renderText: (ig = (ag = (ng = w.validations) == null ? void 0 : ng.numericFormatProps) == null ? void 0 : ag.formatBase) == null ? void 0 : ig.renderText,
-                  label: ((sg = (og = w.validations) == null ? void 0 : og.numericFormatProps) == null ? void 0 : sg.label) ?? le.text,
+                  label: ((sg = (og = w.validations) == null ? void 0 : og.numericFormatProps) == null ? void 0 : sg.label) ?? ue.text,
                   decimalScale: (cg = (ug = (lg = w.validations) == null ? void 0 : lg.numericFormatProps) == null ? void 0 : ug.formatProps) == null ? void 0 : cg.decimalScale,
                   fixedDecimalScale: (hg = (fg = (dg = w.validations) == null ? void 0 : dg.numericFormatProps) == null ? void 0 : fg.formatProps) == null ? void 0 : hg.fixedDecimalScale,
                   decimalSeparator: (gg = (mg = (pg = w.validations) == null ? void 0 : pg.numericFormatProps) == null ? void 0 : mg.formatProps) == null ? void 0 : gg.decimalSeparator,
@@ -55620,35 +55620,35 @@ const nz = (e) => {
                   thousandsGroupStyle: (Cg = (yg = (bg = w.validations) == null ? void 0 : bg.numericFormatProps) == null ? void 0 : yg.formatProps) == null ? void 0 : Cg.thousandsGroupStyle,
                   thousandSeparator: (kg = (Eg = (Sg = w.validations) == null ? void 0 : Sg.numericFormatProps) == null ? void 0 : Eg.formatProps) == null ? void 0 : kg.thousandSeparator,
                   onRenderLabel: (Fg = (wg = w.validations) == null ? void 0 : wg.numericFormatProps) == null ? void 0 : Fg.onRenderLabel,
-                  ariaLabel: ((Tg = (Dg = w.validations) == null ? void 0 : Dg.numericFormatProps) == null ? void 0 : Tg.ariaLabel) ?? le.text,
+                  ariaLabel: ((Tg = (Dg = w.validations) == null ? void 0 : Dg.numericFormatProps) == null ? void 0 : Tg.ariaLabel) ?? ue.text,
                   customInput: Cn,
                   suffix: (Rg = (Ag = (Ig = w.validations) == null ? void 0 : Ig.numericFormatProps) == null ? void 0 : Ag.formatProps) == null ? void 0 : Rg.suffix,
                   prefix: (Bg = (Ng = (Pg = w.validations) == null ? void 0 : Pg.numericFormatProps) == null ? void 0 : Ng.formatProps) == null ? void 0 : Bg.prefix,
                   allowLeadingZeros: (Lg = (Og = (Mg = w.validations) == null ? void 0 : Mg.numericFormatProps) == null ? void 0 : Og.formatProps) == null ? void 0 : Lg.allowLeadingZeros,
                   allowNegative: (Vg = (Wg = (Hg = w.validations) == null ? void 0 : Hg.numericFormatProps) == null ? void 0 : Wg.formatProps) == null ? void 0 : Vg.allowNegative,
                   isAllowed: (zg = (Gg = (Ug = w.validations) == null ? void 0 : Ug.numericFormatProps) == null ? void 0 : Gg.formatBase) == null ? void 0 : zg.isAllowed,
-                  errorMessage: (Kg = k[ue].properties[w.key]) == null ? void 0 : Kg.error,
+                  errorMessage: (Kg = k[le].properties[w.key]) == null ? void 0 : Kg.error,
                   onValueChange: (Pe, dr) => {
                     Xs(
                       dr.event,
                       Pe.formattedValue ?? Pe.value,
-                      le,
                       ue,
+                      le,
                       w.key,
                       w
                     );
                   },
                   onKeyDown: (Pe) => {
-                    e.enableSingleCellEditOnDoubleClick === !0 ? wc(Pe, w, ue, !1) : e.enableSingleCellEditOnDoubleClick === !1 && Fc(
+                    e.enableSingleCellEditOnDoubleClick === !0 ? wc(Pe, w, le, !1) : e.enableSingleCellEditOnDoubleClick === !1 && Fc(
                       Pe,
-                      le,
-                      Number(le._grid_row_id_)
+                      ue,
+                      Number(ue._grid_row_id_)
                     );
                   },
                   onFocus: (Pe) => qe(w.key),
                   onBlur: (Pe) => Oe()
                 },
-                le.key
+                ue.key
               ) });
             default:
               return /* @__PURE__ */ te.jsx("span", { children: bt() ? (jg = w == null ? void 0 : w.hoverComponentOptions) != null && jg.enable ? /* @__PURE__ */ te.jsx(
@@ -55656,47 +55656,47 @@ const nz = (e) => {
                 {
                   type: na.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => ki(w, ue, le)
+                    onRenderPlainCard: () => ki(w, le, ue)
                   },
                   instantOpenOnClick: !0,
                   children: Tc(
                     e,
                     Y,
-                    ue,
-                    w,
                     le,
+                    w,
+                    ue,
                     rn
                   )
                 }
               ) : Tc(
                 e,
                 Y,
-                ue,
-                w,
                 le,
+                w,
+                ue,
                 rn
               ) : /* @__PURE__ */ te.jsx(
                 Cn,
                 {
-                  errorMessage: ($g = k[ue].properties[w.key]) == null ? void 0 : $g.error,
-                  label: le.text,
+                  errorMessage: ($g = k[le].properties[w.key]) == null ? void 0 : $g.error,
+                  label: ue.text,
                   ariaLabel: w.key,
                   styles: co,
                   onChange: (Pe, dr) => Xs(
                     Pe,
                     dr,
-                    le,
                     ue,
+                    le,
                     w.key,
                     w
                   ),
-                  autoFocus: !e.enableDefaultEditMode && !n && !((Yg = k == null ? void 0 : k[Number(le._grid_row_id_)]) != null && Yg.isActivated),
-                  value: ((Xg = k[ue].properties[w.key]) == null ? void 0 : Xg.value) ?? "",
+                  autoFocus: !e.enableDefaultEditMode && !n && !((Yg = k == null ? void 0 : k[Number(ue._grid_row_id_)]) != null && Yg.isActivated),
+                  value: ((Xg = k[le].properties[w.key]) == null ? void 0 : Xg.value) ?? "",
                   onKeyDown: (Pe) => {
-                    e.enableSingleCellEditOnDoubleClick === !0 ? wc(Pe, w, ue, !1) : e.enableSingleCellEditOnDoubleClick === !1 && Fc(
+                    e.enableSingleCellEditOnDoubleClick === !0 ? wc(Pe, w, le, !1) : e.enableSingleCellEditOnDoubleClick === !1 && Fc(
                       Pe,
-                      le,
-                      Number(le._grid_row_id_)
+                      ue,
+                      Number(ue._grid_row_id_)
                     );
                   },
                   maxLength: w.maxLength != null ? w.maxLength : 1e3,
@@ -55707,7 +55707,7 @@ const nz = (e) => {
           }
           function bt() {
             var Pe, dr, Gn;
-            return !w.editable || !e.enableDefaultEditMode && !((Pe = k == null ? void 0 : k[ue]) != null && Pe.isActivated) && !((Gn = (dr = k == null ? void 0 : k[ue]) == null ? void 0 : dr.properties[w.key]) != null && Gn.activated);
+            return !w.editable || !e.enableDefaultEditMode && !((Pe = k == null ? void 0 : k[le]) != null && Pe.isActivated) && !((Gn = (dr = k == null ? void 0 : k[le]) == null ? void 0 : dr.properties[w.key]) != null && Gn.activated);
           }
         }
       }), Eo().length == 0 && G.push({
@@ -56038,7 +56038,7 @@ const nz = (e) => {
     rowNum: G,
     rowData: w
   }) }), fm = (P, G, w, Y, ee, se) => {
-    var Fe, le, ue, bt;
+    var Fe, ue, le, bt;
     return /* @__PURE__ */ te.jsx(
       "span",
       {
@@ -56057,7 +56057,7 @@ const nz = (e) => {
           Fh,
           {
             target: "_blank",
-            disabled: (le = Y.linkOptions) == null ? void 0 : le.disabled,
+            disabled: (ue = Y.linkOptions) == null ? void 0 : ue.disabled,
             underline: !0,
             onClick: () => {
               let lt = {
@@ -56074,7 +56074,7 @@ const nz = (e) => {
           Fh,
           {
             target: "_blank",
-            disabled: (ue = Y.linkOptions) == null ? void 0 : ue.disabled,
+            disabled: (le = Y.linkOptions) == null ? void 0 : le.disabled,
             underline: !0,
             href: (bt = Y.linkOptions) == null ? void 0 : bt.href,
             children: ee[Y.key]
@@ -56120,9 +56120,9 @@ const nz = (e) => {
     se,
     Yi
   ), mm = (P, G, w, Y, ee, se) => {
-    var le, ue, bt;
+    var ue, le, bt;
     let Fe = ee[Y.key];
-    return Y.dropdownValues && (Fe = ((bt = (ue = (le = Y.dropdownValues) == null ? void 0 : le.filter((lt) => (lt == null ? void 0 : lt.key) == ee[Y.key])[0]) == null ? void 0 : ue.text) == null ? void 0 : bt.toString()) ?? ee[Y.key]), $l(
+    return Y.dropdownValues && (Fe = ((bt = (le = (ue = Y.dropdownValues) == null ? void 0 : ue.filter((lt) => (lt == null ? void 0 : lt.key) == ee[Y.key])[0]) == null ? void 0 : le.text) == null ? void 0 : bt.toString()) ?? ee[Y.key]), $l(
       P,
       G,
       w,
@@ -56212,13 +56212,13 @@ const nz = (e) => {
     Xi,
     se,
     Yi
-  ), $l = (P, G, w, Y, ee, se, Fe, le, ue) => /* @__PURE__ */ te.jsx(
+  ), $l = (P, G, w, Y, ee, se, Fe, ue, le) => /* @__PURE__ */ te.jsx(
     "span",
     {
       id: `id-${P.id}-col-${G}-row-${w}`,
       className: md(Y, ee[Y.key]),
       onClick: se(P, Y, Fe, w),
-      onDoubleClick: le(
+      onDoubleClick: ue(
         ee,
         Number(ee._grid_row_id_),
         P,
@@ -56226,7 +56226,7 @@ const nz = (e) => {
         Fe,
         w
       ),
-      children: ue || ee[Y.key]
+      children: le || ee[Y.key]
     }
   );
   function Yi(P, G, w, Y, ee, se) {
