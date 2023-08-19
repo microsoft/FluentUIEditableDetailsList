@@ -238,8 +238,8 @@ export const GridColumnConfig: IColumnConfig[] = [
     inputType: EditControlType.ComboBox,
     comboBoxOptions: [
       { key: "1010", text: "1010 - Black Red" },
-      { key: "Blue", text: "Blue" },
-      { key: "brown", text: "Brown" },
+      { key: "BlueKey", text: "Blue" },
+      { key: "brownKey", text: "Brown" },
     ],
     // disableComboBox: false,
     // disableComboBox: {

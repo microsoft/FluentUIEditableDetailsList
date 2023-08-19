@@ -208,10 +208,10 @@ const EditableGrid = (props: EditableGridProps) => {
             searchableColumns.forEach((item2, index2) => {
               if (
                 _gridData[item2] &&
-                _gridData[item2].toString().toLowerCase() &&
+                _gridData[item2]?.toString()?.toLowerCase() &&
                 _gridData[item2]
-                  .toString()
-                  .toLowerCase()
+                  ?.toString()
+                  ?.toLowerCase()
                   .includes(queryText.trim().toLowerCase())
               ) {
                 _gridData._is_filtered_in_grid_search_ = true;
@@ -521,7 +521,7 @@ const EditableGrid = (props: EditableGridProps) => {
             typeof element.required == "boolean" &&
             (rowCol == null ||
               rowCol == undefined ||
-              rowCol.toString().length <= 0 ||
+              rowCol?.toString().length <= 0 ||
               rowCol == "")
           ) {
             if (!emptyCol.includes(" " + element.name))
@@ -532,7 +532,7 @@ const EditableGrid = (props: EditableGridProps) => {
             element.required.errorMessage &&
             (rowCol == null ||
               rowCol == undefined ||
-              rowCol.toString().length <= 0 ||
+              rowCol?.toString().length <= 0 ||
               rowCol == "")
           ) {
             var msg =
@@ -550,7 +550,7 @@ const EditableGrid = (props: EditableGridProps) => {
             element.required.requiredOnlyIfTheseColumnsAreEmpty &&
             (rowCol == null ||
               rowCol == undefined ||
-              rowCol.toString().length <= 0 ||
+              rowCol?.toString().length <= 0 ||
               rowCol == "")
           ) {
             const checkKeys =
@@ -564,7 +564,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 if (
                   str == null ||
                   str == undefined ||
-                  str.toString().length <= 0 ||
+                  str?.toString().length <= 0 ||
                   str == ""
                 ) {
                   if (element.required.errorMessage) {
@@ -589,7 +589,7 @@ const EditableGrid = (props: EditableGridProps) => {
                   }
                 }
               } else {
-                if (str && str.toString().length > 0) {
+                if (str && str?.toString().length > 0) {
                   skippable = true;
                   break;
                 }
@@ -779,7 +779,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         str &&
                         str !== null &&
                         str !== undefined &&
-                        str.toString().length > 0
+                        str?.toString().length > 0
                       ) {
                         skip = true;
                         break;
@@ -790,7 +790,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         str &&
                         str !== null &&
                         str !== undefined &&
-                        str.toString().length > 0
+                        str?.toString().length > 0
                       ) {
                         skip = true;
                       } else {
@@ -804,10 +804,10 @@ const EditableGrid = (props: EditableGridProps) => {
                 if (!skip) {
                   if (str !== undefined && str !== null) {
                     if (
-                      str.toString().length > 0 &&
+                      str?.toString().length > 0 &&
                       colDep.type === DepColTypes.MustBeEmpty
                     ) {
-                      if (rowCol !== null && rowCol.toString().length > 0) {
+                      if (rowCol !== null && rowCol?.toString().length > 0) {
                         var msg =
                           `Row ${
                             indentiferColumn.current
@@ -832,7 +832,7 @@ const EditableGrid = (props: EditableGridProps) => {
                     (str == undefined ||
                       str == null ||
                       str == "" ||
-                      (str && str.toString().length <= 0)) &&
+                      (str && str?.toString().length <= 0)) &&
                     colDep.type === DepColTypes.MustHaveData
                   ) {
                     var msg =
@@ -910,7 +910,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 if (
                   rowCol !== null &&
                   element.validations.stringValidations?.conditionCantEqual ===
-                    rowCol.toString()
+                    rowCol?.toString()
                 ) {
                   var msg =
                     `Row ${
@@ -968,7 +968,7 @@ const EditableGrid = (props: EditableGridProps) => {
           indentiferColumn.current
             ? "With ID: " + (gridData as any)[indentiferColumn.current]
             : "With Index: " + row + 1
-        } - ${emptyCol.toString()} cannot be empty at all`;
+        } - ${emptyCol?.toString()} cannot be empty at all`;
 
         insertToMessageMap(Messages.current, row + "ec", {
           msg: msg,
@@ -982,7 +982,7 @@ const EditableGrid = (props: EditableGridProps) => {
           indentiferColumn.current
             ? "With ID: " + (gridData as any)[indentiferColumn.current]
             : "With Index: " + row + 1
-        } - ${emptyCol.toString()} cannot be empty`;
+        } - ${emptyCol?.toString()} cannot be empty`;
 
         insertToMessageMap(Messages.current, row + "ec", {
           msg: msg,
@@ -1658,7 +1658,7 @@ const EditableGrid = (props: EditableGridProps) => {
                   autoGenerateCol.length))
         )
       ) {
-        const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+        const newMap = new Map(interalMessagesState).set(props.id?.toString(), {
           msg:
             "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Rename / Add  " +
             "`" +
@@ -1755,7 +1755,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
           if (excelJSON.length <= 0) {
             const newMap = new Map(interalMessagesState).set(
-              props.id.toString(),
+              props.id?.toString(),
               {
                 msg: "Selected file has 0 rows of data. Please try again.",
                 type: MessageBarType.error,
@@ -1781,7 +1781,7 @@ const EditableGrid = (props: EditableGridProps) => {
             else {
               verifyDataTypes.forEach((str) => {
                 const newMap = new Map(interalMessagesState).set(
-                  props.id.toString(),
+                  props.id?.toString(),
                   { msg: `Import Error: ${str}`, type: MessageBarType.error }
                 );
                 setInteralMessagesState(newMap);
@@ -1796,7 +1796,7 @@ const EditableGrid = (props: EditableGridProps) => {
           });
 
           const newMap = new Map(interalMessagesState).set(
-            props.id.toString(),
+            props.id?.toString(),
             {
               msg: `Imported ${ui.length} Rows From File`,
               type: MessageBarType.success,
@@ -1810,7 +1810,7 @@ const EditableGrid = (props: EditableGridProps) => {
       };
       reader.readAsArrayBuffer(file);
     } else {
-      const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+      const newMap = new Map(interalMessagesState).set(props.id?.toString(), {
         msg: `Error Processing File`,
         type: MessageBarType.error,
       });
@@ -2535,7 +2535,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
   const CopyGridRows = (): void => {
     if (selectedIndices.length == 0) {
-      const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+      const newMap = new Map(interalMessagesState).set(props.id?.toString(), {
         msg: "No Rows Selected - Please select some rows to perform this operation ",
         type: MessageBarType.info,
       });
@@ -2707,11 +2707,11 @@ const EditableGrid = (props: EditableGridProps) => {
         } else if (currentVal?.toLowerCase() === "true") {
           newColObj[colKeysVal] = true;
         } else {
-          newColObj[colKeysVal] = currentVal?.toString()?.trim() ?? '';
+          newColObj[colKeysVal] = currentVal?.toString()?.trim() ?? null;
         }
       } else {
         newColObj[colKeysVal] =
-          columnValuesObj[colKeysVal].defaultValueOnNewRow ?? "";
+          columnValuesObj[colKeysVal].defaultValueOnNewRow ?? null;
       }
     }
 
@@ -2863,7 +2863,7 @@ const EditableGrid = (props: EditableGridProps) => {
         setGridEditState(true);
       })
       .catch((error) => {
-        console.error(error)
+        console.error(error);
         setGridEditState(false);
         const newMap = new Map(interalMessagesState).set(props.id.toString(), {
           msg: "Failed To Paste Rows From Clipboard",
@@ -2881,7 +2881,7 @@ const EditableGrid = (props: EditableGridProps) => {
             (x) => x._grid_row_operation_ === Operation.Delete
           ).length;
 
-          return (defaultGridData.length - deletedRows).toString();
+          return (defaultGridData.length - deletedRows)?.toString();
         } else {
           return "0";
         }
@@ -3650,7 +3650,7 @@ const EditableGrid = (props: EditableGridProps) => {
                       ) {
                         if (
                           str &&
-                          str.toString().length > 0 &&
+                          str?.toString().length > 0 &&
                           (newMap.get(column.key + rowNum) ?? false) === false
                         ) {
                           newMap.set(column.key + rowNum, true);
@@ -3666,7 +3666,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         disableCellOptions.type ===
                         DisableColTypes.DisableWhenColKeyIsEmpty
                       ) {
-                        if (str == "" || (str && str.toString().length <= 0)) {
+                        if (str == "" || (str && str?.toString().length <= 0)) {
                           newMap.set(column.key + rowNum, true);
                         } else if (
                           (str === null || str === undefined) &&
@@ -3676,7 +3676,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         } else if (
                           (newMap.get(column.key + rowNum) ?? true) !== false &&
                           str &&
-                          str.toString().length > 0
+                          str?.toString().length > 0
                         ) {
                           newMap.set(column.key + rowNum, false);
                         }
@@ -3781,7 +3781,7 @@ const EditableGrid = (props: EditableGridProps) => {
                       ) {
                         if (
                           str &&
-                          str.toString().length > 0 &&
+                          str?.toString().length > 0 &&
                           (newMap.get(column.key + rowNum) ?? false) === false
                         ) {
                           newMap.set(column.key + rowNum, true);
@@ -3797,7 +3797,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         disableCellOptions.type ===
                         DisableColTypes.DisableWhenColKeyIsEmpty
                       ) {
-                        if (str == "" || (str && str.toString().length <= 0)) {
+                        if (str == "" || (str && str?.toString().length <= 0)) {
                           newMap.set(column.key + rowNum, true);
                         } else if (
                           (str === null || str === undefined) &&
@@ -3807,7 +3807,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         } else if (
                           (newMap.get(column.key + rowNum) ?? true) !== false &&
                           str &&
-                          str.toString().length > 0
+                          str?.toString().length > 0
                         ) {
                           newMap.set(column.key + rowNum, false);
                         }
@@ -3861,9 +3861,9 @@ const EditableGrid = (props: EditableGridProps) => {
                             )[0]?.text ??
                             column.comboBoxOptions
                               ?.filter(
-                                (x) => x.key.toString() == item[column.key]
+                                (x) => x.key?.toString() == item[column.key]
                               )[0]
-                              ?.key.toString() ??
+                              ?.key?.toString() ??
                             "Start typing..."
                           }
                           defaultSelectedKey={
