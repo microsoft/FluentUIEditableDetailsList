@@ -252,10 +252,12 @@ const EditableGrid = (props: EditableGridProps) => {
       setGridData(data);
       setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
       setGridEditState(false);
-      SetGridItems(data);
-      indentiferColumn.current = (props.columns.filter((x)=> x.autoGenerate == true)[0].key) ?? null;
-    
+      SetGridItems(data);    
   }, [props.items]);
+
+  useEffect(() => {
+    indentiferColumn.current = (props.columns.filter((x)=> x.autoGenerate == true)?.[0]?.key) ?? null;
+}, [props.columns]);
 
   useEffect(() => {}, [backupDefaultGridData]);
 
