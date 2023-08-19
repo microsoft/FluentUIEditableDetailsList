@@ -2707,7 +2707,7 @@ const EditableGrid = (props: EditableGridProps) => {
         } else if (currentVal?.toLowerCase() === "true") {
           newColObj[colKeysVal] = true;
         } else {
-          newColObj[colKeysVal] = currentVal?.toString()?.trim();
+          newColObj[colKeysVal] = currentVal?.toString()?.trim() ?? '';
         }
       } else {
         newColObj[colKeysVal] =
@@ -2863,6 +2863,7 @@ const EditableGrid = (props: EditableGridProps) => {
         setGridEditState(true);
       })
       .catch((error) => {
+        console.error(error)
         setGridEditState(false);
         const newMap = new Map(interalMessagesState).set(props.id.toString(), {
           msg: "Failed To Paste Rows From Clipboard",

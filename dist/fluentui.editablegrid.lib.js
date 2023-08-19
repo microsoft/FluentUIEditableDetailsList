@@ -54746,7 +54746,7 @@ const tz = (e) => {
         X[Ne.current] = w;
         continue;
       }
-      Rt[oe].columnEditable ? (ue == null ? void 0 : ue.toLowerCase()) === "false" ? X[oe] = !1 : (ue == null ? void 0 : ue.toLowerCase()) === "true" ? X[oe] = !0 : X[oe] = (ie = ue == null ? void 0 : ue.toString()) == null ? void 0 : ie.trim() : X[oe] = Rt[oe].defaultValueOnNewRow ?? "";
+      Rt[oe].columnEditable ? (ue == null ? void 0 : ue.toLowerCase()) === "false" ? X[oe] = !1 : (ue == null ? void 0 : ue.toLowerCase()) === "true" ? X[oe] = !0 : X[oe] = ((ie = ue == null ? void 0 : ue.toString()) == null ? void 0 : ie.trim()) ?? "" : X[oe] = Rt[oe].defaultValueOnNewRow ?? "";
     }
     return U.map((Ie) => {
       var ue = Object.keys(X);
@@ -54834,7 +54834,7 @@ const tz = (e) => {
         )
       ), St(), $t(!0);
     }).catch((X) => {
-      $t(!1);
+      console.error(X), $t(!1);
       const ee = new Map(Jt).set(e.id.toString(), {
         msg: "Failed To Paste Rows From Clipboard",
         type: Ye.error
