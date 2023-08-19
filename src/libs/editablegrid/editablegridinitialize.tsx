@@ -18,7 +18,6 @@ export const InitializeInternalGrid = (
       Object.keys(obj).indexOf("_grid_row_operation_") == -1
     ) {
       obj._grid_row_id_ = index;
-      obj._grid_row_operation_ = _Operation.None;
       obj._is_filtered_in_ = true;
       obj._is_filtered_in_grid_search_ = true;
       obj._is_filtered_in_column_filter_ = true;
@@ -27,7 +26,23 @@ export const InitializeInternalGrid = (
         (obj._udf_custom_vaule_store_b = 0);
 
       if (customOperationsKey && items[index][customOperationsKey.colKey]) {
-        obj._grid_row_operation_ = items[index][customOperationsKey.colKey];
+        switch (items[index][customOperationsKey.colKey]) {
+          case customOperationsKey.options.Add:
+            obj._grid_row_operation_ = _Operation.Add;
+            break;
+          case customOperationsKey.options.Update:
+            obj._grid_row_operation_ = _Operation.Update;
+            break;
+          case customOperationsKey.options.Delete:
+            obj._grid_row_operation_ = _Operation.Delete;
+            break;
+
+          default:
+            obj._grid_row_operation_ = _Operation.None;
+            break;
+        }
+      } else {
+        obj._grid_row_operation_ = _Operation.None;
       }
     }
 

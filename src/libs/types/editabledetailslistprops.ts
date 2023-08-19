@@ -28,7 +28,7 @@ export type IEnableMessageBarErrors = {
 
 export type IUserDefinedOperationKey = {
   colKey: string;
-  options?: {
+  options: {
     None: string | number;
     Add: string | number;
     Update: string | number;
