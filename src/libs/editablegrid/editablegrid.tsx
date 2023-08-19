@@ -105,9 +105,8 @@ import { EditControlType } from "../types/editcontroltype";
 import { EditType } from "../types/edittype";
 import { ExportType } from "../types/exporttype";
 import { IFilter } from "../types/filterstype";
-import { Operation } from "../types/operation";
+import { _Operation } from "../types/operation";
 import { ImportType } from "../types/importtype";
-import { GridToastTypes } from "../types/gridToastTypes";
 import { NumericFormat } from "react-number-format";
 
 interface SortOptions {
@@ -247,7 +246,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
   useEffect(() => {
       var data: any[] = InitializeInternalGrid(
-        JSON.parse(JSON.stringify(props.items))
+        JSON.parse(JSON.stringify(props.items)), props.customOperationsKey
       );
       setGridData(data);
       setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
@@ -269,7 +268,7 @@ const EditableGrid = (props: EditableGridProps) => {
   useEffect(() => {
     const CheckOnUpdate = async () => {
       if (
-        defaultGridData.filter((x) => x._grid_row_operation_ != Operation.None)
+        defaultGridData.filter((x) => x._grid_row_operation_ != _Operation.None)
           .length > 0
       ) {
         await onGridUpdate();
@@ -476,7 +475,7 @@ const EditableGrid = (props: EditableGridProps) => {
     const defaultGridDataTmp =
       defaultGridData.length > 0
         ? defaultGridData.filter(
-            (x) => x._grid_row_operation_ != Operation.Delete
+            (x) => x._grid_row_operation_ != _Operation.Delete
           )
         : [];
 
@@ -1018,7 +1017,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
     // Blank and the user has deleted the row
     const blankDeletedObjects = defaultGridData
-      .filter((x) => x._grid_row_operation_ == Operation.Delete)
+      .filter((x) => x._grid_row_operation_ == _Operation.Delete)
       .filter((obj: any) => isRowBlank(obj));
 
     blankDeletedObjects.forEach((element) => {
@@ -1029,10 +1028,10 @@ const EditableGrid = (props: EditableGridProps) => {
 
     // Blank and the user has not deleted the row
     const blankNonDeletedObjects = defaultGridData
-      .filter((x) => x._grid_row_operation_ != Operation.Delete)
+      .filter((x) => x._grid_row_operation_ != _Operation.Delete)
       .filter((obj: any) => isRowBlank(obj))
       .map((x) => {
-        x._grid_row_operation_ = Operation.Delete;
+        x._grid_row_operation_ = _Operation.Delete;
       });
     blankNonDeletedObjects.forEach((element: any) => {
       HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
@@ -1055,7 +1054,7 @@ const EditableGrid = (props: EditableGridProps) => {
     const defaultGridDataTmp =
       defaultGridData.length > 0
         ? defaultGridData.filter(
-            (x) => x._grid_row_operation_ != Operation.Delete
+            (x) => x._grid_row_operation_ != _Operation.Delete
           )
         : [];
 
@@ -1105,9 +1104,7 @@ const EditableGrid = (props: EditableGridProps) => {
         })
         .map(removeIgnoredProperties);
 
-    if (props.onBeforeGridSave) {
-      props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
-    }
+ 
 
     let localError = false;
     if (parseInt(getGridRecordLength(true)) > 0) {
@@ -1115,12 +1112,18 @@ const EditableGrid = (props: EditableGridProps) => {
     }
     if (localError === true) setGridInError(true);
 
+    if(!localError){
+    if (props.onBeforeGridSave) {
+      props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
+    }}
+
+    if(!localError){
     if (props.onGridSave) {
       props.onGridSave(
         defaultGridDataTmp,
         defaultGridDataTmpWithInternalPropsIgnored
       );
-    }
+    }}
     return localError;
   };
 
@@ -1215,12 +1218,12 @@ const EditableGrid = (props: EditableGridProps) => {
           var objectKeys = Object.keys(data);
           objectKeys.forEach((objKey) => {
             row[objKey] = data[objKey];
-            if (row._grid_row_operation_ != Operation.Add) {
-              row._grid_row_operation_ = Operation.Update;
+            if (row._grid_row_operation_ != _Operation.Add) {
+              row._grid_row_operation_ = _Operation.Update;
 
               if (props.customOperationsKey)
                 row[props.customOperationsKey.colKey] =
-                  props.customOperationsKey.options?.Update ?? Operation.Update;
+                  props.customOperationsKey.options?.Update ?? _Operation.Update;
             }
           });
 
@@ -1324,7 +1327,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
         if (props.customOperationsKey)
           obj[props.customOperationsKey.colKey] =
-            props.customOperationsKey.options?.Add ?? Operation.Add;
+            props.customOperationsKey.options?.Add ?? _Operation.Add;
 
         if (props.customKeysToAddOnNewRow) {
           for (
@@ -1337,7 +1340,7 @@ const EditableGrid = (props: EditableGridProps) => {
           }
         }
         obj._grid_row_id_ = _new_grid_row_id_;
-        obj._grid_row_operation_ = Operation.Add;
+        obj._grid_row_operation_ = _Operation.Add;
         obj._is_filtered_in_ = true;
         obj._is_filtered_in_grid_search_ = true;
         obj._is_filtered_in_column_filter_ = true;
@@ -1458,10 +1461,10 @@ const EditableGrid = (props: EditableGridProps) => {
       defaultGridDataTmp
         .filter((x) => x._grid_row_id_ == item._grid_row_id_)
         .map((x) => {
-          x._grid_row_operation_ = Operation.Delete;
+          x._grid_row_operation_ = _Operation.Delete;
           if (props.customOperationsKey)
             x[props.customOperationsKey.colKey] =
-              props.customOperationsKey.options?.Delete ?? Operation.Delete;
+              props.customOperationsKey.options?.Delete ?? _Operation.Delete;
         });
     });
 
@@ -1486,7 +1489,7 @@ const EditableGrid = (props: EditableGridProps) => {
       defaultGridData
         .filter(
           (item) =>
-            item._grid_row_operation_ != Operation.Delete &&
+            item._grid_row_operation_ != _Operation.Delete &&
             item._is_filtered_in_ &&
             item._is_filtered_in_column_filter_ &&
             item._is_filtered_in_grid_search_
@@ -1512,7 +1515,7 @@ const EditableGrid = (props: EditableGridProps) => {
         defaultGridData
           .filter(
             (item) =>
-              item._grid_row_operation_ != Operation.Delete &&
+              item._grid_row_operation_ != _Operation.Delete &&
               item._is_filtered_in_ &&
               item._is_filtered_in_column_filter_ &&
               item._is_filtered_in_grid_search_
@@ -1856,7 +1859,7 @@ const EditableGrid = (props: EditableGridProps) => {
       activateCellEdit[internalRowNumActivateGrid]["properties"][key]["value"];
     if (
       defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] !=
-      Operation.Add
+      _Operation.Add
     ) {
       if (
         JSON.stringify(defaultGridDataTmp) ===
@@ -1864,20 +1867,20 @@ const EditableGrid = (props: EditableGridProps) => {
       ) {
 
         defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
-          Operation.None;
+          _Operation.None;
 
         if (props.customOperationsKey)
           defaultGridDataTmp[internalRowNumDefaultGrid][
             props.customOperationsKey.colKey
-          ] = props.customOperationsKey.options?.None ?? Operation.None;
+          ] = props.customOperationsKey.options?.None ?? _Operation.None;
       } else {
 
         defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
-          Operation.Update;
+          _Operation.Update;
         if (props.customOperationsKey)
           defaultGridDataTmp[internalRowNumDefaultGrid][
             props.customOperationsKey.colKey
-          ] = props.customOperationsKey.options?.Update ?? Operation.Update;
+          ] = props.customOperationsKey.options?.Update ?? _Operation.Update;
         }
         setGridEditState(true);
       
@@ -2904,7 +2907,7 @@ const EditableGrid = (props: EditableGridProps) => {
       if (justLength) {
         if (defaultGridData) {
           const deletedRows = defaultGridData.filter(
-            (x) => x._grid_row_operation_ === Operation.Delete
+            (x) => x._grid_row_operation_ === _Operation.Delete
           ).length;
 
           return (defaultGridData.length - deletedRows)?.toString();
@@ -2916,7 +2919,7 @@ const EditableGrid = (props: EditableGridProps) => {
         return `${
           defaultGridData.filter(
             (x) =>
-              x._grid_row_operation_ != Operation.Delete &&
+              x._grid_row_operation_ != _Operation.Delete &&
               x._is_filtered_in_ == true &&
               x._is_filtered_in_grid_search_ == true &&
               x._is_filtered_in_column_filter_ == true
@@ -2924,12 +2927,12 @@ const EditableGrid = (props: EditableGridProps) => {
         }/${defaultGridData.length}`;
       else {
         const deletedRows = defaultGridData.filter(
-          (x) => x._grid_row_operation_ === Operation.Delete
+          (x) => x._grid_row_operation_ === _Operation.Delete
         ).length;
         return `${
           defaultGridData.filter(
             (x) =>
-              x._grid_row_operation_ != Operation.Delete &&
+              x._grid_row_operation_ != _Operation.Delete &&
               x._is_filtered_in_ == true &&
               x._is_filtered_in_grid_search_ == true &&
               x._is_filtered_in_column_filter_ == true
@@ -2947,10 +2950,10 @@ const EditableGrid = (props: EditableGridProps) => {
       defaultGridDataTmp
         .filter((x) => x._grid_row_id_ === rowNum)
         .map((x) => {
-          x._grid_row_operation_ = Operation.Delete;
+          x._grid_row_operation_ = _Operation.Delete;
           if (props.customOperationsKey)
             x[props.customOperationsKey.colKey] =
-              props.customOperationsKey.options?.Delete ?? Operation.Delete;
+              props.customOperationsKey.options?.Delete ?? _Operation.Delete;
         });
 
       setDefaultGridData(defaultGridDataTmp);
@@ -2958,10 +2961,10 @@ const EditableGrid = (props: EditableGridProps) => {
       defaultGridDataTmp
         .filter((x) => x._grid_row_id_ == rowNum)
         .map((x) => {
-          x._grid_row_operation_ = Operation.Delete;
+          x._grid_row_operation_ = _Operation.Delete;
           if (props.customOperationsKey)
             x[props.customOperationsKey.colKey] =
-              props.customOperationsKey.options?.Delete ?? Operation.Delete;
+              props.customOperationsKey.options?.Delete ?? _Operation.Delete;
         });
       SetGridItems(defaultGridDataTmp);
       setGridEditState(true);
@@ -3277,7 +3280,7 @@ const EditableGrid = (props: EditableGridProps) => {
         defaultGridData
           .filter(
             (x) =>
-              x._grid_row_operation_ != Operation.Delete &&
+              x._grid_row_operation_ != _Operation.Delete &&
               x._is_filtered_in_column_filter_ == true &&
               x._is_filtered_in_grid_search_ == true
           )
@@ -3289,7 +3292,7 @@ const EditableGrid = (props: EditableGridProps) => {
         defaultGridData
           .filter(
             (x) =>
-              x._grid_row_operation_ != Operation.Delete &&
+              x._grid_row_operation_ != _Operation.Delete &&
               (x._is_filtered_in_column_filter_ == false ||
                 x._is_filtered_in_grid_search_ == false)
           )
@@ -5589,7 +5592,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         defaultGridData.length > 0
                           ? defaultGridData.filter(
                               (x) =>
-                                x._grid_row_operation_ != Operation.Delete &&
+                                x._grid_row_operation_ != _Operation.Delete &&
                                 x._is_filtered_in_ == true &&
                                 x._is_filtered_in_grid_search_ == true &&
                                 x._is_filtered_in_column_filter_ == true

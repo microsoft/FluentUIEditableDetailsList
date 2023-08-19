@@ -51,7 +51,7 @@ import {
   IDetailsColumnRenderTooltipPropsExtra,
   IGridErrorCallbacks,
 } from "../../libs/types/columnconfigtype";
-import { Operation } from "../../libs/types/operation";
+import { _Operation } from "../../libs/types/operation";
 import { GridToastTypes } from "../../libs/types/gridToastTypes";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -263,8 +263,10 @@ const Consumer = () => {
     LogRows(internalGridData);
     setItems([
       ...internalGridData
-        .filter((y) => y._grid_row_operation_ != Operation.Delete)
-        ,
+        .filter((y) => y._grid_row_operation_ != _Operation.Delete)
+        .map((x) => {
+          return { ...x, _grid_row_operation_: _Operation.None };
+        }),
     ]);
   };
 
@@ -276,19 +278,19 @@ const Consumer = () => {
   const LogRows = (data: any[]): void => {
     console.log("Updated Rows");
     console.log(
-      data.filter((item) => item._grid_row_operation_ == Operation.Update)
+      data.filter((item) => item._grid_row_operation_ == _Operation.Update)
     );
     console.log("Added Rows");
     console.log(
-      data.filter((item) => item._grid_row_operation_ == Operation.Add)
+      data.filter((item) => item._grid_row_operation_ == _Operation.Add)
     );
     console.log("Deleted Rows");
     console.log(
-      data.filter((item) => item._grid_row_operation_ == Operation.Delete)
+      data.filter((item) => item._grid_row_operation_ == _Operation.Delete)
     );
     console.log("Unchanged Rows");
     console.log(
-      data.filter((item) => item._grid_row_operation_ == Operation.None)
+      data.filter((item) => item._grid_row_operation_ == _Operation.None)
     );
   };
 

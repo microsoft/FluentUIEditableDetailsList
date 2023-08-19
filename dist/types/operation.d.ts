@@ -1,4 +1,4 @@
-export declare enum Operation {
+export declare enum _Operation {
     None = 1,
     Add = 2,
     Update = 3,

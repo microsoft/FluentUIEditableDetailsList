@@ -1,7 +1,7 @@
 export { default as EditableGrid } from "./editablegrid/editablegrid";
 export { EventEmitter, EventType } from "./eventemitter/EventEmitter";
 export { CellHover } from "./editablegrid/hoverComponent";
-export { Operation } from "./types/operation";
+export { _Operation } from "./types/operation";
 export { GridToastTypes } from "./types/gridToastTypes";
 export type { ICallBackParams, ICallBackRequestParams, } from "./types/callbackparams";
 export type { ICellHoverProps } from "./types/cellhoverpropstype";

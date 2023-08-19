@@ -947,7 +947,7 @@ var iv = [
 function dk(e) {
   return e || (e = {}), e[0] = "General", e[1] = "0", e[2] = "0.00", e[3] = "#,##0", e[4] = "#,##0.00", e[9] = "0%", e[10] = "0.00%", e[11] = "0.00E+00", e[12] = "# ?/?", e[13] = "# ??/??", e[14] = "m/d/yy", e[15] = "d-mmm-yy", e[16] = "d-mmm", e[17] = "mmm-yy", e[18] = "h:mm AM/PM", e[19] = "h:mm:ss AM/PM", e[20] = "h:mm", e[21] = "h:mm:ss", e[22] = "m/d/yy h:mm", e[37] = "#,##0 ;(#,##0)", e[38] = "#,##0 ;[Red](#,##0)", e[39] = "#,##0.00;(#,##0.00)", e[40] = "#,##0.00;[Red](#,##0.00)", e[45] = "mm:ss", e[46] = "[h]:mm:ss", e[47] = "mmss.0", e[48] = "##0.0E+0", e[49] = "@", e[56] = '"上午/下午 "hh"時"mm"分"ss"秒 "', e;
 }
-var xt = {
+var bt = {
   0: "General",
   1: "0",
   2: "0.00",
@@ -1906,7 +1906,7 @@ function Va(e, n, t) {
       e == "m/d/yy" && t.dateNF ? r = t.dateNF : r = e;
       break;
     case "number":
-      e == 14 && t.dateNF ? r = t.dateNF : r = (t.table != null ? t.table : xt)[e], r == null && (r = t.table && t.table[ov[e]] || xt[ov[e]]), r == null && (r = fk[e] || "General");
+      e == 14 && t.dateNF ? r = t.dateNF : r = (t.table != null ? t.table : bt)[e], r == null && (r = t.table && t.table[ov[e]] || bt[ov[e]]), r == null && (r = fk[e] || "General");
       break;
   }
   if (Dd(r, 0))
@@ -1927,25 +1927,25 @@ function _1(e, n) {
   if (typeof n != "number") {
     n = +n || -1;
     for (var t = 0; t < 392; ++t) {
-      if (xt[t] == null) {
+      if (bt[t] == null) {
         n < 0 && (n = t);
         continue;
       }
-      if (xt[t] == e) {
+      if (bt[t] == e) {
         n = t;
         break;
       }
     }
     n < 0 && (n = 391);
   }
-  return xt[n] = e, n;
+  return bt[n] = e, n;
 }
 function of(e) {
   for (var n = 0; n != 392; ++n)
     e[n] !== void 0 && _1(e[n], n);
 }
 function Ml() {
-  xt = dk();
+  bt = dk();
 }
 var Ak = {
   5: '"$"#,##0_);\\("$"#,##0\\)',
@@ -2004,7 +2004,7 @@ var Ak = {
   81: "mmss.0"
 }, x1 = /[dD]+|[mM]+|[yYeE]+|[Hh]+|[Ss]+/g;
 function Rk(e) {
-  var n = typeof e == "number" ? xt[e] : e;
+  var n = typeof e == "number" ? bt[e] : e;
   return n = n.replace(x1, "(\\d+)"), new RegExp("^" + n + "$");
 }
 function Pk(e, n, t) {
@@ -4260,7 +4260,7 @@ function G1(e, n, t) {
             else
               continue;
           else
-            typeof v.v == "number" ? v.t = "n" : typeof v.v == "boolean" ? v.t = "b" : v.v instanceof Date ? (v.z = r.dateNF || xt[14], r.cellDates ? (v.t = "d", v.w = Va(v.z, vn(v.v, r.date1904))) : (v.t = "n", v.v = vn(v.v, r.date1904), v.w = Va(v.z, v.v))) : v.t = "s";
+            typeof v.v == "number" ? v.t = "n" : typeof v.v == "boolean" ? v.t = "b" : v.v instanceof Date ? (v.z = r.dateNF || bt[14], r.cellDates ? (v.t = "d", v.w = Va(v.z, vn(v.v, r.date1904))) : (v.t = "n", v.v = vn(v.v, r.date1904), v.w = Va(v.z, v.v))) : v.t = "s";
           if (a)
             d[g] && d[g].z && (v.z = d[g].z), d[g] = v;
           else {
@@ -7746,7 +7746,7 @@ V` : m.v != null ? h += a(m.v, "V") : m.f != null && !m.F ? h += i("=" + m.f) : 
             h += i(isNaN(+m.v) ? m.v : '="' + m.v + '"');
             break;
           case "d":
-            m.w || (m.w = Va(m.z || xt[14], vn(Kr(m.v)))), h += a(m.w, "V");
+            m.w || (m.w = Va(m.z || bt[14], vn(Kr(m.v)))), h += a(m.w, "V");
             break;
           default:
             h += `1,0\r
@@ -7846,7 +7846,7 @@ EOD`;
               break;
             case "d":
               var b = vn(Kr(p.v));
-              h[2] = "vtc", h[3] = "nd", h[4] = "" + b, h[5] = p.w || Va(p.z || xt[14], b);
+              h[2] = "vtc", h[3] = "nd", h[4] = "" + b, h[5] = p.w || Va(p.z || bt[14], b);
               break;
             case "e":
               continue;
@@ -7944,7 +7944,7 @@ EOD`;
       else if (!isNaN(y = Ha(O)))
         I.t = "n", f.cellText !== !1 && (I.w = O), I.v = y;
       else if (!isNaN((y = Sl(O)).getDate()) || D && O.match(D)) {
-        I.z = f.dateNF || xt[14];
+        I.z = f.dateNF || bt[14];
         var X = 0;
         D && O.match(D) && (O = Pk(O, f.dateNF, O.match(D) || []), X = 1, y = Kr(O, X)), f.cellDates ? (I.t = "d", I.v = y) : (I.t = "n", I.v = vn(y)), f.cellText !== !1 && (I.w = Va(I.z, I.v instanceof Date ? vn(I.v) : I.v)), f.cellNF || delete I.z;
       } else
@@ -8094,7 +8094,7 @@ var Cs = /* @__PURE__ */ function() {
           case 13:
           case 14:
           case 16:
-            Je == 14 && (be[2] & 112) == 112 && (be[2] & 15) > 1 && (be[2] & 15) < 15 && (be[1].z = q.dateNF || xt[14], q.cellDates && (be[1].t = "d", be[1].v = uf(be[1].v))), q.qpro && be[3] > xe && (K["!ref"] = At(fe), Te[ae] = K, L.push(ae), K = {}, q.dense && (pe = K["!data"] = []), fe = { s: { r: 0, c: 0 }, e: { r: 0, c: 0 } }, xe = be[3], ae = ye || "Sheet" + (xe + 1), ye = "");
+            Je == 14 && (be[2] & 112) == 112 && (be[2] & 15) > 1 && (be[2] & 15) < 15 && (be[1].z = q.dateNF || bt[14], q.cellDates && (be[1].t = "d", be[1].v = uf(be[1].v))), q.qpro && be[3] > xe && (K["!ref"] = At(fe), Te[ae] = K, L.push(ae), K = {}, q.dense && (pe = K["!data"] = []), fe = { s: { r: 0, c: 0 }, e: { r: 0, c: 0 } }, xe = be[3], ae = ye || "Sheet" + (xe + 1), ye = "");
             var ct = q.dense ? (pe[be[0].r] || [])[be[0].c] : K[Wt(be[0])];
             if (ct) {
               ct.t = be[1].t, ct.v = be[1].v, be[1].z != null && (ct.z = be[1].z), be[1].f != null && (ct.f = be[1].f);
@@ -10031,8 +10031,8 @@ function WT(e, n, t, r) {
 }
 function VT(e, n, t) {
   n.NumberFmt = [];
-  for (var r = zr(xt), a = 0; a < r.length; ++a)
-    n.NumberFmt[r[a]] = xt[r[a]];
+  for (var r = zr(bt), a = 0; a < r.length; ++a)
+    n.NumberFmt[r[a]] = bt[r[a]];
   var i = e[0].match(ta);
   if (i)
     for (a = 0; a < i.length; ++a) {
@@ -10271,8 +10271,8 @@ function n2(e, n, t) {
 function a2(e, n, t) {
   var r = {};
   r.NumberFmt = [];
-  for (var a in xt)
-    r.NumberFmt[a] = xt[a];
+  for (var a in bt)
+    r.NumberFmt[a] = bt[a];
   r.CellXf = [], r.Fonts = [];
   var i = [], o = !1;
   return _o(e, function(l, u, c) {
@@ -13641,7 +13641,7 @@ function ns(e, n, t) {
 }
 function Wb(e, n, t, r, a, i) {
   try {
-    r.cellNF && (e.z = xt[n]);
+    r.cellNF && (e.z = bt[n]);
   } catch (s) {
     if (r.WTF)
       throw s;
@@ -13649,7 +13649,7 @@ function Wb(e, n, t, r, a, i) {
   if (!(e.t === "z" && !r.cellStyles)) {
     if (e.t === "d" && typeof e.v == "string" && (e.v = Kr(e.v)), (!r || r.cellText !== !1) && e.t !== "z")
       try {
-        if (xt[n] == null && zo(Ak[n] || "General", n), e.t === "e")
+        if (bt[n] == null && zo(Ak[n] || "General", n), e.t === "e")
           e.w = e.w || xo[e.v];
         else if (n === 0)
           if (e.t === "n")
@@ -13860,7 +13860,7 @@ function DR(e, n, t, r) {
         a = xo[e.v];
         break;
       case "d":
-        r && r.cellDates ? a = Kr(e.v, -1).toISOString() : (e = Rr(e), e.t = "n", a = "" + (e.v = vn(Kr(e.v)))), typeof e.z > "u" && (e.z = xt[14]);
+        r && r.cellDates ? a = Kr(e.v, -1).toISOString() : (e = Rr(e), e.t = "n", a = "" + (e.v = vn(Kr(e.v)))), typeof e.z > "u" && (e.z = bt[14]);
         break;
       default:
         a = e.v;
@@ -14012,7 +14012,7 @@ var TR = /* @__PURE__ */ function() {
                   (!c || c.cellText !== !1) && (E.w = E.v), E.v = lp[E.v];
                   break;
               }
-              if (I = X = 0, R = null, A && C.s !== void 0 && (R = h.CellXf[C.s], R != null && (R.numFmtId != null && (I = R.numFmtId), c.cellStyles && R.fillId != null && (X = R.fillId))), Wb(E, I, X, c, f, h), c.cellDates && A && E.t == "n" && Ls(xt[I]) && (E.t = "d", E.v = uf(E.v)), C.cm && c.xlmeta) {
+              if (I = X = 0, R = null, A && C.s !== void 0 && (R = h.CellXf[C.s], R != null && (R.numFmtId != null && (I = R.numFmtId), c.cellStyles && R.fillId != null && (X = R.fillId))), Wb(E, I, X, c, f, h), c.cellDates && A && E.t == "n" && Ls(bt[I]) && (E.t = "d", E.v = uf(E.v)), C.cm && c.xlmeta) {
                 var Te = (c.xlmeta.Cell || [])[+C.cm - 1];
                 Te && Te.type == "XLDAPR" && (E.D = !0);
               }
@@ -14453,7 +14453,7 @@ function BP(e, n, t, r, a, i, o) {
             }
             !F && V.length > 3 && (p.f = V[3]);
           }
-          if (c.s.r > h.r && (c.s.r = h.r), c.s.c > g && (c.s.c = g), c.e.r < h.r && (c.e.r = h.r), c.e.c < g && (c.e.c = g), s.cellDates && m && p.t == "n" && Ls(xt[m.numFmtId])) {
+          if (c.s.r > h.r && (c.s.r = h.r), c.s.c > g && (c.s.c = g), c.e.r < h.r && (c.e.r = h.r), c.e.c < g && (c.e.c = g), s.cellDates && m && p.t == "n" && Ls(bt[m.numFmtId])) {
             var Se = _s(p.v);
             Se && (p.t = "d", p.v = new Date(Se.y, Se.m - 1, Se.d, Se.H, Se.M, Se.S, Se.u));
           }
@@ -14597,7 +14597,7 @@ function MP(e, n, t, r, a, i, o) {
       l = n.v ? "1" : "0";
       break;
     case "d":
-      n = Rr(n), n.z = n.z || xt[14], n.v = vn(Kr(n.v)), n.t = "n";
+      n = Rr(n), n.z = n.z || bt[14], n.v = vn(Kr(n.v)), n.t = "n";
       break;
     case "n":
     case "e":
@@ -15581,18 +15581,18 @@ function l0(e, n) {
     return FB(r, t);
   mu = {
     "General Number": "General",
-    "General Date": xt[22],
+    "General Date": bt[22],
     "Long Date": "dddd, mmmm dd, yyyy",
-    "Medium Date": xt[15],
-    "Short Date": xt[14],
-    "Long Time": xt[19],
-    "Medium Time": xt[18],
-    "Short Time": xt[20],
+    "Medium Date": bt[15],
+    "Short Date": bt[14],
+    "Long Time": bt[19],
+    "Medium Time": bt[18],
+    "Short Time": bt[20],
     Currency: '"$"#,##0.00_);[Red]\\("$"#,##0.00\\)',
-    Fixed: xt[2],
-    Standard: xt[4],
-    Percent: xt[10],
-    Scientific: xt[11],
+    Fixed: bt[2],
+    Standard: bt[4],
+    Percent: bt[10],
+    Scientific: bt[11],
     "Yes/No": '"Yes";"Yes";"No";@',
     "True/False": '"True";"True";"False";@',
     "On/Off": '"Yes";"Yes";"No";@'
@@ -15657,11 +15657,11 @@ function l0(e, n) {
         break;
       case "numberformat":
         E.nf = Zt(li(s[0]).Format || "General"), mu[E.nf] && (E.nf = mu[E.nf]);
-        for (var ye = 0; ye != 392 && xt[ye] != E.nf; ++ye)
+        for (var ye = 0; ye != 392 && bt[ye] != E.nf; ++ye)
           ;
         if (ye == 392) {
           for (ye = 57; ye != 392; ++ye)
-            if (xt[ye] == null) {
+            if (bt[ye] == null) {
               zo(E.nf, ye);
               break;
             }
@@ -16513,7 +16513,7 @@ function l0(e, n) {
           throw "Unrecognized tag: " + s[3] + "|" + l.join("|");
     }
   var Ve = {};
-  return !t.bookSheets && !t.bookProps && (Ve.Sheets = c), Ve.SheetNames = d, Ve.Workbook = B, Ve.SSF = Rr(xt), Ve.Props = N, Ve.Custprops = O, Ve.bookType = "xlml", Ve;
+  return !t.bookSheets && !t.bookProps && (Ve.Sheets = c), Ve.SheetNames = d, Ve.Workbook = B, Ve.SSF = Rr(bt), Ve.Props = N, Ve.Custprops = O, Ve.bookType = "xlml", Ve;
 }
 function hh(e, n) {
   switch (Cp(n = n || {}), n.type || "base64") {
@@ -16538,7 +16538,7 @@ function KN(e, n) {
   var t = ['<Style ss:ID="Default" ss:Name="Normal"><NumberFormat/></Style>'];
   return n.cellXfs.forEach(function(r, a) {
     var i = [];
-    i.push(ze("NumberFormat", null, { "ss:Format": Mt(xt[r.numFmtId]) }));
+    i.push(ze("NumberFormat", null, { "ss:Format": Mt(bt[r.numFmtId]) }));
     var o = (
       /*::(*/
       { "ss:ID": "s" + (21 + a) }
@@ -16633,7 +16633,7 @@ function qN(e, n, t, r, a, i, o) {
       d = "Error", f = xo[e.v];
       break;
     case "d":
-      d = "DateTime", f = new Date(e.v).toISOString(), e.z == null && (e.z = e.z || xt[14]);
+      d = "DateTime", f = new Date(e.v).toISOString(), e.z == null && (e.z = e.z || bt[14]);
       break;
     case "s":
       d = "String", f = Jk(e.v || "");
@@ -16679,7 +16679,7 @@ function QN(e, n, t) {
   return o.length > 0 && r.push("<Names>" + o + "</Names>"), o = i ? JN(i, n, e, t) : "", o.length > 0 && r.push("<Table>" + o + "</Table>"), r.push(YN(i, n, e, t)), i["!autofilter"] && r.push('<AutoFilter x:Range="' + ff(Au(i["!autofilter"].ref), { r: 0, c: 0 }) + '" xmlns="urn:schemas-microsoft-com:office:excel"></AutoFilter>'), r.join("");
 }
 function eB(e, n) {
-  n || (n = {}), e.SSF || (e.SSF = Rr(xt)), e.SSF && (Ml(), of(e.SSF), n.revssf = lf(e.SSF), n.revssf[e.SSF[65535]] = 0, n.ssf = e.SSF, n.cellXfs = [], ns(n.cellXfs, {}, { revssf: { General: 0 } }));
+  n || (n = {}), e.SSF || (e.SSF = Rr(bt)), e.SSF && (Ml(), of(e.SSF), n.revssf = lf(e.SSF), n.revssf[e.SSF[65535]] = 0, n.ssf = e.SSF, n.cellXfs = [], ns(n.cellXfs, {}, { revssf: { General: 0 } }));
   var t = [];
   t.push(GN(e, n)), t.push(zN(e)), t.push(""), t.push("");
   for (var r = 0; r < e.SheetNames.length; ++r)
@@ -16741,7 +16741,7 @@ function wi(e, n, t) {
   if (e.t !== "z" && e.XF) {
     var r = 0;
     try {
-      r = e.z || e.XF.numFmtId || 0, n.cellNF && (e.z = xt[r]);
+      r = e.z || e.XF.numFmtId || 0, n.cellNF && (e.z = bt[r]);
     } catch (i) {
       if (n.WTF)
         throw i;
@@ -16753,7 +16753,7 @@ function wi(e, n, t) {
         if (n.WTF)
           throw i;
       }
-    if (n.cellDates && r && e.t == "n" && Ls(xt[r] || String(r))) {
+    if (n.cellDates && r && e.t == "n" && Ls(bt[r] || String(r))) {
       var a = _s(e.v);
       a && (e.t = "d", e.v = new Date(a.y, a.m - 1, a.d, a.H, a.M, a.S, a.u));
     }
@@ -17091,7 +17091,7 @@ function aB(e, n) {
         case 1054:
           if (I.biff == 4) {
             Se[ve++] = L[1];
-            for (var mt = 0; mt < ve + 163 && xt[mt] != L[1]; ++mt)
+            for (var mt = 0; mt < ve + 163 && bt[mt] != L[1]; ++mt)
               ;
             mt >= 163 && zo(L[1], ve + 163);
           } else
@@ -17100,7 +17100,7 @@ function aB(e, n) {
         case 30:
           {
             Se[ve++] = L;
-            for (var ar = 0; ar < ve + 163 && xt[ar] != L; ++ar)
+            for (var ar = 0; ar < ve + 163 && bt[ar] != L; ++ar)
               ;
             ar >= 163 && zo(L, ve + 163);
           }
@@ -17187,7 +17187,7 @@ function aB(e, n) {
     return i[It].name;
   }), n.bookSheets || (t.Sheets = r), !t.SheetNames.length && c["!ref"] ? (t.SheetNames.push("Sheet1"), t.Sheets && (t.Sheets.Sheet1 = c)) : t.Preamble = c, t.Sheets && B.forEach(function(It, qe) {
     t.Sheets[t.SheetNames[qe]]["!autofilter"] = It;
-  }), t.Strings = l, t.SSF = Rr(xt), I.enc && (t.Encryption = I.enc), X && (t.Themes = X), t.Metadata = {}, b !== void 0 && (t.Metadata.Country = b), V.names.length > 0 && (C.Names = V.names), t.Workbook = C, t;
+  }), t.Strings = l, t.SSF = Rr(bt), I.enc && (t.Encryption = I.enc), X && (t.Themes = X), t.Metadata = {}, b !== void 0 && (t.Metadata.Country = b), V.names.length > 0 && (C.Names = V.names), t.Workbook = C, t;
 }
 var gu = {
   SI: "e0859ff2f94f6810ab9108002b27b3d9",
@@ -23527,7 +23527,7 @@ function CB(e, n, t) {
 }
 function SB(e, n) {
   var t = n || {}, r = [];
-  e && !e.SSF && (e.SSF = Rr(xt)), e && e.SSF && (Ml(), of(e.SSF), t.revssf = lf(e.SSF), t.revssf[e.SSF[65535]] = 0, t.ssf = e.SSF), t.Strings = /*::((*/
+  e && !e.SSF && (e.SSF = Rr(bt)), e && e.SSF && (Ml(), of(e.SSF), t.revssf = lf(e.SSF), t.revssf[e.SSF[65535]] = 0, t.ssf = e.SSF), t.Strings = /*::((*/
   [], t.Strings.Count = 0, t.Strings.Unique = 0, Sp(t), t.cellXfs = [], ns(t.cellXfs, {}, { revssf: { General: 0 } }), e.Props || (e.Props = {});
   for (var a = 0; a < e.SheetNames.length; ++a)
     r[r.length] = yB(a, t, e);
@@ -23593,7 +23593,7 @@ function a_(e, n) {
             continue;
           }
           var N = { t: "s", v: b };
-          t.raw || !b.trim().length || D == "s" || (b === "TRUE" ? N = { t: "b", v: !0 } : b === "FALSE" ? N = { t: "b", v: !1 } : isNaN(Ha(b)) ? isNaN(Sl(b).getDate()) || (N = { t: "d", v: Kr(b) }, t.cellDates || (N = { t: "n", v: vn(N.v) }), N.z = t.dateNF || xt[14]) : N = { t: "n", v: Ha(b) }), r ? (a["!data"][c] || (a["!data"][c] = []), a["!data"][c][d] = N) : a[Wt({ r: c, c: d })] = N, d += h;
+          t.raw || !b.trim().length || D == "s" || (b === "TRUE" ? N = { t: "b", v: !0 } : b === "FALSE" ? N = { t: "b", v: !1 } : isNaN(Ha(b)) ? isNaN(Sl(b).getDate()) || (N = { t: "d", v: Kr(b) }, t.cellDates || (N = { t: "n", v: vn(N.v) }), N.z = t.dateNF || bt[14]) : N = { t: "n", v: Ha(b) }), r ? (a["!data"][c] || (a["!data"][c] = []), a["!data"][c][d] = N) : a[Wt({ r: c, c: d })] = N, d += h;
         }
       }
     }
@@ -23680,7 +23680,7 @@ function Jb(e, n, t) {
         }
         b = +C.getAttribute("colspan") || 1, ((x = +C.getAttribute("rowspan") || 1) > 1 || b > 1) && f.push({ s: { r: v + o, c: y + s }, e: { r: v + o + (x || 1) - 1, c: y + s + (b || 1) - 1 } });
         var O = { t: "s", v: F }, I = C.getAttribute("data-t") || C.getAttribute("t") || "";
-        F != null && (F.length == 0 ? O.t = I || "z" : a.raw || F.trim().length == 0 || I == "s" || (F === "TRUE" ? O = { t: "b", v: !0 } : F === "FALSE" ? O = { t: "b", v: !1 } : isNaN(Ha(F)) ? isNaN(Sl(F).getDate()) || (O = { t: "d", v: Kr(F) }, a.cellDates || (O = { t: "n", v: vn(O.v) }), O.z = a.dateNF || xt[14]) : O = { t: "n", v: Ha(F) })), O.z === void 0 && D != null && (O.z = D);
+        F != null && (F.length == 0 ? O.t = I || "z" : a.raw || F.trim().length == 0 || I == "s" || (F === "TRUE" ? O = { t: "b", v: !0 } : F === "FALSE" ? O = { t: "b", v: !1 } : isNaN(Ha(F)) ? isNaN(Sl(F).getDate()) || (O = { t: "d", v: Kr(F) }, a.cellDates || (O = { t: "n", v: vn(O.v) }), O.z = a.dateNF || bt[14]) : O = { t: "n", v: Ha(F) })), O.z === void 0 && D != null && (O.z = D);
         var X = "", A = C.getElementsByTagName("A");
         if (A && A.length)
           for (var R = 0; R < A.length && !(A[R].hasAttribute("href") && (X = A[R].getAttribute("href"), X.charAt(0) != "#")); ++R)
@@ -26142,7 +26142,7 @@ function nM(e, n) {
     Strings: hu,
     Styles: c,
     Themes: u,
-    SSF: Rr(xt)
+    SSF: Rr(bt)
   }, n && n.bookFiles && (e.files ? (m.keys = a, m.files = e.files) : (m.keys = [], m.files = {}, e.FullPaths.forEach(function(R, z) {
     R = R.replace(/^Root Entry[\/]/, ""), m.keys.push(R), m.files[R] = e.FileIndex[z];
   }))), n && n.bookVBA && (i.vba.length > 0 ? m.vbaraw = dn(e, Ga(i.vba[0]), !0) : i.defaults && i.defaults.bin === sI && (m.vbaraw = dn(e, "xl/vbaProject.bin", !0))), m.bookType = o ? "xlsb" : "xlsx", m;
@@ -26179,7 +26179,7 @@ function aM(e, n) {
   throw new Error("File is password-protected");
 }
 function iM(e, n) {
-  e && !e.SSF && (e.SSF = Rr(xt)), e && e.SSF && (Ml(), of(e.SSF), n.revssf = lf(e.SSF), n.revssf[e.SSF[65535]] = 0, n.ssf = e.SSF), n.rels = {}, n.wbrels = {}, n.Strings = /*::((*/
+  e && !e.SSF && (e.SSF = Rr(bt)), e && e.SSF && (Ml(), of(e.SSF), n.revssf = lf(e.SSF), n.revssf[e.SSF[65535]] = 0, n.ssf = e.SSF), n.rels = {}, n.wbrels = {}, n.Strings = /*::((*/
   [], n.Strings.Count = 0, n.Strings.Unique = 0, pu ? n.revStrings = /* @__PURE__ */ new Map() : (n.revStrings = {}, n.revStrings.foo = [], delete n.revStrings.foo);
   var t = "bin", r = !0, a = cp();
   Sp(n = n || {});
@@ -26210,7 +26210,7 @@ function iM(e, n) {
   return Bt(i, o, v), a.themes.push(o), Cr(n.wbrels, -1, "theme/theme1.xml", Gt.THEME), o = "xl/styles." + t, Bt(i, o, p2(e, n)), a.styles.push(o), Cr(n.wbrels, -1, "styles." + t, Gt.STY), e.vbaraw && r && (o = "xl/vbaProject.bin", Bt(i, o, e.vbaraw), a.vba.push(o), Cr(n.wbrels, -1, "vbaProject.bin", Gt.VBA)), o = "xl/metadata." + t, Bt(i, o, W2()), a.metadata.push(o), Cr(n.wbrels, -1, "metadata." + t, Gt.XLMETA), Bt(i, "[Content_Types].xml", X1(a, n)), Bt(i, "_rels/.rels", pl(n.rels)), Bt(i, "xl/_rels/workbook." + t + ".rels", pl(n.wbrels)), delete n.revssf, delete n.ssf, i;
 }
 function oM(e, n) {
-  e && !e.SSF && (e.SSF = Rr(xt)), e && e.SSF && (Ml(), of(e.SSF), n.revssf = lf(e.SSF), n.revssf[e.SSF[65535]] = 0, n.ssf = e.SSF), n.rels = {}, n.wbrels = {}, n.Strings = /*::((*/
+  e && !e.SSF && (e.SSF = Rr(bt)), e && e.SSF && (Ml(), of(e.SSF), n.revssf = lf(e.SSF), n.revssf[e.SSF[65535]] = 0, n.ssf = e.SSF), n.rels = {}, n.wbrels = {}, n.Strings = /*::((*/
   [], n.Strings.Count = 0, n.Strings.Unique = 0, pu ? n.revStrings = /* @__PURE__ */ new Map() : (n.revStrings = {}, n.revStrings.foo = [], delete n.revStrings.foo);
   var t = "xml", r = cI.indexOf(n.bookType) > -1, a = cp();
   Sp(n = n || {});
@@ -26785,7 +26785,7 @@ function dy(e, n, t) {
     a && !o["!data"][s + g + i] && (o["!data"][s + g + i] = []), a && (p = o["!data"][s + g + i]), zr(v).forEach(function(y) {
       (h = f.indexOf(y)) == -1 && (f[h = f.length] = y);
       var x = v[y], b = "z", k = "", E = a ? "" : Kt(l + h) + tr(s + g + i), C = a ? p[l + h] : o[E];
-      x && typeof x == "object" && !(x instanceof Date) ? a ? p[l + h] = x : o[E] = x : (typeof x == "number" ? b = "n" : typeof x == "boolean" ? b = "b" : typeof x == "string" ? b = "s" : x instanceof Date ? (b = "d", r.cellDates || (b = "n", x = vn(x)), k = C != null && C.z && Ls(C.z) ? C.z : r.dateNF || xt[14]) : x === null && r.nullError && (b = "e", x = 0), C ? (C.t = b, C.v = x, delete C.w, delete C.R, k && (C.z = k)) : a ? p[l + h] = C = { t: b, v: x } : o[E] = C = { t: b, v: x }, k && (C.z = k));
+      x && typeof x == "object" && !(x instanceof Date) ? a ? p[l + h] = x : o[E] = x : (typeof x == "number" ? b = "n" : typeof x == "boolean" ? b = "b" : typeof x == "string" ? b = "s" : x instanceof Date ? (b = "d", r.cellDates || (b = "n", x = vn(x)), k = C != null && C.z && Ls(C.z) ? C.z : r.dateNF || bt[14]) : x === null && r.nullError && (b = "e", x = 0), C ? (C.t = b, C.v = x, delete C.w, delete C.R, k && (C.z = k)) : a ? p[l + h] = C = { t: b, v: x } : o[E] = C = { t: b, v: x }, k && (C.z = k));
     });
   }), c.e.c = Math.max(c.e.c, l + f.length - 1);
   var m = tr(s);
@@ -30076,7 +30076,7 @@ function wf(e, n) {
   var t = typeof e == "number" ? " and (min-width: " + e + "px)" : "", r = typeof n == "number" ? " and (max-width: " + n + "px)" : "";
   return "@media only screen" + t + r;
 }
-function _t() {
+function xt() {
   return {
     forcedColorAdjust: "none",
     MsHighContrastAdjust: "none"
@@ -33159,7 +33159,7 @@ var Y_ = function(e) {
           // icons inside of anchor tags are not properly inheriting color in high contrast
           color: "inherit"
         }, r)
-      }, t[me] = S({}, _t()), t)
+      }, t[me] = S({}, xt()), t)
     },
     linkContent: {
       whiteSpace: "nowrap",
@@ -34950,7 +34950,7 @@ var jn = {
             borderBottomRightRadius: "0",
             border: "none",
             flexGrow: "1",
-            selectors: (t = {}, t[me] = S({ color: "WindowText", backgroundColor: "Window", border: "1px solid WindowText", borderRightWidth: "0" }, _t()), t[":hover"] = {
+            selectors: (t = {}, t[me] = S({ color: "WindowText", backgroundColor: "Window", border: "1px solid WindowText", borderRightWidth: "0" }, xt()), t[":hover"] = {
               border: "none"
             }, t[":active"] = {
               border: "none"
@@ -34987,14 +34987,14 @@ var jn = {
     splitButtonContainerChecked: {
       selectors: {
         ".ms-Button--primary": {
-          selectors: (o = {}, o[me] = S({ color: "Window", backgroundColor: "WindowText" }, _t()), o)
+          selectors: (o = {}, o[me] = S({ color: "Window", backgroundColor: "WindowText" }, xt()), o)
         }
       }
     },
     splitButtonContainerCheckedHovered: {
       selectors: {
         ".ms-Button--primary": {
-          selectors: (s = {}, s[me] = S({ color: "Window", backgroundColor: "WindowText" }, _t()), s)
+          selectors: (s = {}, s[me] = S({ color: "Window", backgroundColor: "WindowText" }, xt()), s)
         }
       }
     },
@@ -35068,7 +35068,7 @@ var jn = {
     splitButtonContainerDisabled: {
       outline: "none",
       border: "none",
-      selectors: (p = {}, p[me] = S({ color: "GrayText", borderColor: "GrayText", backgroundColor: "Window" }, _t()), p)
+      selectors: (p = {}, p[me] = S({ color: "GrayText", borderColor: "GrayText", backgroundColor: "Window" }, xt()), p)
     },
     splitButtonMenuFocused: S({}, Fr(e, { highContrastStyle: y, inset: 2 }))
   };
@@ -35185,7 +35185,7 @@ function N6(e) {
       backgroundColor: d.primaryButtonBackground,
       border: "1px solid " + d.primaryButtonBackground,
       color: d.primaryButtonText,
-      selectors: (n = {}, n[me] = S({ color: "Window", backgroundColor: "WindowText", borderColor: "WindowText" }, _t()), n["." + Gr + " &:focus"] = {
+      selectors: (n = {}, n[me] = S({ color: "Window", backgroundColor: "WindowText", borderColor: "WindowText" }, xt()), n["." + Gr + " &:focus"] = {
         selectors: {
           ":after": {
             border: "none",
@@ -35208,7 +35208,7 @@ function N6(e) {
       backgroundColor: d.primaryButtonBackgroundPressed,
       border: "1px solid " + d.primaryButtonBackgroundPressed,
       color: d.primaryButtonTextPressed,
-      selectors: (r = {}, r[me] = S({ color: "Window", backgroundColor: "WindowText", borderColor: "WindowText" }, _t()), r)
+      selectors: (r = {}, r[me] = S({ color: "Window", backgroundColor: "WindowText", borderColor: "WindowText" }, xt()), r)
     },
     rootExpanded: {
       backgroundColor: d.primaryButtonBackgroundPressed,
@@ -35536,8 +35536,8 @@ var B6 = "32px", M6 = "80px", O6 = nr(function(e, n, t) {
       backgroundColor: b.white,
       selectors: (c = {}, c["." + jn.msButtonIcon] = {
         color: k.disabledBodySubtext,
-        selectors: (d = {}, d[me] = S({ color: "GrayText" }, _t()), d)
-      }, c[me] = S({ color: "GrayText", backgroundColor: "Window" }, _t()), c)
+        selectors: (d = {}, d[me] = S({ color: "GrayText" }, xt()), d)
+      }, c[me] = S({ color: "GrayText", backgroundColor: "Window" }, xt()), c)
     },
     // Split button styles
     splitButtonContainer: {
@@ -35580,7 +35580,7 @@ var B6 = "32px", M6 = "80px", O6 = nr(function(e, n, t) {
     },
     splitButtonMenuButtonDisabled: {
       backgroundColor: b.white,
-      selectors: (v = {}, v[me] = S({ color: "GrayText", border: "none", backgroundColor: "Window" }, _t()), v)
+      selectors: (v = {}, v[me] = S({ color: "GrayText", border: "none", backgroundColor: "Window" }, xt()), v)
     },
     splitButtonMenuButtonChecked: {
       backgroundColor: b.neutralLight,
@@ -36402,7 +36402,7 @@ var F5 = {
         color: g.neutralPrimary,
         cursor: "pointer",
         position: "relative",
-        selectors: (n = {}, n[me] = S({ color: "WindowText", backgroundColor: "transparent", zIndex: 0 }, _t()), n["&." + y.hoverStyle] = {
+        selectors: (n = {}, n[me] = S({ color: "WindowText", backgroundColor: "transparent", zIndex: 0 }, xt()), n["&." + y.hoverStyle] = {
           backgroundColor: g.neutralLighter,
           selectors: (t = {}, t[me] = {
             zIndex: 3,
@@ -36441,7 +36441,7 @@ var F5 = {
         }, o[me] = {
           color: "HighlightText!important",
           background: "Highlight!important"
-        }, o), i[me] = S({ background: "Highlight!important", color: "HighlightText!important", borderColor: "Highlight!important" }, _t()), i)
+        }, o), i[me] = S({ background: "Highlight!important", color: "HighlightText!important", borderColor: "Highlight!important" }, xt()), i)
       }
     ],
     weekRow: x,
@@ -36489,7 +36489,7 @@ var F5 = {
       borderRadius: "100%",
       color: g.white + "!important",
       fontWeight: Nt.semibold + "!important",
-      selectors: (s = {}, s[me] = S({ background: "WindowText!important", color: "Window!important", borderColor: "WindowText!important" }, _t()), s)
+      selectors: (s = {}, s[me] = S({ background: "WindowText!important", color: "Window!important", borderColor: "WindowText!important" }, xt()), s)
     },
     firstTransitionWeek: S(S({ position: "absolute", opacity: 0, width: 0, height: 0, overflow: "hidden" }, b), { animationName: b.animationName + "," + ux }),
     lastTransitionWeek: S(S({ position: "absolute", opacity: 0, width: 0, height: 0, overflow: "hidden", marginTop: -28 }, k), { animationName: k.animationName + "," + ux }),
@@ -36512,7 +36512,7 @@ var F5 = {
         selectors: (c = {}, c[me] = {
           backgroundColor: "HighlightText"
         }, c)
-      }, l[me] = S({ backgroundColor: "WindowText" }, _t()), l)
+      }, l[me] = S({ backgroundColor: "WindowText" }, xt()), l)
     },
     topRightCornerDate: {
       borderTopRightRadius: "2px"
@@ -36801,11 +36801,11 @@ var Sd = function(e) {
             backgroundColor: m.neutralLight,
             cursor: "pointer",
             outline: "1px solid transparent",
-            selectors: (n = {}, n[me] = S({ background: "Window", color: "WindowText", outline: "1px solid Highlight" }, _t()), n)
+            selectors: (n = {}, n[me] = S({ background: "Window", color: "WindowText", outline: "1px solid Highlight" }, xt()), n)
           },
           "&:active": {
             backgroundColor: m.themeLight,
-            selectors: (t = {}, t[me] = S({ background: "Window", color: "Highlight" }, _t()), t)
+            selectors: (t = {}, t[me] = S({ background: "Window", color: "Highlight" }, xt()), t)
           }
         }
       }
@@ -36819,9 +36819,9 @@ var Sd = function(e) {
         },
         "&:hover": {
           backgroundColor: m.themePrimary,
-          selectors: (a = {}, a[me] = S({ backgroundColor: "WindowText", color: "Window" }, _t()), a)
+          selectors: (a = {}, a[me] = S({ backgroundColor: "WindowText", color: "Window" }, xt()), a)
         }
-      }, r[me] = S({ backgroundColor: "WindowText", color: "Window" }, _t()), r)
+      }, r[me] = S({ backgroundColor: "WindowText", color: "Window" }, xt()), r)
     } : {},
     selected: f ? {
       color: m.neutralPrimary,
@@ -36833,9 +36833,9 @@ var Sd = function(e) {
         },
         "&:hover, &:active": {
           backgroundColor: m.themeLight,
-          selectors: (o = {}, o[me] = S({ color: "Window", background: "Highlight" }, _t()), o)
+          selectors: (o = {}, o[me] = S({ color: "Window", background: "Highlight" }, xt()), o)
         }
-      }, i[me] = S({ background: "Highlight", color: "Window" }, _t()), i)
+      }, i[me] = S({ background: "Highlight", color: "Window" }, xt()), i)
     } : {},
     disabled: {
       selectors: (s = {
@@ -37565,7 +37565,7 @@ var pS = {
           ":hover": {
             opacity: 1
           }
-        }, a[me] = S({}, _t()), a)
+        }, a[me] = S({}, xt()), a)
       },
       l && {
         opacity: 1,
@@ -37790,7 +37790,7 @@ var iH = {
         /* in case the icon is bigger than the box */
         overflow: "hidden",
         ":after": D ? xe : null
-      }, h[me] = S({ borderColor: "WindowText" }, _t()), h),
+      }, h[me] = S({ borderColor: "WindowText" }, xt()), h),
       D && {
         borderColor: ne
       },
@@ -37829,7 +37829,7 @@ var iH = {
       (g = {
         opacity: E && !D ? "1" : "0",
         color: R
-      }, g[me] = S({ color: C ? "GrayText" : "Window" }, _t()), g)
+      }, g[me] = S({ color: C ? "GrayText" : "Window" }, xt()), g)
     ],
     text: [
       A.text,
@@ -37837,7 +37837,7 @@ var iH = {
         color: C ? ye : ae,
         fontSize: X.medium.fontSize,
         lineHeight: "20px"
-      }, y[me] = S({ color: C ? "GrayText" : "WindowText" }, _t()), y),
+      }, y[me] = S({ color: C ? "GrayText" : "WindowText" }, xt()), y),
       k ? {
         marginRight: 4
       } : {
@@ -37886,7 +37886,7 @@ var iH = {
       },
       a && {
         color: u,
-        selectors: (n = {}, n[me] = S({ color: "GrayText" }, _t()), n)
+        selectors: (n = {}, n[me] = S({ color: "GrayText" }, xt()), n)
       },
       i && {
         selectors: {
@@ -38273,13 +38273,13 @@ function _H(e) {
         },
         m && {
           borderBottomColor: I.disabledBackground,
-          selectors: (a = {}, a[me] = S({ borderColor: "GrayText" }, _t()), a)
+          selectors: (a = {}, a[me] = S({ borderColor: "GrayText" }, xt()), a)
         },
         !m && {
           selectors: {
             ":hover": {
               borderBottomColor: F ? I.errorText : I.inputBorderHovered,
-              selectors: (i = {}, i[me] = S({ borderBottomColor: "Highlight" }, _t()), i)
+              selectors: (i = {}, i[me] = S({ borderBottomColor: "Highlight" }, xt()), i)
             }
           }
         },
@@ -38314,14 +38314,14 @@ function _H(e) {
         selectors: {
           ":hover": {
             borderColor: I.inputBorderHovered,
-            selectors: (o = {}, o[me] = S({ borderColor: "Highlight" }, _t()), o)
+            selectors: (o = {}, o[me] = S({ borderColor: "Highlight" }, xt()), o)
           }
         }
       },
       v && !k && $u(F ? I.errorText : I.inputFocusBorderAlt, X.roundedCorner2),
       m && {
         borderColor: I.disabledBackground,
-        selectors: (s = {}, s[me] = S({ borderColor: "GrayText" }, _t()), s),
+        selectors: (s = {}, s[me] = S({ borderColor: "GrayText" }, xt()), s),
         cursor: "default"
       },
       b && {
@@ -38555,9 +38555,9 @@ var Cn = vt(pH, _H, void 0, {
     }, n)
   };
 }), mx = {
-  selectors: (R0 = {}, R0[me] = S({ backgroundColor: "Highlight", borderColor: "Highlight", color: "HighlightText" }, _t()), R0)
+  selectors: (R0 = {}, R0[me] = S({ backgroundColor: "Highlight", borderColor: "Highlight", color: "HighlightText" }, xt()), R0)
 }, N0 = {
-  selectors: (P0 = {}, P0[me] = S({ color: "WindowText", backgroundColor: "Window" }, _t()), P0)
+  selectors: (P0 = {}, P0[me] = S({ color: "WindowText", backgroundColor: "Window" }, xt()), P0)
 }, yH = nr(function(e, n, t, r, a, i) {
   var o, s = e.palette, l = e.semanticColors, u = {
     textHoveredColor: l.menuItemTextHovered,
@@ -38653,7 +38653,7 @@ var Cn = vt(pH, _H, void 0, {
     buttonBackgroundCheckedColor: a.listItemBackgroundChecked,
     buttonBackgroundCheckedHoveredColor: a.listItemBackgroundCheckedHovered
   }, s = {
-    selectors: (t = {}, t[me] = S({ backgroundColor: "Highlight", borderColor: "Highlight", color: "HighlightText" }, _t()), t)
+    selectors: (t = {}, t[me] = S({ backgroundColor: "Highlight", borderColor: "Highlight", color: "HighlightText" }, xt()), t)
   }, l = {
     root: {
       color: o.buttonTextColor,
@@ -38665,7 +38665,7 @@ var Cn = vt(pH, _H, void 0, {
       width: gS,
       textAlign: "center",
       cursor: "default",
-      selectors: (r = {}, r[me] = S({ backgroundColor: "ButtonFace", borderColor: "ButtonText", color: "ButtonText" }, _t()), r)
+      selectors: (r = {}, r[me] = S({ backgroundColor: "ButtonFace", borderColor: "ButtonText", color: "ButtonText" }, xt()), r)
     },
     icon: {
       fontSize: i.small.fontSize
@@ -38738,7 +38738,7 @@ var Cn = vt(pH, _H, void 0, {
       color: u.disabledText
     },
     p
-  ], y = S(S({ color: "HighlightText", backgroundColor: "Window" }, _t()), { selectors: {
+  ], y = S(S({ color: "HighlightText", backgroundColor: "Window" }, xt()), { selectors: {
     ":after": {
       borderColor: "Highlight"
     }
@@ -38802,7 +38802,7 @@ var Cn = vt(pH, _H, void 0, {
           Fs(v),
           N0
         ]
-      }, i[me] = S(S({ color: "HighlightText", backgroundColor: "Window" }, _t()), { selectors: {
+      }, i[me] = S(S({ color: "HighlightText", backgroundColor: "Window" }, xt()), { selectors: {
         ":after": {
           borderColor: "Highlight"
         }
@@ -38891,7 +38891,7 @@ var Cn = vt(pH, _H, void 0, {
         padding: "0 8px",
         userSelect: "none",
         textAlign: "left",
-        selectors: (l = {}, l[me] = S({ color: "GrayText" }, _t()), l)
+        selectors: (l = {}, l[me] = S({ color: "GrayText" }, xt()), l)
       }
     ],
     divider: {
@@ -41202,7 +41202,7 @@ var ac = 36, Bl = function(e) {
         o[me] = {
           background: "Highlight"
         }, o)
-      }, n[me] = S(S({ background: "Highlight", color: "HighlightText" }, _t()), { selectors: {
+      }, n[me] = S(S({ background: "Highlight", color: "HighlightText" }, xt()), { selectors: {
         a: {
           color: "HighlightText"
         }
@@ -41247,7 +41247,7 @@ var ac = 36, Bl = function(e) {
       }, u[y9] = Fr(m, { inset: -1, borderColor: R, outlineColor: A }), u)
     },
     v && {
-      selectors: (c = {}, c[me] = S({ background: "Highlight", color: "HighlightText" }, _t()), c)
+      selectors: (c = {}, c[me] = S({ background: "Highlight", color: "HighlightText" }, xt()), c)
     },
     k && ye,
     N && { opacity: 0.5 }
@@ -41571,7 +41571,7 @@ var ac = 36, Bl = function(e) {
       bottom: 0,
       cursor: "ew-resize",
       background: "rgba(255, 255, 255, 0)",
-      selectors: (a = {}, a[me] = S({ background: "transparent" }, _t()), a)
+      selectors: (a = {}, a[me] = S({ background: "transparent" }, xt()), a)
     },
     accessibleLabel: zi,
     dropHintCircleStyle: [
@@ -41922,7 +41922,7 @@ var I9 = gt(), A9 = (
         animationDuration: "1.3s",
         animationIterationCount: "infinite",
         animationTimingFunction: "cubic-bezier(.53,.21,.29,.67)",
-        selectors: (n = {}, n[me] = S({ borderTopColor: "Highlight" }, _t()), n)
+        selectors: (n = {}, n[me] = S({ borderTopColor: "Highlight" }, xt()), n)
       },
       r === xi.xSmall && [
         "ms-Spinner--xSmall",
@@ -45765,7 +45765,7 @@ var RW = (
   dropdownItemHeader: "ms-Dropdown-header",
   titleIsPlaceHolder: "ms-Dropdown-titleIsPlaceHolder",
   titleHasError: "ms-Dropdown-title--hasError"
-}, hd = 32, Y0 = 36, NW = (K0 = {}, K0[me + ", " + tC.replace("@media ", "")] = S({}, _t()), K0), X0 = {
+}, hd = 32, Y0 = 36, NW = (K0 = {}, K0[me + ", " + tC.replace("@media ", "")] = S({}, xt()), K0), X0 = {
   selectors: S((j0 = {}, j0[me] = {
     backgroundColor: "Highlight",
     borderColor: "Highlight",
@@ -45810,7 +45810,7 @@ var RW = (
     }
   ], Q = [
     F.dropdownItemHeader,
-    S(S({}, I.medium), { fontWeight: Nt.semibold, color: N.menuHeader, background: "none", backgroundColor: "transparent", border: "none", height: Y0, lineHeight: Y0, cursor: "default", padding: "0 8px", userSelect: "none", textAlign: "left", selectors: (n = {}, n[me] = S({ color: "GrayText" }, _t()), n) })
+    S(S({}, I.medium), { fontWeight: Nt.semibold, color: N.menuHeader, background: "none", backgroundColor: "transparent", border: "none", height: Y0, lineHeight: Y0, cursor: "default", padding: "0 8px", userSelect: "none", textAlign: "left", selectors: (n = {}, n[me] = S({ color: "GrayText" }, xt()), n) })
   ], ne = N.menuItemBackgroundPressed, V = function(B) {
     var re, q;
     return B === void 0 && (B = !1), {
@@ -45952,7 +45952,7 @@ var RW = (
         border: "none",
         color: N.disabledText,
         cursor: "default",
-        selectors: (l = {}, l[me] = S({ border: "1px solid GrayText", color: "GrayText", backgroundColor: "Window" }, _t()), l)
+        selectors: (l = {}, l[me] = S({ border: "1px solid GrayText", color: "GrayText", backgroundColor: "Window" }, xt()), l)
       }
     ],
     caretDownWrapper: [
@@ -45974,7 +45974,7 @@ var RW = (
       { color: D.neutralSecondary, fontSize: I.small.fontSize, pointerEvents: "none" },
       y && {
         color: N.disabledText,
-        selectors: (u = {}, u[me] = S({ color: "GrayText" }, _t()), u)
+        selectors: (u = {}, u[me] = S({ color: "GrayText" }, xt()), u)
       }
     ],
     errorMessage: S(S({ color: N.errorText }, h.fonts.small), { paddingTop: 5 }),
@@ -46152,7 +46152,7 @@ function JW(e) {
         selectors: (r = {}, r[me] = {
           color: "WindowText",
           selectors: {
-            ":hover": S({ background: "Highlight", color: "HighlightText" }, _t())
+            ":hover": S({ background: "Highlight", color: "HighlightText" }, xt())
           }
         }, r[":hover"] = {
           color: d.menuItemTextHovered
@@ -46166,7 +46166,7 @@ function JW(e) {
             ":hover": {
               background: d.menuDivider
             }
-          }, a[me] = S({ background: "Highlight", color: "HighlightText" }, _t()), a)
+          }, a[me] = S({ background: "Highlight", color: "HighlightText" }, xt()), a)
         }
       ]
     ],
@@ -46395,7 +46395,7 @@ function nV(e) {
     }
   }, f = {
     backgroundColor: s.themeLight,
-    selectors: (n = {}, n[me] = S({ backgroundColor: "Highlight", borderColor: "Highlight", color: "HighlightText" }, _t()), n)
+    selectors: (n = {}, n[me] = S({ backgroundColor: "Highlight", borderColor: "Highlight", color: "HighlightText" }, xt()), n)
   };
   return {
     root: [
@@ -50067,7 +50067,7 @@ var Ao, Ro, Po, No, bU = {
     height: 10,
     lineHeight: "10px",
     color: p.messageText,
-    selectors: (n = {}, n[me] = S(S({}, _t()), { color: "WindowText" }), n)
+    selectors: (n = {}, n[me] = S(S({}, xt()), { color: "WindowText" }), n)
   }, x = [
     Fr(o, {
       inset: 1,
@@ -50122,7 +50122,7 @@ var Ao, Ro, Po, No, bU = {
               }
             }
           }
-        }, t[me] = S(S({}, _t()), { background: "transparent", border: "1px solid " + SU[h], color: "WindowText" }), t[tC] = {
+        }, t[me] = S(S({}, xt()), { background: "transparent", border: "1px solid " + SU[h], color: "WindowText" }), t[tC] = {
           border: "1px solid " + EU[h]
         }, t)
       },
@@ -50152,11 +50152,11 @@ var Ao, Ro, Po, No, bU = {
     ],
     icon: {
       color: p[CU[h]],
-      selectors: (r = {}, r[me] = S(S({}, _t()), { color: "WindowText" }), r)
+      selectors: (r = {}, r[me] = S(S({}, xt()), { color: "WindowText" }), r)
     },
     text: [
       g.text,
-      S(S({ minWidth: 0, display: "flex", flexGrow: 1, margin: 8 }, m.small), { selectors: (a = {}, a[me] = S({}, _t()), a) }),
+      S(S({ minWidth: 0, display: "flex", flexGrow: 1, margin: 8 }, m.small), { selectors: (a = {}, a[me] = S({}, xt()), a) }),
       !l && {
         marginRight: 12
       }
@@ -53141,16 +53141,18 @@ const jG = (e) => {
   );
 };
 var qt = /* @__PURE__ */ ((e) => (e[e.None = 1] = "None", e[e.Add = 2] = "Add", e[e.Update = 3] = "Update", e[e.Delete = 4] = "Delete", e))(qt || {});
-uU(
-  /* optional base url */
-);
-const $G = (e) => e.map((n, t) => (Object.keys(n).indexOf("_grid_row_id_") == -1 && Object.keys(n).indexOf("_grid_row_operation_") == -1 && (n._grid_row_id_ = t, n._grid_row_operation_ = qt.None, n._is_filtered_in_ = !0, n._is_filtered_in_grid_search_ = !0, n._is_filtered_in_column_filter_ = !0, n._is_data_transformed = !1, n._udf_custom_vaule_store_a = 0, n._udf_custom_vaule_store_b = 0), n)), YG = (e) => e.map((n, t) => (n._grid_row_id_ = t, n)), XG = (e) => {
+uU(void 0, { disableWarnings: !0 });
+const $G = (e, n) => e.map((t, r) => (Object.keys(t).indexOf("_grid_row_id_") == -1 && Object.keys(t).indexOf("_grid_row_operation_") == -1 && (t._grid_row_id_ = r, t._grid_row_operation_ = qt.None, t._is_filtered_in_ = !0, t._is_filtered_in_grid_search_ = !0, t._is_filtered_in_column_filter_ = !0, t._is_data_transformed = !1, t._udf_custom_vaule_store_a = 0, t._udf_custom_vaule_store_b = 0, n && e[r][n.colKey] && (t._grid_row_operation_ = e[r][n.colKey])), t)), YG = (e) => e.map((n, t) => (n._grid_row_id_ = t, n)), XG = (e) => {
   let n = [];
   return e.forEach((t, r) => {
     let a = { isActivated: !1, properties: {} };
     var i = Object.keys(t);
     i.forEach((o) => {
-      a.properties[o] = { activated: !1, value: t[o], error: null };
+      a.properties[o] = {
+        activated: !1,
+        value: t[o],
+        error: null
+      };
     }), n.push(a);
   }), n;
 }, nh = (e, n) => {
@@ -53163,7 +53165,9 @@ const $G = (e) => e.map((n, t) => (Object.keys(n).indexOf("_grid_row_id_") == -1
   }
   return n;
 }, r1 = (e, n) => (n.forEach((t) => {
-  var r = e.findIndex((i) => i._grid_row_id_ == t.properties._grid_row_id_.value);
+  var r = e.findIndex(
+    (i) => i._grid_row_id_ == t.properties._grid_row_id_.value
+  );
   if (r >= 0) {
     var a = Object.keys(t.properties);
     a.forEach((i) => {
@@ -53615,7 +53619,7 @@ const nz = (e) => {
         ee.filter((se, Fe) => {
           var ue = {};
           try {
-            Y.forEach((le, bt) => {
+            Y.forEach((le, _t) => {
               var lt, tt, kt, Tr;
               if (se[le] && ((tt = (lt = se[le]) == null ? void 0 : lt.toString()) != null && tt.toLowerCase()) && ((Tr = (kt = se[le]) == null ? void 0 : kt.toString()) != null && Tr.toLowerCase().includes(w.trim().toLowerCase())))
                 throw se._is_filtered_in_grid_search_ = !0, ue;
@@ -53637,7 +53641,8 @@ const nz = (e) => {
     a1.unsubscribe(n1.onSearch, $e);
   })), or(() => {
     var P = $G(
-      JSON.parse(JSON.stringify(e.items))
+      JSON.parse(JSON.stringify(e.items)),
+      e.customOperationsKey
     );
     p(P), y(P.map((G) => ({ ...G }))), Yt(!1), dt(P);
   }, [e.items]), or(() => {
@@ -53701,7 +53706,7 @@ const nz = (e) => {
     return Y.forEach((Fe, ue) => {
       m[0] && (se = JSON.stringify(
         Object.entries(Fe).filter(([le]) => Object.keys(m[0]).includes(le)).filter(
-          ([le]) => e.columns.map((bt) => bt.key).includes(le)
+          ([le]) => e.columns.map((_t) => _t.key).includes(le)
         ).filter(([le]) => !ee.includes(le)).sort()
       ), w[se] ? Ne.current !== null ? w[se].ids.push(Fe[Ne.current]) : w[se].ids.push(ue) : Ne.current !== null ? (w[se] = {
         index: G.length,
@@ -53734,7 +53739,7 @@ const nz = (e) => {
     return !0;
   }
   const Le = () => {
-    var se, Fe, ue, le, bt, lt;
+    var se, Fe, ue, le, _t, lt;
     let P = !1;
     const G = m.length > 0 ? m.filter(
       (tt) => tt._grid_row_operation_ != qt.Delete
@@ -53921,7 +53926,7 @@ const nz = (e) => {
                 msg: ee,
                 type: Ye.error
               }), a(!0), P = !0;
-            } else if (yt !== null && ((bt = Ze.validations.stringValidations) == null ? void 0 : bt.conditionCantEqual) === (yt == null ? void 0 : yt.toString())) {
+            } else if (yt !== null && ((_t = Ze.validations.stringValidations) == null ? void 0 : _t.conditionCantEqual) === (yt == null ? void 0 : yt.toString())) {
               var ee = `Row ${Ne.current ? "With ID: " + kt[Ne.current] : "With Index:" + tt + 1} - ${(lt = Ze.validations.stringValidations) == null ? void 0 : lt.errMsg}`;
               St(Ue.current, Ze.key + tt, {
                 msg: ee,
@@ -53998,12 +54003,11 @@ const nz = (e) => {
         ((Wn = (Tr = Pn == null ? void 0 : Pn.text) == null ? void 0 : Tr.toString()) == null ? void 0 : Wn.toLowerCase()) === (((oi = (Zr = lt[kt]) == null ? void 0 : Zr.toString()) == null ? void 0 : oi.toLowerCase()) ?? "") && (lt[kt] = Pn == null ? void 0 : Pn.key);
       }
     }), lt)).map(ue);
-    e.onBeforeGridSave && e.onBeforeGridSave(le);
-    let bt = !1;
-    return parseInt(jf(!0)) > 0 && (bt = Le()), bt === !0 && a(!0), e.onGridSave && e.onGridSave(
+    let _t = !1;
+    return parseInt(jf(!0)) > 0 && (_t = Le()), _t === !0 && a(!0), _t || e.onBeforeGridSave && e.onBeforeGridSave(le), _t || e.onGridSave && e.onGridSave(
       ee,
       le
-    ), bt;
+    ), _t;
   }, Nr = async () => {
     e.onGridUpdate && await e.onGridUpdate(m);
   }, wr = () => {
@@ -54373,9 +54377,9 @@ const nz = (e) => {
               return;
             }
           }
-          var bt = [...m];
+          var _t = [...m];
           le.forEach((Zr) => {
-            bt.splice(0, 0, Zr[0]);
+            _t.splice(0, 0, Zr[0]);
           });
           const Wn = new Map(Qt).set(
             (kt = e.id) == null ? void 0 : kt.toString(),
@@ -54384,7 +54388,7 @@ const nz = (e) => {
               type: Ye.success
             }
           );
-          ir(Wn), dt(bt), Yt(!0), o(!1);
+          ir(Wn), dt(_t), Yt(!0), o(!1);
         }
       }, ee.readAsArrayBuffer(Y);
     } else {
@@ -54464,9 +54468,9 @@ const nz = (e) => {
   );
   const Xs = (P, G, w, Y, ee, se) => {
     let Fe = [...k], ue = [];
-    if (Fe = [], k.forEach((le, bt) => {
+    if (Fe = [], k.forEach((le, _t) => {
       var lt;
-      Y == bt && (le.properties[ee].value = lc(
+      Y == _t && (le.properties[ee].value = lc(
         se.dataType,
         (lt = G == null ? void 0 : G.toString()) == null ? void 0 : lt.split(/[\t\r]+/).map((tt) => tt.trim())[0].trim()
       ) ?? "", ue.length > 0 ? ue.forEach((tt) => {
@@ -54569,8 +54573,8 @@ const nz = (e) => {
     var Y = [];
     P.forEach((se, Fe) => {
       var ue = {}, le = Object.keys(se.properties);
-      le.forEach((bt) => {
-        ue[bt] = se.properties[bt].value;
+      le.forEach((_t) => {
+        ue[_t] = se.properties[_t].value;
       }), Y.push(ue);
     });
     var ee = qs(Y, [G], w);
@@ -54736,13 +54740,13 @@ const nz = (e) => {
         (le) => le == It.current
       ), ue = [...P];
       for (let le = 0; le < ee.length; le++) {
-        const bt = ee[le];
+        const _t = ee[le];
         if (le == Fe) {
           for (let lt = 0; lt < ue.length; lt++)
             P.splice(le + lt - 1, 1, ue[lt]);
           break;
         } else
-          bt != It.current && P.splice(le, 1, "");
+          _t != It.current && P.splice(le, 1, "");
       }
     }
     Ne.current && P.splice(0, 0, Ne.current);
@@ -54775,22 +54779,22 @@ const nz = (e) => {
       await navigator.clipboard.readText().then((ee) => {
         if (G = ee, w = ee.split(`
 `), w.length <= 0) {
-          const bt = new Map(Qt).set(
+          const _t = new Map(Qt).set(
             e.id.toString(),
             {
               msg: "Unable To Add This Data - Please try again. Data is not sufficient ",
               type: Ye.error
             }
           );
-          ir(bt);
+          ir(_t);
           return;
         }
         let se = T;
         var Fe = Object.keys(Pt).filter(
-          (bt) => bt !== Ne.current
+          (_t) => _t !== Ne.current
         );
-        for (let bt = 0; bt < w.length; bt++) {
-          const lt = w[bt];
+        for (let _t = 0; _t < w.length; _t++) {
+          const lt = w[_t];
           if (lt.length <= 0)
             continue;
           if (!lt.includes("	") && !lt.includes("\r")) {
@@ -54810,8 +54814,8 @@ const nz = (e) => {
         }
         w.length !== (w.length < T ? w.length - T : T - w.length) && H(w.length + T - 1);
         var ue = [...m];
-        P.forEach((bt) => {
-          ue.splice(0, 0, bt[0]);
+        P.forEach((_t) => {
+          ue.splice(0, 0, _t[0]);
         });
         let le = new Map(Qt);
         Y.length > Fe.length ? le.set(e.id.toString(), {
@@ -54823,7 +54827,7 @@ const nz = (e) => {
         }), ir(le), dt(
           Z(
             Object.keys(Pt).reduce(
-              (bt, lt) => ({ ...bt, [lt]: lt }),
+              (_t, lt) => ({ ..._t, [lt]: lt }),
               {}
             ),
             ue,
@@ -55146,7 +55150,7 @@ const nz = (e) => {
           }
           switch (w.inputType) {
             case lr.MultilineTextField:
-              return /* @__PURE__ */ te.jsx("span", { children: bt() ? (lt = w == null ? void 0 : w.hoverComponentOptions) != null && lt.enable ? /* @__PURE__ */ te.jsx(
+              return /* @__PURE__ */ te.jsx("span", { children: _t() ? (lt = w == null ? void 0 : w.hoverComponentOptions) != null && lt.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
@@ -55195,7 +55199,7 @@ const nz = (e) => {
                 }
               ) });
             case lr.Date:
-              return /* @__PURE__ */ te.jsx("span", { children: bt() ? (Tr = w == null ? void 0 : w.hoverComponentOptions) != null && Tr.enable ? /* @__PURE__ */ te.jsx(
+              return /* @__PURE__ */ te.jsx("span", { children: _t() ? (Tr = w == null ? void 0 : w.hoverComponentOptions) != null && Tr.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
@@ -55234,7 +55238,7 @@ const nz = (e) => {
                 }
               ) });
             case lr.CheckBox:
-              return /* @__PURE__ */ te.jsx("span", { className: "row-" + le + "-col-" + Y, children: bt() ? (Wn = w == null ? void 0 : w.hoverComponentOptions) != null && Wn.enable ? /* @__PURE__ */ te.jsx(
+              return /* @__PURE__ */ te.jsx("span", { className: "row-" + le + "-col-" + Y, children: _t() ? (Wn = w == null ? void 0 : w.hoverComponentOptions) != null && Wn.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
@@ -55284,7 +55288,7 @@ const nz = (e) => {
                 }
                 Kl.current = Pe;
               }
-              return /* @__PURE__ */ te.jsx("span", { className: "row-" + le + "-col-" + Y, children: bt() ? (oi = w == null ? void 0 : w.hoverComponentOptions) != null && oi.enable ? /* @__PURE__ */ te.jsx(
+              return /* @__PURE__ */ te.jsx("span", { className: "row-" + le + "-col-" + Y, children: _t() ? (oi = w == null ? void 0 : w.hoverComponentOptions) != null && oi.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
@@ -55341,7 +55345,7 @@ const nz = (e) => {
                 }
                 jl.current = Pe;
               }
-              return /* @__PURE__ */ te.jsx("span", { className: "row-" + le + "-col-" + Y, children: bt() ? (Vn = w == null ? void 0 : w.hoverComponentOptions) != null && Vn.enable ? /* @__PURE__ */ te.jsx(
+              return /* @__PURE__ */ te.jsx("span", { className: "row-" + le + "-col-" + Y, children: _t() ? (Vn = w == null ? void 0 : w.hoverComponentOptions) != null && Vn.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
@@ -55454,7 +55458,7 @@ const nz = (e) => {
                 }
               ) });
             case lr.Picker:
-              return /* @__PURE__ */ te.jsx("span", { children: bt() ? (Im = w == null ? void 0 : w.hoverComponentOptions) != null && Im.enable ? /* @__PURE__ */ te.jsx(
+              return /* @__PURE__ */ te.jsx("span", { children: _t() ? (Im = w == null ? void 0 : w.hoverComponentOptions) != null && Im.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
@@ -55523,7 +55527,7 @@ const nz = (e) => {
                 rn
               ) });
             case lr.Password:
-              return /* @__PURE__ */ te.jsx("span", { children: bt() ? (Om = w == null ? void 0 : w.hoverComponentOptions) != null && Om.enable ? /* @__PURE__ */ te.jsx(
+              return /* @__PURE__ */ te.jsx("span", { children: _t() ? (Om = w == null ? void 0 : w.hoverComponentOptions) != null && Om.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
@@ -55579,7 +55583,7 @@ const nz = (e) => {
                 }
               ) });
             case lr.NumericFormat:
-              return (((Vm = ue[w.key]) == null ? void 0 : Vm.toString()) || "").match(/\d/) || (ue[w.key] = 0), /* @__PURE__ */ te.jsx("span", { children: bt() ? (Um = w == null ? void 0 : w.hoverComponentOptions) != null && Um.enable ? /* @__PURE__ */ te.jsx(
+              return (((Vm = ue[w.key]) == null ? void 0 : Vm.toString()) || "").match(/\d/) || (ue[w.key] = 0), /* @__PURE__ */ te.jsx("span", { children: _t() ? (Um = w == null ? void 0 : w.hoverComponentOptions) != null && Um.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
@@ -55651,7 +55655,7 @@ const nz = (e) => {
                 ue.key
               ) });
             default:
-              return /* @__PURE__ */ te.jsx("span", { children: bt() ? (jg = w == null ? void 0 : w.hoverComponentOptions) != null && jg.enable ? /* @__PURE__ */ te.jsx(
+              return /* @__PURE__ */ te.jsx("span", { children: _t() ? (jg = w == null ? void 0 : w.hoverComponentOptions) != null && jg.enable ? /* @__PURE__ */ te.jsx(
                 hi,
                 {
                   type: na.plain,
@@ -55705,7 +55709,7 @@ const nz = (e) => {
                 }
               ) });
           }
-          function bt() {
+          function _t() {
             var Pe, dr, Gn;
             return !w.editable || !e.enableDefaultEditMode && !((Pe = k == null ? void 0 : k[le]) != null && Pe.isActivated) && !((Gn = (dr = k == null ? void 0 : k[le]) == null ? void 0 : dr.properties[w.key]) != null && Gn.activated);
           }
@@ -56038,7 +56042,7 @@ const nz = (e) => {
     rowNum: G,
     rowData: w
   }) }), fm = (P, G, w, Y, ee, se) => {
-    var Fe, ue, le, bt;
+    var Fe, ue, le, _t;
     return /* @__PURE__ */ te.jsx(
       "span",
       {
@@ -56076,7 +56080,7 @@ const nz = (e) => {
             target: "_blank",
             disabled: (le = Y.linkOptions) == null ? void 0 : le.disabled,
             underline: !0,
-            href: (bt = Y.linkOptions) == null ? void 0 : bt.href,
+            href: (_t = Y.linkOptions) == null ? void 0 : _t.href,
             children: ee[Y.key]
           }
         )
@@ -56120,9 +56124,9 @@ const nz = (e) => {
     se,
     Yi
   ), mm = (P, G, w, Y, ee, se) => {
-    var ue, le, bt;
+    var ue, le, _t;
     let Fe = ee[Y.key];
-    return Y.dropdownValues && (Fe = ((bt = (le = (ue = Y.dropdownValues) == null ? void 0 : ue.filter((lt) => (lt == null ? void 0 : lt.key) == ee[Y.key])[0]) == null ? void 0 : le.text) == null ? void 0 : bt.toString()) ?? ee[Y.key]), $l(
+    return Y.dropdownValues && (Fe = ((_t = (le = (ue = Y.dropdownValues) == null ? void 0 : ue.filter((lt) => (lt == null ? void 0 : lt.key) == ee[Y.key])[0]) == null ? void 0 : le.text) == null ? void 0 : _t.toString()) ?? ee[Y.key]), $l(
       P,
       G,
       w,
@@ -56530,7 +56534,7 @@ export {
   n1 as EventType,
   tz as GridToastTypes,
   dG as NumberAndDateOperators,
-  qt as Operation,
-  XS as StringOperators
+  XS as StringOperators,
+  qt as _Operation
 };
 //# sourceMappingURL=fluentui.editablegrid.lib.js.map
