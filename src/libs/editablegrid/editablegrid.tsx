@@ -246,7 +246,6 @@ const EditableGrid = (props: EditableGridProps) => {
   });
 
   useEffect(() => {
-    if (props && props.items) {
       var data: any[] = InitializeInternalGrid(
         JSON.parse(JSON.stringify(props.items))
       );
@@ -254,7 +253,8 @@ const EditableGrid = (props: EditableGridProps) => {
       setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
       setGridEditState(false);
       SetGridItems(data);
-    }
+      indentiferColumn.current = (props.columns.filter((x)=> x.autoGenerate == true)[0].key) ?? null;
+    
   }, [props.items]);
 
   useEffect(() => {}, [backupDefaultGridData]);
@@ -1334,7 +1334,7 @@ const EditableGrid = (props: EditableGridProps) => {
             obj[hiddenKey.key] = hiddenKey.defaultValue;
           }
         }
-        obj._grid_row_id_ = ++_new_grid_row_id_;
+        obj._grid_row_id_ = _new_grid_row_id_;
         obj._grid_row_operation_ = Operation.Add;
         obj._is_filtered_in_ = true;
         obj._is_filtered_in_grid_search_ = true;
@@ -2749,23 +2749,14 @@ const EditableGrid = (props: EditableGridProps) => {
     };
   }, [columnValuesObj, indentiferColumn, CurrentAutoGenID]);
 
-  const PasteGridRows = (): void => {
-    isClipboardEmpty().then((empty) => {
-      if (empty) {
-        const newMap = new Map(interalMessagesState).set(props.id.toString(), {
-          msg: "Nothing In Clipboard - Please copy this grid or an excel with the same columns and try again ",
-          type: MessageBarType.info,
-        });
-        setInteralMessagesState(newMap);
-        return;
-      }
-    });
+  const startPasting = async () =>{
     let ui: any[] = [];
     let pastedData = "";
     let lines: string[] = [];
     let rowData = [];
 
-    navigator.clipboard
+    try {
+      await navigator.clipboard
       .readText()
       .then((text) => {
         pastedData = text;
@@ -2779,25 +2770,25 @@ const EditableGrid = (props: EditableGridProps) => {
             }
           );
           setInteralMessagesState(newMap);
-          return;
+          return
         }
-
+  
         let genId = CurrentAutoGenID;
-
+  
         var colKeys = Object.keys(columnValuesObj).filter(
           (item) => item !== indentiferColumn.current
         );
         for (let index = 0; index < lines.length; index++) {
           const row = lines[index];
           if (row.length <= 0) continue;
-
+  
           if (!row.includes("\t") && !row.includes("\r")) {
             setGridEditState(false);
             return;
           }
-
+  
           rowData = row.trim().split("\t");
-
+  
           const startPush = setupPastedData(
             [...rowData],
             GetDefaultRowObject(1),
@@ -2809,7 +2800,7 @@ const EditableGrid = (props: EditableGridProps) => {
             return;
           }
         }
-
+  
         if (
           lines.length !==
           (lines.length < CurrentAutoGenID
@@ -2822,9 +2813,9 @@ const EditableGrid = (props: EditableGridProps) => {
         ui.forEach((i) => {
           newGridData.splice(0, 0, i[0]);
         });
-
+  
         let newMap = new Map(interalMessagesState);
-
+  
         if (rowData.length > colKeys.length) {
           newMap.set(props.id.toString(), {
             msg: `Pasted ${ui.length} ${
@@ -2846,8 +2837,9 @@ const EditableGrid = (props: EditableGridProps) => {
             type: MessageBarType.success,
           });
         }
-
-        setInteralMessagesState(newMap);
+  
+       setInteralMessagesState(newMap);
+       console.log(newGridData)
         SetGridItems(
           CheckBulkUpdateOnChangeCallBack(
             Object.keys(columnValuesObj).reduce(
@@ -2858,9 +2850,11 @@ const EditableGrid = (props: EditableGridProps) => {
             ui[0]
           )
         );
-
+  
         clearSelectedItems();
         setGridEditState(true);
+        return;
+
       })
       .catch((error) => {
         console.error(error);
@@ -2870,7 +2864,35 @@ const EditableGrid = (props: EditableGridProps) => {
           type: MessageBarType.error,
         });
         setInteralMessagesState(newMap);
+        return;
       });
+      
+    } catch (error) {
+      return
+    }
+  
+    
+
+  }
+
+  const PasteGridRows = (): void => {
+    isClipboardEmpty().then((empty) => {
+      if (empty) {
+        const newMap = new Map(interalMessagesState).set(props.id.toString(), {
+          msg: "Nothing In Clipboard - Please copy this grid or an excel with the same columns and try again ",
+          type: MessageBarType.info,
+        });
+        setInteralMessagesState(newMap);
+        return;
+      } else{
+        startPasting().then((success) => {
+          return;
+        });
+      }
+    });
+
+    
+  
   };
 
   const getGridRecordLength = useCallback(
@@ -3428,7 +3450,6 @@ const EditableGrid = (props: EditableGridProps) => {
                   isNaN(parseInt(item[column.key])) === false
                     ? parseInt(item[column.key]) + 1
                     : fallBackAutoGenId.current++;
-                indentiferColumn.current = column.key;
               }
 
               if (column.comboBoxOptions) {
