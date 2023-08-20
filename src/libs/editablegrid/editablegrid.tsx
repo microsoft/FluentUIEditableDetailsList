@@ -2715,11 +2715,21 @@ const EditableGrid = (props: EditableGridProps) => {
         } else if (currentVal?.toLowerCase() === "true") {
           newColObj[colKeysVal] = true;
         } else {
-          newColObj[colKeysVal] = currentVal?.toString()?.trim() ?? null;
+          if(columnValuesObj[colKeysVal].dataType == 'boolean'){
+          newColObj[colKeysVal] = currentVal?.toString()?.trim() ?? currentVal?.toString()?.trim() == '1' ? true : false
+        }
+          else{
+            newColObj[colKeysVal] = currentVal?.toString()?.trim() ?? null;
+          }
         }
       } else {
+        if(columnValuesObj[colKeysVal].dataType == 'boolean'){
+          newColObj[colKeysVal] = columnValuesObj[colKeysVal].defaultValueOnNewRow ?? false
+}
+        else{
         newColObj[colKeysVal] =
           columnValuesObj[colKeysVal].defaultValueOnNewRow ?? null;
+        }
       }
     }
 
