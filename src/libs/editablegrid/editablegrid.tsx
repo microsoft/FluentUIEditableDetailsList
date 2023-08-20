@@ -1021,7 +1021,9 @@ const EditableGrid = (props: EditableGridProps) => {
       .filter((obj: any) => isRowBlank(obj));
 
     blankDeletedObjects.forEach((element) => {
+      if(element?.["_grid_row_id_"]){
       HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
+      }
     });
 
     let blankNonDeletedRowsCount = 0;
@@ -1034,8 +1036,9 @@ const EditableGrid = (props: EditableGridProps) => {
         x._grid_row_operation_ = _Operation.Delete;
       });
     blankNonDeletedObjects.forEach((element: any) => {
+      if(element?.["_grid_row_id_"]){
       HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
-      blankNonDeletedRowsCount = blankNonDeletedRowsCount + 1;
+      blankNonDeletedRowsCount = blankNonDeletedRowsCount + 1;}
     });
 
     if (blankNonDeletedRowsCount > 0) {
