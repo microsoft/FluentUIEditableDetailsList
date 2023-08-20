@@ -1617,6 +1617,7 @@ const EditableGrid = (props: EditableGridProps) => {
         error: null,
         columnEditable: item?.editable ?? false,
         defaultValueOnNewRow: item?.defaultOnAddRow ?? null,
+        dataType: item.dataType
       };
     });
     setColumnValuesObj(tmpColumnValuesObj);
@@ -2709,13 +2710,13 @@ const EditableGrid = (props: EditableGridProps) => {
         continue;
       }
 
-      if (columnValuesObj[colKeysVal].columnEditable) {
+      if (columnValuesObj?.[colKeysVal]?.columnEditable) {
         if (currentVal?.toLowerCase()?.trim() === "false") {
           newColObj[colKeysVal] = false;
         } else if (currentVal?.toLowerCase()?.trim() === "true") {
           newColObj[colKeysVal] = true;
         } else {
-          if(columnValuesObj[colKeysVal].dataType == 'boolean'){
+          if(columnValuesObj?.[colKeysVal]?.dataType == 'boolean'){
           newColObj[colKeysVal] = ( currentVal?.toString()?.trim() == '1' ? true : false) ?? false
         }
           else{
@@ -2723,12 +2724,12 @@ const EditableGrid = (props: EditableGridProps) => {
           }
         }
       } else {
-        if(columnValuesObj[colKeysVal].dataType == 'boolean'){
-          newColObj[colKeysVal] = columnValuesObj[colKeysVal].defaultValueOnNewRow ?? false
+        if(columnValuesObj?.[colKeysVal]?.dataType == 'boolean'){
+          newColObj[colKeysVal] = columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? false
 }
         else{
         newColObj[colKeysVal] =
-          columnValuesObj[colKeysVal].defaultValueOnNewRow ?? null;
+          columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? null;
         }
       }
     }
@@ -3020,6 +3021,7 @@ const EditableGrid = (props: EditableGridProps) => {
       case EditType.DeleteRow:
         if (selectedIndices.length > 0) {
           DeleteSelectedRows();
+          clearSelectedItems()
         } else {
           const newMap = new Map(interalMessagesState).set(
             props.id.toString(),
@@ -4607,8 +4609,9 @@ const EditableGrid = (props: EditableGridProps) => {
               )}
             {props.enableRowEditDelete && (
               <IconButton
-                onClick={() =>
+                onClick={() =>{
                   HandleRowSingleDelete(Number(item["_grid_row_id_"])!)
+                  clearSelectedItems()}
                 }
                 disabled={
                   !props.enableSaveGridOnCellValueChange &&
