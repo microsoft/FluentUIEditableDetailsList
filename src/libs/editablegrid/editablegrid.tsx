@@ -2710,13 +2710,13 @@ const EditableGrid = (props: EditableGridProps) => {
       }
 
       if (columnValuesObj[colKeysVal].columnEditable) {
-        if (currentVal?.toLowerCase() === "false") {
+        if (currentVal?.toLowerCase()?.trim() === "false") {
           newColObj[colKeysVal] = false;
-        } else if (currentVal?.toLowerCase() === "true") {
+        } else if (currentVal?.toLowerCase()?.trim() === "true") {
           newColObj[colKeysVal] = true;
         } else {
           if(columnValuesObj[colKeysVal].dataType == 'boolean'){
-          newColObj[colKeysVal] = currentVal?.toString()?.trim() ?? currentVal?.toString()?.trim() == '1' ? true : false
+          newColObj[colKeysVal] = ( currentVal?.toString()?.trim() == '1' ? true : false) ?? false
         }
           else{
             newColObj[colKeysVal] = currentVal?.toString()?.trim() ?? null;
