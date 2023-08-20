@@ -1035,6 +1035,7 @@ const EditableGrid = (props: EditableGridProps) => {
       .map((x) => {
         x._grid_row_operation_ = _Operation.Delete;
       });
+    console.log(blankNonDeletedObjects)
     blankNonDeletedObjects.forEach((element: any) => {
       if(element?.["_grid_row_id_"]){
       HandleRowSingleDelete(Number(element["_grid_row_id_"])!);

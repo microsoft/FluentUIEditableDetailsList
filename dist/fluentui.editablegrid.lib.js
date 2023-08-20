@@ -53993,9 +53993,10 @@ const nz = (e) => {
       it != null && it._grid_row_id_ && $f(Number(it._grid_row_id_));
     });
     let G = 0;
-    if (m.filter((it) => it._grid_row_operation_ != Ht.Delete).filter((it) => Kr(it)).map((it) => {
+    const w = m.filter((it) => it._grid_row_operation_ != Ht.Delete).filter((it) => Kr(it)).map((it) => {
       it._grid_row_operation_ = Ht.Delete;
-    }).forEach((it) => {
+    });
+    if (console.log(w), w.forEach((it) => {
       it != null && it._grid_row_id_ && ($f(Number(it._grid_row_id_)), G = G + 1);
     }), G > 0) {
       var Y = `Auto Deleted ${G} Blank Row${G == 1 ? "" : "s"}`;
