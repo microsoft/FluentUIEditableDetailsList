@@ -53986,7 +53986,7 @@ const nz = (e) => {
     return P;
   };
   lr(() => {
-    e.GridSaveAction && m.length > 0 && e.GridSaveAction(() => tt);
+    e.GridSaveAction && m !== void 0 && e.GridSaveAction(() => tt);
   }, [m]);
   const tt = () => {
     Cr.current = /* @__PURE__ */ new Map(), Xt(Cr.current), Ue.current = /* @__PURE__ */ new Map(), zl(Ue.current), a(!1), sr(/* @__PURE__ */ new Map()), m.filter((it) => it._grid_row_operation_ == Ht.Delete).filter((it) => Kr(it)).forEach((it) => {

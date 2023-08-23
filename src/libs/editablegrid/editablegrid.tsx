@@ -999,7 +999,7 @@ const EditableGrid = (props: EditableGridProps) => {
   };
 
   useEffect(() => {
-    if (props.GridSaveAction && defaultGridData.length > 0) {
+    if (props.GridSaveAction && defaultGridData !== undefined) {
       props.GridSaveAction(() => onGridSave);
     }
   }, [defaultGridData]);
