@@ -56,7 +56,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     key: "name",
     name: "Name",
     text: "Name",
-    editable: false,
+    editable: true,
     // defaultOnAddRow: "Mr. Keneedy",
     required: {
       alwaysRequired: false,

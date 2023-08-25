@@ -147,7 +147,7 @@ export const ConvertObjectToText = (
 };
 
 export const ParseType = (type: string | undefined, text: string): any => {
-  if (text.trim().length == 0) {
+  if (text?.trim().length == 0) {
     return null;
   }
 
@@ -160,8 +160,8 @@ export const ParseType = (type: string | undefined, text: string): any => {
 
   switch (type) {
     case "number":
-      if (!isNaN(parseFloat(text.toString().replace(',', '')))) {
-        const newNum = parseFloat(text.toString().replace(',', ''));
+      if (!isNaN(parseFloat(text?.toString().replace(',', '')))) {
+        const newNum = parseFloat(text?.toString().replace(',', ''));
         return newNum;
       }
       return text;
@@ -169,7 +169,7 @@ export const ParseType = (type: string | undefined, text: string): any => {
       return Date.parse(text);
   }
 
-  return text.trim();
+  return text?.trim();
 };
 
 export const GetDefault = (type: string | undefined): any => {
@@ -196,10 +196,10 @@ export const ConvertTextToObject = (
 ): any[] => {
   var objArr: any[] = [];
 
-  var rows: any[] = text.split("\r\n");
+  var rows: any[] = text?.split("\r\n");
 
   rows.forEach((rowText) => {
-    var textArr: string[] = rowText.split("\t");
+    var textArr: string[] = rowText?.split("\t");
     var obj: any = {};
     columns.forEach((col, ind) => {
       obj[col.key] = ParseType(col.dataType as string, textArr[ind]);
