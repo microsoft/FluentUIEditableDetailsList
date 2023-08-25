@@ -464,6 +464,7 @@ const EditableGrid = (props: EditableGridProps) => {
     for (const key of properties) {
       if (
         obj[key] !== null &&
+        obj[key] !== undefined &&
         obj[key] !== "" &&
         obj[key] !== " " &&
         obj[key] !== false
@@ -1026,9 +1027,6 @@ const EditableGrid = (props: EditableGridProps) => {
     const blankNonDeletedObjects = defaultGridData
       .filter((x) => x._grid_row_operation_ != _Operation.Delete)
       .filter((obj: any) => isRowBlank(obj))
-
-
-    console.log(blankNonDeletedObjects)
       
     blankNonDeletedObjects.forEach((element: any) => {
       if (element?.["_grid_row_id_"] != undefined) {

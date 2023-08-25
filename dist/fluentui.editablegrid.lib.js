@@ -53755,7 +53755,7 @@ const nz = (e) => {
     const w = Object.keys(A).filter((Y) => !G.includes(Y)).sort();
     console.log(w);
     for (const Y of w)
-      if (A[Y] !== null && A[Y] !== "" && A[Y] !== " " && A[Y] !== !1)
+      if (A[Y] !== null && A[Y] !== void 0 && A[Y] !== "" && A[Y] !== " " && A[Y] !== !1)
         return !1;
     return !0;
   }
@@ -53992,8 +53992,7 @@ const nz = (e) => {
   const tt = () => {
     Cr.current = /* @__PURE__ */ new Map(), Xt(Cr.current), Ve.current = /* @__PURE__ */ new Map(), zl(Ve.current), a(!1), or(/* @__PURE__ */ new Map());
     let A = 0;
-    const G = m.filter((rt) => rt._grid_row_operation_ != Gt.Delete).filter((rt) => Yr(rt));
-    if (console.log(G), G.forEach((rt) => {
+    if (m.filter((rt) => rt._grid_row_operation_ != Gt.Delete).filter((rt) => Yr(rt)).forEach((rt) => {
       (rt == null ? void 0 : rt._grid_row_id_) != null && (sm(Number(rt._grid_row_id_)), A = A + 1);
     }), A > 0) {
       var w = `Auto Deleted ${A} Blank Row${A == 1 ? "" : "s"}`;
