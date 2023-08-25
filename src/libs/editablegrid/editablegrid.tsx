@@ -500,7 +500,6 @@ const EditableGrid = (props: EditableGridProps) => {
         });
       });
 
-      setGridInError(true);
       localError = true;
     }
 
@@ -647,7 +646,6 @@ const EditableGrid = (props: EditableGridProps) => {
                   type: MessageBarType.error,
                 });
 
-                setGridInError(true);
                 localError = true;
               } else if (
                 element.validations &&
@@ -671,7 +669,6 @@ const EditableGrid = (props: EditableGridProps) => {
                       type: MessageBarType.error,
                     });
 
-                    setGridInError(true);
                     localError = true;
                   }
                 } else if (min) {
@@ -689,7 +686,6 @@ const EditableGrid = (props: EditableGridProps) => {
                       type: MessageBarType.error,
                     });
 
-                    setGridInError(true);
                     localError = true;
                   }
                 } else if (max) {
@@ -707,7 +703,6 @@ const EditableGrid = (props: EditableGridProps) => {
                       type: MessageBarType.error,
                     });
 
-                    setGridInError(true);
                     localError = true;
                   }
                 }
@@ -729,7 +724,6 @@ const EditableGrid = (props: EditableGridProps) => {
                   type: MessageBarType.error,
                 });
 
-                setGridInError(true);
                 localError = true;
               }
             } else if (element.dataType === "date") {
@@ -753,7 +747,6 @@ const EditableGrid = (props: EditableGridProps) => {
                   type: MessageBarType.error,
                 });
 
-                setGridInError(true);
                 localError = true;
               }
             }
@@ -830,7 +823,6 @@ const EditableGrid = (props: EditableGridProps) => {
                           type: MessageBarType.error,
                         });
 
-                        setGridInError(true);
                         localError = true;
                       }
                     }
@@ -856,7 +848,6 @@ const EditableGrid = (props: EditableGridProps) => {
                       msg: msg,
                       type: MessageBarType.error,
                     });
-                    setGridInError(true);
                     localError = true;
                   }
                 }
@@ -884,7 +875,6 @@ const EditableGrid = (props: EditableGridProps) => {
                   type: MessageBarType.error,
                 });
 
-                setGridInError(true);
                 localError = true;
               }
             }
@@ -911,7 +901,6 @@ const EditableGrid = (props: EditableGridProps) => {
                   type: MessageBarType.error,
                 });
 
-                setGridInError(true);
                 localError = true;
               } else {
                 if (
@@ -931,7 +920,6 @@ const EditableGrid = (props: EditableGridProps) => {
                     type: MessageBarType.error,
                   });
 
-                  setGridInError(true);
                   localError = true;
                 }
               }
@@ -952,7 +940,6 @@ const EditableGrid = (props: EditableGridProps) => {
           type: MessageBarType.error,
         });
 
-        setGridInError(true);
         localError = true;
       } else if (emptyReqCol.length == 1) {
         var msg = `Row: ${
@@ -966,7 +953,6 @@ const EditableGrid = (props: EditableGridProps) => {
           type: MessageBarType.error,
         });
 
-        setGridInError(true);
         localError = true;
       }
 
@@ -982,7 +968,6 @@ const EditableGrid = (props: EditableGridProps) => {
           type: MessageBarType.error,
         });
 
-        setGridInError(true);
         localError = true;
       } else if (emptyCol.length == 1) {
         var msg = `Row ${
@@ -996,7 +981,6 @@ const EditableGrid = (props: EditableGridProps) => {
           type: MessageBarType.error,
         });
 
-        setGridInError(true);
         localError = true;
       }
     }
@@ -1048,14 +1032,8 @@ const EditableGrid = (props: EditableGridProps) => {
 
     setEditMode(false);
     setGridEditState(false);
-    const defaultGridDataTmp =
-      defaultGridData.length > 0
-        ? defaultGridData.filter(
-            (x) => x._grid_row_operation_ != _Operation.Delete
-          )
-        : [];
 
-    const defaultGridDataTmpWithDeletedData = defaultGridData;
+    const defaultGridDataTmpWithDeletedData = [...defaultGridData] ?? [] ;
 
     const ignoredProperties = [
       "_grid_row_id_",
@@ -1107,20 +1085,19 @@ const EditableGrid = (props: EditableGridProps) => {
     }
     if (localError === true) setGridInError(true);
 
-    if (!localError) {
+    if(!localError){
       if (props.onBeforeGridSave) {
         props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
       }
-    }
+    
 
-    if (!localError) {
       if (props.onGridSave) {
         props.onGridSave(
-          defaultGridDataTmp,
+          defaultGridData,
           defaultGridDataTmpWithInternalPropsIgnored
         );
-      }
-    }
+      }}
+    
     return localError;
   };
 

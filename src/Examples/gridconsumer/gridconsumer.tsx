@@ -263,10 +263,10 @@ const Consumer = () => {
     LogRows(internalGridData);
     setItems([
       ...internalGridData
-        .filter((y) => y._grid_row_operation_ != _Operation.Delete)
-        .map((x) => {
-          return { ...x, _grid_row_operation_: _Operation.None };
-        }),
+        // .filter((y) => y._grid_row_operation_ != _Operation.Delete)
+        // .map((x) => {
+        //   return { ...x, _grid_row_operation_: _Operation.None };
+        // }),
     ]);
   };
 
