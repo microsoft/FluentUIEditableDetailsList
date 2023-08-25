@@ -380,7 +380,8 @@ const EditableGrid = (props: EditableGridProps) => {
         index++
       ) {
         const element = props.customKeysToAddOnNewRow[index];
-        ignoredProperties.push(element.key);
+        if ((element.useKeyWhenDeterminingDuplicatedRows ?? false) == true)
+          ignoredProperties.push(element.key);
       }
     }
 
@@ -441,6 +442,18 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (props.customOperationsKey) {
       ignoredProperties.push(props.customOperationsKey.colKey);
+    }
+
+    if (props.customKeysToAddOnNewRow) {
+      for (
+        let index = 0;
+        index < props.customKeysToAddOnNewRow.length;
+        index++
+      ) {
+        const element = props.customKeysToAddOnNewRow[index];
+        if ((element.ignoreKeyWhenDeterminingBlankRows ?? true) == true)
+          ignoredProperties.push(element.key);
+      }
     }
 
     const properties = Object.keys(obj)
@@ -1007,29 +1020,18 @@ const EditableGrid = (props: EditableGridProps) => {
 
     // Delete Blank Rows -------
 
-    // Blank and the user has deleted the row
-    const blankDeletedObjects = defaultGridData
-      .filter((x) => x._grid_row_operation_ == _Operation.Delete)
-      .filter((obj: any) => isRowBlank(obj));
-
-    blankDeletedObjects.forEach((element) => {
-      if (element?.["_grid_row_id_"]) {
-        HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
-      }
-    });
-
     let blankNonDeletedRowsCount = 0;
 
     // Blank and the user has not deleted the row
     const blankNonDeletedObjects = defaultGridData
       .filter((x) => x._grid_row_operation_ != _Operation.Delete)
       .filter((obj: any) => isRowBlank(obj))
-      .map((x) => {
-        x._grid_row_operation_ = _Operation.Delete;
-      });
-    console.log(blankNonDeletedObjects);
+
+
+    console.log(blankNonDeletedObjects)
+      
     blankNonDeletedObjects.forEach((element: any) => {
-      if (element?.["_grid_row_id_"]) {
+      if (element?.["_grid_row_id_"] != undefined) {
         HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
         blankNonDeletedRowsCount = blankNonDeletedRowsCount + 1;
       }
@@ -2722,10 +2724,9 @@ const EditableGrid = (props: EditableGridProps) => {
         if (columnValuesObj?.[colKeysVal]?.dataType == "boolean") {
           newColObj[colKeysVal] =
             columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? false;
-        }
-        else if (columnValuesObj?.[colKeysVal]?.dataType == "string") {
+        } else if (columnValuesObj?.[colKeysVal]?.dataType == "string") {
           newColObj[colKeysVal] =
-            columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? '';
+            columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? "";
         } else {
           newColObj[colKeysVal] =
             columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? null;

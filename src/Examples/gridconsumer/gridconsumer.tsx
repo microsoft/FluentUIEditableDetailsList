@@ -234,7 +234,7 @@ const Consumer = () => {
         id: i,
         combo: "1010",
         excluded: randomInt % 2 == 0 ? true : false,
-        customerhovercol: "Hover Me",
+        // customerhovercol: "Hover Me",
         name: "co",
         password: "somepassword",
         age: GetRandomInt(20, 40),
@@ -778,7 +778,14 @@ const Consumer = () => {
           onClick={() => saveAction && saveAction()}
         />
         <EditableGrid
-          customKeysToAddOnNewRow={[{ key: "RuleId", defaultValue: "BaM" }]}
+          customKeysToAddOnNewRow={[
+            {
+              key: "customKey",
+              defaultValue: "random",
+              ignoreKeyWhenDeterminingBlankRows: true,
+              useKeyWhenDeterminingDuplicatedRows: true,
+            },
+          ]}
           customOperationsKey={{
             colKey: "otype",
             options: {
@@ -828,7 +835,7 @@ const Consumer = () => {
           enableSaveChangesOnlyOnSubmit={
             gridConfigOptions.enableSaveChangesOnlyOnSubmit
           }
-          columns={(GridColumnConfig)}
+          columns={GridColumnConfig}
           onRenderDetailsHeader={onRenderDetailsHeader}
           onRenderRow={onRenderRow}
           layoutMode={DetailsListLayoutMode.fixedColumns}

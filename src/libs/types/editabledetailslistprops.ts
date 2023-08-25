@@ -36,7 +36,12 @@ export type IUserDefinedOperationKey = {
   };
 };
 
-export type ICustomKeysToAddOnNewRow = { key: string; defaultValue: string | number | boolean | bigint };
+export type ICustomKeysToAddOnNewRow = {
+  key: string;
+  defaultValue: string | number | boolean | bigint;
+  ignoreKeyWhenDeterminingBlankRows?: boolean;
+  useKeyWhenDeterminingDuplicatedRows?: boolean;
+};
 
 export interface EditableGridProps extends IDetailsListProps {
   /** If `customOperationsKey` is enabled. This Key/Column will be updated with what operation has been preformed. `(Add, Delete, Updated, None)` */
