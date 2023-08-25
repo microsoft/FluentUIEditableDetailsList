@@ -245,18 +245,20 @@ const EditableGrid = (props: EditableGridProps) => {
   });
 
   useEffect(() => {
-      var data: any[] = InitializeInternalGrid(
-        JSON.parse(JSON.stringify(props.items)), props.customOperationsKey
-      );
-      setGridData(data);
-      setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
-      setGridEditState(false);
-      SetGridItems(data);    
+    var data: any[] = InitializeInternalGrid(
+      JSON.parse(JSON.stringify(props.items)),
+      props.customOperationsKey
+    );
+    setGridData(data);
+    setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
+    setGridEditState(false);
+    SetGridItems(data);
   }, [props.items]);
 
   useEffect(() => {
-    indentiferColumn.current = (props.columns.filter((x)=> x.autoGenerate == true)?.[0]?.key) ?? null;
-}, [props.columns]);
+    indentiferColumn.current =
+      props.columns.filter((x) => x.autoGenerate == true)?.[0]?.key ?? null;
+  }, [props.columns]);
 
   useEffect(() => {}, [backupDefaultGridData]);
 
@@ -441,21 +443,11 @@ const EditableGrid = (props: EditableGridProps) => {
       ignoredProperties.push(props.customOperationsKey.colKey);
     }
 
-    if (props.customKeysToAddOnNewRow) {
-      for (
-        let index = 0;
-        index < props.customKeysToAddOnNewRow.length;
-        index++
-      ) {
-        const element = props.customKeysToAddOnNewRow[index];
-        ignoredProperties.push(element.key);
-      }
-    }
-
     const properties = Object.keys(obj)
       .filter((key) => !ignoredProperties.includes(key))
       .sort();
 
+    console.log(properties);
     for (const key of properties) {
       if (
         obj[key] !== null &&
@@ -1021,8 +1013,8 @@ const EditableGrid = (props: EditableGridProps) => {
       .filter((obj: any) => isRowBlank(obj));
 
     blankDeletedObjects.forEach((element) => {
-      if(element?.["_grid_row_id_"]){
-      HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
+      if (element?.["_grid_row_id_"]) {
+        HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
       }
     });
 
@@ -1035,11 +1027,12 @@ const EditableGrid = (props: EditableGridProps) => {
       .map((x) => {
         x._grid_row_operation_ = _Operation.Delete;
       });
-    console.log(blankNonDeletedObjects)
+    console.log(blankNonDeletedObjects);
     blankNonDeletedObjects.forEach((element: any) => {
-      if(element?.["_grid_row_id_"]){
-      HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
-      blankNonDeletedRowsCount = blankNonDeletedRowsCount + 1;}
+      if (element?.["_grid_row_id_"]) {
+        HandleRowSingleDelete(Number(element["_grid_row_id_"])!);
+        blankNonDeletedRowsCount = blankNonDeletedRowsCount + 1;
+      }
     });
 
     if (blankNonDeletedRowsCount > 0) {
@@ -1108,26 +1101,26 @@ const EditableGrid = (props: EditableGridProps) => {
         })
         .map(removeIgnoredProperties);
 
- 
-
     let localError = false;
     if (parseInt(getGridRecordLength(true)) > 0) {
       localError = runGridValidations();
     }
     if (localError === true) setGridInError(true);
 
-    if(!localError){
-    if (props.onBeforeGridSave) {
-      props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
-    }}
+    if (!localError) {
+      if (props.onBeforeGridSave) {
+        props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
+      }
+    }
 
-    if(!localError){
-    if (props.onGridSave) {
-      props.onGridSave(
-        defaultGridDataTmp,
-        defaultGridDataTmpWithInternalPropsIgnored
-      );
-    }}
+    if (!localError) {
+      if (props.onGridSave) {
+        props.onGridSave(
+          defaultGridDataTmp,
+          defaultGridDataTmpWithInternalPropsIgnored
+        );
+      }
+    }
     return localError;
   };
 
@@ -1227,7 +1220,8 @@ const EditableGrid = (props: EditableGridProps) => {
 
               if (props.customOperationsKey)
                 row[props.customOperationsKey.colKey] =
-                  props.customOperationsKey.options?.Update ?? _Operation.Update;
+                  props.customOperationsKey.options?.Update ??
+                  _Operation.Update;
             }
           });
 
@@ -1621,7 +1615,7 @@ const EditableGrid = (props: EditableGridProps) => {
         error: null,
         columnEditable: item?.editable ?? false,
         defaultValueOnNewRow: item?.defaultOnAddRow ?? null,
-        dataType: item.dataType
+        dataType: item.dataType,
       };
     });
     setColumnValuesObj(tmpColumnValuesObj);
@@ -1870,7 +1864,6 @@ const EditableGrid = (props: EditableGridProps) => {
         JSON.stringify(defaultGridDataTmp) ===
         JSON.stringify(editChangeCompareData)
       ) {
-
         defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
           _Operation.None;
 
@@ -1879,16 +1872,14 @@ const EditableGrid = (props: EditableGridProps) => {
             props.customOperationsKey.colKey
           ] = props.customOperationsKey.options?.None ?? _Operation.None;
       } else {
-
         defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
           _Operation.Update;
         if (props.customOperationsKey)
           defaultGridDataTmp[internalRowNumDefaultGrid][
             props.customOperationsKey.colKey
           ] = props.customOperationsKey.options?.Update ?? _Operation.Update;
-        }
-        setGridEditState(true);
-      
+      }
+      setGridEditState(true);
     }
     return defaultGridDataTmp;
   };
@@ -2720,20 +2711,24 @@ const EditableGrid = (props: EditableGridProps) => {
         } else if (currentVal?.toLowerCase()?.trim() === "true") {
           newColObj[colKeysVal] = true;
         } else {
-          if(columnValuesObj?.[colKeysVal]?.dataType == 'boolean'){
-          newColObj[colKeysVal] = ( currentVal?.toString()?.trim() == '1' ? true : false) ?? false
-        }
-          else{
+          if (columnValuesObj?.[colKeysVal]?.dataType == "boolean") {
+            newColObj[colKeysVal] =
+              (currentVal?.toString()?.trim() == "1" ? true : false) ?? false;
+          } else {
             newColObj[colKeysVal] = currentVal?.toString()?.trim() ?? null;
           }
         }
       } else {
-        if(columnValuesObj?.[colKeysVal]?.dataType == 'boolean'){
-          newColObj[colKeysVal] = columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? false
-}
-        else{
-        newColObj[colKeysVal] =
-          columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? null;
+        if (columnValuesObj?.[colKeysVal]?.dataType == "boolean") {
+          newColObj[colKeysVal] =
+            columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? false;
+        }
+        else if (columnValuesObj?.[colKeysVal]?.dataType == "string") {
+          newColObj[colKeysVal] =
+            columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? '';
+        } else {
+          newColObj[colKeysVal] =
+            columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? null;
         }
       }
     }
@@ -2772,7 +2767,7 @@ const EditableGrid = (props: EditableGridProps) => {
     };
   }, [columnValuesObj, indentiferColumn, CurrentAutoGenID]);
 
-  const startPasting = async () =>{
+  const startPasting = async () => {
     let ui: any[] = [];
     let pastedData = "";
     let lines: string[] = [];
@@ -2780,122 +2775,120 @@ const EditableGrid = (props: EditableGridProps) => {
 
     try {
       await navigator.clipboard
-      .readText()
-      .then((text) => {
-        pastedData = text;
-        lines = text.split("\n");
-        if (lines.length <= 0) {
+        .readText()
+        .then((text) => {
+          pastedData = text;
+          lines = text.split("\n");
+          if (lines.length <= 0) {
+            const newMap = new Map(interalMessagesState).set(
+              props.id.toString(),
+              {
+                msg: "Unable To Add This Data - Please try again. Data is not sufficient ",
+                type: MessageBarType.error,
+              }
+            );
+            setInteralMessagesState(newMap);
+            return;
+          }
+
+          let genId = CurrentAutoGenID;
+
+          var colKeys = Object.keys(columnValuesObj).filter(
+            (item) => item !== indentiferColumn.current
+          );
+          for (let index = 0; index < lines.length; index++) {
+            const row = lines[index];
+            if (row.length <= 0) continue;
+
+            if (!row.includes("\t") && !row.includes("\r")) {
+              setGridEditState(false);
+              return;
+            }
+
+            rowData = row.trim().split("\t");
+
+            const startPush = setupPastedData(
+              [...rowData],
+              GetDefaultRowObject(1),
+              genId++
+            );
+            if (startPush !== null) {
+              ui.push(startPush);
+            } else {
+              return;
+            }
+          }
+
+          if (
+            lines.length !==
+            (lines.length < CurrentAutoGenID
+              ? lines.length - CurrentAutoGenID
+              : CurrentAutoGenID - lines.length)
+          ) {
+            SetCurrentAutoGenID(lines.length + CurrentAutoGenID - 1);
+          }
+          var newGridData = [...defaultGridData];
+          ui.forEach((i) => {
+            newGridData.splice(0, 0, i[0]);
+          });
+
+          let newMap = new Map(interalMessagesState);
+
+          if (rowData.length > colKeys.length) {
+            newMap.set(props.id.toString(), {
+              msg: `Pasted ${ui.length} ${
+                ui.length > 1 ? "rows" : "row"
+              } from clipboard. You pasted in more columns than this grid contains. ${
+                rowData.length - colKeys.length
+              } ${
+                rowData.length - colKeys.length > 1
+                  ? "columns have"
+                  : "column has"
+              } been removed.`,
+              type: MessageBarType.success,
+            });
+          } else {
+            newMap.set(props.id.toString(), {
+              msg: `Pasted ${ui.length} ${
+                ui.length > 1 ? "Rows" : "Row"
+              } From Clipboard`,
+              type: MessageBarType.success,
+            });
+          }
+
+          setInteralMessagesState(newMap);
+          SetGridItems(
+            CheckBulkUpdateOnChangeCallBack(
+              Object.keys(columnValuesObj).reduce(
+                (a, v) => ({ ...a, [v]: v }),
+                {}
+              ),
+              newGridData,
+              ui[0]
+            )
+          );
+
+          clearSelectedItems();
+          setGridEditState(true);
+          return;
+        })
+        .catch((error) => {
+          console.error(error);
+          setGridEditState(false);
           const newMap = new Map(interalMessagesState).set(
             props.id.toString(),
             {
-              msg: "Unable To Add This Data - Please try again. Data is not sufficient ",
+              msg: "Failed To Paste Rows From Clipboard",
               type: MessageBarType.error,
             }
           );
           setInteralMessagesState(newMap);
-          return
-        }
-  
-        let genId = CurrentAutoGenID;
-  
-        var colKeys = Object.keys(columnValuesObj).filter(
-          (item) => item !== indentiferColumn.current
-        );
-        for (let index = 0; index < lines.length; index++) {
-          const row = lines[index];
-          if (row.length <= 0) continue;
-  
-          if (!row.includes("\t") && !row.includes("\r")) {
-            setGridEditState(false);
-            return;
-          }
-  
-          rowData = row.trim().split("\t");
-  
-          const startPush = setupPastedData(
-            [...rowData],
-            GetDefaultRowObject(1),
-            genId++
-          );
-          if (startPush !== null) {
-            ui.push(startPush);
-          } else {
-            return;
-          }
-        }
-  
-        if (
-          lines.length !==
-          (lines.length < CurrentAutoGenID
-            ? lines.length - CurrentAutoGenID
-            : CurrentAutoGenID - lines.length)
-        ) {
-          SetCurrentAutoGenID(lines.length + CurrentAutoGenID - 1);
-        }
-        var newGridData = [...defaultGridData];
-        ui.forEach((i) => {
-          newGridData.splice(0, 0, i[0]);
+          return;
         });
-  
-        let newMap = new Map(interalMessagesState);
-  
-        if (rowData.length > colKeys.length) {
-          newMap.set(props.id.toString(), {
-            msg: `Pasted ${ui.length} ${
-              ui.length > 1 ? "rows" : "row"
-            } from clipboard. You pasted in more columns than this grid contains. ${
-              rowData.length - colKeys.length
-            } ${
-              rowData.length - colKeys.length > 1
-                ? "columns have"
-                : "column has"
-            } been removed.`,
-            type: MessageBarType.success,
-          });
-        } else {
-          newMap.set(props.id.toString(), {
-            msg: `Pasted ${ui.length} ${
-              ui.length > 1 ? "Rows" : "Row"
-            } From Clipboard`,
-            type: MessageBarType.success,
-          });
-        }
-  
-       setInteralMessagesState(newMap);
-        SetGridItems(
-          CheckBulkUpdateOnChangeCallBack(
-            Object.keys(columnValuesObj).reduce(
-              (a, v) => ({ ...a, [v]: v }),
-              {}
-            ),
-            newGridData,
-            ui[0]
-          )
-        );
-  
-        clearSelectedItems();
-        setGridEditState(true);
-        return;
-
-      })
-      .catch((error) => {
-        console.error(error);
-        setGridEditState(false);
-        const newMap = new Map(interalMessagesState).set(props.id.toString(), {
-          msg: "Failed To Paste Rows From Clipboard",
-          type: MessageBarType.error,
-        });
-        setInteralMessagesState(newMap);
-        return;
-      });
-      
     } catch (error) {
-      return
+      return;
     }
-  
-    
-
-  }
+  };
 
   const PasteGridRows = (): void => {
     isClipboardEmpty().then((empty) => {
@@ -2906,15 +2899,12 @@ const EditableGrid = (props: EditableGridProps) => {
         });
         setInteralMessagesState(newMap);
         return;
-      } else{
+      } else {
         startPasting().then((success) => {
           return;
         });
       }
     });
-
-    
-  
   };
 
   const getGridRecordLength = useCallback(
@@ -3025,7 +3015,7 @@ const EditableGrid = (props: EditableGridProps) => {
       case EditType.DeleteRow:
         if (selectedIndices.length > 0) {
           DeleteSelectedRows();
-          clearSelectedItems()
+          clearSelectedItems();
         } else {
           const newMap = new Map(interalMessagesState).set(
             props.id.toString(),
@@ -4613,10 +4603,10 @@ const EditableGrid = (props: EditableGridProps) => {
               )}
             {props.enableRowEditDelete && (
               <IconButton
-                onClick={() =>{
-                  HandleRowSingleDelete(Number(item["_grid_row_id_"])!)
-                  clearSelectedItems()}
-                }
+                onClick={() => {
+                  HandleRowSingleDelete(Number(item["_grid_row_id_"])!);
+                  clearSelectedItems();
+                }}
                 disabled={
                   !props.enableSaveGridOnCellValueChange &&
                   activateCellEdit &&
