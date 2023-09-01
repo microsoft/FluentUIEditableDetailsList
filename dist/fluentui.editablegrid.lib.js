@@ -55925,7 +55925,6 @@ const tz = (e) => {
   }, LE = () => {
     let N = [];
     return e.enableExcelExport && !e.enableCSVExport && !n ? N.push({
-      id: "export",
       key: "exportToExcel",
       text: (s == null ? void 0 : s.ExcelExport) ?? "Export To Excel",
       ariaLabel: (s == null ? void 0 : s.ExcelExport) ?? "Export To Excel",
@@ -55943,7 +55942,6 @@ const tz = (e) => {
       iconProps: { iconName: "LandscapeOrientation" },
       onClick: () => De(eo.CSV)
     }) : e.enableExcelExport && e.enableCSVExport && !n && N.push({
-      id: "export",
       key: "exportGrid",
       text: (s == null ? void 0 : s.Export) ?? "Export",
       ariaLabel: (s == null ? void 0 : s.Export) ?? "Export",
@@ -55967,8 +55965,7 @@ const tz = (e) => {
         ]
       }
     }), e.enableExcelImport && !n && N.push({
-      id: "importExcel",
-      key: "importFroExcel",
+      key: "importFromExcel",
       text: (s == null ? void 0 : s.ImportFromExcel) ?? "Import From Excel",
       ariaLabel: (s == null ? void 0 : s.ImportFromExcel) ?? "Import From Excel",
       disabled: G || n,
@@ -55990,7 +55987,6 @@ const tz = (e) => {
       iconProps: { iconName: "Paste" },
       onClick: () => am(!1)
     }), e.enableGridRowAddWithValues && e.enableGridRowAddWithValues.enable && !n && N.push({
-      id: "addrowswithdata",
       key: "addrowswithdata",
       text: e.enableInlineGridAdd ? (s == null ? void 0 : s.AddRow) ?? "Add Row" : (s == null ? void 0 : s.AddRowWithData) ?? "Add Rows With Data",
       disabled: n,
@@ -55999,14 +55995,12 @@ const tz = (e) => {
         Js(Ba.AddRowWithData);
       }
     }), e.enableGridRowsDelete && !n && N.push({
-      id: "deleterows",
       key: "deleterows",
       text: wt.count > 1 ? (s == null ? void 0 : s.DeleteRow) ?? "Delete Rows" : (s == null ? void 0 : s.DeleteRow) ?? "Delete Row",
       disabled: e.enableSaveGridOnCellValueChange ? void 0 : n || wt.count == 0,
       iconProps: { iconName: "trash" },
       onClick: () => Js(Ba.DeleteRow)
     }), e.enableColumnFilterRules && !n && N.push({
-      id: "columnfilter",
       key: "columnFilters",
       text: (s == null ? void 0 : s.Filter) ?? "Filter",
       ariaLabel: "Filter",
@@ -56030,7 +56024,6 @@ const tz = (e) => {
         ]
       }
     }), !e.enableDefaultEditMode && e.enableEditMode && N.push({
-      id: "editmode",
       key: "editmode",
       disabled: G && n,
       text: n ? (s == null ? void 0 : s.Editing) ?? "Editing" : (s == null ? void 0 : s.EditMode) ?? "Edit Mode",
@@ -56056,14 +56049,12 @@ const tz = (e) => {
         uE();
       }
     }), e.enableBulkEdit && !n && N.push({
-      id: "bulkedit",
       key: "bulkedit",
       text: (s == null ? void 0 : s.BulkEdit) ?? "Bulk Edit",
       disabled: G || n || wt.count == 0,
       iconProps: { iconName: "TripleColumnEdit" },
       onClick: () => Js(Ba.BulkEdit)
     }), e.enableGridRowsAdd && !e.enableInlineGridAdd && N.push({
-      id: "addrows",
       key: "addrows",
       text: (s == null ? void 0 : s.AddRow) ?? "Add Rows",
       disabled: n,
@@ -56072,14 +56063,12 @@ const tz = (e) => {
         Js(Ba.AddRow);
       }
     }), e.enableColumnEdit && !n && N.push({
-      id: "updatecolumn",
       key: "updatecolumn",
       disabled: G || n || wt.count == 0,
       text: ve ? "Save Column Update" : "Update Column",
       iconProps: { iconName: "SingleColumnEdit" },
       onClick: () => Js(Ba.ColumnEdit)
     }), e.enableGridReset && !n && N.push({
-      id: "resetgrid",
       key: "resetGrid",
       disabled: G || n || !te,
       text: (s == null ? void 0 : s.ResetData) ?? "Reset Data",
@@ -56096,7 +56085,6 @@ const tz = (e) => {
       iconOnly: !1,
       iconProps: { iconName: "PageListFilter" }
     }), !e.enableSaveGridOnCellValueChange && !n && (e.enableRowEdit || e.enableSingleCellEditOnDoubleClick || e.enableBulkEdit || e.enableColumnEdit || e.enableEditMode) && N.push({
-      id: "info",
       key: "info",
       text: te ? "Grid has unsaved data. Click on 'Submit' to save" : "",
       ariaLabel: "Commit Changes",

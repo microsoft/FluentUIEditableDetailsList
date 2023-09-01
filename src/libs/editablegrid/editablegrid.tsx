@@ -4772,7 +4772,6 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (props.enableExcelExport && !props.enableCSVExport && !editMode) {
       commandBarItems.push({
-        id: "export",
         key: "exportToExcel",
         text: CommandBarTitles?.ExcelExport ?? "Export To Excel",
         ariaLabel: CommandBarTitles?.ExcelExport ?? "Export To Excel",
@@ -4794,7 +4793,6 @@ const EditableGrid = (props: EditableGridProps) => {
       });
     } else if (props.enableExcelExport && props.enableCSVExport && !editMode) {
       commandBarItems.push({
-        id: "export",
         key: "exportGrid",
         text:  CommandBarTitles?.Export ?? "Export",
         ariaLabel:  CommandBarTitles?.Export ?? "Export",
@@ -4822,8 +4820,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (props.enableExcelImport && !editMode) {
       commandBarItems.push({
-        id: "importExcel",
-        key: "importFroExcel",
+        key: "importFromExcel",
         text: CommandBarTitles?.ImportFromExcel ?? "Import From Excel",
         ariaLabel:  CommandBarTitles?.ImportFromExcel ?? "Import From Excel",
         disabled: isGridInEdit || editMode,
@@ -4877,7 +4874,6 @@ const EditableGrid = (props: EditableGridProps) => {
       !editMode
     ) {
       commandBarItems.push({
-        id: "addrowswithdata",
         key: "addrowswithdata",
         text: props.enableInlineGridAdd ? CommandBarTitles?.AddRow ?? "Add Row" : CommandBarTitles?.AddRowWithData ?? "Add Rows With Data",
         disabled: editMode,
@@ -4890,7 +4886,6 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (props.enableGridRowsDelete && !editMode) {
       commandBarItems.push({
-        id: "deleterows",
         key: "deleterows",
         text: _selection.count > 1 ? CommandBarTitles?.DeleteRow ?? "Delete Rows" : CommandBarTitles?.DeleteRow ?? "Delete Row",
         disabled: props.enableSaveGridOnCellValueChange
@@ -4903,7 +4898,6 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (props.enableColumnFilterRules && !editMode) {
       commandBarItems.push({
-        id: "columnfilter",
         key: "columnFilters",
         text: CommandBarTitles?.Filter ?? "Filter",
         ariaLabel: "Filter",
@@ -4931,7 +4925,6 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (!props.enableDefaultEditMode && props.enableEditMode) {
       commandBarItems.push({
-        id: "editmode",
         key: "editmode",
         disabled: isGridInEdit && editMode,
         text: !editMode ? CommandBarTitles?.EditMode ?? "Edit Mode" : CommandBarTitles?.Editing ?? "Editing",
@@ -4975,7 +4968,6 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (props.enableBulkEdit && !editMode) {
       commandBarItems.push({
-        id: "bulkedit",
         key: "bulkedit",
         text: CommandBarTitles?.BulkEdit ?? "Bulk Edit",
         disabled: isGridInEdit || editMode || _selection.count == 0,
@@ -4986,7 +4978,6 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (props.enableGridRowsAdd && !props.enableInlineGridAdd) {
       commandBarItems.push({
-        id: "addrows",
         key: "addrows",
         text: CommandBarTitles?.AddRow ?? "Add Rows",
         disabled: editMode,
@@ -4999,7 +4990,6 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (props.enableColumnEdit && !editMode) {
       commandBarItems.push({
-        id: "updatecolumn",
         key: "updatecolumn",
         disabled: isGridInEdit || editMode || _selection.count == 0,
         text: !isUpdateColumnClicked ? "Update Column" : "Save Column Update",
@@ -5010,7 +5000,6 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (props.enableGridReset && !editMode) {
       commandBarItems.push({
-        id: "resetgrid",
         key: "resetGrid",
         disabled: isGridInEdit || editMode || !isGridStateEdited,
         text: CommandBarTitles?.ResetData ?? "Reset Data",
@@ -5052,7 +5041,6 @@ const EditableGrid = (props: EditableGridProps) => {
         props.enableEditMode)
     ) {
       commandBarItems.push({
-        id: "info",
         key: "info",
         text: isGridStateEdited
           ? "Grid has unsaved data. Click on 'Submit' to save"
