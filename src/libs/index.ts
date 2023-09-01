@@ -28,4 +28,5 @@ export type {
   IContentScrollablePaneStyleProps,
   IUserDefinedOperationKey,
   ICustomKeysToAddOnNewRow,
+  IRenameCommandBarItemsActions
 } from "./types/editabledetailslistprops";

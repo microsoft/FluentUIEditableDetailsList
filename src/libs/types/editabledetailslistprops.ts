@@ -36,6 +36,23 @@ export type IUserDefinedOperationKey = {
   };
 };
 
+export type IRenameCommandBarItemsActions = {
+  AddRow?: string;
+  AddRowWithData?: string;
+  BulkEdit?: string;
+  CopyGrid?: string;
+  CSVExport?: string;
+  DeleteRow?: string;
+  EditMode?: string;
+  Editing?: string;
+  ExcelExport?: string;
+  Export?: string;
+  Filter?: string;
+  ImportFromExcel?: string;
+  PasteIntoGrid?: string;
+  ResetData?: string;
+};
+
 export type ICustomKeysToAddOnNewRow = {
   key: string;
   defaultValue: string | number | boolean | bigint;
@@ -100,13 +117,6 @@ export interface EditableGridProps extends IDetailsListProps {
   /** Change The File Name of File On Export Excel, CSV, etc. */
   exportFileName?: string;
 
-  /** Shows In Command Bar - **Strongly Advise Against Unless Warranted** Users can edit data, multiple ways, when this is enable it tells
-   * the grid to not commit any data to the API/Storage until the user has pressed submit. A user could press the save icon on a single
-   * cell, however that data is not stored until they hit the submit button. It creates a false since of security for the user, every save icon should
-   * be a complete save, not a "exit out of edit save". Refrain
-   */
-  enableSaveChangesOnlyOnSubmit?: boolean;
-
   /** Shows In Actions Grid Column - Show The Ablity To Delete One Row Which The Button Is Located */
   enableRowEditDelete?: boolean;
 
@@ -140,8 +150,8 @@ export interface EditableGridProps extends IDetailsListProps {
   /** Callback for when the grid is saved */
   onGridSave?: (internalGridData: any, updatedItems: any) => void;
 
-  /** Removed 'Commit Changes' button, but only if `enableUnsavedEditIndicator` is false. If not, grid will still save on every value change, but 'Commit Changes' button
-   * will still be present
+  /** Removed 'Commit Changes' button.
+   * Saves the grid state during every value change, if false will only save state when the user presses commit
    */
   enableSaveGridOnCellValueChange?: boolean;
 
@@ -188,9 +198,6 @@ export interface EditableGridProps extends IDetailsListProps {
   position?: string;
   constrainMode?: ConstrainMode;
 
-  /** Shows In Command Bar - Shows An Buttom The User Needs To Press When They/ve Made Changes To Grid Data Inline. */
-  enableUnsavedEditIndicator?: boolean;
-
   /** Shows In Command Bar - Allows Users To Reset Data Option - Resets Data To Intial Before Any Changes, Fresh Data */
   enableGridReset?: boolean;
 
@@ -223,4 +230,7 @@ export interface EditableGridProps extends IDetailsListProps {
 
   /** Prop to use to add custom commandbar items to the commandbar above the grid in the overflow section */
   customCommandBarOverflowItems?: ICommandBarItemProps[];
+
+  /** Use to rename the actions you see in the command bar */
+  renameCommandBarItemsActions?: IRenameCommandBarItemsActions
 }

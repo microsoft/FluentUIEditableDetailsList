@@ -85,8 +85,6 @@ interface GridConfigOptions {
   enableGridCopy: boolean;
   enableGridPaste: boolean;
   enableSingleRowCopy: true;
-  enableUnsavedEditIndicator: boolean;
-  enableSaveChangesOnlyOnSubmit: boolean;
   enableGridReset: boolean;
   enableColumnFilters: boolean;
   enableDefaultEditMode: boolean;
@@ -132,8 +130,6 @@ const Consumer = () => {
       enableGridCopy: true,
       enableGridPaste: true,
       enableSingleRowCopy: true,
-      enableUnsavedEditIndicator: true,
-      enableSaveChangesOnlyOnSubmit: false,
       enableGridReset: true,
       enableColumnFilters: true,
       enableDefaultEditMode: false,
@@ -262,11 +258,11 @@ const Consumer = () => {
     alert("Grid Data Saved");
     LogRows(internalGridData);
     setItems([
-      ...internalGridData
-        // .filter((y) => y._grid_row_operation_ != _Operation.Delete)
-        // .map((x) => {
-        //   return { ...x, _grid_row_operation_: _Operation.None };
-        // }),
+      ...internalGridData,
+      // .filter((y) => y._grid_row_operation_ != _Operation.Delete)
+      // .map((x) => {
+      //   return { ...x, _grid_row_operation_: _Operation.None };
+      // }),
     ]);
   };
 
@@ -707,22 +703,8 @@ const Consumer = () => {
               checked={gridConfigOptions.enableGridPaste}
             />
           </StackItem>
-          <StackItem className={classNames.checkbox}>
-            <Checkbox
-              id={"enableUnsavedEditIndicator"}
-              label="Unsaved Edit Indicator"
-              onChange={onCheckboxChange}
-              checked={gridConfigOptions.enableUnsavedEditIndicator}
-            />
-          </StackItem>
-          <StackItem className={classNames.checkbox}>
-            <Checkbox
-              id={"enableSaveChangesOnlyOnSubmit"}
-              label="Save"
-              onChange={onCheckboxChange}
-              checked={gridConfigOptions.enableSaveChangesOnlyOnSubmit}
-            />
-          </StackItem>
+      
+
           <StackItem className={classNames.checkbox}>
             <Checkbox
               id={"enableGridReset"}
@@ -778,6 +760,9 @@ const Consumer = () => {
           onClick={() => saveAction && saveAction()}
         />
         <EditableGrid
+        renameCommandBarItemsActions={{
+          DeleteRow: 'Remove Row'
+        }}
           customKeysToAddOnNewRow={[
             {
               key: "customKey",
@@ -832,9 +817,6 @@ const Consumer = () => {
           }}
           actionIconStylesInGrid={{ icon: { color: "black" } }}
           enableColumnEdit={gridConfigOptions.enableColumnEdit}
-          enableSaveChangesOnlyOnSubmit={
-            gridConfigOptions.enableSaveChangesOnlyOnSubmit
-          }
           columns={GridColumnConfig}
           onRenderDetailsHeader={onRenderDetailsHeader}
           onRenderRow={onRenderRow}
@@ -858,9 +840,6 @@ const Consumer = () => {
           height={"250px"}
           width={"100%"}
           position={"relative"}
-          enableUnsavedEditIndicator={
-            gridConfigOptions.enableUnsavedEditIndicator
-          }
           onGridSave={onGridSave}
           enableGridReset={gridConfigOptions.enableGridReset}
           enableColumnFilters={gridConfigOptions.enableColumnFilters}
