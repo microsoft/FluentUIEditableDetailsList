@@ -54110,7 +54110,7 @@ const tz = (e) => {
     Se((N) => !N);
   }, T = _.useCallback(() => {
     W(void 0);
-  }, []), H = ln(1), B = (N) => {
+  }, []), H = ln(0), B = (N) => {
     var Te;
     let U = {}, k = [], j = Math.max.apply(
       Math,
@@ -54124,7 +54124,7 @@ const tz = (e) => {
         if (We.current != null && We.current !== null)
           return le[We.current];
       })
-    ) ?? 1, ee < H.current && (ee = H.current));
+    ) ?? 0, ee < H.current && (ee = H.current));
     for (var se = 1; se <= N; se++) {
       if (U = {}, e.columns.forEach((le, ue) => {
         le.autoGenerate ? (U[le.key] = ee + se, H.current = ee + se) : le.defaultOnAddRow ? U[le.key] = le.defaultOnAddRow : U[le.key] = uc(le.dataType);
@@ -55229,7 +55229,7 @@ const tz = (e) => {
             );
             le[k.key] = isNaN(parseFloat(Pe)) ? le[k.key] : Pe;
           }
-          if (k.dataType == "date" && le[k.key] && (le[k.key] = new Date(le[k.key]).toDateString()), k.autoGenerate && (H.current = isNaN(parseInt(le[k.key])) === !1 ? parseInt(le[k.key]) : H.current == 1 ? +H.current : H.current + 1), k.comboBoxOptions) {
+          if (k.dataType == "date" && le[k.key] && (le[k.key] = new Date(le[k.key]).toDateString()), k.autoGenerate && (H.current = isNaN(parseInt(le[k.key])) === !1 ? parseInt(le[k.key]) : H.current + 1), k.comboBoxOptions) {
             const Pe = /* @__PURE__ */ new Map();
             Pe.set(k.key + ue, k.comboBoxOptions ?? []), ME.current = Pe;
           }
@@ -56001,7 +56001,7 @@ const tz = (e) => {
     }), e.enableGridRowsDelete && !n && N.push({
       id: "deleterows",
       key: "deleterows",
-      text: wt.count > 1 ? (s == null ? void 0 : s.DeleteRow) + "s" : (s == null ? void 0 : s.DeleteRow) ?? "Delete Row",
+      text: wt.count > 1 ? (s == null ? void 0 : s.DeleteRow) ?? "Delete Rows" : (s == null ? void 0 : s.DeleteRow) ?? "Delete Row",
       disabled: e.enableSaveGridOnCellValueChange ? void 0 : n || wt.count == 0,
       iconProps: { iconName: "trash" },
       onClick: () => Js(Ba.DeleteRow)

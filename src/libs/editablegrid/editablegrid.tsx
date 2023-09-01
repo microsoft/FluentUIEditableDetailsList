@@ -1285,8 +1285,7 @@ const EditableGrid = (props: EditableGridProps) => {
   const CloseRenameDialog = React.useCallback((): void => {
     setDialogContent(undefined);
   }, []);
-  // const [CurrentAutoGenID, SetCurrentAutoGenID] = useState(0);
-  const tempAutoGenId = useRef(1);
+  const tempAutoGenId = useRef(0);
 
   const GetDefaultRowObject = (rowCount: number): any[] => {
     let obj: any = {};
@@ -1313,7 +1312,7 @@ const EditableGrid = (props: EditableGridProps) => {
             )
               return o[indentiferColumn.current];
           })
-        ) ?? 1;
+        ) ?? 0;
 
       if (_autoGenId < tempAutoGenId.current) {
         _autoGenId = tempAutoGenId.current;
@@ -3566,8 +3565,6 @@ const EditableGrid = (props: EditableGridProps) => {
                 tempAutoGenId.current =
                   isNaN(parseInt(item[column.key])) === false
                     ? parseInt(item[column.key])
-                    : tempAutoGenId.current == 1
-                    ? +tempAutoGenId.current
                     : tempAutoGenId.current + 1;
               }
 
@@ -4895,7 +4892,7 @@ const EditableGrid = (props: EditableGridProps) => {
       commandBarItems.push({
         id: "deleterows",
         key: "deleterows",
-        text: _selection.count > 1 ? CommandBarTitles?.DeleteRow+'s' ?? "Delete Rows" : CommandBarTitles?.DeleteRow ?? "Delete Row",
+        text: _selection.count > 1 ? CommandBarTitles?.DeleteRow ?? "Delete Rows" : CommandBarTitles?.DeleteRow ?? "Delete Row",
         disabled: props.enableSaveGridOnCellValueChange
           ? undefined
           : editMode || _selection.count == 0,
