@@ -62,6 +62,8 @@ import React from "react";
 import { IEnableMessageBarErrors } from "../../libs/types/editabledetailslistprops";
 
 interface GridConfigOptions {
+  showASaveButtonInCommandbar: boolean;
+  enableEditAllOnCellClick: boolean;
   disableInlineCellEdit: boolean;
   enableInlineGridAdd: boolean;
   disableAllRowActions: boolean;
@@ -104,6 +106,8 @@ const Consumer = () => {
     });
   const [gridConfigOptions, setGridConfigOptions] = useState<GridConfigOptions>(
     {
+      showASaveButtonInCommandbar: false,
+      enableEditAllOnCellClick: false,
       disableInlineCellEdit: false,
       enableInlineGridAdd: true,
       disableAllRowActions: false,
@@ -537,6 +541,22 @@ const Consumer = () => {
         >
           <StackItem className={classNames.checkbox}>
             <Checkbox
+              id={"showASaveButtonInCommandbar"}
+              label="Show A Save Button In Commandbar"
+              onChange={onCheckboxChange}
+              checked={gridConfigOptions.showASaveButtonInCommandbar}
+            />
+          </StackItem>
+          <StackItem className={classNames.checkbox}>
+            <Checkbox
+              id={"enableEditAllOnCellClick"}
+              label="Edit All Rows On Cell Click"
+              onChange={onCheckboxChange}
+              checked={gridConfigOptions.enableEditAllOnCellClick}
+            />
+          </StackItem>
+          <StackItem className={classNames.checkbox}>
+            <Checkbox
               id={"enableSingleCellEditOnDoubleClick"}
               label="Edit Cell On Double Click"
               onChange={onCheckboxChange}
@@ -760,6 +780,12 @@ const Consumer = () => {
           onClick={() => saveAction && saveAction()}
         />
         <EditableGrid
+        showASaveButtonInCommandbar ={
+          gridConfigOptions.showASaveButtonInCommandbar
+        }
+        enableEditAllOnCellClick={
+          gridConfigOptions.enableEditAllOnCellClick
+        }
         renameCommandBarItemsActions={{
           DeleteRow: 'Remove Row'
         }}

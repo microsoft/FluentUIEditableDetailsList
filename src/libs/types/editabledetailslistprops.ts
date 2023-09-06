@@ -51,6 +51,7 @@ export type IRenameCommandBarItemsActions = {
   ImportFromExcel?: string;
   PasteIntoGrid?: string;
   ResetData?: string;
+  SaveEdits?: string
 };
 
 export type ICustomKeysToAddOnNewRow = {
@@ -61,6 +62,8 @@ export type ICustomKeysToAddOnNewRow = {
 };
 
 export interface EditableGridProps extends IDetailsListProps {
+  /** Shows In Command Bar - Permanently shows a save button in the command bar*/
+  showASaveButtonInCommandbar?: boolean
   /** If `customOperationsKey` is enabled. This Key/Column will be updated with what operation has been preformed. `(Add, Delete, Updated, None)` */
   customOperationsKey?: IUserDefinedOperationKey;
 
@@ -137,6 +140,9 @@ export interface EditableGridProps extends IDetailsListProps {
 
   /** Shows Nowhere - Allows Users To Double Click A Single Cell & Edit That One Only, Saves After User Presses Enter In Cell. If False when user double click, the whole row is editable*/
   enableSingleCellEditOnDoubleClick?: boolean;
+
+  /** Shows Nowhere - Puts all rows in edit mode when a cell is clicked to be edited*/
+  enableEditAllOnCellClick?: boolean;
 
   /** If true the user cannot double click or single click to edit a row */
   disableInlineCellEdit?: boolean;
@@ -225,6 +231,9 @@ export interface EditableGridProps extends IDetailsListProps {
   /** Permanently Puts The Grid In Inline Edit Mode - **Advise Against Unless Warranted** */
   enableDefaultEditMode?: boolean;
 
+  /** Permanently Puts The Grid In Inline Edit Mode with Save & Cancel only present - **Advise Against Unless Warranted** */
+  enableDefaultEditModeWithCommandButtons?: boolean;
+
   /** Prop to use to add custom commandbar items to the commandbar above the grid */
   customCommandBarItems?: ICommandBarItemProps[];
 
@@ -232,5 +241,5 @@ export interface EditableGridProps extends IDetailsListProps {
   customCommandBarOverflowItems?: ICommandBarItemProps[];
 
   /** Use to rename the actions you see in the command bar */
-  renameCommandBarItemsActions?: IRenameCommandBarItemsActions
+  renameCommandBarItemsActions?: IRenameCommandBarItemsActions;
 }

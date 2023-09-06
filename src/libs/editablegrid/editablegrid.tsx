@@ -1359,7 +1359,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
   const [AddRowActive, SetAddRowActive] = useState(false);
   useEffect(() => {
-    if (AddRowActive && props.enableInlineGridAdd) {
+    if (AddRowActive && props.enableInlineGridAdd && !props.enableEditAllOnCellClick) {
       ShowRowEditMode(
         defaultGridData[0],
         Number(defaultGridData[0]["_grid_row_id_"])!,
@@ -2034,6 +2034,8 @@ const EditableGrid = (props: EditableGridProps) => {
     if (props.enableSaveGridOnCellValueChange) {
       let defaultGridDataTmp: any[] = SaveRowValue(item, row, defaultGridData);
       setDefaultGridData(defaultGridDataTmp);
+    } else{
+      setGridEditState(true);
     }
   };
 
@@ -2136,6 +2138,8 @@ const EditableGrid = (props: EditableGridProps) => {
     if (props.enableSaveGridOnCellValueChange) {
       let defaultGridDataTmp: any[] = SaveRowValue(item1, row, defaultGridData);
       setDefaultGridData(defaultGridDataTmp);
+    }else{
+      setGridEditState(true);
     }
   };
 
@@ -2172,6 +2176,8 @@ const EditableGrid = (props: EditableGridProps) => {
     if (props.enableSaveGridOnCellValueChange) {
       let defaultGridDataTmp: any[] = SaveRowValue(item, row, defaultGridData);
       setDefaultGridData(defaultGridDataTmp);
+    }else{
+      setGridEditState(true);
     }
   };
 
@@ -2200,6 +2206,8 @@ const EditableGrid = (props: EditableGridProps) => {
     if (props.enableSaveGridOnCellValueChange) {
       let defaultGridDataTmp: any[] = SaveRowValue(item, row, defaultGridData);
       setDefaultGridData(defaultGridDataTmp);
+    }else{
+      setGridEditState(true);
     }
   };
 
@@ -2228,6 +2236,8 @@ const EditableGrid = (props: EditableGridProps) => {
     if (props.enableSaveGridOnCellValueChange) {
       let defaultGridDataTmp: any[] = SaveRowValue(item, row, defaultGridData);
       setDefaultGridData(defaultGridDataTmp);
+    }else{
+      setGridEditState(true);
     }
   };
 
@@ -2255,15 +2265,17 @@ const EditableGrid = (props: EditableGridProps) => {
     if (props.enableSaveGridOnCellValueChange) {
       let defaultGridDataTmp: any[] = SaveRowValue(item, row, defaultGridData);
       setDefaultGridData(defaultGridDataTmp);
+    }else{
+      setGridEditState(true);
     }
   };
 
   const onCheckBoxChange = (
-    ev: React.FormEvent<HTMLElement | HTMLInputElement>,
+    ev: React.FormEvent<HTMLElement | HTMLInputElement> | undefined,
     row: number,
     column: IColumnConfig,
     isChecked: boolean | undefined,
-    item: any
+    item: {}
   ): void => {
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
@@ -2283,6 +2295,8 @@ const EditableGrid = (props: EditableGridProps) => {
     if (props.enableSaveGridOnCellValueChange) {
       let defaultGridDataTmp: any[] = SaveRowValue(item, row, defaultGridData);
       setDefaultGridData(defaultGridDataTmp);
+    }else{
+      setGridEditState(true);
     }
   };
 
@@ -3504,12 +3518,13 @@ const EditableGrid = (props: EditableGridProps) => {
         isPadded: column.isPadded,
         onColumnContextMenu:
           // !(isGridInEdit || editMode) &&
+          (!(isGridInEdit || editMode) && props.enableEditAllOnCellClick) &&
           isDataTypeSupportedForFilter &&
           column.applyColumnFilter &&
           props.enableColumnFilters
             ? (col, ev) => onColumnContextMenu(ev, col, index)
             : undefined,
-        onColumnClick: !column.disableSort //&& !(isGridInEdit || editMode)
+        onColumnClick: !column.disableSort &&           (!(isGridInEdit || editMode) && props.enableEditAllOnCellClick)       //&& !(isGridInEdit || editMode) 
           ? (ev, col) => onColumnClick(col, ev)
           : undefined,
         isSorted: sortColObj.isEnabled && sortColObj.key == colKey,
@@ -3756,12 +3771,11 @@ const EditableGrid = (props: EditableGridProps) => {
                         <Checkbox
                           styles={{ root: { justifyContent: "center" } }}
                           ariaLabel={column.key}
-                          defaultChecked={
+                          checked={
                             activateCellEdit[rowNum!]["properties"][column.key]
                               ?.value
                           }
                           onChange={(ev, isChecked) => {
-                            if (ev)
                               onCheckBoxChange(
                                 ev,
                                 rowNum!,
@@ -4399,6 +4413,10 @@ const EditableGrid = (props: EditableGridProps) => {
                             column.validations?.numericFormatProps?.label ??
                             item.text
                           }
+                          aria-label={
+                            column.validations?.numericFormatProps?.label ??
+                            item.text
+                          }
                           decimalScale={
                             column.validations?.numericFormatProps?.formatProps
                               ?.decimalScale
@@ -4871,15 +4889,17 @@ const EditableGrid = (props: EditableGridProps) => {
     if (
       props.enableGridRowAddWithValues &&
       props.enableGridRowAddWithValues.enable &&
-      !editMode
+      (!editMode)
     ) {
       commandBarItems.push({
         key: "addrowswithdata",
         text: props.enableInlineGridAdd ? CommandBarTitles?.AddRow ?? "Add Row" : CommandBarTitles?.AddRowWithData ?? "Add Rows With Data",
-        disabled: editMode,
+        disabled: editMode && !(props.enableEditAllOnCellClick),
         iconProps: { iconName: "Add" },
         onClick: () => {
           RowSelectOperations(EditType.AddRowWithData, {});
+          if(props.enableEditAllOnCellClick && props.enableInlineGridAdd && !editMode)
+          ShowGridEditMode(false)
         },
       });
     }
@@ -4923,7 +4943,7 @@ const EditableGrid = (props: EditableGridProps) => {
       });
     }
 
-    if (!props.enableDefaultEditMode && props.enableEditMode) {
+    if ((!props.enableDefaultEditMode || props.enableEditAllOnCellClick) && props.enableEditMode) {
       commandBarItems.push({
         key: "editmode",
         disabled: isGridInEdit && editMode,
@@ -4933,11 +4953,11 @@ const EditableGrid = (props: EditableGridProps) => {
       });
     }
 
-    if (!props.enableDefaultEditMode && editMode) {
+    if (((!props.enableDefaultEditMode || props.enableEditAllOnCellClick) && editMode) || props.showASaveButtonInCommandbar) {
       commandBarItems.push({
         key: "saveEdits",
         disabled: isGridInEdit && !editMode,
-        text: props.enableSaveGridOnCellValueChange ? "Exit" : "Save Edits",
+        text: props.enableSaveGridOnCellValueChange ? "Exit" : CommandBarTitles?.SaveEdits ?? "Save Edits",
         iconProps: {
           iconName: props.enableSaveGridOnCellValueChange ? "Cancel" : "Save",
         },
@@ -4950,7 +4970,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (
       !props.enableSaveGridOnCellValueChange &&
-      !props.enableDefaultEditMode &&
+      (!props.enableDefaultEditMode || props.enableEditAllOnCellClick) &&
       props.enableEditModeCancel &&
       editMode
     ) {
@@ -5526,6 +5546,7 @@ const EditableGrid = (props: EditableGridProps) => {
     ) => void,
     rowNum: number
   ): React.MouseEventHandler<HTMLSpanElement> | undefined {
+
     if (props.enableSingleCellEditOnDoubleClick == true) {
       return () =>
         !props.disableInlineCellEdit &&
@@ -5539,6 +5560,7 @@ const EditableGrid = (props: EditableGridProps) => {
     ) {
       return () => ShowRowEditMode(item, Number(item["_grid_row_id_"])!, true);
     }
+  
   }
 
   function HandleCellOnClick(
@@ -5555,7 +5577,7 @@ const EditableGrid = (props: EditableGridProps) => {
       !props.disableInlineCellEdit &&
       props.enableSingleCellEditOnDoubleClick == true &&
       column.editable == true
-        ? EditCellValue(column.key, rowNum!, true)
+        ? props.enableEditAllOnCellClick ? ShowGridEditMode() : EditCellValue(column.key, rowNum!, true)
         : null;
   }
   /* #endregion */
