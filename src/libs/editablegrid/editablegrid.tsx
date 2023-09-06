@@ -4953,7 +4953,7 @@ const EditableGrid = (props: EditableGridProps) => {
       });
     }
 
-    if (((!props.enableDefaultEditMode || props.enableEditAllOnCellClick) && editMode) || props.showASaveButtonInCommandbar) {
+    if (((!props.enableDefaultEditMode || props.enableEditAllOnCellClick) && editMode)) {
       commandBarItems.push({
         key: "saveEdits",
         disabled: isGridInEdit && !editMode,
@@ -4964,6 +4964,19 @@ const EditableGrid = (props: EditableGridProps) => {
         onClick: () => {
           ShowGridEditMode();
           if (!props.enableSaveGridOnCellValueChange) onGridSave();
+        },
+      });
+    }
+
+    if (!editMode && props.showASaveButtonInCommandbar && props.enableSaveGridOnCellValueChange) {
+      commandBarItems.push({
+        key: "saveEditsPermButton",
+        text: CommandBarTitles?.SaveEdits ?? "Save Edits",
+        iconProps: {
+          iconName: "Save",
+        },
+        onClick: () => {
+onGridSave();
         },
       });
     }
