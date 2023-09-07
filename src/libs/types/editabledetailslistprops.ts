@@ -1,11 +1,13 @@
 import {
   ConstrainMode,
   IButtonStyles,
-  IColumn,
   ICommandBarItemProps,
   ICommandBarStyleProps,
   ICommandBarStyles,
   IDetailsListProps,
+  IDialogContentStyleProps,
+  IDialogContentStyles,
+  IDialogProps,
   IScrollablePaneStyleProps,
   IScrollablePaneStyles,
   IStyleFunctionOrObject,
@@ -50,7 +52,7 @@ export type IRenameCommandBarItemsActions = {
   Filter?: string;
   ImportFromExcel?: string;
   PasteIntoGrid?: string;
-  ResetData?: string;
+  ResetData?: {actionTitle: string, dialogBox?: {title: string, msg: string}};
   SaveEdits?: string
 };
 
@@ -196,6 +198,9 @@ export interface EditableGridProps extends IDetailsListProps {
     IContentScrollablePaneStyleProps,
     IScrollablePaneStyles
   >;
+
+  /** Sets the styles of the dialog boxes used for the grid */
+  dialogProps?: {props: IDialogProps , dialogContentStyles: IStyleFunctionOrObject<IDialogContentStyleProps, IDialogContentStyles>};
 
   /** Width Of The Grid */
   width?: string | number;

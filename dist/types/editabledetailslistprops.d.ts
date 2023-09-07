@@ -1,4 +1,4 @@
-import { ConstrainMode, IButtonStyles, ICommandBarItemProps, ICommandBarStyleProps, ICommandBarStyles, IDetailsListProps, IScrollablePaneStyleProps, IScrollablePaneStyles, IStyleFunctionOrObject } from "@fluentui/react";
+import { ConstrainMode, IButtonStyles, ICommandBarItemProps, ICommandBarStyleProps, ICommandBarStyles, IDetailsListProps, IDialogContentStyleProps, IDialogContentStyles, IDialogProps, IScrollablePaneStyleProps, IScrollablePaneStyles, IStyleFunctionOrObject } from "@fluentui/react";
 import { IColumnConfig } from "./columnconfigtype";
 import { IGridCopy } from "./gridcopytype";
 import { IRowAddWithValues } from "./rowaddtype";
@@ -34,7 +34,13 @@ export type IRenameCommandBarItemsActions = {
     Filter?: string;
     ImportFromExcel?: string;
     PasteIntoGrid?: string;
-    ResetData?: string;
+    ResetData?: {
+        actionTitle: string;
+        dialogBox?: {
+            title: string;
+            msg: string;
+        };
+    };
     SaveEdits?: string;
 };
 export type ICustomKeysToAddOnNewRow = {
@@ -134,6 +140,11 @@ export interface EditableGridProps extends IDetailsListProps {
     height?: string | number;
     /** Sets the styles of the scrollbars for the grid */
     scrollablePaneStyles?: IStyleFunctionOrObject<IContentScrollablePaneStyleProps, IScrollablePaneStyles>;
+    /** Sets the styles of the dialog boxes used for the grid */
+    dialogProps?: {
+        props: IDialogProps;
+        dialogContentStyles: IStyleFunctionOrObject<IDialogContentStyleProps, IDialogContentStyles>;
+    };
     /** Width Of The Grid */
     width?: string | number;
     /** Position Type */
