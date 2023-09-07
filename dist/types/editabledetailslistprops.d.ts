@@ -142,8 +142,8 @@ export interface EditableGridProps extends IDetailsListProps {
     scrollablePaneStyles?: IStyleFunctionOrObject<IContentScrollablePaneStyleProps, IScrollablePaneStyles>;
     /** Sets the styles of the dialog boxes used for the grid */
     dialogProps?: {
-        props: IDialogProps;
-        dialogContentStyles: IStyleFunctionOrObject<IDialogContentStyleProps, IDialogContentStyles>;
+        props?: IDialogProps;
+        dialogContentStyles?: IStyleFunctionOrObject<IDialogContentStyleProps, IDialogContentStyles>;
     };
     /** Width Of The Grid */
     width?: string | number;
