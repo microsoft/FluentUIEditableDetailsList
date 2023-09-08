@@ -510,8 +510,8 @@ function ak() {
         } else
           Je.setExtraStackFrame(null);
       }
-      var Zt;
-      Zt = !1;
+      var Jt;
+      Jt = !1;
       function Lr(Z) {
         return typeof Z == "object" && Z !== null && Z.$$typeof === r;
       }
@@ -600,8 +600,8 @@ Check the top-level render call using <` + He + ">.");
           if (He) {
             var it = A(Fe);
             Be(He, Z.props, "prop", it, Z);
-          } else if (Fe.PropTypes !== void 0 && !Zt) {
-            Zt = !0;
+          } else if (Fe.PropTypes !== void 0 && !Jt) {
+            Jt = !0;
             var jt = A(Fe);
             w("Component %s declared `PropTypes` instead of `propTypes`. Did you misspell the property assignment?", jt || "Unknown");
           }
@@ -2193,10 +2193,10 @@ var pv = /* @__PURE__ */ function() {
       ie[we] = Ae;
     var st = h(T, V);
     m(se, K, st, V, ie);
-    var Jt = y(st, J, ie, V);
-    J < Jt.length && (Jt[J].name = "!Directory"), z > 0 && ce !== X && (Jt[ce].name = "!MiniFAT"), Jt[ie[0]].name = "!FAT", Jt.fat_addrs = ie, Jt.ssz = V;
+    var Qt = y(st, J, ie, V);
+    J < Qt.length && (Qt[J].name = "!Directory"), z > 0 && ce !== X && (Qt[ce].name = "!MiniFAT"), Qt[ie[0]].name = "!FAT", Qt.fat_addrs = ie, Qt.ssz = V;
     var sr = {}, Pr = [], Vn = [], an = [];
-    x(J, Jt, st, Pr, z, sr, Vn, ce), p(Vn, an, Pr), Pr.shift();
+    x(J, Qt, st, Pr, z, sr, Vn, ce), p(Vn, an, Pr), Pr.shift();
     var oi = {
       FileIndex: Vn,
       FullPaths: an
@@ -2321,8 +2321,8 @@ var pv = /* @__PURE__ */ function() {
         size: 0
       }, st = Ae.read_shift(2) + Ae.read_shift(2) + Ae.read_shift(2) + Ae.read_shift(2);
       st !== 0 && (we.ct = b(Ae, Ae.l - 8));
-      var Jt = Ae.read_shift(2) + Ae.read_shift(2) + Ae.read_shift(2) + Ae.read_shift(2);
-      Jt !== 0 && (we.mt = b(Ae, Ae.l - 8)), we.start = Ae.read_shift(4, "i"), we.size = Ae.read_shift(4, "i"), we.size < 0 && we.start < 0 && (we.size = we.type = 0, we.start = X, we.name = ""), we.type === 5 ? (se = we.start, z > 0 && se !== X && (H[se].name = "!StreamData")) : we.size >= 4096 ? (we.storage = "fat", H[we.start] === void 0 && (H[we.start] = g(B, we.start, H.fat_addrs, H.ssz)), H[we.start].name = we.name, we.content = H[we.start].data.slice(0, we.size)) : (we.storage = "minifat", we.size < 0 ? we.size = 0 : se !== X && we.start !== X && H[se] && (we.content = v(we, H[se].data, (H[ce] || {}).data))), we.content && Cn(we.content, 0), K[Ke] = we, J.push(we);
+      var Qt = Ae.read_shift(2) + Ae.read_shift(2) + Ae.read_shift(2) + Ae.read_shift(2);
+      Qt !== 0 && (we.mt = b(Ae, Ae.l - 8)), we.start = Ae.read_shift(4, "i"), we.size = Ae.read_shift(4, "i"), we.size < 0 && we.start < 0 && (we.size = we.type = 0, we.start = X, we.name = ""), we.type === 5 ? (se = we.start, z > 0 && se !== X && (H[se].name = "!StreamData")) : we.size >= 4096 ? (we.storage = "fat", H[we.start] === void 0 && (H[we.start] = g(B, we.start, H.fat_addrs, H.ssz)), H[we.start].name = we.name, we.content = H[we.start].data.slice(0, we.size)) : (we.storage = "minifat", we.size < 0 ? we.size = 0 : se !== X && we.start !== X && H[se] && (we.content = v(we, H[se].data, (H[ce] || {}).data))), we.content && Cn(we.content, 0), K[Ke] = we, J.push(we);
     }
   }
   function b(T, H) {
@@ -2426,9 +2426,9 @@ var pv = /* @__PURE__ */ function() {
     }
     var V = function(Ke) {
       for (var Ae = 0, we = 0, st = 0; st < Ke.FileIndex.length; ++st) {
-        var Jt = Ke.FileIndex[st];
-        if (Jt.content) {
-          var sr = Jt.content.length;
+        var Qt = Ke.FileIndex[st];
+        if (Qt.content) {
+          var sr = Qt.content.length;
           sr > 0 && (sr < 4096 ? Ae += sr + 63 >> 6 : we += sr + 511 >> 9);
         }
       }
@@ -2761,8 +2761,8 @@ var pv = /* @__PURE__ */ function() {
               ++st;
           if (st > 2) {
             Ae = z[st], Ae <= 22 ? ie = Ue(se, ie, xe[Ae + 1] >> 1) - 1 : (Ue(se, ie, 3), ie += 5, Ue(se, ie, xe[Ae - 23] >> 5), ie += 3);
-            var Jt = Ae < 8 ? 0 : Ae - 4 >> 2;
-            Jt > 0 && (et(se, ie, st - q[Ae]), ie += Jt), Ae = H[he - we], ie = Ue(se, ie, xe[Ae] >> 3), ie -= 3;
+            var Qt = Ae < 8 ? 0 : Ae - 4 >> 2;
+            Qt > 0 && (et(se, ie, st - q[Ae]), ie += Qt), Ae = H[he - we], ie = Ue(se, ie, xe[Ae] >> 3), ie -= 3;
             var sr = Ae < 4 ? 0 : Ae - 2 >> 1;
             sr > 0 && (et(se, ie, he - we - Y[Ae]), ie += sr);
             for (var Pr = 0; Pr < st; ++Pr)
@@ -2784,7 +2784,7 @@ var pv = /* @__PURE__ */ function() {
     return H.slice(0, B);
   }
   var Oe = be ? new Uint16Array(32768) : dt(32768), xt = be ? new Uint16Array(32768) : dt(32768), je = be ? new Uint16Array(128) : dt(128), Je = 1, Qe = 1;
-  function Zt(T, H) {
+  function Jt(T, H) {
     var B = ke(T, H) + 257;
     H += 5;
     var V = ke(T, H) + 1;
@@ -2824,19 +2824,19 @@ var pv = /* @__PURE__ */ function() {
           st.push(Ke), se < Ke && (se = Ke);
           break;
       }
-    var Jt = st.slice(0, B), sr = st.slice(B);
+    var Qt = st.slice(0, B), sr = st.slice(B);
     for (De = B; De < 286; ++De)
-      Jt[De] = 0;
+      Qt[De] = 0;
     for (De = V; De < 30; ++De)
       sr[De] = 0;
-    return Je = We(Jt, Oe, 286), Qe = We(sr, xt, 30), H;
+    return Je = We(Qt, Oe, 286), Qe = We(sr, xt, 30), H;
   }
   function Lr(T, H) {
     if (T[0] == 3 && !(T[1] & 3))
       return [Yo(H), 2];
     for (var B = 0, V = 0, z = ov(H || 1 << 18), K = 0, J = z.length >>> 0, ce = 0, se = 0; !(V & 1); ) {
       if (V = pe(T, B), B += 3, V >>> 1)
-        V >> 1 == 1 ? (ce = 9, se = 5) : (B = Zt(T, B), ce = Je, se = Qe);
+        V >> 1 == 1 ? (ce = 9, se = 5) : (B = Jt(T, B), ce = Je, se = Qe);
       else {
         B & 7 && (B += 8 - (B & 7));
         var ie = T[B >>> 3] | T[(B >>> 3) + 1] << 8;
@@ -2934,14 +2934,14 @@ var pv = /* @__PURE__ */ function() {
       default:
         throw new Error("Unsupported ZIP Compression method " + J);
     }
-    var Jt = !1;
-    K & 8 && (se = T.read_shift(4), se == 134695760 && (se = T.read_shift(4), Jt = !0), ie = T.read_shift(4), he = T.read_shift(4)), ie != H && bt(Jt, "Bad compressed size: " + H + " != " + ie), he != B && bt(Jt, "Bad uncompressed size: " + B + " != " + he), Fe(V, Ke, st, { unsafe: !0, mt: ce });
+    var Qt = !1;
+    K & 8 && (se = T.read_shift(4), se == 134695760 && (se = T.read_shift(4), Qt = !0), ie = T.read_shift(4), he = T.read_shift(4)), ie != H && bt(Qt, "Bad compressed size: " + H + " != " + ie), he != B && bt(Qt, "Bad uncompressed size: " + B + " != " + he), Fe(V, Ke, st, { unsafe: !0, mt: ce });
   }
   function Le(T, H) {
     var B = H || {}, V = [], z = [], K = Ce(1), J = B.compression ? 8 : 0, ce = 0, se = 0, ie = 0, he = 0, Re = 0, De = T.FullPaths[0], Ke = De, Ae = T.FileIndex[0], we = [], st = 0;
     for (se = 1; se < T.FullPaths.length; ++se)
       if (Ke = T.FullPaths[se].slice(De.length), Ae = T.FileIndex[se], !(!Ae.size || !Ae.content || Ke == "Sh33tJ5")) {
-        var Jt = he, sr = Ce(Ke.length);
+        var Qt = he, sr = Ce(Ke.length);
         for (ie = 0; ie < Ke.length; ++ie)
           sr.write_shift(1, Ke.charCodeAt(ie) & 127);
         sr = sr.slice(0, sr.l), we[Re] = typeof Ae.content == "string" ? pv.bstr(Ae.content, 0) : pv.buf(
@@ -2958,7 +2958,7 @@ var pv = /* @__PURE__ */ function() {
           4,
           /*::(*/
           Ae.content.length
-        ), K.write_shift(2, sr.length), K.write_shift(2, 0), K.write_shift(2, 0), K.write_shift(2, 0), K.write_shift(2, 0), K.write_shift(4, 0), K.write_shift(4, Jt), st += K.l, z.push(K), st += sr.length, z.push(sr), ++Re;
+        ), K.write_shift(2, sr.length), K.write_shift(2, 0), K.write_shift(2, 0), K.write_shift(2, 0), K.write_shift(2, 0), K.write_shift(4, 0), K.write_shift(4, Qt), st += K.l, z.push(K), st += sr.length, z.push(sr), ++Re;
       }
     return K = Ce(22), K.write_shift(4, 101010256), K.write_shift(2, 0), K.write_shift(2, 0), K.write_shift(2, Re), K.write_shift(2, Re), K.write_shift(4, st), K.write_shift(4, he), K.write_shift(2, 0), vn([vn(V), vn(z), K]);
   }
@@ -34135,8 +34135,8 @@ var GC = _.memo(_.forwardRef(function(e, n) {
     return _.createElement("ul", { className: ce.list, onKeyDown: L, onKeyUp: G, role: "presentation" }, he.map(function(Ae, we) {
       var st = be(Ae, we, ie, Re, De, Ke, ce);
       if (Ae.itemType !== xa.Divider && Ae.itemType !== xa.Header) {
-        var Jt = Ae.customOnRenderListLength ? Ae.customOnRenderListLength : 1;
-        ie += Jt;
+        var Qt = Ae.customOnRenderListLength ? Ae.customOnRenderListLength : 1;
+        ie += Qt;
       }
       return st;
     }));
@@ -34144,7 +34144,7 @@ var GC = _.memo(_.forwardRef(function(e, n) {
     var se = a.focusZoneAs, ie = se === void 0 ? $i : se;
     return _.createElement(ie, E({}, ce), J);
   }, be = function(J, ce, se, ie, he, Re, De) {
-    var Ke, Ae = [], we = J.iconProps || { iconName: "None" }, st = J.getItemClassNames, Jt = J.itemProps, sr = Jt ? Jt.styles : void 0, Pr = J.itemType === xa.Divider ? J.className : void 0, Vn = J.submenuIconProps ? J.submenuIconProps.className : "", an;
+    var Ke, Ae = [], we = J.iconProps || { iconName: "None" }, st = J.getItemClassNames, Qt = J.itemProps, sr = Qt ? Qt.styles : void 0, Pr = J.itemType === xa.Divider ? J.className : void 0, Vn = J.submenuIconProps ? J.submenuIconProps.className : "", an;
     if (st)
       an = st(a.theme, Hi(J), p === J.key, !!Pl(J), !!J.href, we.iconName !== "None", J.className, Pr, we.className, Vn, J.primaryDisabled);
     else {
@@ -34193,13 +34193,13 @@ var GC = _.memo(_.forwardRef(function(e, n) {
       if (De.title) {
         var we = void 0, st = "";
         if (typeof De.title == "string") {
-          var Jt = s + De.title.replace(/\s/g, "");
+          var Qt = s + De.title.replace(/\s/g, "");
           we = {
             key: "section-" + De.title + "-title",
             itemType: xa.Header,
             text: De.title,
-            id: Jt
-          }, st = Jt;
+            id: Qt
+          }, st = Qt;
         } else {
           var sr = De.title.id || s + De.title.key.replace(/\s/g, "");
           we = E(E({}, De.title), { id: sr }), st = sr;
@@ -34267,7 +34267,7 @@ var GC = _.memo(_.forwardRef(function(e, n) {
         _.createElement(Ke, E({ item: J, classNames: ce, index: ie, onCheckmarkClick: he ? Se : void 0, hasIcons: Re }, Ae))
       )
     );
-  }, ke = a.isBeakVisible, Ge = a.items, Ee = a.labelElementId, Be = a.id, ye = a.className, Ue = a.beakWidth, et = a.directionalHint, ct = a.directionalHintForRTL, dt = a.alignTargetEdge, We = a.gapSpace, wt = a.coverTarget, fr = a.ariaLabel, Et = a.doNotLayer, Mt = a.target, $e = a.bounds, Oe = a.useTargetWidth, xt = a.useTargetAsMinWidth, je = a.directionalHintFixed, Je = a.shouldFocusOnMount, Qe = a.shouldFocusOnContainer, Zt = a.title, Lr = a.styles, hr = a.theme, bt = a.calloutProps, Rr = a.onRenderSubMenu, qr = Rr === void 0 ? rx : Rr, Le = a.onRenderMenuList, nt = Le === void 0 ? function(J, ce) {
+  }, ke = a.isBeakVisible, Ge = a.items, Ee = a.labelElementId, Be = a.id, ye = a.className, Ue = a.beakWidth, et = a.directionalHint, ct = a.directionalHintForRTL, dt = a.alignTargetEdge, We = a.gapSpace, wt = a.coverTarget, fr = a.ariaLabel, Et = a.doNotLayer, Mt = a.target, $e = a.bounds, Oe = a.useTargetWidth, xt = a.useTargetAsMinWidth, je = a.directionalHintFixed, Je = a.shouldFocusOnMount, Qe = a.shouldFocusOnContainer, Jt = a.title, Lr = a.styles, hr = a.theme, bt = a.calloutProps, Rr = a.onRenderSubMenu, qr = Rr === void 0 ? rx : Rr, Le = a.onRenderMenuList, nt = Le === void 0 ? function(J, ce) {
     return Y(J, Pt);
   } : Le, br = a.focusZoneProps, Ir = a.getMenuClassNames, Pt = Ir ? Ir(hr, ye) : g6(Lr, {
     theme: hr,
@@ -34308,11 +34308,11 @@ var GC = _.memo(_.forwardRef(function(e, n) {
         _.createElement(
           "div",
           { style: Fe, ref: i, id: Be, className: Pt.container, tabIndex: Qe ? 0 : -1, onKeyDown: Q, onKeyUp: G, onFocusCapture: F, "aria-label": fr, "aria-labelledby": Ee, role: "menu" },
-          Zt && _.createElement(
+          Jt && _.createElement(
             "div",
             { className: Pt.title },
             " ",
-            Zt,
+            Jt,
             " "
           ),
           Ge && Ge.length ? re(nt({
@@ -40549,12 +40549,12 @@ var wS = _.forwardRef(function(e, n) {
       _.Fragment,
       null,
       Le.description ? nt(Le) : null,
-      _.createElement("div", { "aria-live": "assertive", className: Zt.statusMessage }, Ee)
+      _.createElement("div", { "aria-live": "assertive", className: Jt.statusMessage }, Ee)
     );
   }, Oe = function(Le) {
     var nt = At(Le, Kr);
-    return _.createElement("div", E({}, nt, { className: tt(nt.className, Zt.readOnlyTextField), tabIndex: A || 0 }), Ie || // Putting the placeholder in a separate span fixes specificity issues for the text color
-    _.createElement("span", { className: Zt.readOnlyPlaceholder }, g));
+    return _.createElement("div", E({}, nt, { className: tt(nt.className, Jt.readOnlyTextField), tabIndex: A || 0 }), Ie || // Putting the placeholder in a separate span fixes specificity issues for the text color
+    _.createElement("span", { className: Jt.readOnlyPlaceholder }, g));
   }, xt = function(Le) {
     ne(), Mt(Le);
   }, je = function(Le) {
@@ -40563,7 +40563,7 @@ var wS = _.forwardRef(function(e, n) {
     Y && (Le.stopPropagation(), xt());
   }, Qe = function(Le) {
     xt();
-  }, Zt = l9(d, {
+  }, Jt = l9(d, {
     theme: u,
     className: c,
     disabled: p,
@@ -40573,15 +40573,15 @@ var wS = _.forwardRef(function(e, n) {
   }), Lr = At(i, Kr, ["value"]), hr = D && D.iconProps, bt = D && D.id && D.id !== Q ? D.id : Q + "-label", Rr = !y && !p, qr = (a = (r = (t = D) === null || t === void 0 ? void 0 : t["data-is-focusable"]) !== null && r !== void 0 ? r : i["data-is-focusable"]) !== null && a !== void 0 ? a : !0;
   return _.createElement(
     "div",
-    E({}, Lr, { className: Zt.root, ref: n }),
+    E({}, Lr, { className: Jt.root, ref: n }),
     _.createElement(
       "div",
-      { ref: ge, "aria-owns": Y ? ae : void 0, className: Zt.wrapper },
+      { ref: ge, "aria-owns": Y ? ae : void 0, className: Jt.wrapper },
       _.createElement(En, E({ role: "combobox", label: l, "aria-expanded": Y, ariaLabel: v, "aria-haspopup": "dialog", "aria-controls": Y ? ae : void 0, required: h, disabled: p, errorMessage: fe, placeholder: g, borderless: x, value: Ie, componentRef: ve, underlined: R, tabIndex: A, readOnly: !y }, D, {
         "data-is-focusable": qr,
         id: bt,
-        className: tt(Zt.textField, D && D.className),
-        iconProps: E(E({ iconName: "Calendar" }, hr), { className: tt(Zt.icon, hr && hr.className), onClick: Et }),
+        className: tt(Jt.textField, D && D.className),
+        iconProps: E(E({ iconName: "Calendar" }, hr), { className: tt(Jt.icon, hr && hr.className), onClick: Et }),
         // eslint-disable-next-line react/jsx-no-bind
         onRenderDescription: $e,
         // eslint-disable-next-line react/jsx-no-bind
@@ -40600,7 +40600,7 @@ var wS = _.forwardRef(function(e, n) {
     Y && _.createElement(
       ji,
       E({ id: ae, role: "dialog", ariaLabel: m, isBeakVisible: !1, gapSpace: 0, doNotLayer: !1, target: ge.current, directionalHint: Cr.bottomLeftEdge }, w, {
-        className: tt(Zt.callout, w && w.className),
+        className: tt(Jt.callout, w && w.className),
         // eslint-disable-next-line react/jsx-no-bind
         onDismiss: je,
         // eslint-disable-next-line react/jsx-no-bind
@@ -43360,7 +43360,7 @@ function A7(e) {
   );
 }
 var R7 = vt(), P7 = "DetailsList", Mo = 100, N7 = 2, B7 = 2, M7 = { tabIndex: 0 }, O7 = {}, L7 = function(e) {
-  var n = e.selection, t = e.ariaLabelForListHeader, r = e.ariaLabelForSelectAllCheckbox, a = e.ariaLabelForSelectionColumn, i = e.className, o = e.checkboxVisibility, s = e.compact, l = e.constrainMode, u = e.dragDropEvents, c = e.groups, d = e.groupProps, f = e.indentWidth, h = e.items, p = e.isPlaceholderData, v = e.isHeaderVisible, m = e.layoutMode, g = e.onItemInvoked, y = e.onItemContextMenu, x = e.onColumnHeaderClick, b = e.onColumnHeaderContextMenu, F = e.selectionMode, S = F === void 0 ? n.mode : F, C = e.selectionPreservedOnEmptyClick, w = e.selectionZoneProps, D = e.ariaLabel, R = e.ariaLabelForGrid, O = e.rowElementEventMap, I = e.shouldApplyApplicationRole, X = I === void 0 ? !1 : I, A = e.getKey, L = e.listProps, G = e.usePageCache, Q = e.onShouldVirtualize, ae = e.viewport, W = e.minimumPixelsForDrag, ge = e.getGroupHeight, de = e.styles, ve = e.theme, Se = e.cellStyleProps, N = Se === void 0 ? Eo : Se, ne = e.onRenderCheckbox, q = e.useFastIcons, Y = e.dragDropHelper, re = e.adjustedColumns, be = e.isCollapsed, xe = e.isSizing, Ie = e.isSomeGroupExpanded, M = e.version, Ve = e.rootRef, pe = e.listRef, fe = e.focusZoneRef, ke = e.columnReorderOptions, Ge = e.groupedListRef, Ee = e.headerRef, Be = e.onGroupExpandStateChanged, ye = e.onColumnIsSizingChanged, Ue = e.onRowDidMount, et = e.onRowWillUnmount, ct = e.disableSelectionZone, dt = e.isSelectedOnFocus, We = dt === void 0 ? !0 : dt, wt = e.onColumnResized, fr = e.onColumnAutoResized, Et = e.onToggleCollapse, Mt = e.onActiveRowChanged, $e = e.onBlur, Oe = e.rowElementEventMap, xt = e.onRenderMissingItem, je = e.onRenderItemColumn, Je = e.onRenderField, Qe = e.getCellValueKey, Zt = e.getRowAriaLabel, Lr = e.getRowAriaDescribedBy, hr = e.checkButtonAriaLabel, bt = e.checkButtonGroupAriaLabel, Rr = e.checkboxCellClassName, qr = e.useReducedRowRenderer, Le = e.enableUpdateAnimations, nt = e.enterModalSelectionOnTouch, br = e.onRenderDefaultRow, Ir = e.selectionZoneRef, Pt = e.focusZoneProps, Kt = "grid", rt = e.role ? e.role : Kt, ft = Br("row"), yr = V7(c), Z = U7(c), Fe = _.useMemo(function() {
+  var n = e.selection, t = e.ariaLabelForListHeader, r = e.ariaLabelForSelectAllCheckbox, a = e.ariaLabelForSelectionColumn, i = e.className, o = e.checkboxVisibility, s = e.compact, l = e.constrainMode, u = e.dragDropEvents, c = e.groups, d = e.groupProps, f = e.indentWidth, h = e.items, p = e.isPlaceholderData, v = e.isHeaderVisible, m = e.layoutMode, g = e.onItemInvoked, y = e.onItemContextMenu, x = e.onColumnHeaderClick, b = e.onColumnHeaderContextMenu, F = e.selectionMode, S = F === void 0 ? n.mode : F, C = e.selectionPreservedOnEmptyClick, w = e.selectionZoneProps, D = e.ariaLabel, R = e.ariaLabelForGrid, O = e.rowElementEventMap, I = e.shouldApplyApplicationRole, X = I === void 0 ? !1 : I, A = e.getKey, L = e.listProps, G = e.usePageCache, Q = e.onShouldVirtualize, ae = e.viewport, W = e.minimumPixelsForDrag, ge = e.getGroupHeight, de = e.styles, ve = e.theme, Se = e.cellStyleProps, N = Se === void 0 ? Eo : Se, ne = e.onRenderCheckbox, q = e.useFastIcons, Y = e.dragDropHelper, re = e.adjustedColumns, be = e.isCollapsed, xe = e.isSizing, Ie = e.isSomeGroupExpanded, M = e.version, Ve = e.rootRef, pe = e.listRef, fe = e.focusZoneRef, ke = e.columnReorderOptions, Ge = e.groupedListRef, Ee = e.headerRef, Be = e.onGroupExpandStateChanged, ye = e.onColumnIsSizingChanged, Ue = e.onRowDidMount, et = e.onRowWillUnmount, ct = e.disableSelectionZone, dt = e.isSelectedOnFocus, We = dt === void 0 ? !0 : dt, wt = e.onColumnResized, fr = e.onColumnAutoResized, Et = e.onToggleCollapse, Mt = e.onActiveRowChanged, $e = e.onBlur, Oe = e.rowElementEventMap, xt = e.onRenderMissingItem, je = e.onRenderItemColumn, Je = e.onRenderField, Qe = e.getCellValueKey, Jt = e.getRowAriaLabel, Lr = e.getRowAriaDescribedBy, hr = e.checkButtonAriaLabel, bt = e.checkButtonGroupAriaLabel, Rr = e.checkboxCellClassName, qr = e.useReducedRowRenderer, Le = e.enableUpdateAnimations, nt = e.enterModalSelectionOnTouch, br = e.onRenderDefaultRow, Ir = e.selectionZoneRef, Pt = e.focusZoneProps, Kt = "grid", rt = e.role ? e.role : Kt, ft = Br("row"), yr = V7(c), Z = U7(c), Fe = _.useMemo(function() {
     return E({ renderedWindowsAhead: xe ? 0 : N7, renderedWindowsBehind: xe ? 0 : B7, getKey: A, version: M }, L);
   }, [xe, A, M, L]), He = Ja.none;
   if (S === Dt.single && (He = Ja.hidden), S === Dt.multiple) {
@@ -43370,8 +43370,8 @@ var R7 = vt(), P7 = "DetailsList", Mo = 100, N7 = 2, B7 = 2, M7 = { tabIndex: 0 
     He = jt ? Ja.visible : Ja.hidden;
   }
   o === wa.hidden && (He = Ja.none);
-  var T = _.useCallback(function(Qt) {
-    return _.createElement(S7, E({}, Qt));
+  var T = _.useCallback(function(er) {
+    return _.createElement(S7, E({}, er));
   }, []), H = _.useCallback(function() {
     return null;
   }, []), B = e.onRenderDetailsHeader, V = _.useMemo(function() {
@@ -43398,8 +43398,8 @@ var R7 = vt(), P7 = "DetailsList", Mo = 100, N7 = 2, B7 = 2, M7 = { tabIndex: 0 
     o,
     f,
     N
-  ]), ce = ke && ke.onDragEnd, se = _.useCallback(function(Qt, Ut) {
-    var Ht = Qt.dropLocation, Un = yl.outside;
+  ]), ce = ke && ke.onDragEnd, se = _.useCallback(function(er, Ut) {
+    var Ht = er.dropLocation, Un = yl.outside;
     if (ce) {
       if (Ht && Ht !== yl.header)
         Un = Ht;
@@ -43421,8 +43421,8 @@ var R7 = vt(), P7 = "DetailsList", Mo = 100, N7 = 2, B7 = 2, M7 = { tabIndex: 0 
       className: i
     });
   }, [de, ve, s, m, l, i]), Ke = d && d.onRenderFooter, Ae = _.useMemo(function() {
-    return Ke ? function(Qt, Ut) {
-      return Ke(E(E({}, Qt), { columns: re, groupNestingDepth: yr, indentWidth: f, selection: n, selectionMode: S, viewport: ae, checkboxVisibility: o, cellStyleProps: N }), Ut);
+    return Ke ? function(er, Ut) {
+      return Ke(E(E({}, er), { columns: re, groupNestingDepth: yr, indentWidth: f, selection: n, selectionMode: S, viewport: ae, checkboxVisibility: o, cellStyleProps: N }), Ut);
     } : void 0;
   }, [
     Ke,
@@ -43435,12 +43435,12 @@ var R7 = vt(), P7 = "DetailsList", Mo = 100, N7 = 2, B7 = 2, M7 = { tabIndex: 0 
     o,
     N
   ]), we = d && d.onRenderHeader, st = _.useMemo(function() {
-    return we ? function(Qt, Ut) {
-      var Ht, Un, Gn = Qt.groupIndex, Ra = Gn !== void 0 ? (Un = (Ht = Qt.groups) === null || Ht === void 0 ? void 0 : Ht[Gn]) === null || Un === void 0 ? void 0 : Un.key : void 0, ki = Ra !== void 0 && Z[Ra] ? Z[Ra].totalRowCount : 0;
-      return we(E(E({}, Qt), { columns: re, groupNestingDepth: yr, indentWidth: f, selection: n, selectionMode: o !== wa.hidden ? S : Dt.none, viewport: ae, checkboxVisibility: o, cellStyleProps: N, ariaColSpan: re.length, ariaLevel: void 0, ariaPosInSet: void 0, ariaSetSize: void 0, ariaRowCount: void 0, ariaRowIndex: Gn !== void 0 ? ki + (v ? 1 : 0) : void 0 }), Ut);
-    } : function(Qt, Ut) {
-      var Ht, Un, Gn = Qt.groupIndex, Ra = Gn !== void 0 ? (Un = (Ht = Qt.groups) === null || Ht === void 0 ? void 0 : Ht[Gn]) === null || Un === void 0 ? void 0 : Un.key : void 0, ki = Ra !== void 0 && Z[Ra] ? Z[Ra].totalRowCount : 0;
-      return Ut(E(E({}, Qt), { ariaColSpan: re.length, ariaLevel: void 0, ariaPosInSet: void 0, ariaSetSize: void 0, ariaRowCount: void 0, ariaRowIndex: Gn !== void 0 ? ki + (v ? 1 : 0) : void 0 }));
+    return we ? function(er, Ut) {
+      var Ht, Un, Gn = er.groupIndex, Ra = Gn !== void 0 ? (Un = (Ht = er.groups) === null || Ht === void 0 ? void 0 : Ht[Gn]) === null || Un === void 0 ? void 0 : Un.key : void 0, ki = Ra !== void 0 && Z[Ra] ? Z[Ra].totalRowCount : 0;
+      return we(E(E({}, er), { columns: re, groupNestingDepth: yr, indentWidth: f, selection: n, selectionMode: o !== wa.hidden ? S : Dt.none, viewport: ae, checkboxVisibility: o, cellStyleProps: N, ariaColSpan: re.length, ariaLevel: void 0, ariaPosInSet: void 0, ariaSetSize: void 0, ariaRowCount: void 0, ariaRowIndex: Gn !== void 0 ? ki + (v ? 1 : 0) : void 0 }), Ut);
+    } : function(er, Ut) {
+      var Ht, Un, Gn = er.groupIndex, Ra = Gn !== void 0 ? (Un = (Ht = er.groups) === null || Ht === void 0 ? void 0 : Ht[Gn]) === null || Un === void 0 ? void 0 : Un.key : void 0, ki = Ra !== void 0 && Z[Ra] ? Z[Ra].totalRowCount : 0;
+      return Ut(E(E({}, er), { ariaColSpan: re.length, ariaLevel: void 0, ariaPosInSet: void 0, ariaSetSize: void 0, ariaRowCount: void 0, ariaRowIndex: Gn !== void 0 ? ki + (v ? 1 : 0) : void 0 }));
     };
   }, [
     we,
@@ -43454,32 +43454,32 @@ var R7 = vt(), P7 = "DetailsList", Mo = 100, N7 = 2, B7 = 2, M7 = { tabIndex: 0 
     o,
     N,
     Z
-  ]), Jt = _.useMemo(function() {
-    var Qt;
+  ]), Qt = _.useMemo(function() {
+    var er;
     return E(E({}, d), {
       role: rt === Kt ? "rowgroup" : "presentation",
       onRenderFooter: Ae,
       onRenderHeader: st,
       // pass through custom group header checkbox label
-      headerProps: E(E({}, d == null ? void 0 : d.headerProps), { selectAllButtonProps: E({ "aria-label": bt }, (Qt = d == null ? void 0 : d.headerProps) === null || Qt === void 0 ? void 0 : Qt.selectAllButtonProps) })
+      headerProps: E(E({}, d == null ? void 0 : d.headerProps), { selectAllButtonProps: E({ "aria-label": bt }, (er = d == null ? void 0 : d.headerProps) === null || er === void 0 ? void 0 : er.selectAllButtonProps) })
     });
   }, [d, Ae, st, bt, rt]), sr = Hn(function() {
-    return lr(function(Qt) {
+    return lr(function(er) {
       var Ut = 0;
-      return Qt.forEach(function(Ht) {
+      return er.forEach(function(Ht) {
         return Ut += Ht.calculatedWidth || Ht.minWidth;
       }), Ut;
     });
   }), Pr = d && d.collapseAllVisibility, Vn = _.useMemo(function() {
     return sr(re);
-  }, [re, sr]), an = _.useCallback(function(Qt, Ut, Ht, Un) {
+  }, [re, sr]), an = _.useCallback(function(er, Ut, Ht, Un) {
     var Gn = e.onRenderRow ? Ta(e.onRenderRow, br) : br, Ra = Un ? Un.key : void 0, ki = Ra && Z[Ra] ? Z[Ra].numOfGroupHeadersBeforeItem : 0, Kl = rt === Kt ? void 0 : "presentation", qs = v || Ht > 0 ? O7 : M7, ls = {
       item: Ut,
       itemIndex: Ht,
       flatIndexOffset: (v ? 2 : 1) + ki,
       compact: s,
       columns: re,
-      groupNestingDepth: Qt,
+      groupNestingDepth: er,
       id: ft + "-" + Ht,
       selectionMode: S,
       selection: n,
@@ -43494,7 +43494,7 @@ var R7 = vt(), P7 = "DetailsList", Mo = 100, N7 = 2, B7 = 2, M7 = { tabIndex: 0 
       viewport: ae,
       checkboxVisibility: o,
       collapseAllVisibility: Pr,
-      getRowAriaLabel: Zt,
+      getRowAriaLabel: Jt,
       getRowAriaDescribedBy: Lr,
       checkButtonAriaLabel: hr,
       checkboxCellClassName: Rr,
@@ -43527,7 +43527,7 @@ var R7 = vt(), P7 = "DetailsList", Mo = 100, N7 = 2, B7 = 2, M7 = { tabIndex: 0 
     ae,
     o,
     Pr,
-    Zt,
+    Jt,
     Lr,
     v,
     hr,
@@ -43544,20 +43544,20 @@ var R7 = vt(), P7 = "DetailsList", Mo = 100, N7 = 2, B7 = 2, M7 = { tabIndex: 0 
     Vn,
     rt,
     Z
-  ]), oi = _.useCallback(function(Qt) {
+  ]), oi = _.useCallback(function(er) {
     return function(Ut, Ht) {
-      return an(Qt, Ut, Ht);
+      return an(er, Ut, Ht);
     };
-  }, [an]), Aa = _.useCallback(function(Qt) {
-    return Qt.which === Fl(_e.right, ve);
-  }, [ve]), za = E(E({}, Pt), { componentRef: Pt && Pt.componentRef ? Pt.componentRef : fe, className: Pt && Pt.className ? tt(De.focusZone, Pt.className) : De.focusZone, direction: Pt ? Pt.direction : tn.vertical, shouldEnterInnerZone: Pt && Pt.shouldEnterInnerZone ? Pt.shouldEnterInnerZone : Aa, onActiveElementChanged: Pt && Pt.onActiveElementChanged ? Pt.onActiveElementChanged : Mt, shouldRaiseClicksOnEnter: !1, onBlur: Pt && Pt.onBlur ? Pt.onBlur : $e }), Tn = c && (d != null && d.groupedListAs) ? xl(d.groupedListAs, Nx) : Nx, Xs = c ? _.createElement(Tn, { focusZoneProps: za, componentRef: Ge, groups: c, groupProps: Jt, items: h, onRenderCell: an, role: "presentation", selection: n, selectionMode: o !== wa.hidden ? S : Dt.none, dragDropEvents: u, dragDropHelper: Y, eventsToRegister: O, listProps: Fe, onGroupExpandStateChanged: Be, usePageCache: G, onShouldVirtualize: Q, getGroupHeight: ge, compact: s }) : _.createElement(
+  }, [an]), Aa = _.useCallback(function(er) {
+    return er.which === Fl(_e.right, ve);
+  }, [ve]), za = E(E({}, Pt), { componentRef: Pt && Pt.componentRef ? Pt.componentRef : fe, className: Pt && Pt.className ? tt(De.focusZone, Pt.className) : De.focusZone, direction: Pt ? Pt.direction : tn.vertical, shouldEnterInnerZone: Pt && Pt.shouldEnterInnerZone ? Pt.shouldEnterInnerZone : Aa, onActiveElementChanged: Pt && Pt.onActiveElementChanged ? Pt.onActiveElementChanged : Mt, shouldRaiseClicksOnEnter: !1, onBlur: Pt && Pt.onBlur ? Pt.onBlur : $e }), Tn = c && (d != null && d.groupedListAs) ? xl(d.groupedListAs, Nx) : Nx, Xs = c ? _.createElement(Tn, { focusZoneProps: za, componentRef: Ge, groups: c, groupProps: Qt, items: h, onRenderCell: an, role: "presentation", selection: n, selectionMode: o !== wa.hidden ? S : Dt.none, dragDropEvents: u, dragDropHelper: Y, eventsToRegister: O, listProps: Fe, onGroupExpandStateChanged: Be, usePageCache: G, onShouldVirtualize: Q, getGroupHeight: ge, compact: s }) : _.createElement(
     $i,
     E({}, za),
     _.createElement(ac, E({ ref: pe, role: "presentation", items: h, onRenderCell: oi(0), usePageCache: G, onShouldVirtualize: Q }, Fe))
-  ), Uf = _.useCallback(function(Qt) {
-    Qt.which === _e.down && fe.current && fe.current.focus() && (We && n.getSelectedIndices().length === 0 && n.setIndexSelected(0, !0, !1), Qt.preventDefault(), Qt.stopPropagation());
-  }, [n, fe, We]), Gf = _.useCallback(function(Qt) {
-    Qt.which === _e.up && !Qt.altKey && Ee.current && Ee.current.focus() && (Qt.preventDefault(), Qt.stopPropagation());
+  ), Uf = _.useCallback(function(er) {
+    er.which === _e.down && fe.current && fe.current.focus() && (We && n.getSelectedIndices().length === 0 && n.setIndexSelected(0, !0, !1), er.preventDefault(), er.stopPropagation());
+  }, [n, fe, We]), Gf = _.useCallback(function(er) {
+    er.which === _e.up && !er.altKey && Ee.current && Ee.current.focus() && (er.preventDefault(), er.stopPropagation());
   }, [Ee]);
   return _.createElement(
     "div",
@@ -44281,7 +44281,7 @@ var IS = oo.durationValue2, j7 = {
     layerClassName: Je,
     windowInnerHeight: xe == null ? void 0 : xe.innerHeight,
     isDefaultDragHandle: W && !W.dragHandleSelector
-  }), Zt = E(E({ eventBubblingEnabled: !1 }, w), { onLayerDidMount: w && w.onLayerDidMount ? w.onLayerDidMount : Q, insertFirst: (w == null ? void 0 : w.insertFirst) || ae, className: Qe.layer }), Lr = _.useCallback(function(rt) {
+  }), Jt = E(E({ eventBubblingEnabled: !1 }, w), { onLayerDidMount: w && w.onLayerDidMount ? w.onLayerDidMount : Q, insertFirst: (w == null ? void 0 : w.insertFirst) || ae, className: Qe.layer }), Lr = _.useCallback(function(rt) {
     rt ? Oe.allowTouchBodyScroll ? Ay(rt, Oe.events) : Iy(rt, Oe.events) : Oe.events.off(Oe.scrollableContent), Oe.scrollableContent = rt;
   }, [Oe]), hr = function() {
     var rt = q.current, ft = rt == null ? void 0 : rt.getBoundingClientRect();
@@ -44423,7 +44423,7 @@ var IS = oo.durationValue2, j7 = {
   );
   return fe && re >= (G || rs.small) && _.createElement(
     If,
-    E({ ref: Y }, Zt),
+    E({ ref: Y }, Jt),
     _.createElement(
       Tf,
       E({
@@ -50758,10 +50758,10 @@ var MU = vt(), US = "SpinButton", OU = {
     }
     var Qe = je(fe.latestValue || "", Je);
     Qe !== void 0 && Qe !== fe.latestValue && Ie(Qe, Je);
-    var Zt = fe.spinningByMouse;
+    var Jt = fe.spinningByMouse;
     fe.spinningByMouse = Je.type === "mousedown", fe.spinningByMouse && (fe.stepTimeoutHandle = Y.setTimeout(function() {
       Ue(je, Je);
-    }, Zt ? HU : LU));
+    }, Jt ? HU : LU));
   }, [fe, Y, Be, Ie]), et = _.useCallback(function(je) {
     if (X)
       return X(je);
@@ -52207,7 +52207,7 @@ const BG = (e) => {
   }, [p, v] = ot([]), [m, g] = ot(!1), y = () => {
     let x = [];
     return e.columnConfigurationData.forEach((b, F) => {
-      var S, C, w, D, R, O, I, X, A, L, G, Q, ae, W, ge, de, ve, Se, N, ne, q, Y, re, be, xe, Ie, M, Ve, pe, fe, ke, Ge, Ee, Be, ye, Ue, et, ct, dt, We, wt, fr, Et, Mt, $e, Oe, xt, je, Je, Qe, Zt, Lr, hr, bt, Rr, qr;
+      var S, C, w, D, R, O, I, X, A, L, G, Q, ae, W, ge, de, ve, Se, N, ne, q, Y, re, be, xe, Ie, M, Ve, pe, fe, ke, Ge, Ee, Be, ye, Ue, et, ct, dt, We, wt, fr, Et, Mt, $e, Oe, xt, je, Je, Qe, Jt, Lr, hr, bt, Rr, qr;
       switch (b.inputType) {
         case Ft.CheckBox:
           x.push(
@@ -52378,7 +52378,7 @@ const BG = (e) => {
                 suffix: (Mt = (Et = (fr = b.validations) == null ? void 0 : fr.numericFormatProps) == null ? void 0 : Et.formatProps) == null ? void 0 : Mt.suffix,
                 prefix: (xt = (Oe = ($e = b.validations) == null ? void 0 : $e.numericFormatProps) == null ? void 0 : Oe.formatProps) == null ? void 0 : xt.prefix,
                 allowLeadingZeros: (Qe = (Je = (je = b.validations) == null ? void 0 : je.numericFormatProps) == null ? void 0 : Je.formatProps) == null ? void 0 : Qe.allowLeadingZeros,
-                allowNegative: (hr = (Lr = (Zt = b.validations) == null ? void 0 : Zt.numericFormatProps) == null ? void 0 : Lr.formatProps) == null ? void 0 : hr.allowNegative,
+                allowNegative: (hr = (Lr = (Jt = b.validations) == null ? void 0 : Jt.numericFormatProps) == null ? void 0 : Lr.formatProps) == null ? void 0 : hr.allowNegative,
                 isAllowed: (qr = (Rr = (bt = b.validations) == null ? void 0 : bt.numericFormatProps) == null ? void 0 : Rr.formatBase) == null ? void 0 : qr.isAllowed,
                 onValueChange: (Le, nt) => c(
                   nt.event,
@@ -52954,7 +52954,7 @@ const YG = (e) => {
       L.editable == !0 && A.push({ key: L.key, text: L.text });
     }), A;
   })(), [D, R] = ot([]), [O, I] = ot(!1), X = () => {
-    var L, G, Q, ae, W, ge, de, ve, Se, N, ne, q, Y, re, be, xe, Ie, M, Ve, pe, fe, ke, Ge, Ee, Be, ye, Ue, et, ct, dt, We, wt, fr, Et, Mt, $e, Oe, xt, je, Je, Qe, Zt, Lr, hr, bt, Rr, qr, Le, nt, br, Ir, Pt, Kt, rt, ft, yr;
+    var L, G, Q, ae, W, ge, de, ve, Se, N, ne, q, Y, re, be, xe, Ie, M, Ve, pe, fe, ke, Ge, Ee, Be, ye, Ue, et, ct, dt, We, wt, fr, Et, Mt, $e, Oe, xt, je, Je, Qe, Jt, Lr, hr, bt, Rr, qr, Le, nt, br, Ir, Pt, Kt, rt, ft, yr;
     var A = e.columnConfigurationData.filter(
       (Z) => Z.key == r
     );
@@ -53079,7 +53079,7 @@ const YG = (e) => {
               onRenderLabel: (je = (xt = A[0].validations) == null ? void 0 : xt.numericFormatProps) == null ? void 0 : je.onRenderLabel,
               ariaLabel: ((Qe = (Je = A[0].validations) == null ? void 0 : Je.numericFormatProps) == null ? void 0 : Qe.ariaLabel) ?? A[0].text,
               customInput: En,
-              suffix: (hr = (Lr = (Zt = A[0].validations) == null ? void 0 : Zt.numericFormatProps) == null ? void 0 : Lr.formatProps) == null ? void 0 : hr.suffix,
+              suffix: (hr = (Lr = (Jt = A[0].validations) == null ? void 0 : Jt.numericFormatProps) == null ? void 0 : Lr.formatProps) == null ? void 0 : hr.suffix,
               prefix: (qr = (Rr = (bt = A[0].validations) == null ? void 0 : bt.numericFormatProps) == null ? void 0 : Rr.formatProps) == null ? void 0 : qr.prefix,
               allowLeadingZeros: (br = (nt = (Le = A[0].validations) == null ? void 0 : Le.numericFormatProps) == null ? void 0 : nt.formatProps) == null ? void 0 : br.allowLeadingZeros,
               allowNegative: (Kt = (Pt = (Ir = A[0].validations) == null ? void 0 : Ir.numericFormatProps) == null ? void 0 : Pt.formatProps) == null ? void 0 : Kt.allowNegative,
@@ -53140,27 +53140,27 @@ const YG = (e) => {
     }
   );
 };
-var rr = /* @__PURE__ */ ((e) => (e[e.None = 1] = "None", e[e.Add = 2] = "Add", e[e.Update = 3] = "Update", e[e.Delete = 4] = "Delete", e))(rr || {});
+var Zt = /* @__PURE__ */ ((e) => (e[e.None = 1] = "None", e[e.Add = 2] = "Add", e[e.Update = 3] = "Update", e[e.Delete = 4] = "Delete", e))(Zt || {});
 fU(void 0, { disableWarnings: !0 });
 const XG = (e, n) => e.map((t, r) => {
   if (Object.keys(t).indexOf("_grid_row_id_") == -1 && Object.keys(t).indexOf("_grid_row_operation_") == -1)
     if (t._grid_row_id_ = r, t._is_filtered_in_ = !0, t._is_filtered_in_grid_search_ = !0, t._is_filtered_in_column_filter_ = !0, t._is_data_transformed = !1, t._udf_custom_vaule_store_a = 0, t._udf_custom_vaule_store_b = 0, n && e[r][n.colKey] !== void 0)
       switch (e[r][n.colKey]) {
         case n.options.Add:
-          t._grid_row_operation_ = rr.Add;
+          t._grid_row_operation_ = Zt.Add;
           break;
         case n.options.Update:
-          t._grid_row_operation_ = rr.Update;
+          t._grid_row_operation_ = Zt.Update;
           break;
         case n.options.Delete:
-          t._grid_row_operation_ = rr.Delete;
+          t._grid_row_operation_ = Zt.Delete;
           break;
         default:
-          t._grid_row_operation_ = rr.None;
+          t._grid_row_operation_ = Zt.None;
           break;
       }
     else
-      t._grid_row_operation_ = rr.None;
+      t._grid_row_operation_ = Zt.None;
   return t;
 }), qG = (e) => e.map((n, t) => (n._grid_row_id_ = t, n)), ZG = (e) => {
   let n = [];
@@ -53184,14 +53184,15 @@ const XG = (e, n) => e.map((t, r) => {
     }
   }
   return n;
-}, o1 = (e, n) => (n.forEach((t) => {
-  var r = e.findIndex(
-    (i) => i._grid_row_id_ == t.properties._grid_row_id_.value
+}, o1 = (e, n, t) => (n.forEach((r) => {
+  var a = e.findIndex(
+    (o) => o._grid_row_id_ == r.properties._grid_row_id_.value
   );
-  if (r >= 0) {
-    var a = Object.keys(t.properties);
-    a.forEach((i) => {
-      e[r][i] != t.properties[i].value && (e[r][i] = t.properties[i].value, e[r]._grid_row_operation_ != rr.Add && e[r]._grid_row_operation_ != rr.Update && (e[r]._grid_row_operation_ = rr.Update));
+  if (a >= 0) {
+    var i = Object.keys(r.properties);
+    i.forEach((o) => {
+      var s;
+      e[a][o] != r.properties[o].value && (e[a][o] = r.properties[o].value, e[a]._grid_row_operation_ != Zt.Add && e[a]._grid_row_operation_ != Zt.Update && (e[a]._grid_row_operation_ = Zt.Update, t && e[a][t.colKey] !== void 0 && (e[a][t.colKey] = ((s = t.options) == null ? void 0 : s.Update) ?? Zt.Update)));
     });
   }
 }), e), JG = (e) => {
@@ -53244,7 +53245,7 @@ const XG = (e, n) => e.map((t, r) => {
   }, [p, v] = ot([]), [m, g] = ot(!1), y = () => {
     let x = [];
     return e.columnConfigurationData.filter((b) => b.editable == !0).forEach((b) => {
-      var F, S, C, w, D, R, O, I, X, A, L, G, Q, ae, W, ge, de, ve, Se, N, ne, q, Y, re, be, xe, Ie, M, Ve, pe, fe, ke, Ge, Ee, Be, ye, Ue, et, ct, dt, We, wt, fr, Et, Mt, $e, Oe, xt, je, Je, Qe, Zt, Lr, hr, bt, Rr, qr;
+      var F, S, C, w, D, R, O, I, X, A, L, G, Q, ae, W, ge, de, ve, Se, N, ne, q, Y, re, be, xe, Ie, M, Ve, pe, fe, ke, Ge, Ee, Be, ye, Ue, et, ct, dt, We, wt, fr, Et, Mt, $e, Oe, xt, je, Je, Qe, Jt, Lr, hr, bt, Rr, qr;
       switch (b.inputType) {
         case Ft.Date:
           x.push(
@@ -53385,7 +53386,7 @@ const XG = (e, n) => e.map((t, r) => {
                 suffix: (Mt = (Et = (fr = b.validations) == null ? void 0 : fr.numericFormatProps) == null ? void 0 : Et.formatProps) == null ? void 0 : Mt.suffix,
                 prefix: (xt = (Oe = ($e = b.validations) == null ? void 0 : $e.numericFormatProps) == null ? void 0 : Oe.formatProps) == null ? void 0 : xt.prefix,
                 allowLeadingZeros: (Qe = (Je = (je = b.validations) == null ? void 0 : je.numericFormatProps) == null ? void 0 : Je.formatProps) == null ? void 0 : Qe.allowLeadingZeros,
-                allowNegative: (hr = (Lr = (Zt = b.validations) == null ? void 0 : Zt.numericFormatProps) == null ? void 0 : Lr.formatProps) == null ? void 0 : hr.allowNegative,
+                allowNegative: (hr = (Lr = (Jt = b.validations) == null ? void 0 : Jt.numericFormatProps) == null ? void 0 : Lr.formatProps) == null ? void 0 : hr.allowNegative,
                 isAllowed: (qr = (Rr = (bt = b.validations) == null ? void 0 : bt.numericFormatProps) == null ? void 0 : Rr.formatBase) == null ? void 0 : qr.isAllowed,
                 onValueChange: (Le, nt) => l(
                   nt.event,
@@ -53645,8 +53646,8 @@ const iz = (e) => {
           var ue = {};
           try {
             j.forEach((oe, Tt) => {
-              var kt, qe, Ct, er;
-              if (le[oe] && ((qe = (kt = le[oe]) == null ? void 0 : kt.toString()) != null && qe.toLowerCase()) && ((er = (Ct = le[oe]) == null ? void 0 : Ct.toString()) != null && er.toLowerCase().includes(k.trim().toLowerCase())))
+              var kt, qe, Ct, tr;
+              if (le[oe] && ((qe = (kt = le[oe]) == null ? void 0 : kt.toString()) != null && qe.toLowerCase()) && ((tr = (Ct = le[oe]) == null ? void 0 : Ct.toString()) != null && tr.toLowerCase().includes(k.trim().toLowerCase())))
                 throw le._is_filtered_in_grid_search_ = !0, ue;
               le._is_filtered_in_grid_search_ = !1;
             });
@@ -53676,11 +53677,15 @@ const iz = (e) => {
   }, [e.columns]), pr(() => {
   }, [y]), pr(() => {
     (async () => {
-      m.filter((U) => U._grid_row_operation_ != rr.None).length > 0 && await Ir();
+      m.filter((U) => U._grid_row_operation_ != Zt.None).length > 0 && await Ir();
     })();
   }, [m]), pr(() => {
     Pt(), e.enableDefaultEditMode && g(
-      o1(m, S)
+      o1(
+        m,
+        S,
+        e.customOperationsKey
+      )
     );
   }, [S]), pr(() => {
   }, [G]), pr(() => {
@@ -53690,7 +53695,7 @@ const iz = (e) => {
   }, [fe]);
   const Qe = ln(
     /* @__PURE__ */ new Map()
-  ), [Zt, Lr] = ot(/* @__PURE__ */ new Map()), hr = ln(/* @__PURE__ */ new Map()), bt = (P, U, k) => {
+  ), [Jt, Lr] = ot(/* @__PURE__ */ new Map()), hr = ln(/* @__PURE__ */ new Map()), bt = (P, U, k) => {
     if (P.set(U, k), Xs(P), e.enableMessageBarErrors && e.enableMessageBarErrors.enableSendGroupedErrorsToCallback && !hr.current.has(e.id.toString())) {
       var j = `${e.gridLocation} has errors`;
       hr.current.set(
@@ -53704,8 +53709,8 @@ const iz = (e) => {
     Xs(k);
   };
   ln(/* @__PURE__ */ new Map()), pr(() => {
-    e.onGridInErrorCallback && r && e.onGridInErrorCallback(r, Zt);
-  }, [r, Zt]);
+    e.onGridInErrorCallback && r && e.onGridInErrorCallback(r, Jt);
+  }, [r, Jt]);
   function qr(P) {
     const U = [], k = {}, j = P.map((Te) => {
       const ue = {};
@@ -53767,27 +53772,27 @@ const iz = (e) => {
     var le, Te, ue, oe, Tt, kt;
     let P = !1;
     const U = m.length > 0 ? m.filter(
-      (qe) => qe._grid_row_operation_ != rr.Delete
+      (qe) => qe._grid_row_operation_ != Zt.Delete
     ) : [], k = qr(U);
     k.length > 0 && (k.forEach((qe, Ct) => {
-      var er = We.current !== null ? `Rows Located At IDs: ${qe} are duplicated` : `Rows Located At Indexes ${qe} are duplicated`;
+      var tr = We.current !== null ? `Rows Located At IDs: ${qe} are duplicated` : `Rows Located At Indexes ${qe} are duplicated`;
       bt(Qe.current, "dups" + Ct, {
-        msg: er,
+        msg: tr,
         type: Xe.error
       });
     }), P = !0);
     for (let qe = 0; qe < U.length; qe++) {
       const Ct = U[qe];
       var j = Object.keys(Ct);
-      let er = [], jr = [];
-      for (let tr = 0; tr < j.length; tr++) {
-        const Gr = j[tr];
+      let tr = [], jr = [];
+      for (let rr = 0; rr < j.length; rr++) {
+        const Gr = j[rr];
         Ct[Gr];
         const Qr = e.columns.filter((gr) => gr.key === Gr);
         for (let gr = 0; gr < Qr.length; gr++) {
           const Me = Qr[gr], ut = Ct[Me.key];
           if (Me.required && typeof Me.required == "boolean" && (ut == null || ut == null || (ut == null ? void 0 : ut.toString().length) <= 0 || ut == ""))
-            er.includes(" " + Me.name) || er.push(" " + Me.name);
+            tr.includes(" " + Me.name) || tr.push(" " + Me.name);
           else if (typeof Me.required != "boolean" && !Me.required.requiredOnlyIfTheseColumnsAreEmpty && Me.required.errorMessage && (ut == null || ut == null || (ut == null ? void 0 : ut.toString().length) <= 0 || ut == "")) {
             var ee = `Row ${We.current ? "With ID: " + Ct[We.current] : "With Index:" + qe + 1} - ${Me.required.errorMessage}'.`;
             bt(Qe.current, Me.key + qe + "empty", {
@@ -53974,14 +53979,14 @@ const iz = (e) => {
           type: Xe.error
         }), P = !0;
       }
-      if (er.length > 1) {
-        var ee = `Row ${We.current ? "With ID: " + Ct[We.current] : "With Index: " + qe + 1} - ${er == null ? void 0 : er.toString()} cannot be empty at all`;
+      if (tr.length > 1) {
+        var ee = `Row ${We.current ? "With ID: " + Ct[We.current] : "With Index: " + qe + 1} - ${tr == null ? void 0 : tr.toString()} cannot be empty at all`;
         bt(Qe.current, qe + "ec", {
           msg: ee,
           type: Xe.error
         }), P = !0;
-      } else if (er.length == 1) {
-        var ee = `Row ${We.current ? "With ID: " + Ct[We.current] : "With Index: " + qe + 1} - ${er == null ? void 0 : er.toString()} cannot be empty`;
+      } else if (tr.length == 1) {
+        var ee = `Row ${We.current ? "With ID: " + Ct[We.current] : "With Index: " + qe + 1} - ${tr == null ? void 0 : tr.toString()} cannot be empty`;
         bt(Qe.current, qe + "ec", {
           msg: ee,
           type: Xe.error
@@ -53996,7 +54001,7 @@ const iz = (e) => {
   const br = () => {
     hr.current = /* @__PURE__ */ new Map(), Lr(hr.current), Qe.current = /* @__PURE__ */ new Map(), Xs(Qe.current), a(!1), Ht(/* @__PURE__ */ new Map()), e.enableSaveGridOnCellValueChange || jl(!1);
     let P = 0;
-    if (m.filter((oe) => oe._grid_row_operation_ != rr.Delete).filter((oe) => Le(oe)).forEach((oe) => {
+    if (m.filter((oe) => oe._grid_row_operation_ != Zt.Delete).filter((oe) => Le(oe)).forEach((oe) => {
       (oe == null ? void 0 : oe._grid_row_id_) != null && (im(Number(oe._grid_row_id_)), P = P + 1);
     }), P > 0) {
       var k = `Auto Deleted ${P} Blank Row${P == 1 ? "" : "s"}`;
@@ -54016,10 +54021,10 @@ const iz = (e) => {
       "_udf_custom_vaule_store_a",
       "_udf_custom_vaule_store_b"
     ], le = (oe) => Object.keys(oe).reduce((Tt, kt) => (ee.includes(kt) || (Tt[kt] = oe[kt]), Tt), {}), Te = j.filter((oe) => (Tc.current && Tc.current.forEach(function(Tt, kt) {
-      var qe, Ct, er, jr;
-      for (let tr = 0; tr < Tt.values.length; tr++) {
-        const Gr = Tt.values[tr];
-        ((Ct = (qe = Gr == null ? void 0 : Gr.text) == null ? void 0 : qe.toString()) == null ? void 0 : Ct.toLowerCase()) === (((jr = (er = oe[kt]) == null ? void 0 : er.toString()) == null ? void 0 : jr.toLowerCase()) ?? "") && (oe[kt] = Gr == null ? void 0 : Gr.key);
+      var qe, Ct, tr, jr;
+      for (let rr = 0; rr < Tt.values.length; rr++) {
+        const Gr = Tt.values[rr];
+        ((Ct = (qe = Gr == null ? void 0 : Gr.text) == null ? void 0 : qe.toString()) == null ? void 0 : Ct.toLowerCase()) === (((jr = (tr = oe[kt]) == null ? void 0 : tr.toString()) == null ? void 0 : jr.toLowerCase()) ?? "") && (oe[kt] = Gr == null ? void 0 : Gr.key);
       }
     }), oe)).map(le);
     let ue = !1;
@@ -54069,7 +54074,7 @@ const iz = (e) => {
         var Te = Object.keys(P);
         return Te.forEach((ue) => {
           var oe;
-          le[ue] = P[ue], le._grid_row_operation_ != rr.Add && (le._grid_row_operation_ = rr.Update, e.customOperationsKey && (le[e.customOperationsKey.colKey] = ((oe = e.customOperationsKey.options) == null ? void 0 : oe.Update) ?? rr.Update));
+          le[ue] = P[ue], le._grid_row_operation_ != Zt.Add && (le._grid_row_operation_ = Zt.Update, e.customOperationsKey && (le[e.customOperationsKey.colKey] = ((oe = e.customOperationsKey.options) == null ? void 0 : oe.Update) ?? Zt.Update));
         }), le;
       });
     }), rt(!0), k;
@@ -54129,12 +54134,12 @@ const iz = (e) => {
     for (var le = 1; le <= P; le++) {
       if (U = {}, e.columns.forEach((ue, oe) => {
         ue.autoGenerate ? (U[ue.key] = ee + le, H.current = ee + le) : ue.defaultOnAddRow ? U[ue.key] = ue.defaultOnAddRow : U[ue.key] = dc(ue.dataType);
-      }), e.customOperationsKey && (U[e.customOperationsKey.colKey] = ((Te = e.customOperationsKey.options) == null ? void 0 : Te.Add) ?? rr.Add), e.customKeysToAddOnNewRow)
+      }), e.customOperationsKey && (U[e.customOperationsKey.colKey] = ((Te = e.customOperationsKey.options) == null ? void 0 : Te.Add) ?? Zt.Add), e.customKeysToAddOnNewRow)
         for (let ue = 0; ue < e.customKeysToAddOnNewRow.length; ue++) {
           const oe = e.customKeysToAddOnNewRow[ue];
           U[oe.key] = oe.defaultValue;
         }
-      U._grid_row_id_ = j, U._grid_row_operation_ = rr.Add, U._is_filtered_in_ = !0, U._is_filtered_in_grid_search_ = !0, U._is_filtered_in_column_filter_ = !0, k.push(U);
+      U._grid_row_id_ = j, U._grid_row_operation_ = Zt.Add, U._is_filtered_in_ = !0, U._is_filtered_in_grid_search_ = !0, U._is_filtered_in_column_filter_ = !0, k.push(U);
     }
     return k;
   }, [V, z] = ot(!1);
@@ -54201,7 +54206,7 @@ const iz = (e) => {
     R.forEach((U, k) => {
       P.filter((j) => j._grid_row_id_ == U._grid_row_id_).map((j) => {
         var ee;
-        j._grid_row_operation_ = rr.Delete, e.customOperationsKey && (j[e.customOperationsKey.colKey] = ((ee = e.customOperationsKey.options) == null ? void 0 : ee.Delete) ?? rr.Delete);
+        j._grid_row_operation_ = Zt.Delete, e.customOperationsKey && (j[e.customOperationsKey.colKey] = ((ee = e.customOperationsKey.options) == null ? void 0 : ee.Delete) ?? Zt.Delete);
       });
     }), e.enableSaveGridOnCellValueChange ? g(P) : (rt(!0), Kt(P));
   }, ie = () => {
@@ -54209,14 +54214,14 @@ const iz = (e) => {
       (j) => j.includeColumnInExport == !0
     ), U = [], k = {};
     return !R || R.length == 0 ? m.filter(
-      (j) => j._grid_row_operation_ != rr.Delete && j._is_filtered_in_ && j._is_filtered_in_column_filter_ && j._is_filtered_in_grid_search_
+      (j) => j._grid_row_operation_ != Zt.Delete && j._is_filtered_in_ && j._is_filtered_in_column_filter_ && j._is_filtered_in_grid_search_
     ).forEach((j, ee) => {
       P.forEach((le, Te) => {
         k[le.key] = j[le.key];
       }), U.push(k), k = {};
     }) : R.forEach((j, ee) => {
       m.filter(
-        (le) => le._grid_row_operation_ != rr.Delete && le._is_filtered_in_ && le._is_filtered_in_column_filter_ && le._is_filtered_in_grid_search_
+        (le) => le._grid_row_operation_ != Zt.Delete && le._is_filtered_in_ && le._is_filtered_in_column_filter_ && le._is_filtered_in_grid_search_
       ).forEach((le, Te) => {
         j._grid_row_id_ == le._grid_row_id_ && (P.forEach((ue, oe) => {
           k[ue.text] = le[ue.key];
@@ -54292,7 +54297,7 @@ const iz = (e) => {
       };
     }), st(P);
   }, [e.columns]);
-  const Jt = (P, U) => (U.map((k) => {
+  const Qt = (P, U) => (U.map((k) => {
     var j = Object.keys(P);
     return j.forEach((ee) => {
       k[ee] = P[ee];
@@ -54367,28 +54372,28 @@ const iz = (e) => {
         const Te = Ku((kt = le.target) == null ? void 0 : kt.result), ue = Te.SheetNames;
         let oe = [];
         if (ue.length) {
-          const er = vy.sheet_to_json(Te.Sheets[ue[0]]);
-          if (er.length <= 0) {
-            const tr = new Map(Ut).set(
+          const tr = vy.sheet_to_json(Te.Sheets[ue[0]]);
+          if (tr.length <= 0) {
+            const rr = new Map(Ut).set(
               (qe = e.id) == null ? void 0 : qe.toString(),
               {
                 msg: "Selected file has 0 rows of data. Please try again.",
                 type: Xe.error
               }
             );
-            Ht(tr), o(!1);
+            Ht(rr), o(!1);
             return;
           }
-          for (let tr = 0; tr < 1; tr++)
-            if (!sr(er[tr])) {
+          for (let rr = 0; rr < 1; rr++)
+            if (!sr(tr[rr])) {
               o(!1);
               return;
             }
-          for (let tr = 0; tr < er.length; tr++) {
-            const Gr = Vn(er[tr]);
+          for (let rr = 0; rr < tr.length; rr++) {
+            const Gr = Vn(tr[rr]);
             if (Gr.length <= 0)
               oe.push(
-                Jt(er[tr], B(1))
+                Qt(tr[rr], B(1))
               );
             else {
               Gr.forEach((Qr) => {
@@ -54403,8 +54408,8 @@ const iz = (e) => {
             }
           }
           var Tt = [...m];
-          oe.forEach((tr) => {
-            Tt.splice(0, 0, tr[0]);
+          oe.forEach((rr) => {
+            Tt.splice(0, 0, rr[0]);
           });
           const jr = new Map(Ut).set(
             (Ct = e.id) == null ? void 0 : Ct.toString(),
@@ -54441,10 +54446,10 @@ const iz = (e) => {
     ), le = S.findIndex(
       (oe) => oe.properties._grid_row_id_.value == U
     );
-    return j[ee][P] = S[le].properties[P].value, j[ee]._grid_row_operation_ != rr.Add && (JSON.stringify(j) === JSON.stringify(b) ? (j[ee]._grid_row_operation_ = rr.None, e.customOperationsKey && (j[ee][e.customOperationsKey.colKey] = ((Te = e.customOperationsKey.options) == null ? void 0 : Te.None) ?? rr.None)) : (j[ee]._grid_row_operation_ = rr.Update, e.customOperationsKey && (j[ee][e.customOperationsKey.colKey] = ((ue = e.customOperationsKey.options) == null ? void 0 : ue.Update) ?? rr.Update)), rt(!0)), j;
+    return j[ee][P] = S[le].properties[P].value, j[ee]._grid_row_operation_ != Zt.Add && (JSON.stringify(j) === JSON.stringify(b) ? (j[ee]._grid_row_operation_ = Zt.None, e.customOperationsKey && (j[ee][e.customOperationsKey.colKey] = ((Te = e.customOperationsKey.options) == null ? void 0 : Te.None) ?? Zt.None)) : (j[ee]._grid_row_operation_ = Zt.Update, console.log("oopp----------"), console.log(j[ee]), e.customOperationsKey && (j[ee][e.customOperationsKey.colKey] = ((ue = e.customOperationsKey.options) == null ? void 0 : ue.Update) ?? Zt.Update)), rt(!0)), j;
   }, [Tn, Xs] = ot(
     /* @__PURE__ */ new Map()
-  ), [Uf, Gf] = ot([]), Qt = pi(() => {
+  ), [Uf, Gf] = ot([]), er = pi(() => {
     let P = [];
     return Tn.forEach(function(U, k) {
       P.push(
@@ -54462,7 +54467,7 @@ const iz = (e) => {
     }), P;
   }, [Tn]);
   pr(() => {
-    Qe.current = Tn, Gf(Qt());
+    Qe.current = Tn, Gf(er());
   }, [Tn]);
   const [Ut, Ht] = ot(/* @__PURE__ */ new Map()), [Un, Gn] = ot(
     []
@@ -54496,24 +54501,24 @@ const iz = (e) => {
     if (Te = [], S.forEach((oe, Tt) => {
       var kt, qe, Ct;
       if (j == Tt) {
-        let er = !0, jr = U;
+        let tr = !0, jr = U;
         if ((kt = $e.current) != null && kt.inputType)
           switch ($e.current.inputType) {
             case Ft.MultilineTextField:
-              er = !1;
+              tr = !1;
               break;
             case Ft.Password:
-              er = !1;
+              tr = !1;
               break;
             case Ft.Date:
-              er = !1;
+              tr = !1;
               break;
             default:
-              er = !0, jr = Et ? (qe = U == null ? void 0 : U.toString()) == null ? void 0 : qe.split(" ")[0].trim() : (Ct = U == null ? void 0 : U.toString()) == null ? void 0 : Ct.split(/[\t\r]+/).map((tr) => tr.trim())[0].trim();
+              tr = !0, jr = Et ? (qe = U == null ? void 0 : U.toString()) == null ? void 0 : qe.split(" ")[0].trim() : (Ct = U == null ? void 0 : U.toString()) == null ? void 0 : Ct.split(/[\t\r]+/).map((rr) => rr.trim())[0].trim();
               break;
           }
-        oe.properties[ee].value = cc(le.dataType, jr, er) ?? "", ue.length > 0 ? ue.forEach((tr) => {
-          oe.properties[tr].error = null;
+        oe.properties[ee].value = cc(le.dataType, jr, tr) ?? "", ue.length > 0 ? ue.forEach((rr) => {
+          oe.properties[rr].error = null;
         }) : oe.properties[ee].error = null;
       }
       Te.push(oe);
@@ -54670,7 +54675,11 @@ const iz = (e) => {
   }, tm = (P, U) => {
     let k = zf(P, U, !1);
     k = pE(U, k), C(k), g(
-      o1(m, k)
+      o1(
+        m,
+        k,
+        e.customOperationsKey
+      )
     );
   }, pE = (P, U) => {
     var k = [...U], j = I.filter((Te) => Te._grid_row_id_ == P)[0], ee = Object.keys(j), le = k.filter(
@@ -54775,7 +54784,7 @@ const iz = (e) => {
       return Ht(U), !0;
     }
   }, xE = (P, U) => {
-    var ee, le, Te, ue, oe, Tt, kt, qe, Ct, er, jr, tr, Gr;
+    var ee, le, Te, ue, oe, Tt, kt, qe, Ct, tr, jr, rr, Gr;
     const k = {};
     var j = Object.keys(we);
     if ($e.current && ((ee = $e.current) != null && ee.key)) {
@@ -54798,7 +54807,7 @@ const iz = (e) => {
     We.current && P.splice(0, 0, We.current);
     for (let Qr = 0; Qr < P.length; Qr++) {
       const gr = P[Qr], Me = j[Qr];
-      We.current && Me == We.current || ((Te = we == null ? void 0 : we[Me]) != null && Te.columnEditable ? ((ue = gr == null ? void 0 : gr.toLowerCase()) == null ? void 0 : ue.trim()) === "false" ? k[Me] = !1 : ((oe = gr == null ? void 0 : gr.toLowerCase()) == null ? void 0 : oe.trim()) === "true" ? k[Me] = !0 : ((Tt = we == null ? void 0 : we[Me]) == null ? void 0 : Tt.dataType) == "boolean" ? k[Me] = ((kt = gr == null ? void 0 : gr.toString()) == null ? void 0 : kt.trim()) == "1" : k[Me] = ((qe = gr == null ? void 0 : gr.toString()) == null ? void 0 : qe.trim()) ?? null : ((Ct = we == null ? void 0 : we[Me]) == null ? void 0 : Ct.dataType) == "boolean" ? k[Me] = ((er = we == null ? void 0 : we[Me]) == null ? void 0 : er.defaultValueOnNewRow) ?? !1 : ((jr = we == null ? void 0 : we[Me]) == null ? void 0 : jr.dataType) == "string" ? k[Me] = ((tr = we == null ? void 0 : we[Me]) == null ? void 0 : tr.defaultValueOnNewRow) ?? "" : k[Me] = ((Gr = we == null ? void 0 : we[Me]) == null ? void 0 : Gr.defaultValueOnNewRow) ?? null);
+      We.current && Me == We.current || ((Te = we == null ? void 0 : we[Me]) != null && Te.columnEditable ? ((ue = gr == null ? void 0 : gr.toLowerCase()) == null ? void 0 : ue.trim()) === "false" ? k[Me] = !1 : ((oe = gr == null ? void 0 : gr.toLowerCase()) == null ? void 0 : oe.trim()) === "true" ? k[Me] = !0 : ((Tt = we == null ? void 0 : we[Me]) == null ? void 0 : Tt.dataType) == "boolean" ? k[Me] = ((kt = gr == null ? void 0 : gr.toString()) == null ? void 0 : kt.trim()) == "1" : k[Me] = ((qe = gr == null ? void 0 : gr.toString()) == null ? void 0 : qe.trim()) ?? null : ((Ct = we == null ? void 0 : we[Me]) == null ? void 0 : Ct.dataType) == "boolean" ? k[Me] = ((tr = we == null ? void 0 : we[Me]) == null ? void 0 : tr.defaultValueOnNewRow) ?? !1 : ((jr = we == null ? void 0 : we[Me]) == null ? void 0 : jr.dataType) == "string" ? k[Me] = ((rr = we == null ? void 0 : we[Me]) == null ? void 0 : rr.defaultValueOnNewRow) ?? "" : k[Me] = ((Gr = we == null ? void 0 : we[Me]) == null ? void 0 : Gr.defaultValueOnNewRow) ?? null);
     }
     return U.map((Qr) => {
       var gr = Object.keys(k);
@@ -54809,7 +54818,7 @@ const iz = (e) => {
   }, nm = ln(null);
   pr(() => {
     const P = (k) => {
-      k.ctrlKey && k.key === "v" && e.gridCopyOptions && e.gridCopyOptions.enableGridPaste && am(Et);
+      k.ctrlKey && k.key === "v" && e.gridCopyOptions && e.gridCopyOptions.enableGridPaste && !e.enableDefaultEditMode && am(Et);
     }, U = nm.current;
     return U && U.addEventListener("keydown", P), () => {
       U && U.removeEventListener("keydown", P);
@@ -54851,10 +54860,10 @@ const iz = (e) => {
                 return Gr == ((Qr = $e.current) == null ? void 0 : Qr.key);
               }
             );
-            let tr = 0;
+            let rr = 0;
             e.columns.forEach((Gr, Qr) => {
               var gr, Me, ut, vr, ur, en;
-              Gr.editable && $e.current && Qr >= jr && (le = !0, ((Me = (gr = ee[tr]) == null ? void 0 : gr.toLowerCase()) == null ? void 0 : Me.trim()) === "false" ? Te[$e.current._grid_row_id_][Gr.key] = !1 : ((vr = (ut = ee[tr]) == null ? void 0 : ut.toLowerCase()) == null ? void 0 : vr.trim()) === "true" ? Te[$e.current._grid_row_id_][Gr.key] = !0 : (en = (ur = ee[tr]) == null ? void 0 : ur.toLowerCase()) == null || en.trim(), Te[$e.current._grid_row_id_][Gr.key] = ee[tr] ?? "", tr++);
+              Gr.editable && $e.current && Qr >= jr && (le = !0, ((Me = (gr = ee[rr]) == null ? void 0 : gr.toLowerCase()) == null ? void 0 : Me.trim()) === "false" ? Te[$e.current._grid_row_id_][Gr.key] = !1 : ((vr = (ut = ee[rr]) == null ? void 0 : ut.toLowerCase()) == null ? void 0 : vr.trim()) === "true" ? Te[$e.current._grid_row_id_][Gr.key] = !0 : (en = (ur = ee[rr]) == null ? void 0 : ur.toLowerCase()) == null || en.trim(), Te[$e.current._grid_row_id_][Gr.key] = ee[rr] ?? "", rr++);
             });
             continue;
           }
@@ -54965,16 +54974,16 @@ const iz = (e) => {
       if (P)
         if (m) {
           const k = m.filter(
-            (j) => j._grid_row_operation_ === rr.Delete
+            (j) => j._grid_row_operation_ === Zt.Delete
           ).length;
           return (m.length - k).toString();
         } else
           return "0";
       const U = m.filter(
-        (k) => k._grid_row_operation_ === rr.Delete
+        (k) => k._grid_row_operation_ === Zt.Delete
       ).length;
       return `${m.filter(
-        (k) => k._grid_row_operation_ != rr.Delete && k._is_filtered_in_ == !0 && k._is_filtered_in_grid_search_ == !0 && k._is_filtered_in_column_filter_ == !0
+        (k) => k._grid_row_operation_ != Zt.Delete && k._is_filtered_in_ == !0 && k._is_filtered_in_grid_search_ == !0 && k._is_filtered_in_column_filter_ == !0
       ).length}/${m.length - U}`;
     },
     [m]
@@ -54982,10 +54991,10 @@ const iz = (e) => {
     let U = [...m];
     e.enableSaveGridOnCellValueChange ? (U.filter((k) => k._grid_row_id_ === P).map((k) => {
       var j;
-      k._grid_row_operation_ = rr.Delete, e.customOperationsKey && (k[e.customOperationsKey.colKey] = ((j = e.customOperationsKey.options) == null ? void 0 : j.Delete) ?? rr.Delete);
+      k._grid_row_operation_ = Zt.Delete, e.customOperationsKey && (k[e.customOperationsKey.colKey] = ((j = e.customOperationsKey.options) == null ? void 0 : j.Delete) ?? Zt.Delete);
     }), g(U)) : (U.filter((k) => k._grid_row_id_ == P).map((k) => {
       var j;
-      k._grid_row_operation_ = rr.Delete, e.customOperationsKey && (k[e.customOperationsKey.colKey] = ((j = e.customOperationsKey.options) == null ? void 0 : j.Delete) ?? rr.Delete);
+      k._grid_row_operation_ = Zt.Delete, e.customOperationsKey && (k[e.customOperationsKey.colKey] = ((j = e.customOperationsKey.options) == null ? void 0 : j.Delete) ?? Zt.Delete);
     }), Kt(U), rt(!0));
   }, Js = (P, U) => {
     switch (P) {
@@ -55045,26 +55054,33 @@ const iz = (e) => {
   }, om = () => {
     var P, U, k, j;
     e.showASaveButtonInCommandbar || !e.enableSaveGridOnCellValueChange ? W(
-      /* @__PURE__ */ te.jsxs("div", { id: ((U = (P = s == null ? void 0 : s.ResetData) == null ? void 0 : P.dialogBox) == null ? void 0 : U.title) ?? "Confirmation", children: [
-        /* @__PURE__ */ te.jsx(
-          qx,
-          {
-            children: ((j = (k = s == null ? void 0 : s.ResetData) == null ? void 0 : k.dialogBox) == null ? void 0 : j.msg) ?? "This action will reset any unsaved changes, if this is not intended please press 'Cancel'"
-          }
-        ),
-        /* @__PURE__ */ te.jsxs(Ol, { children: [
-          /* @__PURE__ */ te.jsx(zo, { onClick: () => {
-            rt(!1), Dc(), Kt(y.map((ee) => ({ ...ee }))), T();
-          }, text: "Ok" }),
-          /* @__PURE__ */ te.jsx(
-            wc,
-            {
-              text: "Cancel",
-              onClick: () => T()
-            }
-          )
-        ] })
-      ] })
+      /* @__PURE__ */ te.jsxs(
+        "div",
+        {
+          id: ((U = (P = s == null ? void 0 : s.ResetData) == null ? void 0 : P.dialogBox) == null ? void 0 : U.title) ?? "Confirmation",
+          children: [
+            /* @__PURE__ */ te.jsx(qx, { children: ((j = (k = s == null ? void 0 : s.ResetData) == null ? void 0 : k.dialogBox) == null ? void 0 : j.msg) ?? "This action will reset any unsaved changes, if this is not intended please press 'Cancel'" }),
+            /* @__PURE__ */ te.jsxs(Ol, { children: [
+              /* @__PURE__ */ te.jsx(
+                zo,
+                {
+                  onClick: () => {
+                    rt(!1), Dc(), Kt(y.map((ee) => ({ ...ee }))), T();
+                  },
+                  text: "Ok"
+                }
+              ),
+              /* @__PURE__ */ te.jsx(
+                wc,
+                {
+                  text: "Cancel",
+                  onClick: () => T()
+                }
+              )
+            ] })
+          ]
+        }
+      )
     ) : (rt(!1), Dc(), Kt(y.map((ee) => ({ ...ee }))));
   }, yE = (P, U, k) => {
     P && U && (P.preventDefault(), NE(U, k));
@@ -55192,13 +55208,13 @@ const iz = (e) => {
     var k = [
       ...new Set(
         m.filter(
-          (le) => le._grid_row_operation_ != rr.Delete && le._is_filtered_in_column_filter_ == !0 && le._is_filtered_in_grid_search_ == !0
+          (le) => le._grid_row_operation_ != Zt.Delete && le._is_filtered_in_column_filter_ == !0 && le._is_filtered_in_grid_search_ == !0
         ).map((le) => le[P.fieldName])
       )
     ], j = [
       ...new Set(
         m.filter(
-          (le) => le._grid_row_operation_ != rr.Delete && (le._is_filtered_in_column_filter_ == !1 || le._is_filtered_in_grid_search_ == !1)
+          (le) => le._grid_row_operation_ != Zt.Delete && (le._is_filtered_in_column_filter_ == !1 || le._is_filtered_in_grid_search_ == !1)
         ).map((le) => le[P.fieldName])
       )
     ], ee = [];
@@ -55250,7 +55266,7 @@ const iz = (e) => {
         sortAscendingAriaLabel: "Sorted A to Z",
         sortDescendingAriaLabel: "Sorted Z to A",
         onRender: k.onRender ? k.onRender : (ue, oe) => {
-          var kt, qe, Ct, er, jr, tr, Gr, Qr, gr, Me, ut, vr, ur, en, Zi, zn, Kn, ym, Cm, Sm, Em, km, wm, Fm, Dm, Tm, Im, Am, Rm, Pm, Nm, Bm, Mm, Om, Lm, Hm, Wm, Vm, Um, Gm, zm, Km, jm, $m, Ym, Xm, qm, Zm, Jm, Qm, eg, tg, rg, ng, ag, ig, og, sg, lg, ug, cg, dg, fg, hg, pg, mg, gg, vg, _g, xg, bg, yg, Cg, Sg, Eg, kg, wg, Fg, Dg, Tg, Ig, Ag, Rg, Pg, Ng, Bg, Mg, Og, Lg, Hg, Wg, Vg, Ug, Gg, zg, Kg, jg, $g, Yg, Xg, qg, Zg, Jg;
+          var kt, qe, Ct, tr, jr, rr, Gr, Qr, gr, Me, ut, vr, ur, en, Zi, zn, Kn, ym, Cm, Sm, Em, km, wm, Fm, Dm, Tm, Im, Am, Rm, Pm, Nm, Bm, Mm, Om, Lm, Hm, Wm, Vm, Um, Gm, zm, Km, jm, $m, Ym, Xm, qm, Zm, Jm, Qm, eg, tg, rg, ng, ag, ig, og, sg, lg, ug, cg, dg, fg, hg, pg, mg, gg, vg, _g, xg, bg, yg, Cg, Sg, Eg, kg, wg, Fg, Dg, Tg, Ig, Ag, Rg, Pg, Ng, Bg, Mg, Og, Lg, Hg, Wg, Vg, Ug, Gg, zg, Kg, jg, $g, Yg, Xg, qg, Zg, Jg;
           if (oe = Number(ue._grid_row_id_), k.dropdownValues && k.inputType == Ft.DropDown && (Tc.current = new Map(
             Tc.current
           ).set(k.key, {
@@ -55321,7 +55337,7 @@ const iz = (e) => {
                 }
               ) });
             case Ft.Date:
-              return /* @__PURE__ */ te.jsx("span", { children: Tt() ? (er = k == null ? void 0 : k.hoverComponentOptions) != null && er.enable ? /* @__PURE__ */ te.jsx(
+              return /* @__PURE__ */ te.jsx("span", { children: Tt() ? (tr = k == null ? void 0 : k.hoverComponentOptions) != null && tr.enable ? /* @__PURE__ */ te.jsx(
                 fi,
                 {
                   type: ia.plain,
@@ -55393,7 +55409,7 @@ const iz = (e) => {
                 {
                   styles: { root: { justifyContent: "center" } },
                   ariaLabel: k.key,
-                  checked: (tr = S[oe].properties[k.key]) == null ? void 0 : tr.value,
+                  checked: (rr = S[oe].properties[k.key]) == null ? void 0 : rr.value,
                   onChange: (Ne, It) => {
                     hE(
                       Ne,
@@ -55447,13 +55463,17 @@ const iz = (e) => {
                   )[0]) == null ? void 0 : gr.text) ?? "Select an option",
                   selectedKey: (
                     // Keys Select Text
-                    ((vr = (ut = (Me = k.dropdownValues) == null ? void 0 : Me.filter((Ne) => {
-                      var It;
-                      return (Ne == null ? void 0 : Ne.key) == ((It = S[oe].properties[k.key]) == null ? void 0 : It.value);
-                    })[0]) == null ? void 0 : ut.key) == null ? void 0 : vr.toString()) ?? ((Zi = (en = (ur = k.dropdownValues) == null ? void 0 : ur.filter((Ne) => {
-                      var It;
-                      return (Ne == null ? void 0 : Ne.text) == ((It = S[oe].properties[k.key]) == null ? void 0 : It.value);
-                    })[0]) == null ? void 0 : en.key) == null ? void 0 : Zi.toString()) ?? null
+                    ((vr = (ut = (Me = k.dropdownValues) == null ? void 0 : Me.filter(
+                      (Ne) => {
+                        var It;
+                        return (Ne == null ? void 0 : Ne.key) == ((It = S[oe].properties[k.key]) == null ? void 0 : It.value);
+                      }
+                    )[0]) == null ? void 0 : ut.key) == null ? void 0 : vr.toString()) ?? ((Zi = (en = (ur = k.dropdownValues) == null ? void 0 : ur.filter(
+                      (Ne) => {
+                        var It;
+                        return (Ne == null ? void 0 : Ne.text) == ((It = S[oe].properties[k.key]) == null ? void 0 : It.value);
+                      }
+                    )[0]) == null ? void 0 : en.key) == null ? void 0 : Zi.toString()) ?? null
                   ),
                   options: k.dropdownValues ?? [],
                   styles: dG,
@@ -55516,13 +55536,17 @@ const iz = (e) => {
                   )[0]) == null ? void 0 : Sm.key) == null ? void 0 : Em.toString()) ?? "Start typing...",
                   selectedKey: (
                     // Text Selects Keys
-                    ((Fm = (wm = (km = k.comboBoxOptions) == null ? void 0 : km.filter((Ne) => {
-                      var It;
-                      return (Ne == null ? void 0 : Ne.text) == ((It = S[oe].properties[k.key]) == null ? void 0 : It.value);
-                    })[0]) == null ? void 0 : wm.key) == null ? void 0 : Fm.toString()) ?? ((Im = (Tm = (Dm = k.comboBoxOptions) == null ? void 0 : Dm.filter((Ne) => {
-                      var It;
-                      return (Ne == null ? void 0 : Ne.key) == ((It = S[oe].properties[k.key]) == null ? void 0 : It.value);
-                    })[0]) == null ? void 0 : Tm.key) == null ? void 0 : Im.toString()) ?? null
+                    ((Fm = (wm = (km = k.comboBoxOptions) == null ? void 0 : km.filter(
+                      (Ne) => {
+                        var It;
+                        return (Ne == null ? void 0 : Ne.text) == ((It = S[oe].properties[k.key]) == null ? void 0 : It.value);
+                      }
+                    )[0]) == null ? void 0 : wm.key) == null ? void 0 : Fm.toString()) ?? ((Im = (Tm = (Dm = k.comboBoxOptions) == null ? void 0 : Dm.filter(
+                      (Ne) => {
+                        var It;
+                        return (Ne == null ? void 0 : Ne.key) == ((It = S[oe].properties[k.key]) == null ? void 0 : It.value);
+                      }
+                    )[0]) == null ? void 0 : Tm.key) == null ? void 0 : Im.toString()) ?? null
                   ),
                   calloutProps: {
                     calloutMaxHeight: 300,
@@ -55954,7 +55978,7 @@ const iz = (e) => {
             title: "Copy Row"
           }
         ),
-        e.enableRowEditDelete && /* @__PURE__ */ te.jsx(
+        e.enableRowEditDelete && !e.enableDefaultEditMode && /* @__PURE__ */ te.jsx(
           Qn,
           {
             onClick: () => {
@@ -56011,7 +56035,7 @@ const iz = (e) => {
           }
         ]
       }
-    }), e.enableExcelImport && !n && P.push({
+    }), e.enableExcelImport && !n && !e.enableDefaultEditMode && P.push({
       key: "importFromExcel",
       text: (s == null ? void 0 : s.ImportFromExcel) ?? "Import From Excel",
       ariaLabel: (s == null ? void 0 : s.ImportFromExcel) ?? "Import From Excel",
@@ -56026,14 +56050,14 @@ const iz = (e) => {
       title: G || n || wt.count == 0 ? "Make A Selection In The Grid To Copy" : "Copy Selected Grid Row",
       iconProps: { iconName: "Documentation" },
       onClick: () => rm()
-    }), e.gridCopyOptions && e.gridCopyOptions.enableGridPaste && !n && P.push({
+    }), e.gridCopyOptions && e.gridCopyOptions.enableGridPaste && !n && !e.enableDefaultEditMode && P.push({
       key: "paste",
       text: (s == null ? void 0 : s.PasteIntoGrid) ?? "Paste Into Grid",
       ariaLabel: "Paste Copied Grid Rows",
       title: "Paste Copied Grid Rows",
       iconProps: { iconName: "Paste" },
       onClick: () => am(!1)
-    }), e.enableGridRowAddWithValues && e.enableGridRowAddWithValues.enable && !n && P.push({
+    }), e.enableGridRowAddWithValues && e.enableGridRowAddWithValues.enable && !n && !e.enableDefaultEditMode && P.push({
       key: "addrowswithdata",
       text: e.enableInlineGridAdd ? (s == null ? void 0 : s.AddRow) ?? "Add Row" : (s == null ? void 0 : s.AddRowWithData) ?? "Add Rows With Data",
       disabled: n && !e.enableEditAllOnCellClick,
@@ -56041,7 +56065,7 @@ const iz = (e) => {
       onClick: () => {
         Js(Ba.AddRowWithData), e.enableEditAllOnCellClick && e.enableInlineGridAdd && !n && jl(!1);
       }
-    }), e.enableGridRowsDelete && !n && P.push({
+    }), e.enableGridRowsDelete && !n && !e.enableDefaultEditMode && P.push({
       key: "deleterows",
       text: wt.count > 1 ? (s == null ? void 0 : s.DeleteRow) ?? "Delete Rows" : (s == null ? void 0 : s.DeleteRow) ?? "Delete Row",
       disabled: e.enableSaveGridOnCellValueChange ? void 0 : n || wt.count == 0,
@@ -56117,7 +56141,7 @@ const iz = (e) => {
       disabled: G || n || wt.count == 0,
       iconProps: { iconName: "TripleColumnEdit" },
       onClick: () => Js(Ba.BulkEdit)
-    }), e.enableGridRowsAdd && !e.enableInlineGridAdd && P.push({
+    }), e.enableGridRowsAdd && !e.enableInlineGridAdd && !e.enableDefaultEditMode && P.push({
       key: "addrows",
       text: (s == null ? void 0 : s.AddRow) ?? "Add Rows",
       disabled: n,
@@ -56508,7 +56532,7 @@ const iz = (e) => {
                   // isCircularNavigation: true
                 },
                 items: m.length > 0 ? m.filter(
-                  (P) => P._grid_row_operation_ != rr.Delete && P._is_filtered_in_ == !0 && P._is_filtered_in_grid_search_ == !0 && P._is_filtered_in_column_filter_ == !0
+                  (P) => P._grid_row_operation_ != Zt.Delete && P._is_filtered_in_ == !0 && P._is_filtered_in_grid_search_ == !0 && P._is_filtered_in_column_filter_ == !0
                 ) : [],
                 columns: cm,
                 selectionMode: e.selectionMode,
@@ -56688,6 +56712,6 @@ export {
   nz as GridToastTypes,
   hG as NumberAndDateOperators,
   QS as StringOperators,
-  rr as _Operation
+  Zt as _Operation
 };
 //# sourceMappingURL=fluentui.editablegrid.lib.js.map

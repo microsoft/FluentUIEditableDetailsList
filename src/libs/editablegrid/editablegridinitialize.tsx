@@ -25,8 +25,10 @@ export const InitializeInternalGrid = (
         (obj._udf_custom_vaule_store_a = 0),
         (obj._udf_custom_vaule_store_b = 0);
 
-
-      if (customOperationsKey && items[index][customOperationsKey.colKey] !== undefined) {
+      if (
+        customOperationsKey &&
+        items[index][customOperationsKey.colKey] !== undefined
+      ) {
         switch (items[index][customOperationsKey.colKey]) {
           case customOperationsKey.options.Add:
             obj._grid_row_operation_ = _Operation.Add;
@@ -96,7 +98,8 @@ export const ShallowCopyDefaultGridToEditGrid = (
 
 export const ShallowCopyEditGridToDefaultGrid = (
   defaultGrid: any[],
-  editGrid: any[]
+  editGrid: any[],
+  customOperationsKey: IUserDefinedOperationKey | undefined
 ): any[] => {
   editGrid.forEach((item) => {
     var index = defaultGrid.findIndex(
@@ -113,6 +116,13 @@ export const ShallowCopyEditGridToDefaultGrid = (
             defaultGrid[index]["_grid_row_operation_"] != _Operation.Update
           ) {
             defaultGrid[index]["_grid_row_operation_"] = _Operation.Update;
+
+            if (
+              customOperationsKey &&
+              defaultGrid[index][customOperationsKey.colKey] !== undefined
+            )
+              defaultGrid[index][customOperationsKey.colKey] =
+                customOperationsKey.options?.Update ?? _Operation.Update;
           }
         }
       });
