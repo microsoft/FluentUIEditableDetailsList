@@ -1890,9 +1890,8 @@ const EditableGrid = (props: EditableGridProps) => {
       } else {
         defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
           _Operation.Update;
-        console.log("oopp----------");
-        console.log(defaultGridDataTmp[internalRowNumDefaultGrid]);
-        if (props.customOperationsKey)
+
+          if (props.customOperationsKey)
           defaultGridDataTmp[internalRowNumDefaultGrid][
             props.customOperationsKey.colKey
           ] = props.customOperationsKey.options?.Update ?? _Operation.Update;
