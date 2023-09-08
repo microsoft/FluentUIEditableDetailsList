@@ -146,7 +146,7 @@ export const ConvertObjectToText = (
   return text.substring(0, text.lastIndexOf("\t"));
 };
 
-export const ParseType = (type: string | undefined, text: string): any => {
+export const ParseType = (type: string | undefined, text: string, isTextModified?: boolean): any => {
   if (text?.trim().length == 0) {
     return null;
   }
@@ -169,7 +169,7 @@ export const ParseType = (type: string | undefined, text: string): any => {
       return Date.parse(text);
   }
 
-  return text?.trim();
+  return isTextModified ? text?.trim() : text;
 };
 
 export const GetDefault = (type: string | undefined): any => {

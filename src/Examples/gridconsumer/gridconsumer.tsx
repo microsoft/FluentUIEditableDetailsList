@@ -230,7 +230,7 @@ const Consumer = () => {
     for (var i = 1; i <= 4; i++) {
       var randomInt = GetRandomInt(1, 3);
       dummyData.push({
-        otype: "Add",
+        operationType: "None",
         id: i,
         combo: "1010",
         excluded: randomInt % 2 == 0 ? true : false,
@@ -798,7 +798,7 @@ const Consumer = () => {
             },
           ]}
           customOperationsKey={{
-            colKey: "otype",
+            colKey: "operationType",
             options: {
               Add: "Add",
               Delete: "Delete",

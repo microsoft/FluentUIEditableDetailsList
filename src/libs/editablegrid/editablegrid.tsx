@@ -8,7 +8,6 @@ import * as XLSX from "xlsx";
 import {
   Announced,
   Checkbox,
-  ComboBox,
   CommandBar,
   ConstrainMode,
   DatePicker,
@@ -1016,6 +1015,10 @@ const EditableGrid = (props: EditableGridProps) => {
 
     setInteralMessagesState(new Map());
 
+    if(!props.enableSaveGridOnCellValueChange){
+      ShowGridEditMode(false)
+    }
+
     // Delete Blank Rows -------
 
     let blankNonDeletedRowsCount = 0;
@@ -2003,7 +2006,7 @@ const EditableGrid = (props: EditableGridProps) => {
         }
 
         item.properties[key].value =
-          ParseType(column.dataType, modifyText) ?? "";
+          ParseType(column.dataType, modifyText, isTextModified)?? "";
 
         if (clearThisDependent.length > 0) {
           clearThisDependent.forEach((element) => {
@@ -3552,10 +3555,10 @@ const EditableGrid = (props: EditableGridProps) => {
           isDataTypeSupportedForFilter && !editMode &&
           column.applyColumnFilter &&
           props.enableColumnFilters
-            ? (col, ev) => onColumnContextMenu(ev, col, index)
+            ? !props.enableSaveGridOnCellValueChange && isGridInEdit ? undefined : (col, ev) => onColumnContextMenu(ev, col, index)
             : undefined,
-        onColumnClick: !column.disableSort && !editMode //&& !(isGridInEdit || editMode)
-          ?(ev, col) => onColumnClick(col, ev)
+        onColumnClick: !column.disableSort && !editMode  //&& !(isGridInEdit || editMode)
+          ? !props.enableSaveGridOnCellValueChange && isGridInEdit ? undefined : (ev, col) => onColumnClick(col, ev)
           : undefined,
         isSorted: sortColObj.isEnabled && sortColObj.key == colKey,
         isSortedDescending:
@@ -5143,9 +5146,7 @@ const EditableGrid = (props: EditableGridProps) => {
           : "",
         ariaLabel: "Commit Changes",
         disabled: !isGridStateEdited,
-        onClick: () => {
-          onGridSave();
-        },
+        
         onRender: (item, index) => {
           if (parseInt(getGridRecordLength(true)) <= 0) {
             return (
