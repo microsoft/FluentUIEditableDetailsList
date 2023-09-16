@@ -85,6 +85,7 @@ import {
   GetDefault,
   isColumnDataTypeSupportedForFilter,
   IsValidDataType,
+  isValidDate,
   ParseType,
 } from "../editablegrid/helper";
 import MessageDialog from "../editablegrid/messagedialog";
@@ -109,6 +110,7 @@ import { IFilter } from "../types/filterstype";
 import { _Operation } from "../types/operation";
 import { ImportType } from "../types/importtype";
 import { NumericFormat } from "react-number-format";
+import { IRowAddCallBackParams } from "../types/rowaddcallbackparams";
 
 interface SortOptions {
   key: string;
@@ -331,8 +333,9 @@ const EditableGrid = (props: EditableGridProps) => {
 
   const insertToMessageMap = (mapVar: Map<any, any>, key: any, value: any) => {
     mapVar.set(key, value);
-    setMessagesState(mapVar);
-
+    const newMap = new Map(mapVar);
+    setMessagesState(newMap);
+    
     if (
       props.enableMessageBarErrors &&
       props.enableMessageBarErrors.enableSendGroupedErrorsToCallback &&
@@ -1425,7 +1428,7 @@ const EditableGrid = (props: EditableGridProps) => {
     clearSelectedItems();
   };
 
-  const onAddPanelChange = (item: any, noOfRows: number): void => {
+  const onAddPanelSubmit = (item: any, noOfRows: number): void => {
     dismissPanelForAdd();
     if (noOfRows < 0) {
       return;
@@ -1693,11 +1696,6 @@ const EditableGrid = (props: EditableGridProps) => {
     return true;
   };
 
-  function isValidDate(value: any) {
-    const date: any = new Date(value);
-    return !isNaN(date);
-  }
-
   const verifyColumnsDataOnImport = (excelData: any) => {
     let errMsg: string[] = [];
     var ImportedHeader = Object.keys(excelData);
@@ -1891,7 +1889,7 @@ const EditableGrid = (props: EditableGridProps) => {
         defaultGridDataTmp[internalRowNumDefaultGrid]["_grid_row_operation_"] =
           _Operation.Update;
 
-          if (props.customOperationsKey)
+        if (props.customOperationsKey)
           defaultGridDataTmp[internalRowNumDefaultGrid][
             props.customOperationsKey.colKey
           ] = props.customOperationsKey.options?.Update ?? _Operation.Update;
@@ -2801,7 +2799,11 @@ const EditableGrid = (props: EditableGridProps) => {
   useEffect(() => {
     const handlePaste = (event: any) => {
       if (event.ctrlKey && event.key === "v") {
-        if (props.gridCopyOptions && props.gridCopyOptions.enableGridPaste && !props.enableDefaultEditMode) {
+        if (
+          props.gridCopyOptions &&
+          props.gridCopyOptions.enableGridPaste &&
+          !props.enableDefaultEditMode
+        ) {
           PasteGridRows(cursorFlashing);
         }
       }
@@ -4952,7 +4954,8 @@ const EditableGrid = (props: EditableGridProps) => {
     if (
       props.gridCopyOptions &&
       props.gridCopyOptions.enableGridPaste &&
-      !editMode && !props.enableDefaultEditMode
+      !editMode &&
+      !props.enableDefaultEditMode
     ) {
       commandBarItems.push({
         key: "paste",
@@ -4967,14 +4970,15 @@ const EditableGrid = (props: EditableGridProps) => {
     if (
       props.enableGridRowAddWithValues &&
       props.enableGridRowAddWithValues.enable &&
-      !editMode && !props.enableDefaultEditMode
+      !editMode &&
+      !props.enableDefaultEditMode
     ) {
       commandBarItems.push({
         key: "addrowswithdata",
         text: props.enableInlineGridAdd
           ? CommandBarTitles?.AddRow ?? "Add Row"
           : CommandBarTitles?.AddRowWithData ?? "Add Rows With Data",
-        disabled: editMode && !props.enableEditAllOnCellClick ,
+        disabled: editMode && !props.enableEditAllOnCellClick,
         iconProps: { iconName: "Add" },
         onClick: () => {
           RowSelectOperations(EditType.AddRowWithData, {});
@@ -4988,7 +4992,11 @@ const EditableGrid = (props: EditableGridProps) => {
       });
     }
 
-    if (props.enableGridRowsDelete && !editMode && !props.enableDefaultEditMode) {
+    if (
+      props.enableGridRowsDelete &&
+      !editMode &&
+      !props.enableDefaultEditMode
+    ) {
       commandBarItems.push({
         key: "deleterows",
         text:
@@ -5120,7 +5128,11 @@ const EditableGrid = (props: EditableGridProps) => {
       });
     }
 
-    if (props.enableGridRowsAdd && !props.enableInlineGridAdd && !props.enableDefaultEditMode) {
+    if (
+      props.enableGridRowsAdd &&
+      !props.enableInlineGridAdd &&
+      !props.enableDefaultEditMode
+    ) {
       commandBarItems.push({
         key: "addrows",
         text: CommandBarTitles?.AddRow ?? "Add Rows",
@@ -5705,23 +5717,6 @@ const EditableGrid = (props: EditableGridProps) => {
   }
   /* #endregion */
 
-  const AddRowPanelRender = () => {
-    if (
-      props.enableGridRowAddWithValues &&
-      props.enableGridRowAddWithValues.enable
-    )
-      return (
-        <AddRowPanel
-          onChange={onAddPanelChange}
-          columnConfigurationData={props.columns}
-          enableRowsCounterField={
-            props.enableGridRowAddWithValues.enableRowsCounterInPanel
-          }
-          autoGenId={tempAutoGenId.current}
-        />
-      );
-  };
-
   const RenderNoRowsMsg = useCallback(() => {
     if (
       props.enableSaveGridOnCellValueChange ||
@@ -5758,17 +5753,63 @@ const EditableGrid = (props: EditableGridProps) => {
               />
             </Panel>
 
-            {props.enableGridRowAddWithValues && 
+            {props.enableGridRowAddWithValues &&
             props.enableGridRowAddWithValues.enable ? (
               <Panel
                 isOpen={isOpenForAdd}
                 onDismiss={dismissPanelForAdd}
                 isLightDismiss={true}
-                headerText="Add Rows"
+                headerText={
+                  props.enableGridRowAddWithValues.panelHeader ?? "Add Rows"
+                }
                 closeButtonAriaLabel="Close"
                 type={PanelType.smallFixedFar}
               >
-                {AddRowPanelRender()}
+                <AddRowPanel
+                  onSubmit={onAddPanelSubmit}
+                  preSubmitCallback={async (data: any) => {
+                    var callbackRequestparams: IRowAddCallBackParams = {
+                      data: data,
+                      gridData: defaultGridData,
+                    };
+                    if (props.enableGridRowAddWithValues?.onPreSubmit)
+                      return await props.enableGridRowAddWithValues?.onPreSubmit(
+                        callbackRequestparams
+                      );
+                    else {
+                      return undefined;
+                    }
+                  }}
+                  columnConfigurationData={props.columns}
+                  onChange={(data: any) => {
+                    var callbackRequestparams: IRowAddCallBackParams = {
+                      data: data,
+                      gridData: defaultGridData,
+                    };
+                    if (props.enableGridRowAddWithValues?.onChange)
+                      return props.enableGridRowAddWithValues?.onChange(
+                        callbackRequestparams
+                      );
+                  }}
+                  addingToGridButtonText={
+                    props.enableGridRowAddWithValues.addingToGridButtonText
+                  }
+                  addToGridButtonText={
+                    props.enableGridRowAddWithValues.addToGridButtonText
+                  }
+                  autoGenId={
+                    (Math.max.apply(
+                      Math,
+                      defaultGridData.map(function (o) {
+                        if (
+                          indentiferColumn.current != undefined &&
+                          indentiferColumn.current !== null
+                        )
+                          return o[indentiferColumn.current];
+                      })
+                    ) ?? 0) + 1
+                  }
+                />
               </Panel>
             ) : null}
 

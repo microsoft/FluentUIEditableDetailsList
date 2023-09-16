@@ -1,4 +1,8 @@
 export interface IRowAddWithValues {
     enable?: boolean;
-    enableRowsCounterInPanel?: boolean;
+    panelHeader?: string;
+    onChange?: any;
+    onPreSubmit?: any;
+    addToGridButtonText?: string;
+    addingToGridButtonText?: string;
 }

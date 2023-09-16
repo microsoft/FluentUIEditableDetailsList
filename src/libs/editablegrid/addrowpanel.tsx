@@ -6,10 +6,18 @@ import {
   IComboBoxOption,
   IDropdownOption,
   ITag,
+  Icon,
+  Label,
+  MessageBar,
+  MessageBarType,
   PrimaryButton,
+  SharedColors,
   Stack,
+  StackItem,
+  Sticky,
   TextField,
   VirtualizedComboBox,
+  mergeStyles,
 } from "@fluentui/react";
 import { DayPickerStrings } from "../editablegrid/datepickerconfig";
 import {
@@ -19,36 +27,95 @@ import {
   textFieldStyles,
   verticalGapStackTokens,
 } from "../editablegrid/editablegridstyles";
-import { GetDefault, IsValidDataType, ParseType } from "../editablegrid/helper";
+import {
+  GetDefault,
+  IsValidDataType,
+  ParseType,
+  isValidDate,
+} from "../editablegrid/helper";
 import PickerControl from "../editablegrid/pickercontrol/picker";
-import { IColumnConfig } from "../types/columnconfigtype";
+import {
+  DepColTypes,
+  DisableColTypes,
+  IColumnConfig,
+} from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
-import { createRef, SyntheticEvent, useEffect, useState } from "react";
+import {
+  createRef,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { NumericFormat } from "react-number-format";
+import { _Operation } from "../types/operation";
 
 interface Props {
-  onChange: any;
-  columnConfigurationData: IColumnConfig[];
-  enableRowsCounterField?: boolean;
+  onSubmit: any;
   autoGenId: number;
+  columnConfigurationData: IColumnConfig[];
+  onChange?: any;
+  preSubmitCallback?: any;
+  addToGridButtonText?: string;
+  addingToGridButtonText?: string;
 }
 
 const AddRowPanel = (props: Props) => {
   let AddSpinRef: any = createRef();
 
+  const disableDropdown = useRef<Map<string, boolean>>(new Map());
+  const disableComboBox = useRef<Map<string, boolean>>(new Map());
+
   const updateObj: any = {};
   const [columnValuesObj, setColumnValuesObj] = useState<any>(null);
+  const [error, setError] = useState<string>("");
+  const [confirmButtonText, setConfirmButtonText] = useState<string>("");
+  const [confirmButtonDisabled, setConfirmButtonDisabled] =
+    useState<boolean>(false);
+
+  const GetValueOrDefault = (item: IColumnConfig) => {
+    if (item.autoGenerate) {
+      return props.autoGenId.toString();
+    } else if (item.defaultOnAddRow) {
+      if (item.comboBoxOptions) {
+        return (
+          item.comboBoxOptions?.filter((x) => x.text == item.defaultOnAddRow)[0]
+            ?.text ??
+          item.comboBoxOptions
+            ?.filter((x) => x.key?.toString() == item.defaultOnAddRow)[0]
+            ?.text?.toString() ??
+          item.defaultOnAddRow
+        );
+      } else if (item.dropdownValues) {
+        return (
+          item.dropdownValues?.filter((x) => x.text == item.defaultOnAddRow)[0]
+            ?.text ??
+          item.dropdownValues
+            ?.filter((x) => x.key?.toString() == item.defaultOnAddRow)[0]
+            ?.text?.toString() ??
+          item.defaultOnAddRow
+        );
+      }
+      return item.defaultOnAddRow;
+    }
+    return GetDefault(item.dataType);
+  };
 
   useEffect(() => {
     let tmpColumnValuesObj: any = {};
     props.columnConfigurationData.forEach((item, index) => {
       tmpColumnValuesObj[item.key] = {
-        value: GetDefault(item.dataType),
+        value: GetValueOrDefault(item),
         isChanged: false,
         error: null,
+        defaultValueOnNewRow: item?.defaultOnAddRow ?? null,
+        dataType: item.dataType,
+        columnEditable: item?.editable ?? false,
       };
     });
     setColumnValuesObj(tmpColumnValuesObj);
+    setConfirmButtonText(props.addToGridButtonText ?? "Save To Grid");
   }, [props.columnConfigurationData]);
 
   const SetObjValues = (
@@ -57,10 +124,28 @@ const AddRowPanel = (props: Props) => {
     isChanged: boolean = true,
     errorMessage: string | null = null
   ): void => {
-    setColumnValuesObj({
-      ...columnValuesObj,
-      [key]: { value: value, isChanged: isChanged, error: errorMessage },
-    });
+    var columnValuesObjTmp = { ...columnValuesObj };
+    columnValuesObjTmp[key] = {
+      value: value,
+      isChanged: isChanged,
+      error: errorMessage,
+    };
+
+    if (props.onChange) {
+      var changed = props.onChange(Object.assign({}, columnValuesObjTmp));
+      if (changed?.errorMessage !== undefined) {
+        setError(changed.errorMessage.trim());
+      }
+
+      if (changed?.data) {
+        var objectKeys = Object.keys(changed.data);
+        objectKeys.forEach((objKey) => {
+          columnValuesObjTmp[objKey]["value"] =
+            changed["data"][objKey]["value"];
+        });
+      }
+    }
+    setColumnValuesObj(columnValuesObjTmp);
   };
 
   const onDropDownChange = (
@@ -127,23 +212,479 @@ const AddRowPanel = (props: Props) => {
     SetObjValues((ev?.target as Element).id, ParseType(column.dataType, text));
   };
 
-  const onPanelSubmit = (): void => {
-    var objectKeys = Object.keys(columnValuesObj);
-    objectKeys.forEach((objKey) => {
-      if (columnValuesObj[objKey]["isChanged"]) {
-        updateObj[objKey] = columnValuesObj[objKey]["value"];
-      }
-      //updateObj[objKey] = columnValuesObj[objKey]["value"];
-    });
+  const Messages = useRef<Map<string, { msg: string; type: MessageBarType }>>(
+    new Map()
+  );
 
-    // props.onChange(
-    //   updateObj,
-    //   props.enableRowsCounterField ? AddSpinRef.current.value : 1
-    // );
+  const [messagesState, setMessagesState] = useState<Map<string, any>>(
+    new Map()
+  );
+  const [messagesJSXState, setMessagesJSXState] = useState<JSX.Element[]>([]);
 
-    props.onChange(updateObj, 1);
+  const insertToMessageMap = (mapVar: Map<any, any>, key: any, value: any) => {
+    mapVar.set(key, value);
+    const newMap = new Map(mapVar);
+    setMessagesState(newMap);
   };
 
+  const removeFromMessageMap = (mapVar: Map<any, any>, key: any) => {
+    mapVar.delete(key);
+    const newMap = new Map(mapVar);
+    setMessagesState(newMap);
+  };
+
+  const onRenderMsg = useCallback(() => {
+    let messageTmp: JSX.Element[] = [];
+
+    messagesState.forEach(function (value, key) {
+      messageTmp.push(
+        <MessageBar
+          styles={{ root: { marginBottom: 5 } }}
+          key={key}
+          messageBarType={value.type}
+          onDismiss={() => removeFromMessageMap(Messages.current, key)}
+        >
+          {value.msg}
+        </MessageBar>
+      );
+    });
+    return messageTmp;
+  }, [messagesState]);
+
+  useEffect(() => {
+    Messages.current = messagesState;
+    setMessagesJSXState(onRenderMsg());
+  }, [messagesState]);
+
+  const runGridValidations = (): boolean => {
+    let localError = false;
+    let emptyCol: string[] = [];
+    let emptyReqCol: string[] = [];
+
+    props.columnConfigurationData.forEach((item, row) => {
+      const currentValue = columnValuesObj[item.key].value ?? null;
+      const getValue = (key: string): string => columnValuesObj[key]?.value;
+      const currentCol = props.columnConfigurationData.filter(
+        (x) => x.key === item.key
+      );
+
+      // ValidDataTypeCheck
+      if (
+        item.required &&
+        typeof item.required == "boolean" &&
+        (currentValue == null ||
+          currentValue == undefined ||
+          currentValue?.toString().length <= 0 ||
+          currentValue == "")
+      ) {
+        if (!emptyCol.includes(" " + item.name)) emptyCol.push(" " + item.name);
+      } else if (
+        typeof item.required !== "boolean" &&
+        !item.required.requiredOnlyIfTheseColumnsAreEmpty &&
+        item.required.errorMessage &&
+        (currentValue == null ||
+          currentValue == undefined ||
+          currentValue?.toString().length <= 0 ||
+          currentValue == "")
+      ) {
+        var msg = `${item.name}: ${item.required.errorMessage}.`;
+        insertToMessageMap(Messages.current, item.key + row + "empty", {
+          msg: msg,
+          type: MessageBarType.error,
+        });
+      } else if (
+        typeof item.required !== "boolean" &&
+        item.required.requiredOnlyIfTheseColumnsAreEmpty &&
+        (currentValue == null ||
+          currentValue == undefined ||
+          currentValue?.toString().length <= 0 ||
+          currentValue == "")
+      ) {
+        const checkKeys =
+          item.required.requiredOnlyIfTheseColumnsAreEmpty.colKeys;
+        let skippable = false;
+        for (let index = 0; index < checkKeys.length; index++) {
+          const columnKey = checkKeys[index];
+          const str = getValue(columnKey);
+
+          if (item.required.alwaysRequired) {
+            if (
+              str == null ||
+              str == undefined ||
+              str?.toString().length <= 0 ||
+              str == ""
+            ) {
+              if (item.required.errorMessage) {
+                var msg = `${item.name}: ${item.required.errorMessage}.`;
+                insertToMessageMap(Messages.current, item.key + row + "empty", {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
+              } else if (!emptyReqCol.includes(" " + item.name)) {
+                emptyReqCol.push(" " + item.name);
+                break;
+              }
+            }
+          } else {
+            if (str && str?.toString().length > 0) {
+              skippable = true;
+              break;
+            }
+          }
+        }
+        if (!emptyReqCol.includes(" " + item.name) && skippable == false) {
+          if (item.required.errorMessage == undefined) {
+            emptyReqCol.push(" " + item.name);
+          } else {
+            var msg = `${item.name}: ${item.required.errorMessage}.`;
+            insertToMessageMap(Messages.current, item.key + row + "empty", {
+              msg: msg,
+              type: MessageBarType.error,
+            });
+          }
+        }
+      }
+
+      if (
+        currentValue !== null &&
+        (typeof currentValue !== item.dataType ||
+          typeof currentValue === "number")
+      ) {
+        if (item.dataType === "number") {
+          if (
+            currentValue &&
+            isNaN(parseInt(currentValue)) &&
+            currentValue !== ""
+          ) {
+            var msg = `Column ${item.name}: Value is not a '${item.dataType}'.`;
+
+            insertToMessageMap(Messages.current, item.key + row, {
+              msg: msg,
+              type: MessageBarType.error,
+            });
+
+            localError = true;
+          } else if (item.validations && item.validations.numberBoundaries) {
+            const min = item.validations.numberBoundaries.minRange;
+            const max = item.validations.numberBoundaries.maxRange;
+
+            if (min && max) {
+              if (
+                !(
+                  min <= parseInt(currentValue) && max >= parseInt(currentValue)
+                )
+              ) {
+                var msg = `Column ${item.name}: Value outside of range '${min} - ${max}'. Entered value ${currentValue}.`;
+
+                insertToMessageMap(Messages.current, item.key + row, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
+
+                localError = true;
+              }
+            } else if (min) {
+              if (!(min <= parseInt(currentValue))) {
+                var msg = `Column ${item.name}: Value is lower than required range: '${min}'. Entered value ${currentValue}.`;
+
+                insertToMessageMap(Messages.current, item.key + row, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
+
+                localError = true;
+              }
+            } else if (max) {
+              if (!(max >= parseInt(currentValue))) {
+                var msg = `Column ${item.name}: Value is greater than required range: '${max}'. Entered value ${currentValue}.`;
+
+                insertToMessageMap(Messages.current, item.key + row, {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
+
+                localError = true;
+              }
+            }
+          }
+        } else if (item.dataType === "boolean") {
+          try {
+            Boolean(currentValue);
+          } catch (error) {
+            var msg = `Column ${item.name}: Value is not a '${item.dataType}'.`;
+
+            insertToMessageMap(Messages.current, item.key + row, {
+              msg: msg,
+              type: MessageBarType.error,
+            });
+
+            localError = true;
+          }
+        } else if (item.dataType === "date") {
+          try {
+            if (!isValidDate(currentValue)) {
+              throw {};
+            }
+          } catch (error) {
+            var msg = `Column ${item.name}: Value is not a '${item.dataType}'.`;
+
+            insertToMessageMap(Messages.current, item.key + row, {
+              msg: msg,
+              type: MessageBarType.error,
+            });
+
+            localError = true;
+          }
+        }
+      }
+
+      if (item.validations && item.validations.columnDependent) {
+        for (
+          let index = 0;
+          index < item.validations.columnDependent.length;
+          index++
+        ) {
+          const colDep = item.validations.columnDependent[index];
+
+          if (
+            getValue(colDep.dependentColumnKey) ||
+            getValue(colDep.dependentColumnKey) !== undefined
+          ) {
+            const str = getValue(colDep.dependentColumnKey);
+            let skip = false;
+
+            if (
+              colDep.skipCheckIfTheseColumnsHaveData &&
+              colDep.skipCheckIfTheseColumnsHaveData.colKeys
+            ) {
+              for (const skipForKey of colDep.skipCheckIfTheseColumnsHaveData
+                .colKeys) {
+                if (colDep.skipCheckIfTheseColumnsHaveData?.partial) {
+                  const str = getValue(skipForKey);
+                  if (
+                    str &&
+                    str !== null &&
+                    str !== undefined &&
+                    str?.toString().length > 0
+                  ) {
+                    skip = true;
+                    break;
+                  }
+                } else {
+                  const str = getValue(skipForKey);
+                  if (
+                    str &&
+                    str !== null &&
+                    str !== undefined &&
+                    str?.toString().length > 0
+                  ) {
+                    skip = true;
+                  } else {
+                    skip = false;
+                    break;
+                  }
+                }
+              }
+            }
+
+            if (!skip) {
+              if (str !== undefined && str !== null) {
+                if (
+                  str?.toString().length > 0 &&
+                  colDep.type === DepColTypes.MustBeEmpty
+                ) {
+                  if (
+                    currentValue !== null &&
+                    currentValue?.toString().length > 0
+                  ) {
+                    var msg = `Column ${item.name}: ${
+                      colDep.errorMessage ??
+                      `Data cannot be entered in ${item.name} and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`
+                    }`;
+
+                    insertToMessageMap(Messages.current, row + "ColDep", {
+                      msg: msg,
+                      type: MessageBarType.error,
+                    });
+
+                    localError = true;
+                  }
+                }
+              }
+              if (
+                (str == undefined ||
+                  str == null ||
+                  str == "" ||
+                  (str && str?.toString().length <= 0)) &&
+                colDep.type === DepColTypes.MustHaveData
+              ) {
+                var msg = `Column ${item.name}: ${
+                  colDep.errorMessage ??
+                  `Data needs to be entered in ${item.name} and in ${colDep.dependentColumnName} Column.`
+                }`;
+
+                insertToMessageMap(Messages.current, row + "ColDep", {
+                  msg: msg,
+                  type: MessageBarType.error,
+                });
+                localError = true;
+              }
+            }
+          }
+        }
+      }
+
+      if (item.validations && item.validations.regexValidation) {
+        for (
+          let index = 0;
+          index < item.validations.regexValidation.length;
+          index++
+        ) {
+          const data = item.validations.regexValidation[index];
+          if (!data.regex.test(currentValue)) {
+            var msg = `Column ${item.name}: ${data.errorMessage}`;
+
+            insertToMessageMap(Messages.current, item.key + row, {
+              msg: msg,
+              type: MessageBarType.error,
+            });
+
+            localError = true;
+          }
+        }
+      }
+
+      if (item.validations && item.validations.stringValidations) {
+        const caseInsensitive =
+          item.validations.stringValidations.caseInsensitive;
+        if (caseInsensitive) {
+          if (
+            currentValue !== null &&
+            item.validations.stringValidations?.conditionCantEqual?.toLowerCase() ===
+              currentValue?.toString().toLowerCase()
+          ) {
+            var msg = `Column ${item.name}: ${item.validations.stringValidations?.errMsg}`;
+
+            insertToMessageMap(Messages.current, item.key + row, {
+              msg: msg,
+              type: MessageBarType.error,
+            });
+
+            localError = true;
+          } else {
+            if (
+              currentValue !== null &&
+              item.validations.stringValidations?.conditionCantEqual ===
+                currentValue?.toString()
+            ) {
+              var msg = `Column ${item.name}: ${item.validations.stringValidations?.errMsg}`;
+
+              insertToMessageMap(Messages.current, item.key + row, {
+                msg: msg,
+                type: MessageBarType.error,
+              });
+
+              localError = true;
+            }
+          }
+        }
+      }
+    });
+
+    if (emptyReqCol.length > 1) {
+      var msg = `Notice: ${emptyReqCol} cannot all be empty`;
+
+      insertToMessageMap(Messages.current, -99 + "erc", {
+        msg: msg,
+        type: MessageBarType.error,
+      });
+
+      localError = true;
+    } else if (emptyReqCol.length == 1) {
+      var msg = `Notice: ${emptyReqCol} cannot all be empty`;
+
+      insertToMessageMap(Messages.current, -99 + "erc", {
+        msg: msg,
+        type: MessageBarType.error,
+      });
+
+      localError = true;
+    }
+
+    if (emptyCol.length > 1) {
+      var msg = `Notice: ${emptyCol?.toString()} cannot be empty at all`;
+
+      insertToMessageMap(Messages.current, -999 + "ec", {
+        msg: msg,
+        type: MessageBarType.error,
+      });
+
+      localError = true;
+    } else if (emptyCol.length == 1) {
+      var msg = `Notice: ${emptyCol?.toString()} cannot be empty`;
+
+      insertToMessageMap(Messages.current, -999 + "ec", {
+        msg: msg,
+        type: MessageBarType.error,
+      });
+
+      localError = true;
+    }
+
+    return localError;
+  };
+
+  const onPanelSubmit = async (): Promise<void> => {
+    var columnValuesObjTmp = { ...columnValuesObj };
+
+    if (props.preSubmitCallback) {
+      setConfirmButtonDisabled(true);
+      if (props.addingToGridButtonText?.trim()) {
+        setConfirmButtonText(props.addingToGridButtonText);
+      }
+
+      props
+        .preSubmitCallback(Object.assign({}, columnValuesObjTmp))
+        .then((changed: any) => {
+          if (changed?.errorMessage !== undefined) {
+            setError(changed.errorMessage.trim());
+          }
+
+          setConfirmButtonText(props.addToGridButtonText ?? "Save To Grid");
+          setConfirmButtonDisabled(false);
+
+          if (changed?.errorMessage?.trim()?.length > 0) {
+            setColumnValuesObj(columnValuesObjTmp);
+            return;
+          }
+
+          if (changed?.data) {
+            var objectKeys = Object.keys(changed.data);
+            if (objectKeys)
+              objectKeys.forEach((objKey) => {
+                columnValuesObjTmp[objKey]["value"] =
+                  changed["data"][objKey]["value"];
+              });
+          }
+
+          const hasErrors = runGridValidations();
+          if (!hasErrors) submitAndClose();
+        });
+    } else {
+      const hasErrors = runGridValidations();
+      if (!hasErrors) submitAndClose();
+    }
+    function submitAndClose() {
+      var objectKeys = Object.keys(columnValuesObj);
+      objectKeys.forEach((objKey) => {
+        if (columnValuesObj[objKey]["isChanged"]) {
+          updateObj[objKey] = columnValuesObj[objKey]["value"];
+        }
+      });
+
+      props.onSubmit(updateObj, 1);
+    }
+  };
   const onCellPickerTagListChanged = (
     cellPickerTagList: ITag[] | undefined,
     item: any
@@ -161,11 +702,13 @@ const AddRowPanel = (props: Props) => {
   const [init, setInit] = useState<boolean>(false);
   const createTextFields = (): any[] => {
     let tmpRenderObj: any[] = [];
-    props.columnConfigurationData.forEach((item, index) => {
+    props.columnConfigurationData.forEach((item, rowNum) => {
       switch (item.inputType) {
         case EditControlType.CheckBox:
           tmpRenderObj.push(
             <Checkbox
+              disabled={!item.editable ?? true}
+              checked={columnValuesObj[item.key].value}
               key={item.key}
               label={item.text}
               onChange={(ev, isChecked) => {
@@ -178,20 +721,102 @@ const AddRowPanel = (props: Props) => {
           tmpRenderObj.push(
             <DatePicker
               key={item.key}
+              disabled={!item.editable ?? true}
+              value={columnValuesObj[item.key].value}
               label={item.text}
               strings={DayPickerStrings}
               placeholder="Select a date..."
               ariaLabel="Select a date"
               onSelectDate={(date) => onCellDateChange(date, item)}
-              //value={props != null && props.panelValues != null ? new Date(props.panelValues[item.key]) : new Date()}
-              //value={new Date()}
             />
           );
           break;
         case EditControlType.ComboBox:
+          if (
+            item.disableComboBox &&
+            typeof item.disableComboBox !== "boolean"
+          ) {
+            let newMap = new Map(disableComboBox.current);
+            for (
+              let index = 0;
+              index < [item.disableComboBox].length;
+              index++
+            ) {
+              const disableCellOptions = [item.disableComboBox][index];
+              const str =
+                columnValuesObj[disableCellOptions.disableBasedOnThisColumnKey]
+                  .value;
+
+              if (
+                disableCellOptions.type ===
+                DisableColTypes.DisableWhenColKeyHasData
+              ) {
+                if (
+                  str &&
+                  str?.toString().length > 0 &&
+                  (newMap.get(item.key + rowNum) ?? false) === false
+                ) {
+                  newMap.set(item.key + rowNum, true);
+                  disableComboBox.current = newMap;
+                } else if (newMap.get(item.key + rowNum) == true && !str) {
+                  newMap.set(item.key + rowNum, false);
+                  disableComboBox.current = newMap;
+                }
+              } else if (
+                disableCellOptions.type ===
+                DisableColTypes.DisableWhenColKeyIsEmpty
+              ) {
+                if (str == "" || (str && str?.toString().length <= 0)) {
+                  newMap.set(item.key + rowNum, true);
+                } else if (
+                  (str === null || str === undefined) &&
+                  (newMap.get(item.key + rowNum) ?? false) === false
+                ) {
+                  newMap.set(item.key + rowNum, true);
+                } else if (
+                  (newMap.get(item.key + rowNum) ?? true) !== false &&
+                  str &&
+                  str?.toString().length > 0
+                ) {
+                  newMap.set(item.key + rowNum, false);
+                }
+              }
+            }
+            disableComboBox.current = newMap;
+          }
           tmpRenderObj.push(
             <VirtualizedComboBox
               key={item.key}
+              disabled={
+                disableComboBox.current.get(item.key + rowNum) ??
+                (typeof item.disableComboBox == "boolean"
+                  ? item.disableComboBox
+                  : !item.editable ?? false)
+              }
+              placeholder={
+                item.comboBoxOptions?.filter(
+                  (x) => x.text == columnValuesObj[item.key].value
+                )[0]?.text ??
+                item.comboBoxOptions
+                  ?.filter(
+                    (x) => x.key?.toString() == columnValuesObj[item.key].value
+                  )[0]
+                  ?.text?.toString() ??
+                "Start typing..."
+              }
+              selectedKey={
+                // Text Selects Keys
+                item.comboBoxOptions
+                  ?.filter(
+                    (x) =>
+                      x?.text == columnValuesObj[item.key]?.value ?? item.key
+                  )[0]
+                  ?.key?.toString() ??
+                item.comboBoxOptions
+                  ?.filter((x) => x?.key == columnValuesObj[item.key]?.value)[0]
+                  ?.key?.toString() ??
+                null
+              }
               label={item.text}
               allowFreeInput
               allowFreeform={false}
@@ -208,7 +833,6 @@ const AddRowPanel = (props: Props) => {
                   );
                 }
               }}
-              placeholder="Start typing..."
               onInputValueChange={(text) => {
                 try {
                   const searchPattern = new RegExp(text?.trim(), "i");
@@ -235,12 +859,90 @@ const AddRowPanel = (props: Props) => {
           );
           break;
         case EditControlType.DropDown:
+          if (
+            item.disableDropdown &&
+            typeof item.disableDropdown !== "boolean"
+          ) {
+            let newMap = new Map(disableDropdown.current);
+            for (
+              let index = 0;
+              index < [item.disableDropdown].length;
+              index++
+            ) {
+              const disableCellOptions = [item.disableDropdown][index];
+              const str =
+                columnValuesObj[disableCellOptions.disableBasedOnThisColumnKey]
+                  .value;
+
+              if (
+                disableCellOptions.type ===
+                DisableColTypes.DisableWhenColKeyHasData
+              ) {
+                if (
+                  str &&
+                  str?.toString().length > 0 &&
+                  (newMap.get(item.key + rowNum) ?? false) === false
+                ) {
+                  newMap.set(item.key + rowNum, true);
+                  disableDropdown.current = newMap;
+                } else if (newMap.get(item.key + rowNum) == true && !str) {
+                  newMap.set(item.key + rowNum, false);
+                  disableDropdown.current = newMap;
+                }
+              } else if (
+                disableCellOptions.type ===
+                DisableColTypes.DisableWhenColKeyIsEmpty
+              ) {
+                if (str == "" || (str && str?.toString().length <= 0)) {
+                  newMap.set(item.key + rowNum, true);
+                } else if (
+                  (str === null || str === undefined) &&
+                  (newMap.get(item.key + rowNum) ?? false) === false
+                ) {
+                  newMap.set(item.key + rowNum, true);
+                } else if (
+                  (newMap.get(item.key + rowNum) ?? true) !== false &&
+                  str &&
+                  str?.toString().length > 0
+                ) {
+                  newMap.set(item.key + rowNum, false);
+                }
+              }
+            }
+            disableDropdown.current = newMap;
+          }
           tmpRenderObj.push(
             <Dropdown
               key={item.key}
+              ariaLabel={item.key}
+              placeholder={
+                item.dropdownValues?.filter((x) => x.text == item.key)[0]
+                  ?.text ?? "Select an option"
+              }
+              selectedKey={
+                // Keys Select Text
+                item.dropdownValues
+                  ?.filter(
+                    (x) => x?.key == columnValuesObj[item.key].value ?? item.key
+                  )[0]
+                  ?.key?.toString() ??
+                item.dropdownValues
+                  ?.filter(
+                    (x) =>
+                      x?.text == columnValuesObj[item.key].value ?? item.key
+                  )[0]
+                  ?.key?.toString() ??
+                null
+              }
               label={item.text}
               options={item.dropdownValues ?? []}
               onChange={(ev, selected) => onDropDownChange(ev, selected, item)}
+              disabled={
+                disableDropdown.current.get(item.key + rowNum) ??
+                (typeof item.disableDropdown == "boolean"
+                  ? item.disableDropdown
+                  : !item.editable ?? false)
+              }
             />
           );
           break;
@@ -249,13 +951,15 @@ const AddRowPanel = (props: Props) => {
             <div key={item.key}>
               <span className={controlClass.pickerLabel}>{item.text}</span>
               <PickerControl
+                defaultTags={item.defaultOnAddRow}
                 arialabel={item.text}
                 selectedItemsLimit={1}
                 pickerTags={item.pickerOptions?.pickerTags ?? []}
                 minCharLimitForSuggestions={2}
-                onTaglistChanged={(selectedItem: ITag[] | undefined) =>
-                  onCellPickerTagListChanged(selectedItem, item)
-                }
+                onTaglistChanged={(selectedItem: ITag[] | undefined) => {
+                  if (item.editable == true)
+                    onCellPickerTagListChanged(selectedItem, item);
+                }}
                 pickerDescriptionOptions={
                   item.pickerOptions?.pickerDescriptionOptions
                 }
@@ -267,6 +971,7 @@ const AddRowPanel = (props: Props) => {
           tmpRenderObj.push(
             <TextField
               key={item.key}
+              disabled={!item.editable ?? true}
               errorMessage={columnValuesObj[item.key].error}
               name={item.text}
               multiline={true}
@@ -275,7 +980,7 @@ const AddRowPanel = (props: Props) => {
               label={item.text}
               styles={textFieldStyles}
               onChange={(ev, text) => onTextUpdate(ev, text!, item)}
-              value={columnValuesObj[item.key].value || ""}
+              value={columnValuesObj[item.key].value ?? undefined}
             />
           );
           break;
@@ -283,13 +988,14 @@ const AddRowPanel = (props: Props) => {
           tmpRenderObj.push(
             <TextField
               key={item.key}
+              disabled={!item.editable ?? true}
               errorMessage={columnValuesObj[item.key].error}
               name={item.text}
               id={item.key}
               label={item.text}
               styles={textFieldStyles}
               onChange={(ev, text) => onTextUpdate(ev, text!, item)}
-              value={columnValuesObj[item.key].value || ""}
+              value={columnValuesObj[item.key].value ?? undefined}
               type="password"
               canRevealPassword
             />
@@ -299,7 +1005,8 @@ const AddRowPanel = (props: Props) => {
           tmpRenderObj.push(
             <NumericFormat
               key={item.key}
-              value={columnValuesObj[item.key].value || ""}
+              disabled={!item.editable ?? true}
+              value={columnValuesObj[item.key].value ?? undefined}
               placeholder={
                 item.validations?.numericFormatProps?.formatBase?.placeholder
               }
@@ -377,10 +1084,7 @@ const AddRowPanel = (props: Props) => {
                 id={item.key}
                 label={item.text}
                 styles={textFieldStyles}
-                onChange={(ev, text) =>
-                  onTextUpdate(ev, props.autoGenId.toString(), item)
-                }
-                value={props.autoGenId.toString()}
+                value={columnValuesObj[item.key].value ?? undefined}
                 readOnly
                 disabled
               />
@@ -389,13 +1093,14 @@ const AddRowPanel = (props: Props) => {
             tmpRenderObj.push(
               <TextField
                 key={item.key}
+                disabled={!item.editable ?? true}
+                value={columnValuesObj[item.key].value ?? undefined}
                 errorMessage={columnValuesObj[item.key].error}
                 name={item.text}
                 id={item.key}
                 label={item.text}
                 styles={textFieldStyles}
                 onChange={(ev, text) => onTextUpdate(ev, text!, item)}
-                value={columnValuesObj[item.key].value || ""}
               />
             );
           }
@@ -404,45 +1109,54 @@ const AddRowPanel = (props: Props) => {
       }
     });
 
-    if (props.enableRowsCounterField) {
-      console.warn("# of Rows to Add is deprecated");
-      // tmpRenderObj.push(
-      //   <SpinButton
-      //     key={"item.key"}
-      //     componentRef={AddSpinRef}
-      //     label="# of Rows to Add"
-      //     labelPosition={Position.top}
-      //     defaultValue="1"
-      //     min={0}
-      //     max={100}
-      //     step={1}
-      //     incrementButtonAriaLabel="Increase value by 1"
-      //     decrementButtonAriaLabel="Decrease value by 1"
-      //     styles={{ spinButtonWrapper: { width: 75 } }}
-      //   />
-      // );
-    }
-
     return tmpRenderObj;
   };
 
   return (
-    <Stack>
+    <Stack >
+      {error && (
+        <Stack
+          horizontal
+          tokens={{ childrenGap: 5 }}
+          className={mergeStyles({ alignItems: "center" })}
+        >
+          <StackItem>
+            <Icon
+              iconName={"StatusErrorFull"}
+              style={{
+                color: SharedColors.red20,
+              }}
+            />
+          </StackItem>
+          <StackItem>
+            <Label
+              style={{
+                color: SharedColors.red20,
+              }}
+            >
+              {error}
+            </Label>
+          </StackItem>
+        </Stack>
+      )}
+      <div style={{ marginBottom: 15 }}>
+        <Sticky>{messagesJSXState.map((element) => element)}</Sticky>
+      </div>
       <Stack tokens={verticalGapStackTokens}>
         {columnValuesObj && createTextFields()}
       </Stack>
       <Stack
         horizontal
-        disableShrink
-        styles={stackStyles}
         tokens={horizontalGapStackTokens}
       >
         <PrimaryButton
-          text="Save To Grid"
+          text={confirmButtonText}
           className={controlClass.submitStylesEditpanel}
           onClick={onPanelSubmit}
           allowDisabledFocus
           disabled={
+            confirmButtonDisabled ||
+            error ||
             (columnValuesObj &&
               Object.keys(columnValuesObj).some(
                 (k) =>

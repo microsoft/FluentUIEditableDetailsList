@@ -4,6 +4,7 @@
 import {
   Checkbox,
   CheckboxVisibility,
+  DetailsList,
   DetailsListLayoutMode,
   DetailsRow,
   DirectionalHint,
@@ -255,7 +256,8 @@ const Consumer = () => {
   };
 
   useEffect(() => {
-    SetDummyData();
+    SetDummyData()
+    // setTimeout(   ()=> SetDummyData(), 100    )
   }, []);
 
   const onGridSave = (internalGridData: any[], updatedItems: any): void => {
@@ -351,6 +353,18 @@ const Consumer = () => {
           callbackRequestParamObj.triggerkey + index
         );
       }
+    }
+
+    return callbackRequestParamObj.data;
+  };
+
+  const checkForDup = (
+    callbackRequestParamObj: ICallBackParams
+  ): any[] => {
+    const exampleOfListOfAlias = ['v-sainar', 'walkercj']
+    console.log(callbackRequestParamObj)
+    if(exampleOfListOfAlias.includes(callbackRequestParamObj.data['name'].value)){
+      callbackRequestParamObj.data['name'].error = 'User Alias is duplicated'
     }
 
     return callbackRequestParamObj.data;
@@ -779,6 +793,7 @@ const Consumer = () => {
           text="Save Grid"
           onClick={() => saveAction && saveAction()}
         />
+        
         <EditableGrid
         showASaveButtonInCommandbar ={
           gridConfigOptions.showASaveButtonInCommandbar
@@ -872,7 +887,9 @@ const Consumer = () => {
           enableColumnFilterRules={gridConfigOptions.enableColumnFilterRules}
           enableGridRowAddWithValues={{
             enable: gridConfigOptions.enableGridRowAddWithValues,
-            enableRowsCounterInPanel: true,
+            addToGridButtonText: 'Add User',
+            onPreSubmit:checkForDup,
+            addingToGridButtonText: 'Adding...'
           }}
           gridCopyOptions={{
             enableGridCopy: gridConfigOptions.enableGridCopy,
@@ -943,6 +960,8 @@ const Consumer = () => {
             },
           ]}
         />
+
+
       </div>
 
       {/* {teachingBubbleVisible && (

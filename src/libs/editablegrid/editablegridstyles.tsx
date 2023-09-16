@@ -113,8 +113,8 @@ export const verticalGapStackTokens: IStackTokens = {
 };
 
 export const horizontalGapStackTokens: IStackTokens = {
-  childrenGap: 10,
-  padding: 10,
+  childrenGap: 5,
+  padding: 5,
 };
 
 export const textFieldStyles: Partial<ITextFieldStyles> = {

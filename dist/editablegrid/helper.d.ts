@@ -9,6 +9,7 @@ export declare const IsValidDataType: (type: string | undefined, text: string) =
 export declare const EvaluateRule: (datatType: string, cellValue: string | number | undefined, styleRule: ICellStyleRulesType | undefined) => boolean;
 export declare const ConvertObjectToText: (obj: any, columns: IColumnConfig[]) => string;
 export declare const ParseType: (type: string | undefined, text: string, isTextModified?: boolean) => any;
+export declare function isValidDate(value: any): boolean;
 export declare const GetDefault: (type: string | undefined) => any;
 export declare const IsValidRegex: (regexExpression: RegExp, text: string) => boolean;
 export declare const ConvertTextToObject: (text: string, columns: IColumnConfig[]) => any[];

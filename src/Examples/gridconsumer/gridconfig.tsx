@@ -57,7 +57,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Name",
     text: "Name",
     editable: true,
-    // defaultOnAddRow: "Mr. Keneedy",
+   defaultOnAddRow: "Mr. Keneedy",
     required: {
       alwaysRequired: false,
       requiredOnlyIfTheseColumnsAreEmpty: { colKeys: ["age", "salary"] },
@@ -233,6 +233,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     minWidth: 150,
     maxWidth: 150,
     isResizable: true,
+    defaultOnAddRow:"1010" ,
     includeColumnInExport: true,
     includeColumnInSearch: true,
     inputType: EditControlType.ComboBox,
@@ -269,10 +270,10 @@ export const GridColumnConfig: IColumnConfig[] = [
       { key: "MT", text: "Monthly" },
     ],
     // disableDropdown: false,
-    // disableDropdown: {
-    //   disableBasedOnThisColumnKey: "name",
-    //   type: DisableColTypes.DisableWhenColKeyHasData,
-    // },
+    disableDropdown: {
+      disableBasedOnThisColumnKey: "name",
+      type: DisableColTypes.DisableWhenColKeyHasData,
+    },
   },
   {
     key: "employmenttype",

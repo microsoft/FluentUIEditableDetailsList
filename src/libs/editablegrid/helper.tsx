@@ -172,6 +172,11 @@ export const ParseType = (type: string | undefined, text: string, isTextModified
   return isTextModified ? text?.trim() : text;
 };
 
+export function isValidDate(value: any) {
+  const date: any = new Date(value);
+  return !isNaN(date);
+}
+
 export const GetDefault = (type: string | undefined): any => {
   switch (type) {
     case "boolean":
