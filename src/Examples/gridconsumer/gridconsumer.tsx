@@ -333,9 +333,6 @@ const Consumer = () => {
   );
 
   const [col, setCol] = useState(GridColumnConfig);
-  useEffect(() => {
-    setCol(attachGridValueChangeCallbacks(GridColumnConfig));
-  }, [asyncValues]);
 
   const onDesignationChangedTest = (
     callbackRequestParamObj: ICallBackParams
@@ -349,9 +346,7 @@ const Consumer = () => {
         const item = filteredItems[i];
         item._udf_custom_vaule_store_a = item._udf_custom_vaule_store_a + 99;
 
-        item.salary = asyncValues.get(
-          callbackRequestParamObj.triggerkey + index
-        );
+        item.salary = 888
       }
     }
 
@@ -362,7 +357,6 @@ const Consumer = () => {
     callbackRequestParamObj: ICallBackParams
   ): any[] => {
     const exampleOfListOfAlias = ['v-sainar', 'walkercj']
-    console.log(callbackRequestParamObj)
     if(exampleOfListOfAlias.includes(callbackRequestParamObj.data['name'].value)){
       callbackRequestParamObj.data['name'].error = 'User Alias is duplicated'
     }
@@ -370,31 +364,31 @@ const Consumer = () => {
     return callbackRequestParamObj.data;
   };
 
-  // const attachGridValueChangeCallbacks =
-  //   (columnConfig: IColumnConfig[]): IColumnConfig[] => {
-  //     columnConfig
-  //       .filter((item) => item.key == "designation")
-  //       .map((item) => (item.onChange = onDesignationChangedTest2));
-
-  //     // columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChanged);
-  //     //columnConfig.filter((item) => item.key == 'payrolltype').map((item) => item.onChange = onPayrollChanged);
-  //     //columnConfig.filter((item) => item.key == 'dateofjoining').map((item) => item.onChange = onDateChanged);
-  //     return columnConfig;
-  //   }
-
-  const attachGridValueChangeCallbacks = useCallback(
+  const attachGridValueChangeCallbacks =
     (columnConfig: IColumnConfig[]): IColumnConfig[] => {
-      const filteredItems = columnConfig.filter(
-        (item) => item.key === "designation"
-      );
-      for (let i = 0; i < filteredItems.length; i++) {
-        filteredItems[i].onChange = onDesignationChangedTest;
-      }
+      columnConfig
+        .filter((item) => item.key == "designation")
+        .map((item) => (item.onChange = onDesignationChangedTest));
 
+      // columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChanged);
+      columnConfig.filter((item) => item.key == 'payrolltype').map((item) => item.onChange = onPayrollChanged);
+      //columnConfig.filter((item) => item.key == 'dateofjoining').map((item) => item.onChange = onDateChanged);
       return columnConfig;
-    },
-    [onDesignationChangedTest]
-  );
+    }
+
+  // const attachGridValueChangeCallbacks = useCallback(
+  //   (columnConfig: IColumnConfig[]): IColumnConfig[] => {
+  //     const filteredItems = columnConfig.filter(
+  //       (item) => item.key === "designation"
+  //     );
+  //     for (let i = 0; i < filteredItems.length; i++) {
+  //       filteredItems[i].onChange = onDesignationChangedTest;
+  //     }
+
+  //     return columnConfig;
+  //   },
+  //   [onDesignationChangedTest]
+  // );
 
   const onCheckboxChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
@@ -858,7 +852,7 @@ const Consumer = () => {
           }}
           actionIconStylesInGrid={{ icon: { color: "black" } }}
           enableColumnEdit={gridConfigOptions.enableColumnEdit}
-          columns={GridColumnConfig}
+          columns={attachGridValueChangeCallbacks(GridColumnConfig)}
           onRenderDetailsHeader={onRenderDetailsHeader}
           onRenderRow={onRenderRow}
           layoutMode={DetailsListLayoutMode.fixedColumns}
@@ -888,7 +882,8 @@ const Consumer = () => {
           enableGridRowAddWithValues={{
             enable: gridConfigOptions.enableGridRowAddWithValues,
             addToGridButtonText: 'Add User',
-            onPreSubmit:checkForDup,
+            onChange: checkForDup,
+            // onPreSubmit:checkForDup,
             addingToGridButtonText: 'Adding...'
           }}
           gridCopyOptions={{

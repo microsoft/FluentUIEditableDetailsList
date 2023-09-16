@@ -50,6 +50,7 @@ import {
 } from "react";
 import { NumericFormat } from "react-number-format";
 import { _Operation } from "../types/operation";
+import { ICallBackParams } from "../types/callbackparams";
 
 interface Props {
   onSubmit: any;
@@ -193,23 +194,25 @@ const AddRowPanel = (props: Props) => {
 
     SetObjValues((ev.target as Element).id, ParseType(column.dataType, text));
   };
-
+  
   const onNumericFormatUpdate = (
-    ev: SyntheticEvent<HTMLInputElement, Event> | undefined,
+    ev:  React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     text: string,
     column: IColumnConfig
   ): void => {
+
+
     if (!IsValidDataType(column.dataType, text)) {
       SetObjValues(
         (ev?.target as Element).id,
-        text,
+        (text?.toString() ?? '0'),
         false,
         `Data should be of type '${column.dataType}'`
       );
       return;
     }
 
-    SetObjValues((ev?.target as Element).id, ParseType(column.dataType, text));
+    SetObjValues((ev?.target as Element).id, ParseType(column.dataType, text?.toString() ?? '0'));
   };
 
   const Messages = useRef<Map<string, { msg: string; type: MessageBarType }>>(
@@ -260,7 +263,8 @@ const AddRowPanel = (props: Props) => {
     let localError = false;
     let emptyCol: string[] = [];
     let emptyReqCol: string[] = [];
-
+    Messages.current = new Map();
+    setMessagesState(Messages.current);
     props.columnConfigurationData.forEach((item, row) => {
       const currentValue = columnValuesObj[item.key].value ?? null;
       const getValue = (key: string): string => columnValuesObj[key]?.value;
@@ -1005,8 +1009,9 @@ const AddRowPanel = (props: Props) => {
           tmpRenderObj.push(
             <NumericFormat
               key={item.key}
+              id={item.key}
               disabled={!item.editable ?? true}
-              value={columnValuesObj[item.key].value ?? undefined}
+              value={columnValuesObj[item.key]?.value?.toString()?? ''}
               placeholder={
                 item.validations?.numericFormatProps?.formatBase?.placeholder
               }
@@ -1064,12 +1069,13 @@ const AddRowPanel = (props: Props) => {
               isAllowed={
                 item.validations?.numericFormatProps?.formatBase?.isAllowed
               }
-              onValueChange={(values, sourceInfo) =>
-                onNumericFormatUpdate(
-                  sourceInfo.event,
-                  values.formattedValue ?? values.value,
+              onValueChange={(values, sourceInfo) =>{
+                if (sourceInfo.source == 'event') 
+                  onNumericFormatUpdate(
+                  sourceInfo.event as any,
+                  values.value,
                   item
-                )
+                )}
               }
             />
           );
