@@ -1,3 +1,4 @@
+
 export { default as EditableGrid } from "./editablegrid/editablegrid";
 export { EventEmitter, EventType } from "./eventemitter/EventEmitter";
 export { CellHover } from "./editablegrid/hoverComponent";
@@ -30,3 +31,4 @@ export type {
   ICustomKeysToAddOnNewRow,
   IRenameCommandBarItemsActions
 } from "./types/editabledetailslistprops";
+export type { IRowAddWithValues } from "./types/rowaddtype";

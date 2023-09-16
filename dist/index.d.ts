@@ -13,3 +13,4 @@ export { DepColTypes, DisableColTypes } from "./types/columnconfigtype";
 export { EditControlType } from "./types/editcontroltype";
 export type { IGridItemsType } from "./types/griditemstype";
 export type { IEnableMessageBarErrors, IContentScrollablePaneStyleProps, IUserDefinedOperationKey, ICustomKeysToAddOnNewRow, IRenameCommandBarItemsActions } from "./types/editabledetailslistprops";
+export type { IRowAddWithValues } from "./types/rowaddtype";
