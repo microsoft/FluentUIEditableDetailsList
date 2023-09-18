@@ -195,25 +195,26 @@ const AddRowPanel = (props: Props) => {
 
     SetObjValues((ev.target as Element).id, ParseType(column.dataType, text));
   };
-  
+
   const onNumericFormatUpdate = (
-    ev:  React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     text: string,
     column: IColumnConfig
   ): void => {
-
-
     if (!IsValidDataType(column.dataType, text)) {
       SetObjValues(
         (ev?.target as Element).id,
-        (text?.toString() ?? '0'),
+        text?.toString() ?? "0",
         false,
         `Data should be of type '${column.dataType}'`
       );
       return;
     }
 
-    SetObjValues((ev?.target as Element).id, ParseType(column.dataType, text?.toString() ?? '0'));
+    SetObjValues(
+      (ev?.target as Element).id,
+      ParseType(column.dataType, text?.toString() ?? "0")
+    );
   };
 
   const Messages = useRef<Map<string, { msg: string; type: MessageBarType }>>(
@@ -641,6 +642,7 @@ const AddRowPanel = (props: Props) => {
 
   const onPanelSubmit = async (): Promise<void> => {
     var columnValuesObjTmp = { ...columnValuesObj };
+    setError("");
 
     if (props.preSubmitCallback) {
       setConfirmButtonDisabled(true);
@@ -673,7 +675,7 @@ const AddRowPanel = (props: Props) => {
           }
 
           const hasErrors = runGridValidations();
-          if (!hasErrors) submitAndClose();
+          if (!hasErrors && error == "") submitAndClose();
         });
     } else {
       const hasErrors = runGridValidations();
@@ -712,7 +714,9 @@ const AddRowPanel = (props: Props) => {
         case EditControlType.CheckBox:
           tmpRenderObj.push(
             <Checkbox
-              disabled={(!item.editable && !props.enableNonEditableColumns) ?? true}
+              disabled={
+                (!item.editable && !props.enableNonEditableColumns) ?? true
+              }
               checked={columnValuesObj[item.key].value}
               key={item.key}
               label={item.text}
@@ -726,7 +730,9 @@ const AddRowPanel = (props: Props) => {
           tmpRenderObj.push(
             <DatePicker
               key={item.key}
-              disabled={(!item.editable && !props.enableNonEditableColumns) ?? true}
+              disabled={
+                (!item.editable && !props.enableNonEditableColumns) ?? true
+              }
               value={columnValuesObj[item.key].value}
               label={item.text}
               strings={DayPickerStrings}
@@ -796,7 +802,8 @@ const AddRowPanel = (props: Props) => {
                 disableComboBox.current.get(item.key + rowNum) ??
                 (typeof item.disableComboBox == "boolean"
                   ? item.disableComboBox
-                  : (!item.editable && !props.enableNonEditableColumns) ?? false)
+                  : (!item.editable && !props.enableNonEditableColumns) ??
+                    false)
               }
               placeholder={
                 item.comboBoxOptions?.filter(
@@ -946,7 +953,8 @@ const AddRowPanel = (props: Props) => {
                 disableDropdown.current.get(item.key + rowNum) ??
                 (typeof item.disableDropdown == "boolean"
                   ? item.disableDropdown
-                  : (!item.editable && !props.enableNonEditableColumns) ?? false)
+                  : (!item.editable && !props.enableNonEditableColumns) ??
+                    false)
               }
             />
           );
@@ -976,7 +984,9 @@ const AddRowPanel = (props: Props) => {
           tmpRenderObj.push(
             <TextField
               key={item.key}
-              disabled={(!item.editable && !props.enableNonEditableColumns) ?? true}
+              disabled={
+                (!item.editable && !props.enableNonEditableColumns) ?? true
+              }
               errorMessage={columnValuesObj[item.key].error}
               name={item.text}
               multiline={true}
@@ -993,7 +1003,9 @@ const AddRowPanel = (props: Props) => {
           tmpRenderObj.push(
             <TextField
               key={item.key}
-              disabled={(!item.editable && !props.enableNonEditableColumns) ?? true}
+              disabled={
+                (!item.editable && !props.enableNonEditableColumns) ?? true
+              }
               errorMessage={columnValuesObj[item.key].error}
               name={item.text}
               id={item.key}
@@ -1011,8 +1023,10 @@ const AddRowPanel = (props: Props) => {
             <NumericFormat
               key={item.key}
               id={item.key}
-              disabled={(!item.editable && !props.enableNonEditableColumns) ?? true}
-              value={columnValuesObj[item.key]?.value?.toString()?? ''}
+              disabled={
+                (!item.editable && !props.enableNonEditableColumns) ?? true
+              }
+              value={columnValuesObj[item.key]?.value?.toString() ?? ""}
               placeholder={
                 item.validations?.numericFormatProps?.formatBase?.placeholder
               }
@@ -1070,14 +1084,14 @@ const AddRowPanel = (props: Props) => {
               isAllowed={
                 item.validations?.numericFormatProps?.formatBase?.isAllowed
               }
-              onValueChange={(values, sourceInfo) =>{
-                if (sourceInfo.source == 'event') 
+              onValueChange={(values, sourceInfo) => {
+                if (sourceInfo.source == "event")
                   onNumericFormatUpdate(
-                  sourceInfo.event as any,
-                  values.value,
-                  item
-                )}
-              }
+                    sourceInfo.event as any,
+                    values.value,
+                    item
+                  );
+              }}
             />
           );
           break;
@@ -1100,7 +1114,9 @@ const AddRowPanel = (props: Props) => {
             tmpRenderObj.push(
               <TextField
                 key={item.key}
-                disabled={(!item.editable && !props.enableNonEditableColumns) ?? true}
+                disabled={
+                  (!item.editable && !props.enableNonEditableColumns) ?? true
+                }
                 value={columnValuesObj[item.key].value ?? undefined}
                 errorMessage={columnValuesObj[item.key].error}
                 name={item.text}
@@ -1120,31 +1136,15 @@ const AddRowPanel = (props: Props) => {
   };
 
   return (
-    <Stack >
+    <Stack>
       {error && (
-        <Stack
-          horizontal
-          tokens={{ childrenGap: 5 }}
-          className={mergeStyles({ alignItems: "center" })}
+        <MessageBar
+          styles={{ root: { marginBottom: 5 } }}
+          messageBarType={MessageBarType.error}
+          onDismiss={()=> setError('')}
         >
-          <StackItem>
-            <Icon
-              iconName={"StatusErrorFull"}
-              style={{
-                color: SharedColors.red20,
-              }}
-            />
-          </StackItem>
-          <StackItem>
-            <Label
-              style={{
-                color: SharedColors.red20,
-              }}
-            >
-              {error}
-            </Label>
-          </StackItem>
-        </Stack>
+          {error}
+        </MessageBar>
       )}
       <div style={{ marginBottom: 15 }}>
         <Sticky>{messagesJSXState.map((element) => element)}</Sticky>
@@ -1152,10 +1152,7 @@ const AddRowPanel = (props: Props) => {
       <Stack tokens={verticalGapStackTokens}>
         {columnValuesObj && createTextFields()}
       </Stack>
-      <Stack
-        horizontal
-        tokens={horizontalGapStackTokens}
-      >
+      <Stack horizontal tokens={horizontalGapStackTokens}>
         <PrimaryButton
           text={confirmButtonText}
           className={controlClass.submitStylesEditpanel}
