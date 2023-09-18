@@ -1446,7 +1446,12 @@ const EditableGrid = (props: EditableGridProps) => {
       });
     }
 
-    var newGridData = [...defaultGridData, ...addedRows];
+    var newGridData:any[] = [];
+    if(props.enableGridRowAddWithValues?.showInsertedRowAtTopWhenAddedFromPanel){
+      newGridData = [...addedRows, ...defaultGridData];
+    }else{
+      newGridData = [...defaultGridData, ...addedRows];
+    }
     setGridEditState(true);
     SetGridItems(newGridData);
   };

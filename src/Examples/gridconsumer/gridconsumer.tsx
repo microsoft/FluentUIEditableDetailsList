@@ -885,7 +885,8 @@ const Consumer = () => {
             onChange: checkForDup,
             // onPreSubmit:checkForDup,
             addingToGridButtonText: 'Adding...',
-            enableNonEditableColumns: false
+            enableNonEditableColumns: false,
+            showInsertedRowAtTopWhenAddedFromPanel: false
           }}
           gridCopyOptions={{
             enableGridCopy: gridConfigOptions.enableGridCopy,

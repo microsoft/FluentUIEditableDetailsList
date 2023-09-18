@@ -6,4 +6,5 @@ export interface IRowAddWithValues {
     addToGridButtonText?: string;
     addingToGridButtonText?: string;
     enableNonEditableColumns?: boolean;
+    showInsertedRowAtTopWhenAddedFromPanel?: boolean
 }

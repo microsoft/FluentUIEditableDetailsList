@@ -2189,8 +2189,8 @@ var yv = /* @__PURE__ */ function() {
     if (O === 3 && ze !== 0)
       throw new Error("# Directory Sectors: Expected 0 saw " + ze);
     ge.l += 4, te = ge.read_shift(4, "i"), ge.l += 4, ge.chk("00100000", "Mini Stream Cutoff Size: "), pe = ge.read_shift(4, "i"), j = ge.read_shift(4, "i"), ue = ge.read_shift(4, "i"), Z = ge.read_shift(4, "i");
-    for (var Re = -1, we = 0; we < 109 && (Re = ge.read_shift(4, "i"), !(Re < 0)); ++we)
-      le[we] = Re;
+    for (var Ae = -1, we = 0; we < 109 && (Ae = ge.read_shift(4, "i"), !(Ae < 0)); ++we)
+      le[we] = Ae;
     var st = h(T, U);
     m(ue, Z, st, U, le);
     var $t = x(st, te, le, U);
@@ -2288,13 +2288,13 @@ var yv = /* @__PURE__ */ function() {
     for (ge = 0; ge < j; ++ge)
       if (pe = [], Te = ge + V, Te >= j && (Te -= j), !te[Te]) {
         ue = [];
-        var Re = [];
+        var Ae = [];
         for (Pe = Te; Pe >= 0; ) {
-          Re[Pe] = !0, te[Pe] = !0, pe[pe.length] = Pe, ue.push(T[Pe]);
+          Ae[Pe] = !0, te[Pe] = !0, pe[pe.length] = Pe, ue.push(T[Pe]);
           var we = O[Math.floor(Pe * 4 / U)];
           if (ze = Pe * 4 & le, U < 4 + ze)
             throw new Error("FAT boundary crossed: " + Pe + " 4 " + U);
-          if (!T[we] || (Pe = xs(T[we], ze), Re[Pe]))
+          if (!T[we] || (Pe = xs(T[we], ze), Ae[Pe]))
             break;
         }
         Z[Te] = { nodes: pe, data: Rv([ue]) };
@@ -2303,26 +2303,26 @@ var yv = /* @__PURE__ */ function() {
   }
   function y(T, V, O, U, j, Z, te, pe) {
     for (var ue = 0, le = U.length ? 2 : 0, ge = V[T].data, Pe = 0, Te = 0, ze; Pe < ge.length; Pe += 128) {
-      var Re = (
+      var Ae = (
         /*::(*/
         ge.slice(Pe, Pe + 128)
       );
-      wn(Re, 64), Te = Re.read_shift(2), ze = rp(Re, 0, Te - le), U.push(ze);
+      wn(Ae, 64), Te = Ae.read_shift(2), ze = rp(Ae, 0, Te - le), U.push(ze);
       var we = {
         name: ze,
-        type: Re.read_shift(1),
-        color: Re.read_shift(1),
-        L: Re.read_shift(4, "i"),
-        R: Re.read_shift(4, "i"),
-        C: Re.read_shift(4, "i"),
-        clsid: Re.read_shift(16),
-        state: Re.read_shift(4, "i"),
+        type: Ae.read_shift(1),
+        color: Ae.read_shift(1),
+        L: Ae.read_shift(4, "i"),
+        R: Ae.read_shift(4, "i"),
+        C: Ae.read_shift(4, "i"),
+        clsid: Ae.read_shift(16),
+        state: Ae.read_shift(4, "i"),
         start: 0,
         size: 0
-      }, st = Re.read_shift(2) + Re.read_shift(2) + Re.read_shift(2) + Re.read_shift(2);
-      st !== 0 && (we.ct = b(Re, Re.l - 8));
-      var $t = Re.read_shift(2) + Re.read_shift(2) + Re.read_shift(2) + Re.read_shift(2);
-      $t !== 0 && (we.mt = b(Re, Re.l - 8)), we.start = Re.read_shift(4, "i"), we.size = Re.read_shift(4, "i"), we.size < 0 && we.start < 0 && (we.size = we.type = 0, we.start = J, we.name = ""), we.type === 5 ? (ue = we.start, j > 0 && ue !== J && (V[ue].name = "!StreamData")) : we.size >= 4096 ? (we.storage = "fat", V[we.start] === void 0 && (V[we.start] = g(O, we.start, V.fat_addrs, V.ssz)), V[we.start].name = we.name, we.content = V[we.start].data.slice(0, we.size)) : (we.storage = "minifat", we.size < 0 ? we.size = 0 : ue !== J && we.start !== J && V[ue] && (we.content = v(we, V[ue].data, (V[pe] || {}).data))), we.content && wn(we.content, 0), Z[ze] = we, te.push(we);
+      }, st = Ae.read_shift(2) + Ae.read_shift(2) + Ae.read_shift(2) + Ae.read_shift(2);
+      st !== 0 && (we.ct = b(Ae, Ae.l - 8));
+      var $t = Ae.read_shift(2) + Ae.read_shift(2) + Ae.read_shift(2) + Ae.read_shift(2);
+      $t !== 0 && (we.mt = b(Ae, Ae.l - 8)), we.start = Ae.read_shift(4, "i"), we.size = Ae.read_shift(4, "i"), we.size < 0 && we.start < 0 && (we.size = we.type = 0, we.start = J, we.name = ""), we.type === 5 ? (ue = we.start, j > 0 && ue !== J && (V[ue].name = "!StreamData")) : we.size >= 4096 ? (we.storage = "fat", V[we.start] === void 0 && (V[we.start] = g(O, we.start, V.fat_addrs, V.ssz)), V[we.start].name = we.name, we.content = V[we.start].data.slice(0, we.size)) : (we.storage = "minifat", we.size < 0 ? we.size = 0 : ue !== J && we.start !== J && V[ue] && (we.content = v(we, V[ue].data, (V[pe] || {}).data))), we.content && wn(we.content, 0), Z[ze] = we, te.push(we);
     }
   }
   function b(T, V) {
@@ -2397,8 +2397,8 @@ var yv = /* @__PURE__ */ function() {
           }]), ue[ge] = !0, ge = r(le[j][0]), U = ue[ge];
         }
       }
-      for (le.sort(function(ze, Re) {
-        return t(ze[0], Re[0]);
+      for (le.sort(function(ze, Ae) {
+        return t(ze[0], Ae[0]);
       }), T.FullPaths = [], T.FileIndex = [], j = 0; j < le.length; ++j)
         T.FullPaths[j] = le[j][0], T.FileIndex[j] = le[j][1];
       for (j = 0; j < le.length; ++j) {
@@ -2425,17 +2425,17 @@ var yv = /* @__PURE__ */ function() {
         return qe(T, O);
     }
     var U = function(ze) {
-      for (var Re = 0, we = 0, st = 0; st < ze.FileIndex.length; ++st) {
+      for (var Ae = 0, we = 0, st = 0; st < ze.FileIndex.length; ++st) {
         var $t = ze.FileIndex[st];
         if ($t.content) {
           var tr = $t.content.length;
-          tr > 0 && (tr < 4096 ? Re += tr + 63 >> 6 : we += tr + 511 >> 9);
+          tr > 0 && (tr < 4096 ? Ae += tr + 63 >> 6 : we += tr + 511 >> 9);
         }
       }
-      for (var wr = ze.FullPaths.length + 3 >> 2, kn = Re + 7 >> 3, Yr = Re + 127 >> 7, Ca = kn + we + wr + Yr, Hn = Ca + 127 >> 7, Wn = Hn <= 109 ? 0 : Math.ceil((Hn - 109) / 127); Ca + Hn + Wn + 127 >> 7 > Hn; )
+      for (var wr = ze.FullPaths.length + 3 >> 2, kn = Ae + 7 >> 3, Yr = Ae + 127 >> 7, Ca = kn + we + wr + Yr, Hn = Ca + 127 >> 7, Wn = Hn <= 109 ? 0 : Math.ceil((Hn - 109) / 127); Ca + Hn + Wn + 127 >> 7 > Hn; )
         Wn = ++Hn <= 109 ? 0 : Math.ceil((Hn - 109) / 127);
-      var je = [1, Wn, Hn, Yr, wr, we, Re, 0];
-      return ze.FileIndex[0].size = Re << 6, je[7] = (ze.FileIndex[0].start = je[0] + je[1] + je[2] + je[3] + je[4] + je[5]) + (je[6] + 7 >> 3), je;
+      var je = [1, Wn, Hn, Yr, wr, we, Ae, 0];
+      return ze.FileIndex[0].size = Ae << 6, je[7] = (ze.FileIndex[0].start = je[0] + je[1] + je[2] + je[3] + je[4] + je[5]) + (je[6] + 7 >> 3), je;
     }(T), j = Ee(U[7] << 9), Z = 0, te = 0;
     {
       for (Z = 0; Z < 8; ++Z)
@@ -2753,23 +2753,23 @@ var yv = /* @__PURE__ */ function() {
         }
         le = Be(ue, le, +(ge + Te == pe.length) + 2);
         for (var ze = 0; Te-- > 0; ) {
-          var Re = pe[ge];
-          ze = (ze << 5 ^ Re) & 32767;
+          var Ae = pe[ge];
+          ze = (ze << 5 ^ Ae) & 32767;
           var we = -1, st = 0;
           if ((we = Pe[ze]) && (we |= ge & -32768, we > ge && (we -= 32768), we < ge))
             for (; pe[we + st] == pe[ge + st] && st < 250; )
               ++st;
           if (st > 2) {
-            Re = j[st], Re <= 22 ? le = Me(ue, le, be[Re + 1] >> 1) - 1 : (Me(ue, le, 3), le += 5, Me(ue, le, be[Re - 23] >> 5), le += 3);
-            var $t = Re < 8 ? 0 : Re - 4 >> 2;
-            $t > 0 && (tt(ue, le, st - X[Re]), le += $t), Re = V[ge - we], le = Me(ue, le, be[Re] >> 3), le -= 3;
-            var tr = Re < 4 ? 0 : Re - 2 >> 1;
-            tr > 0 && (tt(ue, le, ge - we - W[Re]), le += tr);
+            Ae = j[st], Ae <= 22 ? le = Me(ue, le, be[Ae + 1] >> 1) - 1 : (Me(ue, le, 3), le += 5, Me(ue, le, be[Ae - 23] >> 5), le += 3);
+            var $t = Ae < 8 ? 0 : Ae - 4 >> 2;
+            $t > 0 && (tt(ue, le, st - X[Ae]), le += $t), Ae = V[ge - we], le = Me(ue, le, be[Ae] >> 3), le -= 3;
+            var tr = Ae < 4 ? 0 : Ae - 2 >> 1;
+            tr > 0 && (tt(ue, le, ge - we - W[Ae]), le += tr);
             for (var wr = 0; wr < st; ++wr)
               Pe[ze] = ge & 32767, ze = (ze << 5 ^ pe[ge]) & 32767, ++ge;
             Te -= st - 1;
           } else
-            Re <= 143 ? Re = Re + 48 : le = xe(ue, le, 1), le = Me(ue, le, be[Re]), Pe[ze] = ge & 32767, ++ge;
+            Ae <= 143 ? Ae = Ae + 48 : le = xe(ue, le, 1), le = Me(ue, le, be[Ae]), Pe[ze] = ge & 32767, ++ge;
         }
         le = Me(ue, le, 0) - 1;
       }
@@ -2798,12 +2798,12 @@ var yv = /* @__PURE__ */ function() {
       ge[Te] = ze = ze + le[Te - 1] << 1;
     for (Te = 0; Te < Pe; ++Te)
       (ze = te[Te]) != 0 && (pe[Te] = ge[ze]++);
-    var Re = 0;
+    var Ae = 0;
     for (Te = 0; Te < Pe; ++Te)
-      if (Re = te[Te], Re != 0) {
-        ze = be[pe[Te]] >> 8 - Re;
-        for (var we = (1 << 7 - Re) - 1; we >= 0; --we)
-          $e[ze | we << Re] = Re & 7 | Te << 3;
+      if (Ae = te[Te], Ae != 0) {
+        ze = be[pe[Te]] >> 8 - Ae;
+        for (var we = (1 << 7 - Ae) - 1; we >= 0; --we)
+          $e[ze | we << Ae] = Ae & 7 | Te << 3;
       }
     var st = [];
     for (ue = 1; st.length < O + U; )
@@ -2858,8 +2858,8 @@ var yv = /* @__PURE__ */ function() {
           Te > 5 && (Te = 0);
           var ze = Z + X[Pe];
           Te > 0 && (ze += ke(T, O, Te), O += Te), ge = ke(T, O, ue), Pe = U >>> 1 == 1 ? gr[ge] : yt[ge], O += Pe & 15, Pe >>>= 4;
-          var Re = Pe < 4 ? 0 : Pe - 2 >> 1, we = W[Pe];
-          for (Re > 0 && (we += ke(T, O, Re), O += Re), !V && te < ze && (j = ht(j, ze + 100), te = j.length); Z < ze; )
+          var Ae = Pe < 4 ? 0 : Pe - 2 >> 1, we = W[Pe];
+          for (Ae > 0 && (we += ke(T, O, Ae), O += Ae), !V && te < ze && (j = ht(j, ze + 100), te = j.length); Z < ze; )
             j[Z] = j[Z - we], ++Z;
         }
       }
@@ -2897,14 +2897,14 @@ var yv = /* @__PURE__ */ function() {
       O.l += 20;
       var le = O.read_shift(4), ge = O.read_shift(4), Pe = O.read_shift(2), Te = O.read_shift(2), ze = O.read_shift(2);
       O.l += 8;
-      var Re = O.read_shift(4), we = s(
+      var Ae = O.read_shift(4), we = s(
         /*::(*/
         O.slice(O.l + Pe, O.l + Pe + Te)
         /*:: :any)*/
       );
       O.l += Pe + Te + ze;
       var st = O.l;
-      O.l = Re + 4, we && we[1] && ((we[1] || {}).usz && (ge = we[1].usz), (we[1] || {}).csz && (le = we[1].csz)), en(O, le, ge, Z, we), O.l = st;
+      O.l = Ae + 4, we && we[1] && ((we[1] || {}).usz && (ge = we[1].usz), (we[1] || {}).csz && (le = we[1].csz)), en(O, le, ge, Z, we), O.l = st;
     }
     return Z;
   }
@@ -2913,7 +2913,7 @@ var yv = /* @__PURE__ */ function() {
     var Z = T.read_shift(2), te = T.read_shift(2), pe = o(T);
     if (Z & 8257)
       throw new Error("Unsupported ZIP encryption");
-    for (var ue = T.read_shift(4), le = T.read_shift(4), ge = T.read_shift(4), Pe = T.read_shift(2), Te = T.read_shift(2), ze = "", Re = 0; Re < Pe; ++Re)
+    for (var ue = T.read_shift(4), le = T.read_shift(4), ge = T.read_shift(4), Pe = T.read_shift(2), Te = T.read_shift(2), ze = "", Ae = 0; Ae < Pe; ++Ae)
       ze += String.fromCharCode(T[T.l++]);
     if (Te) {
       var we = s(
@@ -2938,26 +2938,26 @@ var yv = /* @__PURE__ */ function() {
     Z & 8 && (ue = T.read_shift(4), ue == 134695760 && (ue = T.read_shift(4), $t = !0), le = T.read_shift(4), ge = T.read_shift(4)), le != V && bt($t, "Bad compressed size: " + V + " != " + le), ge != O && bt($t, "Bad uncompressed size: " + O + " != " + ge), Fe(U, ze, st, { unsafe: !0, mt: pe });
   }
   function qe(T, V) {
-    var O = V || {}, U = [], j = [], Z = Ee(1), te = O.compression ? 8 : 0, pe = 0, ue = 0, le = 0, ge = 0, Pe = 0, Te = T.FullPaths[0], ze = Te, Re = T.FileIndex[0], we = [], st = 0;
+    var O = V || {}, U = [], j = [], Z = Ee(1), te = O.compression ? 8 : 0, pe = 0, ue = 0, le = 0, ge = 0, Pe = 0, Te = T.FullPaths[0], ze = Te, Ae = T.FileIndex[0], we = [], st = 0;
     for (ue = 1; ue < T.FullPaths.length; ++ue)
-      if (ze = T.FullPaths[ue].slice(Te.length), Re = T.FileIndex[ue], !(!Re.size || !Re.content || ze == "Sh33tJ5")) {
+      if (ze = T.FullPaths[ue].slice(Te.length), Ae = T.FileIndex[ue], !(!Ae.size || !Ae.content || ze == "Sh33tJ5")) {
         var $t = ge, tr = Ee(ze.length);
         for (le = 0; le < ze.length; ++le)
           tr.write_shift(1, ze.charCodeAt(le) & 127);
-        tr = tr.slice(0, tr.l), we[Pe] = typeof Re.content == "string" ? yv.bstr(Re.content, 0) : yv.buf(
+        tr = tr.slice(0, tr.l), we[Pe] = typeof Ae.content == "string" ? yv.bstr(Ae.content, 0) : yv.buf(
           /*::((*/
-          Re.content,
+          Ae.content,
           0
         );
-        var wr = typeof Re.content == "string" ? pa(Re.content) : Re.content;
-        te == 8 && (wr = I(wr)), Z = Ee(30), Z.write_shift(4, 67324752), Z.write_shift(2, 20), Z.write_shift(2, pe), Z.write_shift(2, te), Re.mt ? i(Z, Re.mt) : Z.write_shift(4, 0), Z.write_shift(-4, we[Pe]), Z.write_shift(4, wr.length), Z.write_shift(
+        var wr = typeof Ae.content == "string" ? pa(Ae.content) : Ae.content;
+        te == 8 && (wr = I(wr)), Z = Ee(30), Z.write_shift(4, 67324752), Z.write_shift(2, 20), Z.write_shift(2, pe), Z.write_shift(2, te), Ae.mt ? i(Z, Ae.mt) : Z.write_shift(4, 0), Z.write_shift(-4, we[Pe]), Z.write_shift(4, wr.length), Z.write_shift(
           4,
           /*::(*/
-          Re.content.length
+          Ae.content.length
         ), Z.write_shift(2, tr.length), Z.write_shift(2, 0), ge += Z.length, U.push(Z), ge += tr.length, U.push(tr), ge += wr.length, U.push(wr), Z = Ee(46), Z.write_shift(4, 33639248), Z.write_shift(2, 0), Z.write_shift(2, 20), Z.write_shift(2, pe), Z.write_shift(2, te), Z.write_shift(4, 0), Z.write_shift(-4, we[Pe]), Z.write_shift(4, wr.length), Z.write_shift(
           4,
           /*::(*/
-          Re.content.length
+          Ae.content.length
         ), Z.write_shift(2, tr.length), Z.write_shift(2, 0), Z.write_shift(2, 0), Z.write_shift(2, 0), Z.write_shift(2, 0), Z.write_shift(4, 0), Z.write_shift(4, $t), st += Z.l, j.push(Z), st += tr.length, j.push(tr), ++Pe;
       }
     return Z = Ee(22), Z.write_shift(4, 101010256), Z.write_shift(2, 0), Z.write_shift(2, 0), Z.write_shift(2, Pe), Z.write_shift(2, Pe), Z.write_shift(4, st), Z.write_shift(4, ge), Z.write_shift(2, 0), yn([yn(U), yn(j), Z]);
@@ -3093,8 +3093,8 @@ var yv = /* @__PURE__ */ function() {
         }).replace(/[\u0080-\uFFFF]/g, function(st) {
           return "_u" + st.charCodeAt(0).toString(16) + "_";
         });
-        for (var le = pe.content, ge = jt && Buffer.isBuffer(le) ? le.toString("binary") : G(le), Pe = 0, Te = Math.min(1024, ge.length), ze = 0, Re = 0; Re <= Te; ++Re)
-          (ze = ge.charCodeAt(Re)) >= 32 && ze < 128 && ++Pe;
+        for (var le = pe.content, ge = jt && Buffer.isBuffer(le) ? le.toString("binary") : G(le), Pe = 0, Te = Math.min(1024, ge.length), ze = 0, Ae = 0; Ae <= Te; ++Ae)
+          (ze = ge.charCodeAt(Ae)) >= 32 && ze < 128 && ++Pe;
         var we = Pe >= Te * 4 / 5;
         j.push(U), j.push("Content-Location: " + (O.root || "file:///C:/SheetJS/") + te), j.push("Content-Transfer-Encoding: " + (we ? "quoted-printable" : "base64")), j.push("Content-Type: " + Sr(pe, te)), j.push(""), j.push(we ? At(ge) : Mr(ge));
       }
@@ -34144,10 +34144,10 @@ var qC = _.memo(_.forwardRef(function(e, n) {
   E6(a);
   var R = T6(a, l, i, v), H = R[0], Y = R[1], re = R[2], oe = R[3], G = P6(a, w, A, d, y, b, p, i, L, N, v, g, l), ye = G[0], Q = G[1], B = G[2], se = G[3], I = G[4], K = G[5], X = G[6], W = function(te, pe, ue) {
     var le = 0, ge = te.items, Pe = te.totalItemCount, Te = te.hasCheckmarks, ze = te.hasIcons;
-    return _.createElement("ul", { className: pe.list, onKeyDown: H, onKeyUp: Y, role: "presentation" }, ge.map(function(Re, we) {
-      var st = he(Re, we, le, Pe, Te, ze, pe);
-      if (Re.itemType !== wa.Divider && Re.itemType !== wa.Header) {
-        var $t = Re.customOnRenderListLength ? Re.customOnRenderListLength : 1;
+    return _.createElement("ul", { className: pe.list, onKeyDown: H, onKeyUp: Y, role: "presentation" }, ge.map(function(Ae, we) {
+      var st = he(Ae, we, le, Pe, Te, ze, pe);
+      if (Ae.itemType !== wa.Divider && Ae.itemType !== wa.Header) {
+        var $t = Ae.customOnRenderListLength ? Ae.customOnRenderListLength : 1;
         le += $t;
       }
       return st;
@@ -34156,7 +34156,7 @@ var qC = _.memo(_.forwardRef(function(e, n) {
     var ue = a.focusZoneAs, le = ue === void 0 ? Xi : ue;
     return _.createElement(le, k({}, pe), te);
   }, he = function(te, pe, ue, le, ge, Pe, Te) {
-    var ze, Re = [], we = te.iconProps || { iconName: "None" }, st = te.getItemClassNames, $t = te.itemProps, tr = $t ? $t.styles : void 0, wr = te.itemType === wa.Divider ? te.className : void 0, kn = te.submenuIconProps ? te.submenuIconProps.className : "", Yr;
+    var ze, Ae = [], we = te.iconProps || { iconName: "None" }, st = te.getItemClassNames, $t = te.itemProps, tr = $t ? $t.styles : void 0, wr = te.itemType === wa.Divider ? te.className : void 0, kn = te.submenuIconProps ? te.submenuIconProps.className : "", Yr;
     if (st)
       Yr = st(a.theme, Ui(te), p === te.key, !!Ol(te), !!te.href, we.iconName !== "None", te.className, wr, we.className, kn, te.primaryDisabled);
     else {
@@ -34177,31 +34177,31 @@ var qC = _.memo(_.forwardRef(function(e, n) {
     }
     switch ((te.text === "-" || te.name === "-") && (te.itemType = wa.Divider), te.itemType) {
       case wa.Divider:
-        Re.push(Le(pe, Yr));
+        Ae.push(Le(pe, Yr));
         break;
       case wa.Header:
-        Re.push(Le(pe, Yr));
+        Ae.push(Le(pe, Yr));
         var Hn = me(te, Yr, Te, pe, ge, Pe);
-        Re.push(M(Hn, te.key || pe, Yr, te.title));
+        Ae.push(M(Hn, te.key || pe, Yr, te.title));
         break;
       case wa.Section:
-        Re.push(De(te, Yr, Te, pe, ge, Pe));
+        Ae.push(De(te, Yr, Te, pe, ge, Pe));
         break;
       default:
         var Wn = function() {
           return ve(te, Yr, pe, ue, le, ge, Pe);
         }, je = a.onRenderContextualMenuItem ? a.onRenderContextualMenuItem(te, Wn) : Wn();
-        Re.push(M(je, te.key || pe, Yr, te.title));
+        Ae.push(M(je, te.key || pe, Yr, te.title));
         break;
     }
-    return _.createElement(_.Fragment, { key: te.key }, Re);
+    return _.createElement(_.Fragment, { key: te.key }, Ae);
   }, be = function(te, pe) {
     var ue = te.index, le = te.focusableElementIndex, ge = te.totalItemCount, Pe = te.hasCheckmarks, Te = te.hasIcons;
     return he(te, ue, le, ge, Pe, Te, pe);
   }, De = function(te, pe, ue, le, ge, Pe) {
     var Te = te.sectionProps;
     if (Te) {
-      var ze, Re;
+      var ze, Ae;
       if (Te.title) {
         var we = void 0, st = "";
         if (typeof Te.title == "string") {
@@ -34216,7 +34216,7 @@ var qC = _.memo(_.forwardRef(function(e, n) {
           var tr = Te.title.id || s + Te.title.key.replace(/\s/g, "");
           we = k(k({}, Te.title), { id: tr }), st = tr;
         }
-        we && (Re = {
+        we && (Ae = {
           role: "group",
           "aria-labelledby": st
         }, ze = me(we, pe, ue, le, ge, Pe));
@@ -34227,7 +34227,7 @@ var qC = _.memo(_.forwardRef(function(e, n) {
           { role: "presentation", key: Te.key || te.key || "section-" + le },
           _.createElement(
             "div",
-            k({}, Re),
+            k({}, Ae),
             _.createElement(
               "ul",
               { className: ue.list, role: "presentation" },
@@ -34248,7 +34248,7 @@ var qC = _.memo(_.forwardRef(function(e, n) {
   }, ve = function(te, pe, ue, le, ge, Pe, Te) {
     if (te.onRender)
       return te.onRender(k({ "aria-posinset": le + 1, "aria-setsize": ge }, te), l);
-    var ze = a.contextualMenuItemAs, Re = {
+    var ze = a.contextualMenuItemAs, Ae = {
       item: te,
       classNames: pe,
       index: ue,
@@ -34268,15 +34268,15 @@ var qC = _.memo(_.forwardRef(function(e, n) {
       dismissSubMenu: g,
       dismissMenu: l
     };
-    return te.href ? _.createElement(c6, k({}, Re, { onItemClick: I })) : te.split && Co(te) ? _.createElement(g6, k({}, Re, { onItemClick: se, onItemClickBase: X, onTap: N })) : _.createElement(d6, k({}, Re, { onItemClick: se, onItemClickBase: X }));
+    return te.href ? _.createElement(c6, k({}, Ae, { onItemClick: I })) : te.split && Co(te) ? _.createElement(g6, k({}, Ae, { onItemClick: se, onItemClickBase: X, onTap: N })) : _.createElement(d6, k({}, Ae, { onItemClick: se, onItemClickBase: X }));
   }, me = function(te, pe, ue, le, ge, Pe) {
-    var Te = a.contextualMenuItemAs, ze = Te === void 0 ? tc : Te, Re = te.itemProps, we = te.id, st = Re && Nt(Re, $r);
+    var Te = a.contextualMenuItemAs, ze = Te === void 0 ? tc : Te, Ae = te.itemProps, we = te.id, st = Ae && Nt(Ae, $r);
     return (
       // eslint-disable-next-line deprecation/deprecation
       _.createElement(
         "div",
         k({ id: we, className: ue.header }, st, { style: te.style }),
-        _.createElement(ze, k({ item: te, classNames: pe, index: le, onCheckmarkClick: ge ? se : void 0, hasIcons: Pe }, Re))
+        _.createElement(ze, k({ item: te, classNames: pe, index: le, onCheckmarkClick: ge ? se : void 0, hasIcons: Pe }, Ae))
       )
     );
   }, Se = a.isBeakVisible, Ie = a.items, ke = a.labelElementId, Be = a.id, xe = a.className, Me = a.beakWidth, tt = a.directionalHint, ht = a.directionalHintForRTL, pt = a.alignTargetEdge, Ge = a.gapSpace, Ft = a.coverTarget, gr = a.ariaLabel, Et = a.doNotLayer, Lt = a.target, Ye = a.bounds, Ue = a.useTargetWidth, yt = a.useTargetAsMinWidth, $e = a.directionalHintFixed, Qe = a.shouldFocusOnMount, et = a.shouldFocusOnContainer, nr = a.title, Vr = a.styles, vr = a.theme, bt = a.calloutProps, Br = a.onRenderSubMenu, en = Br === void 0 ? cx : Br, qe = a.onRenderMenuList, Dt = qe === void 0 ? function(te, pe) {
@@ -43432,7 +43432,7 @@ var M7 = _t(), O7 = "DetailsList", Wo = 100, L7 = 2, H7 = 2, W7 = { tabIndex: 0 
       isHorizontalConstrained: l === sc.horizontalConstrained,
       className: i
     });
-  }, [Q, B, s, m, l, i]), ze = d && d.onRenderFooter, Re = _.useMemo(function() {
+  }, [Q, B, s, m, l, i]), ze = d && d.onRenderFooter, Ae = _.useMemo(function() {
     return ze ? function(ct, zt) {
       return ze(k(k({}, ct), { columns: ne, groupNestingDepth: dr, indentWidth: f, selection: n, selectionMode: S, viewport: oe, checkboxVisibility: o, cellStyleProps: I }), zt);
     } : void 0;
@@ -43470,12 +43470,12 @@ var M7 = _t(), O7 = "DetailsList", Wo = 100, L7 = 2, H7 = 2, W7 = { tabIndex: 0 
     var ct;
     return k(k({}, d), {
       role: nt === qt ? "rowgroup" : "presentation",
-      onRenderFooter: Re,
+      onRenderFooter: Ae,
       onRenderHeader: st,
       // pass through custom group header checkbox label
       headerProps: k(k({}, d == null ? void 0 : d.headerProps), { selectAllButtonProps: k({ "aria-label": bt }, (ct = d == null ? void 0 : d.headerProps) === null || ct === void 0 ? void 0 : ct.selectAllButtonProps) })
     });
-  }, [d, Re, st, bt, nt]), tr = zn(function() {
+  }, [d, Ae, st, bt, nt]), tr = zn(function() {
     return cr(function(ct) {
       var zt = 0;
       return ct.forEach(function(tn) {
@@ -52677,7 +52677,7 @@ const WG = (e) => {
   }, [Y, re] = at([]), [oe, G] = at(!1), ye = () => {
     let Q = [];
     return e.columnConfigurationData.forEach((B, se) => {
-      var I, K, X, W, ne, he, be, De, M, Le, ve, me, Se, Ie, ke, Be, xe, Me, tt, ht, pt, Ge, Ft, gr, Et, Lt, Ye, Ue, yt, $e, Qe, et, nr, Vr, vr, bt, Br, en, qe, Dt, Sr, Mr, At, qt, nt, lt, dr, ee, Fe, We, it, Ht, T, V, O, U, j, Z, te, pe, ue, le, ge, Pe, Te, ze, Re, we, st, $t, tr, wr, kn, Yr, Ca, Hn, Wn;
+      var I, K, X, W, ne, he, be, De, M, Le, ve, me, Se, Ie, ke, Be, xe, Me, tt, ht, pt, Ge, Ft, gr, Et, Lt, Ye, Ue, yt, $e, Qe, et, nr, Vr, vr, bt, Br, en, qe, Dt, Sr, Mr, At, qt, nt, lt, dr, ee, Fe, We, it, Ht, T, V, O, U, j, Z, te, pe, ue, le, ge, Pe, Te, ze, Ae, we, st, $t, tr, wr, kn, Yr, Ca, Hn, Wn;
       switch (B.inputType) {
         case Tt.CheckBox:
           Q.push(
@@ -52904,7 +52904,7 @@ const WG = (e) => {
                 ariaLabel: ((le = (ue = B.validations) == null ? void 0 : ue.numericFormatProps) == null ? void 0 : le.ariaLabel) ?? B.text,
                 customInput: Dn,
                 suffix: (Te = (Pe = (ge = B.validations) == null ? void 0 : ge.numericFormatProps) == null ? void 0 : Pe.formatProps) == null ? void 0 : Te.suffix,
-                prefix: (we = (Re = (ze = B.validations) == null ? void 0 : ze.numericFormatProps) == null ? void 0 : Re.formatProps) == null ? void 0 : we.prefix,
+                prefix: (we = (Ae = (ze = B.validations) == null ? void 0 : ze.numericFormatProps) == null ? void 0 : Ae.formatProps) == null ? void 0 : we.prefix,
                 allowLeadingZeros: (tr = ($t = (st = B.validations) == null ? void 0 : st.numericFormatProps) == null ? void 0 : $t.formatProps) == null ? void 0 : tr.allowLeadingZeros,
                 allowNegative: (Yr = (kn = (wr = B.validations) == null ? void 0 : wr.numericFormatProps) == null ? void 0 : kn.formatProps) == null ? void 0 : Yr.allowNegative,
                 isAllowed: (Wn = (Hn = (Ca = B.validations) == null ? void 0 : Ca.numericFormatProps) == null ? void 0 : Hn.formatBase) == null ? void 0 : Wn.isAllowed,
@@ -54198,15 +54198,15 @@ const cz = (e) => {
     if (P && P.target) {
       let E = P.target.value;
       if (E) {
-        let q = e.columns.filter((de) => de.includeColumnInSearch == !0).map((de) => de.key), ae = [...m];
-        ae.filter((de, Ae) => {
+        let q = e.columns.filter((ce) => ce.includeColumnInSearch == !0).map((ce) => ce.key), ae = [...m];
+        ae.filter((ce, Re) => {
           var fe = {};
           try {
-            q.forEach((ce, Rt) => {
+            q.forEach((de, Rt) => {
               var wt, Ze, St, ar;
-              if (de[ce] && ((Ze = (wt = de[ce]) == null ? void 0 : wt.toString()) != null && Ze.toLowerCase()) && ((ar = (St = de[ce]) == null ? void 0 : St.toString()) != null && ar.toLowerCase().includes(E.trim().toLowerCase())))
-                throw de._is_filtered_in_grid_search_ = !0, fe;
-              de._is_filtered_in_grid_search_ = !1;
+              if (ce[de] && ((Ze = (wt = ce[de]) == null ? void 0 : wt.toString()) != null && Ze.toLowerCase()) && ((ar = (St = ce[de]) == null ? void 0 : St.toString()) != null && ar.toLowerCase().includes(E.trim().toLowerCase())))
+                throw ce._is_filtered_in_grid_search_ = !0, fe;
+              ce._is_filtered_in_grid_search_ = !1;
             });
           } catch {
           }
@@ -54271,10 +54271,10 @@ const cz = (e) => {
     e.onGridInErrorCallback && r && e.onGridInErrorCallback(r, nr);
   }, [r, nr]);
   function en(P) {
-    const z = [], E = {}, q = P.map((Ae) => {
+    const z = [], E = {}, q = P.map((Re) => {
       const fe = {};
-      for (const ce in Ae)
-        Ae[ce] == null || Ae[ce] == null ? fe[ce] = "" : fe[ce] = String(Ae[ce]).toLowerCase();
+      for (const de in Re)
+        Re[de] == null || Re[de] == null ? fe[de] = "" : fe[de] = String(Re[de]).toLowerCase();
       return fe;
     }), ae = [
       "_grid_row_id_",
@@ -54287,21 +54287,21 @@ const cz = (e) => {
       "_udf_custom_vaule_store_b"
     ];
     if (Ge.current !== null && ae.push(Ge.current), e.customKeysToAddOnNewRow)
-      for (let Ae = 0; Ae < e.customKeysToAddOnNewRow.length; Ae++) {
-        const fe = e.customKeysToAddOnNewRow[Ae];
+      for (let Re = 0; Re < e.customKeysToAddOnNewRow.length; Re++) {
+        const fe = e.customKeysToAddOnNewRow[Re];
         (fe.useKeyWhenDeterminingDuplicatedRows ?? !1) == !0 && ae.push(fe.key);
       }
-    let de = "";
-    return q.forEach((Ae, fe) => {
-      m[0] && (de = JSON.stringify(
-        Object.entries(Ae).filter(([ce]) => Object.keys(m[0]).includes(ce)).filter(
-          ([ce]) => e.columns.map((Rt) => Rt.key).includes(ce)
-        ).filter(([ce]) => !ae.includes(ce)).sort()
-      ), E[de] ? Ge.current !== null ? E[de].ids.push(Ae[Ge.current]) : E[de].ids.push(fe) : Ge.current !== null ? (E[de] = {
+    let ce = "";
+    return q.forEach((Re, fe) => {
+      m[0] && (ce = JSON.stringify(
+        Object.entries(Re).filter(([de]) => Object.keys(m[0]).includes(de)).filter(
+          ([de]) => e.columns.map((Rt) => Rt.key).includes(de)
+        ).filter(([de]) => !ae.includes(de)).sort()
+      ), E[ce] ? Ge.current !== null ? E[ce].ids.push(Re[Ge.current]) : E[ce].ids.push(fe) : Ge.current !== null ? (E[ce] = {
         index: z.length,
-        ids: [Ae[Ge.current]]
-      }, z.push(E[de].ids)) : (E[de] = { index: z.length, ids: [fe] }, z.push(E[de].ids)));
-    }), z.filter((Ae) => Ae.length > 1).map((Ae) => Ae.sort((fe, ce) => fe - ce));
+        ids: [Re[Ge.current]]
+      }, z.push(E[ce].ids)) : (E[ce] = { index: z.length, ids: [fe] }, z.push(E[ce].ids)));
+    }), z.filter((Re) => Re.length > 1).map((Re) => Re.sort((fe, de) => fe - de));
   }
   function qe(P) {
     if (!P || P.length < 0)
@@ -54328,7 +54328,7 @@ const cz = (e) => {
     return !0;
   }
   const Dt = () => {
-    var de, Ae, fe, ce, Rt, wt;
+    var ce, Re, fe, de, Rt, wt;
     let P = !1;
     const z = m.length > 0 ? m.filter(
       (Ze) => Ze._grid_row_operation_ != rr.Delete
@@ -54464,7 +54464,7 @@ const cz = (e) => {
                 let eo = !1;
                 if (fr.skipCheckIfTheseColumnsHaveData && fr.skipCheckIfTheseColumnsHaveData.colKeys)
                   for (const Xn of fr.skipCheckIfTheseColumnsHaveData.colKeys)
-                    if ((de = fr.skipCheckIfTheseColumnsHaveData) != null && de.partial) {
+                    if ((ce = fr.skipCheckIfTheseColumnsHaveData) != null && ce.partial) {
                       const qn = St[Xn];
                       if (qn && qn !== null && qn !== void 0 && (qn == null ? void 0 : qn.toString().length) > 0) {
                         eo = !0;
@@ -54509,8 +54509,8 @@ const cz = (e) => {
               }
             }
           if (He.validations && He.validations.stringValidations && He.validations.stringValidations.caseInsensitive) {
-            if (dt !== null && ((fe = (Ae = He.validations.stringValidations) == null ? void 0 : Ae.conditionCantEqual) == null ? void 0 : fe.toLowerCase()) === (dt == null ? void 0 : dt.toString().toLowerCase())) {
-              var ae = `Row ${Ge.current ? "With ID: " + St[Ge.current] : "With Index:" + Ze + 1} - ${(ce = He.validations.stringValidations) == null ? void 0 : ce.errMsg}`;
+            if (dt !== null && ((fe = (Re = He.validations.stringValidations) == null ? void 0 : Re.conditionCantEqual) == null ? void 0 : fe.toLowerCase()) === (dt == null ? void 0 : dt.toString().toLowerCase())) {
+              var ae = `Row ${Ge.current ? "With ID: " + St[Ge.current] : "With Index:" + Ze + 1} - ${(de = He.validations.stringValidations) == null ? void 0 : de.errMsg}`;
               bt(et.current, He.key + Ze, {
                 msg: ae,
                 type: Ve.error
@@ -54560,8 +54560,8 @@ const cz = (e) => {
   const Sr = () => {
     vr.current = /* @__PURE__ */ new Map(), Vr(vr.current), et.current = /* @__PURE__ */ new Map(), je(et.current), a(!1), zt(/* @__PURE__ */ new Map()), e.enableSaveGridOnCellValueChange || Xl(!1);
     let P = 0;
-    if (m.filter((ce) => ce._grid_row_operation_ != rr.Delete).filter((ce) => qe(ce)).forEach((ce) => {
-      (ce == null ? void 0 : ce._grid_row_id_) != null && (dm(Number(ce._grid_row_id_)), P = P + 1);
+    if (m.filter((de) => de._grid_row_operation_ != rr.Delete).filter((de) => qe(de)).forEach((de) => {
+      (de == null ? void 0 : de._grid_row_id_) != null && (dm(Number(de._grid_row_id_)), P = P + 1);
     }), P > 0) {
       var E = `Auto Deleted ${P} Blank Row${P == 1 ? "" : "s"}`;
       bt(et.current, "blanks", {
@@ -54579,17 +54579,17 @@ const cz = (e) => {
       "_is_data_transformed",
       "_udf_custom_vaule_store_a",
       "_udf_custom_vaule_store_b"
-    ], de = (ce) => Object.keys(ce).reduce((Rt, wt) => (ae.includes(wt) || (Rt[wt] = ce[wt]), Rt), {}), Ae = q.filter((ce) => (Nc.current && Nc.current.forEach(function(Rt, wt) {
+    ], ce = (de) => Object.keys(de).reduce((Rt, wt) => (ae.includes(wt) || (Rt[wt] = de[wt]), Rt), {}), Re = q.filter((de) => (Nc.current && Nc.current.forEach(function(Rt, wt) {
       var Ze, St, ar, Xr;
       for (let ir = 0; ir < Rt.values.length; ir++) {
         const Kr = Rt.values[ir];
-        ((St = (Ze = Kr == null ? void 0 : Kr.text) == null ? void 0 : Ze.toString()) == null ? void 0 : St.toLowerCase()) === (((Xr = (ar = ce[wt]) == null ? void 0 : ar.toString()) == null ? void 0 : Xr.toLowerCase()) ?? "") && (ce[wt] = Kr == null ? void 0 : Kr.key);
+        ((St = (Ze = Kr == null ? void 0 : Kr.text) == null ? void 0 : Ze.toString()) == null ? void 0 : St.toLowerCase()) === (((Xr = (ar = de[wt]) == null ? void 0 : ar.toString()) == null ? void 0 : Xr.toLowerCase()) ?? "") && (de[wt] = Kr == null ? void 0 : Kr.key);
       }
-    }), ce)).map(de);
+    }), de)).map(ce);
     let fe = !1;
-    return parseInt(tl(!0)) > 0 && (fe = Dt()), fe === !0 && a(!0), fe || (e.onBeforeGridSave && e.onBeforeGridSave(Ae), e.onGridSave && e.onGridSave(
+    return parseInt(tl(!0)) > 0 && (fe = Dt()), fe === !0 && a(!0), fe || (e.onBeforeGridSave && e.onBeforeGridSave(Re), e.onGridSave && e.onGridSave(
       m,
-      Ae
+      Re
     )), fe;
   }, Mr = async () => {
     e.onGridUpdate && await e.onGridUpdate(m);
@@ -54601,9 +54601,9 @@ const cz = (e) => {
           throw z;
         var ae = Object.keys(E.properties);
         ae.filter(
-          (de) => de != "_grid_row_id_" && de != "_grid_row_operation_"
-        ).forEach((de) => {
-          if (P = P || E.properties[de].activated, P)
+          (ce) => ce != "_grid_row_id_" && ce != "_grid_row_operation_"
+        ).forEach((ce) => {
+          if (P = P || E.properties[ce].activated, P)
             throw z;
         });
       });
@@ -54629,37 +54629,37 @@ const cz = (e) => {
   }, ee = (P, z) => {
     let E = [...z];
     return N.forEach((q, ae) => {
-      E.filter((de) => de._grid_row_id_ == q._grid_row_id_).map((de) => {
-        var Ae = Object.keys(P);
-        return Ae.forEach((fe) => {
-          var ce;
-          de[fe] = P[fe], de._grid_row_operation_ != rr.Add && (de._grid_row_operation_ = rr.Update, e.customOperationsKey && (de[e.customOperationsKey.colKey] = ((ce = e.customOperationsKey.options) == null ? void 0 : ce.Update) ?? rr.Update));
-        }), de;
+      E.filter((ce) => ce._grid_row_id_ == q._grid_row_id_).map((ce) => {
+        var Re = Object.keys(P);
+        return Re.forEach((fe) => {
+          var de;
+          ce[fe] = P[fe], ce._grid_row_operation_ != rr.Add && (ce._grid_row_operation_ = rr.Update, e.customOperationsKey && (ce[e.customOperationsKey.colKey] = ((de = e.customOperationsKey.options) == null ? void 0 : de.Update) ?? rr.Update));
+        }), ce;
       });
     }), nt(!0), E;
   }, Fe = (P, z, E) => {
     var q = [];
     for (var ae in P) {
-      var de = e.columns.filter((Ae) => Ae.key == ae)[0];
-      de.onChange && q.push(de);
+      var ce = e.columns.filter((Re) => Re.key == ae)[0];
+      ce.onChange && q.push(ce);
     }
     if (E)
       try {
-        q.forEach((Ae) => {
+        q.forEach((Re) => {
           z = qi(
             z,
             E.map((fe) => fe._grid_row_id_),
-            Ae
+            Re
           );
         });
       } catch {
       }
     else
-      q.forEach((Ae) => {
+      q.forEach((Re) => {
         z = qi(
           z,
           N.map((fe) => fe._grid_row_id_),
-          Ae
+          Re
         );
       });
     return z;
@@ -54676,7 +54676,7 @@ const cz = (e) => {
   }, T = _.useCallback(() => {
     G(void 0);
   }, []), V = qr(0), O = (P) => {
-    var Ae;
+    var Re;
     let z = {}, E = [], q = Math.max.apply(
       Math,
       m.map(function(fe) {
@@ -54690,13 +54690,13 @@ const cz = (e) => {
           return fe[Ge.current];
       })
     ) ?? 0, ae < V.current && (ae = V.current));
-    for (var de = 1; de <= P; de++) {
-      if (z = {}, e.columns.forEach((fe, ce) => {
-        fe.autoGenerate ? (z[fe.key] = ae + de, V.current = ae + de) : fe.defaultOnAddRow ? z[fe.key] = fe.defaultOnAddRow : z[fe.key] = hc(fe.dataType);
-      }), e.customOperationsKey && (z[e.customOperationsKey.colKey] = ((Ae = e.customOperationsKey.options) == null ? void 0 : Ae.Add) ?? rr.Add), e.customKeysToAddOnNewRow)
+    for (var ce = 1; ce <= P; ce++) {
+      if (z = {}, e.columns.forEach((fe, de) => {
+        fe.autoGenerate ? (z[fe.key] = ae + ce, V.current = ae + ce) : fe.defaultOnAddRow ? z[fe.key] = fe.defaultOnAddRow : z[fe.key] = hc(fe.dataType);
+      }), e.customOperationsKey && (z[e.customOperationsKey.colKey] = ((Re = e.customOperationsKey.options) == null ? void 0 : Re.Add) ?? rr.Add), e.customKeysToAddOnNewRow)
         for (let fe = 0; fe < e.customKeysToAddOnNewRow.length; fe++) {
-          const ce = e.customKeysToAddOnNewRow[fe];
-          z[ce.key] = ce.defaultValue;
+          const de = e.customKeysToAddOnNewRow[fe];
+          z[de.key] = de.defaultValue;
         }
       z._grid_row_id_ = q, z._grid_row_operation_ = rr.Add, z._is_filtered_in_ = !0, z._is_filtered_in_grid_search_ = !0, z._is_filtered_in_column_filter_ = !0, E.push(z);
     }
@@ -54713,8 +54713,8 @@ const cz = (e) => {
     const P = () => {
       if (ht && ht.current.value) {
         G(void 0), Q(/* @__PURE__ */ ie.jsx(OC, { message: "Rows Added", "aria-live": "assertive" }));
-        let de = parseInt(ht.current.value, 10);
-        var q = O(de), ae = [...q, ...m];
+        let ce = parseInt(ht.current.value, 10);
+        var q = O(ce), ae = [...q, ...m];
         nt(!0), qt(ae);
       }
     };
@@ -54743,16 +54743,17 @@ const cz = (e) => {
     }
     $e();
   }, te = (P, z) => {
+    var ae;
     if (h(), !(z < 0)) {
       var E = O(z);
-      Object.keys(P).length > 0 && E.map((ae) => {
-        var de = Object.keys(P);
-        return de.forEach((Ae) => {
-          ae[Ae] = P[Ae];
-        }), ae;
+      Object.keys(P).length > 0 && E.map((ce) => {
+        var Re = Object.keys(P);
+        return Re.forEach((fe) => {
+          ce[fe] = P[fe];
+        }), ce;
       });
-      var q = [...m, ...E];
-      nt(!0), qt(q);
+      var q = [];
+      (ae = e.enableGridRowAddWithValues) != null && ae.showInsertedRowAtTopWhenAddedFromPanel ? q = [...E, ...m] : q = [...m, ...E], nt(!0), qt(q);
     }
   }, pe = () => {
     xe({
@@ -54775,15 +54776,15 @@ const cz = (e) => {
     return !N || N.length == 0 ? m.filter(
       (q) => q._grid_row_operation_ != rr.Delete && q._is_filtered_in_ && q._is_filtered_in_column_filter_ && q._is_filtered_in_grid_search_
     ).forEach((q, ae) => {
-      P.forEach((de, Ae) => {
-        E[de.key] = q[de.key];
+      P.forEach((ce, Re) => {
+        E[ce.key] = q[ce.key];
       }), z.push(E), E = {};
     }) : N.forEach((q, ae) => {
       m.filter(
-        (de) => de._grid_row_operation_ != rr.Delete && de._is_filtered_in_ && de._is_filtered_in_column_filter_ && de._is_filtered_in_grid_search_
-      ).forEach((de, Ae) => {
-        q._grid_row_id_ == de._grid_row_id_ && (P.forEach((fe, ce) => {
-          E[fe.text] = de[fe.key];
+        (ce) => ce._grid_row_operation_ != rr.Delete && ce._is_filtered_in_ && ce._is_filtered_in_column_filter_ && ce._is_filtered_in_grid_search_
+      ).forEach((ce, Re) => {
+        q._grid_row_id_ == ce._grid_row_id_ && (P.forEach((fe, de) => {
+          E[fe.text] = ce[fe.key];
         }), z.push(E), E = {});
       });
     }), z;
@@ -54801,7 +54802,7 @@ const cz = (e) => {
         ge(le(), z + ".csv");
         break;
     }
-  }, ze = _.useRef(null), Re = () => {
+  }, ze = _.useRef(null), Ae = () => {
     const P = (z) => {
       var E;
       (E = ze.current) == null || E.click();
@@ -54862,21 +54863,21 @@ const cz = (e) => {
       E[ae] = P[ae];
     }), E;
   }), z), tr = (P) => {
-    var de;
+    var ce;
     var z = Object.keys(P), E = Object.keys(we);
     const q = e.columns.filter(
-      (Ae) => Ae.autoGenerate === !0
+      (Re) => Re.autoGenerate === !0
     ), ae = e.columns.filter(
-      (Ae) => Ae.columnNeededInImport === !1
+      (Re) => Re.columnNeededInImport === !1
     );
-    for (let Ae = 0; Ae < z.length; Ae++) {
-      const fe = z[Ae];
+    for (let Re = 0; Re < z.length; Re++) {
+      const fe = z[Re];
       if (!(E.includes(fe) || E.includes(fe == null ? void 0 : fe.toLowerCase()) && (E.length === z.length || E.length === z.length - ae.length - q.length || E.length === z.length + ae.length + q.length))) {
-        const ce = new Map(ct).set((de = e.id) == null ? void 0 : de.toString(), {
+        const de = new Map(ct).set((ce = e.id) == null ? void 0 : ce.toString(), {
           msg: "Make sure XLS file includes all columns. Even if you leave them blank. Import Terminated. Rename / Add  `" + fe + "` column",
           type: Ve.error
         });
-        return zt(ce), !1;
+        return zt(de), !1;
       }
     }
     return !0;
@@ -54884,35 +54885,35 @@ const cz = (e) => {
     let z = [];
     var E = Object.keys(P);
     for (let q = 0; q < E.length; q++) {
-      const ae = E[q], de = P[E[q]], Ae = e.columns.filter((fe) => fe.key === ae);
-      for (let fe = 0; fe < Ae.length; fe++) {
-        const ce = Ae[fe];
-        if (typeof de !== ce.dataType)
-          if (ce.dataType === "number")
-            isNaN(parseInt(de)) && z.push(
-              `Data type error, Column: ${ce.name}. Expected ${ce.dataType}. Got ${typeof de}`
+      const ae = E[q], ce = P[E[q]], Re = e.columns.filter((fe) => fe.key === ae);
+      for (let fe = 0; fe < Re.length; fe++) {
+        const de = Re[fe];
+        if (typeof ce !== de.dataType)
+          if (de.dataType === "number")
+            isNaN(parseInt(ce)) && z.push(
+              `Data type error, Column: ${de.name}. Expected ${de.dataType}. Got ${typeof ce}`
             );
-          else if (ce.dataType === "boolean")
+          else if (de.dataType === "boolean")
             try {
             } catch {
               z.push(
-                `Data type error, Column: ${ce.name}. Expected ${ce.dataType}. Got ${typeof de}`
+                `Data type error, Column: ${de.name}. Expected ${de.dataType}. Got ${typeof ce}`
               );
             }
-          else if (ce.dataType === "date")
+          else if (de.dataType === "date")
             try {
-              if (Kh(de))
+              if (Kh(ce))
                 continue;
               throw {};
             } catch {
               z.push(
-                `Data type error, Column: ${ce.name}. Expected ${ce.dataType}. Got ${typeof de}`
+                `Data type error, Column: ${de.name}. Expected ${de.dataType}. Got ${typeof ce}`
               );
             }
           else
-            typeof de !== ce.dataType ? z.push(
-              `Data type error, Column: ${ce.name}. Expected ${ce.dataType}. Got ${typeof de}`
-            ) : z.push(`Data type error, Column: ${ce.name}.`);
+            typeof ce !== de.dataType ? z.push(
+              `Data type error, Column: ${de.name}. Expected ${de.dataType}. Got ${typeof ce}`
+            ) : z.push(`Data type error, Column: ${de.name}.`);
       }
     }
     return z;
@@ -54921,12 +54922,12 @@ const cz = (e) => {
     const z = P.target.files;
     if (z.length) {
       const q = z[0], ae = new FileReader();
-      ae.onload = (de) => {
+      ae.onload = (ce) => {
         var wt, Ze, St;
-        const Ae = $u((wt = de.target) == null ? void 0 : wt.result), fe = Ae.SheetNames;
-        let ce = [];
+        const Re = $u((wt = ce.target) == null ? void 0 : wt.result), fe = Re.SheetNames;
+        let de = [];
         if (fe.length) {
-          const ar = kb.sheet_to_json(Ae.Sheets[fe[0]]);
+          const ar = kb.sheet_to_json(Re.Sheets[fe[0]]);
           if (ar.length <= 0) {
             const ir = new Map(ct).set(
               (Ze = e.id) == null ? void 0 : Ze.toString(),
@@ -54946,7 +54947,7 @@ const cz = (e) => {
           for (let ir = 0; ir < ar.length; ir++) {
             const Kr = wr(ar[ir]);
             if (Kr.length <= 0)
-              ce.push(
+              de.push(
                 $t(ar[ir], O(1))
               );
             else {
@@ -54962,13 +54963,13 @@ const cz = (e) => {
             }
           }
           var Rt = [...m];
-          ce.forEach((ir) => {
+          de.forEach((ir) => {
             Rt.splice(0, 0, ir[0]);
           });
           const Xr = new Map(ct).set(
             (St = e.id) == null ? void 0 : St.toString(),
             {
-              msg: `Imported ${ce.length} Rows From File`,
+              msg: `Imported ${de.length} Rows From File`,
               type: Ve.success
             }
           );
@@ -54992,15 +54993,15 @@ const cz = (e) => {
         break;
     }
   }, Hn = (P, z, E) => {
-    var Ae, fe;
+    var Re, fe;
     let q = [];
     q = [...E];
     var ae = q.findIndex(
-      (ce) => ce._grid_row_id_ == z
-    ), de = S.findIndex(
-      (ce) => ce.properties._grid_row_id_.value == z
+      (de) => de._grid_row_id_ == z
+    ), ce = S.findIndex(
+      (de) => de.properties._grid_row_id_.value == z
     );
-    return q[ae][P] = S[de].properties[P].value, q[ae]._grid_row_operation_ != rr.Add && (JSON.stringify(q) === JSON.stringify(b) ? (q[ae]._grid_row_operation_ = rr.None, e.customOperationsKey && (q[ae][e.customOperationsKey.colKey] = ((Ae = e.customOperationsKey.options) == null ? void 0 : Ae.None) ?? rr.None)) : (q[ae]._grid_row_operation_ = rr.Update, e.customOperationsKey && (q[ae][e.customOperationsKey.colKey] = ((fe = e.customOperationsKey.options) == null ? void 0 : fe.Update) ?? rr.Update)), nt(!0)), q;
+    return q[ae][P] = S[ce].properties[P].value, q[ae]._grid_row_operation_ != rr.Add && (JSON.stringify(q) === JSON.stringify(b) ? (q[ae]._grid_row_operation_ = rr.None, e.customOperationsKey && (q[ae][e.customOperationsKey.colKey] = ((Re = e.customOperationsKey.options) == null ? void 0 : Re.None) ?? rr.None)) : (q[ae]._grid_row_operation_ = rr.Update, e.customOperationsKey && (q[ae][e.customOperationsKey.colKey] = ((fe = e.customOperationsKey.options) == null ? void 0 : fe.Update) ?? rr.Update)), nt(!0)), q;
   }, [Wn, je] = at(
     /* @__PURE__ */ new Map()
   ), [Gt, Sa] = at([]), Wt = ei(() => {
@@ -55050,9 +55051,9 @@ const cz = (e) => {
   }, [ct]), at(!1), qr(/* @__PURE__ */ new Map()), at(
     /* @__PURE__ */ new Map()
   );
-  const Yn = (P, z, E, q, ae, de) => {
-    let Ae = [...S], fe = [];
-    if (Ae = [], S.forEach((ce, Rt) => {
+  const Yn = (P, z, E, q, ae, ce) => {
+    let Re = [...S], fe = [];
+    if (Re = [], S.forEach((de, Rt) => {
       var wt, Ze, St;
       if (q == Rt) {
         let ar = !0, Xr = z;
@@ -55071,14 +55072,14 @@ const cz = (e) => {
               ar = !0, Xr = Et ? (Ze = z == null ? void 0 : z.toString()) == null ? void 0 : Ze.split(" ")[0].trim() : (St = z == null ? void 0 : z.toString()) == null ? void 0 : St.split(/[\t\r]+/).map((ir) => ir.trim())[0].trim();
               break;
           }
-        ce.properties[ae].value = fc(de.dataType, Xr, ar) ?? "", fe.length > 0 ? fe.forEach((ir) => {
-          ce.properties[ir].error = null;
-        }) : ce.properties[ae].error = null;
+        de.properties[ae].value = fc(ce.dataType, Xr, ar) ?? "", fe.length > 0 ? fe.forEach((ir) => {
+          de.properties[ir].error = null;
+        }) : de.properties[ae].error = null;
       }
-      Ae.push(ce);
-    }), de.onChange && fs(Ae, q, de), C(Ae), e.enableSaveGridOnCellValueChange) {
-      let ce = Zi(E, q, m);
-      g(ce);
+      Re.push(de);
+    }), ce.onChange && fs(Re, q, ce), C(Re), e.enableSaveGridOnCellValueChange) {
+      let de = Zi(E, q, m);
+      g(de);
     } else
       nt(!0);
   }, qi = (P, z, E) => {
@@ -55095,63 +55096,63 @@ const cz = (e) => {
     P.key == "Enter" && !e.disableInlineCellEdit && (hs(z, E, !1), P.preventDefault());
   }, Rc = (P, z, E, q) => {
     let ae = [];
-    if (S.forEach((de, Ae) => {
-      E == Ae && (de.properties[q.key].value = cG(P)), ae.push(de);
+    if (S.forEach((ce, Re) => {
+      E == Re && (ce.properties[q.key].value = cG(P)), ae.push(ce);
     }), q.onChange && fs(ae, E, q), C(ae), e.enableSaveGridOnCellValueChange) {
-      let de = Zi(z, E, m);
-      g(de);
+      let ce = Zi(z, E, m);
+      g(ce);
     } else
       nt(!0);
   }, pk = (P, z, E, q) => {
     let ae = [];
-    if (S.forEach((de, Ae) => {
-      if (z == Ae) {
-        de.properties[E.key].value = "", P && P.length > 0 && P.forEach((ce) => {
-          de.properties[E.key].value += ce.name + ";";
+    if (S.forEach((ce, Re) => {
+      if (z == Re) {
+        ce.properties[E.key].value = "", P && P.length > 0 && P.forEach((de) => {
+          ce.properties[E.key].value += de.name + ";";
         });
-        let fe = de.properties[E.key].value;
-        de.properties[E.key].value = fe.length > 0 ? fe.substring(0, fe.length - 1) : fe;
+        let fe = ce.properties[E.key].value;
+        ce.properties[E.key].value = fe.length > 0 ? fe.substring(0, fe.length - 1) : fe;
       }
-      ae.push(de);
+      ae.push(ce);
     }), E.onChange && fs(ae, z, E), C(ae), e.enableSaveGridOnCellValueChange) {
-      let de = Zi(q, z, m);
-      g(de);
+      let ce = Zi(q, z, m);
+      g(ce);
     } else
       nt(!0);
   }, mk = (P, z, E, q, ae) => {
-    let de = [];
-    if (S.forEach((Ae, fe) => {
-      E == fe && (Ae.properties[q.key].value = z == null ? void 0 : z.text), de.push(Ae);
-    }), q.onChange && fs(de, E, q), C(de), e.enableSaveGridOnCellValueChange) {
-      let Ae = Zi(ae, E, m);
-      g(Ae);
+    let ce = [];
+    if (S.forEach((Re, fe) => {
+      E == fe && (Re.properties[q.key].value = z == null ? void 0 : z.text), ce.push(Re);
+    }), q.onChange && fs(ce, E, q), C(ce), e.enableSaveGridOnCellValueChange) {
+      let Re = Zi(ae, E, m);
+      g(Re);
     } else
       nt(!0);
   }, gk = (P, z, E, q, ae) => {
-    let de = [];
-    if (S.forEach((Ae, fe) => {
-      E == fe && (Ae.properties[q.key].value = z == null ? void 0 : z.text), de.push(Ae);
-    }), q.onChange && fs(de, E, q), C(de), e.enableSaveGridOnCellValueChange) {
-      let Ae = Zi(ae, E, m);
-      g(Ae);
+    let ce = [];
+    if (S.forEach((Re, fe) => {
+      E == fe && (Re.properties[q.key].value = z == null ? void 0 : z.text), ce.push(Re);
+    }), q.onChange && fs(ce, E, q), C(ce), e.enableSaveGridOnCellValueChange) {
+      let Re = Zi(ae, E, m);
+      g(Re);
     } else
       nt(!0);
   }, vk = (P, z, E, q) => {
     let ae = [];
-    if (S.forEach((de, Ae) => {
-      z == Ae && (de.properties[E.key].value = P), ae.push(de);
+    if (S.forEach((ce, Re) => {
+      z == Re && (ce.properties[E.key].value = P), ae.push(ce);
     }), E.onChange && fs(ae, z, E), C(ae), e.enableSaveGridOnCellValueChange) {
-      let de = Zi(q, z, m);
-      g(de);
+      let ce = Zi(q, z, m);
+      g(ce);
     } else
       nt(!0);
   }, _k = (P, z, E, q, ae) => {
-    let de = [];
-    if (S.forEach((Ae, fe) => {
-      z == fe && (Ae.properties[E.key].value = q), de.push(Ae);
-    }), E.onChange && fs(de, z, E), C(de), e.enableSaveGridOnCellValueChange) {
-      let Ae = Zi(ae, z, m);
-      g(Ae);
+    let ce = [];
+    if (S.forEach((Re, fe) => {
+      z == fe && (Re.properties[E.key].value = q), ce.push(Re);
+    }), E.onChange && fs(ce, z, E), C(ce), e.enableSaveGridOnCellValueChange) {
+      let Re = Zi(ae, z, m);
+      g(Re);
     } else
       nt(!0);
   }, om = (P, z, E, q) => {
@@ -55178,10 +55179,10 @@ const cz = (e) => {
     }
   }, fs = (P, z, E) => {
     var q = [];
-    P.forEach((de, Ae) => {
-      var fe = {}, ce = Object.keys(de.properties);
-      ce.forEach((Rt) => {
-        fe[Rt] = de.properties[Rt].value;
+    P.forEach((ce, Re) => {
+      var fe = {}, de = Object.keys(ce.properties);
+      de.forEach((Rt) => {
+        fe[Rt] = ce.properties[Rt].value;
       }), q.push(fe);
     });
     var ae = qi(q, [z], E);
@@ -55192,9 +55193,9 @@ const cz = (e) => {
   }, Yf = (P, z, E) => {
     let q = [...S];
     var ae = Object.keys(P);
-    return ae.filter((de) => de != "_grid_row_id_" && de != "_grid_row_operation_").forEach((de) => {
+    return ae.filter((ce) => ce != "_grid_row_id_" && ce != "_grid_row_operation_").forEach((ce) => {
       q = om(
-        de,
+        ce,
         z,
         E,
         q
@@ -55204,9 +55205,9 @@ const cz = (e) => {
     let q = [];
     q = [...E];
     var ae = Object.keys(P);
-    return ae.filter((de) => de != "_grid_row_id_" && de != "_grid_row_operation_").forEach((de) => {
+    return ae.filter((ce) => ce != "_grid_row_id_" && ce != "_grid_row_operation_").forEach((ce) => {
       q = Hn(
-        de,
+        ce,
         z,
         m
       );
@@ -55236,25 +55237,25 @@ const cz = (e) => {
       )
     );
   }, xk = (P, z) => {
-    var E = [...z], q = A.filter((Ae) => Ae._grid_row_id_ == P)[0], ae = Object.keys(q), de = E.filter(
-      (Ae) => Ae.properties._grid_row_id_.value == P
+    var E = [...z], q = A.filter((Re) => Re._grid_row_id_ == P)[0], ae = Object.keys(q), ce = E.filter(
+      (Re) => Re.properties._grid_row_id_.value == P
     )[0];
-    return ae.forEach((Ae) => {
-      Ae != "_grid_row_id_", de.properties[Ae].value = q[Ae];
+    return ae.forEach((Re) => {
+      Re != "_grid_row_id_", ce.properties[Re].value = q[Re];
     }), J(
-      A.filter((Ae) => Ae._grid_row_id_ != P)
+      A.filter((Re) => Re._grid_row_id_ != P)
     ), E;
   }, Xl = (P) => {
     var z = P ?? !n;
     J(z ? m : []);
     let E = [], q = [];
-    m.forEach((ae, de) => {
+    m.forEach((ae, ce) => {
       E = Yf(
         ae,
         ae._grid_row_id_,
         z
       );
-    }), C(E), e.enableSaveGridOnCellValueChange || z || (m.forEach((ae, de) => {
+    }), C(E), e.enableSaveGridOnCellValueChange || z || (m.forEach((ae, ce) => {
       q = Zi(
         ae,
         ae._grid_row_id_,
@@ -55338,7 +55339,7 @@ const cz = (e) => {
       return zt(z), !0;
     }
   }, kk = (P, z) => {
-    var ae, de, Ae, fe, ce, Rt, wt, Ze, St, ar, Xr, ir, Kr;
+    var ae, ce, Re, fe, de, Rt, wt, Ze, St, ar, Xr, ir, Kr;
     const E = {};
     var q = Object.keys(we);
     if (Ye.current && ((ae = Ye.current) != null && ae.key)) {
@@ -55355,13 +55356,13 @@ const cz = (e) => {
             P.splice(He + br - 1, 1, yr[br]);
           break;
         } else
-          dt != ((de = Ye.current) == null ? void 0 : de.key) && P.splice(He, 1, "");
+          dt != ((ce = Ye.current) == null ? void 0 : ce.key) && P.splice(He, 1, "");
       }
     }
     Ge.current && P.splice(0, 0, Ge.current);
     for (let on = 0; on < P.length; on++) {
       const yr = P[on], He = q[on];
-      Ge.current && He == Ge.current || ((Ae = we == null ? void 0 : we[He]) != null && Ae.columnEditable ? ((fe = yr == null ? void 0 : yr.toLowerCase()) == null ? void 0 : fe.trim()) === "false" ? E[He] = !1 : ((ce = yr == null ? void 0 : yr.toLowerCase()) == null ? void 0 : ce.trim()) === "true" ? E[He] = !0 : ((Rt = we == null ? void 0 : we[He]) == null ? void 0 : Rt.dataType) == "boolean" ? E[He] = ((wt = yr == null ? void 0 : yr.toString()) == null ? void 0 : wt.trim()) == "1" : E[He] = ((Ze = yr == null ? void 0 : yr.toString()) == null ? void 0 : Ze.trim()) ?? null : ((St = we == null ? void 0 : we[He]) == null ? void 0 : St.dataType) == "boolean" ? E[He] = ((ar = we == null ? void 0 : we[He]) == null ? void 0 : ar.defaultValueOnNewRow) ?? !1 : ((Xr = we == null ? void 0 : we[He]) == null ? void 0 : Xr.dataType) == "string" ? E[He] = ((ir = we == null ? void 0 : we[He]) == null ? void 0 : ir.defaultValueOnNewRow) ?? "" : E[He] = ((Kr = we == null ? void 0 : we[He]) == null ? void 0 : Kr.defaultValueOnNewRow) ?? null);
+      Ge.current && He == Ge.current || ((Re = we == null ? void 0 : we[He]) != null && Re.columnEditable ? ((fe = yr == null ? void 0 : yr.toLowerCase()) == null ? void 0 : fe.trim()) === "false" ? E[He] = !1 : ((de = yr == null ? void 0 : yr.toLowerCase()) == null ? void 0 : de.trim()) === "true" ? E[He] = !0 : ((Rt = we == null ? void 0 : we[He]) == null ? void 0 : Rt.dataType) == "boolean" ? E[He] = ((wt = yr == null ? void 0 : yr.toString()) == null ? void 0 : wt.trim()) == "1" : E[He] = ((Ze = yr == null ? void 0 : yr.toString()) == null ? void 0 : Ze.trim()) ?? null : ((St = we == null ? void 0 : we[He]) == null ? void 0 : St.dataType) == "boolean" ? E[He] = ((ar = we == null ? void 0 : we[He]) == null ? void 0 : ar.defaultValueOnNewRow) ?? !1 : ((Xr = we == null ? void 0 : we[He]) == null ? void 0 : Xr.dataType) == "string" ? E[He] = ((ir = we == null ? void 0 : we[He]) == null ? void 0 : ir.defaultValueOnNewRow) ?? "" : E[He] = ((Kr = we == null ? void 0 : we[He]) == null ? void 0 : Kr.defaultValueOnNewRow) ?? null);
     }
     return z.map((on) => {
       var yr = Object.keys(E);
@@ -55379,9 +55380,9 @@ const cz = (e) => {
     };
   }, [we, Ge, Et, m]);
   const Ek = async (P) => {
-    let z = [], E = "", q = [], ae = [], de = !1;
+    let z = [], E = "", q = [], ae = [], ce = !1;
     try {
-      var Ae = [...m];
+      var Re = [...m];
       await navigator.clipboard.readText().then((fe) => {
         if (E = fe, q = fe.split(`
 `), q.length <= 0) {
@@ -55395,7 +55396,7 @@ const cz = (e) => {
           zt(wt);
           return;
         }
-        var ce = Object.keys(we).filter(
+        var de = Object.keys(we).filter(
           (wt) => wt !== Ge.current
         );
         for (let wt = 0; wt < q.length; wt++) {
@@ -55407,8 +55408,8 @@ const cz = (e) => {
             return;
           }
           if (ae = Ze.trim().split("	"), P && wt == 0 && Ye.current !== null) {
-            var ce = Object.keys(we);
-            const Xr = ce.findIndex(
+            var de = Object.keys(we);
+            const Xr = de.findIndex(
               (Kr) => {
                 var on;
                 return Kr == ((on = Ye.current) == null ? void 0 : on.key);
@@ -55417,7 +55418,7 @@ const cz = (e) => {
             let ir = 0;
             e.columns.forEach((Kr, on) => {
               var yr, He, dt, br, fr, sn;
-              Kr.editable && Ye.current && on >= Xr && (de = !0, ((He = (yr = ae[ir]) == null ? void 0 : yr.toLowerCase()) == null ? void 0 : He.trim()) === "false" ? Ae[Ye.current._grid_row_id_][Kr.key] = !1 : ((br = (dt = ae[ir]) == null ? void 0 : dt.toLowerCase()) == null ? void 0 : br.trim()) === "true" ? Ae[Ye.current._grid_row_id_][Kr.key] = !0 : (sn = (fr = ae[ir]) == null ? void 0 : fr.toLowerCase()) == null || sn.trim(), Ae[Ye.current._grid_row_id_][Kr.key] = ae[ir] ?? "", ir++);
+              Kr.editable && Ye.current && on >= Xr && (ce = !0, ((He = (yr = ae[ir]) == null ? void 0 : yr.toLowerCase()) == null ? void 0 : He.trim()) === "false" ? Re[Ye.current._grid_row_id_][Kr.key] = !1 : ((br = (dt = ae[ir]) == null ? void 0 : dt.toLowerCase()) == null ? void 0 : br.trim()) === "true" ? Re[Ye.current._grid_row_id_][Kr.key] = !0 : (sn = (fr = ae[ir]) == null ? void 0 : fr.toLowerCase()) == null || sn.trim(), Re[Ye.current._grid_row_id_][Kr.key] = ae[ir] ?? "", ir++);
             });
             continue;
           }
@@ -55431,12 +55432,12 @@ const cz = (e) => {
             return;
         }
         z.forEach((wt) => {
-          Ae.splice(0, 0, wt[0]);
+          Re.splice(0, 0, wt[0]);
         });
         let Rt = new Map(ct);
         if ((z == null ? void 0 : z.length) > 0)
-          ae.length > ce.length ? Rt.set(e.id.toString(), {
-            msg: `Pasted ${z.length} ${z.length > 1 ? "rows" : "row"} from clipboard. You pasted in more columns than this grid contains. ${ae.length - ce.length} ${ae.length - ce.length > 1 ? "columns have" : "column has"} been removed.`,
+          ae.length > de.length ? Rt.set(e.id.toString(), {
+            msg: `Pasted ${z.length} ${z.length > 1 ? "rows" : "row"} from clipboard. You pasted in more columns than this grid contains. ${ae.length - de.length} ${ae.length - de.length > 1 ? "columns have" : "column has"} been removed.`,
             type: Ve.success
           }) : Rt.set(e.id.toString(), {
             msg: `Pasted ${z.length} ${z.length > 1 ? "Rows" : "Row"} From Clipboard`,
@@ -55447,11 +55448,11 @@ const cz = (e) => {
                 (wt, Ze) => ({ ...wt, [Ze]: Ze }),
                 {}
               ),
-              Ae,
+              Re,
               z[0]
             )
           ), $e(), nt(!0);
-        else if (de) {
+        else if (ce) {
           try {
             qt(
               Fe(
@@ -55459,9 +55460,9 @@ const cz = (e) => {
                   (wt, Ze) => ({ ...wt, [Ze]: Ze }),
                   {}
                 ),
-                Ae,
+                Re,
                 [
-                  Ae.filter(
+                  Re.filter(
                     (wt) => {
                       var Ze;
                       return wt._grid_row_id_ == ((Ze = Ye.current) == null ? void 0 : Ze._grid_row_id_);
@@ -55471,20 +55472,20 @@ const cz = (e) => {
               )
             );
           } catch {
-            qt(Ae);
+            qt(Re);
           }
           $e(), nt(!0);
         }
       }).catch((fe) => {
         console.error(fe), nt(!1);
-        const ce = new Map(ct).set(
+        const de = new Map(ct).set(
           e.id.toString(),
           {
             msg: "Failed To Paste Rows From Clipboard",
             type: Ve.error
           }
         );
-        zt(ce);
+        zt(de);
       });
     } catch {
       return;
@@ -55641,10 +55642,10 @@ const cz = (e) => {
   }, Fk = (P, z) => {
     var E = gm.slice();
     const q = E.filter(
-      (de) => P.key === de.key
+      (ce) => P.key === ce.key
     )[0];
-    E.forEach((de) => {
-      de === q ? (q.isSortedDescending = !q.isSortedDescending, q.isSorted = !0) : (de.isSorted = !1, de.isSortedDescending = !0);
+    E.forEach((ce) => {
+      ce === q ? (q.isSortedDescending = !q.isSortedDescending, q.isSorted = !0) : (ce.isSorted = !1, ce.isSortedDescending = !0);
     });
     const ae = Dk(
       m,
@@ -55660,7 +55661,7 @@ const cz = (e) => {
   function Dk(P, z, E) {
     const q = z;
     return P.slice(0).sort(
-      (ae, de) => (E ? ae[q] < de[q] : ae[q] > de[q]) ? 1 : -1
+      (ae, ce) => (E ? ae[q] < ce[q] : ae[q] > ce[q]) ? 1 : -1
     );
   }
   const qf = () => pt.current, hm = (P) => {
@@ -55693,7 +55694,7 @@ const cz = (e) => {
       var z = [];
       P.forEach((q) => {
         var ae = qf().filter(
-          (de) => de.column.key == q.key
+          (ce) => ce.column.key == q.key
         );
         ae.length > 0 && z.push(ae[0]);
       }), hm(z);
@@ -55762,25 +55763,25 @@ const cz = (e) => {
     var E = [
       ...new Set(
         m.filter(
-          (de) => de._grid_row_operation_ != rr.Delete && de._is_filtered_in_column_filter_ == !0 && de._is_filtered_in_grid_search_ == !0
-        ).map((de) => de[P.fieldName])
+          (ce) => ce._grid_row_operation_ != rr.Delete && ce._is_filtered_in_column_filter_ == !0 && ce._is_filtered_in_grid_search_ == !0
+        ).map((ce) => ce[P.fieldName])
       )
     ], q = [
       ...new Set(
         m.filter(
-          (de) => de._grid_row_operation_ != rr.Delete && (de._is_filtered_in_column_filter_ == !1 || de._is_filtered_in_grid_search_ == !1)
-        ).map((de) => de[P.fieldName])
+          (ce) => ce._grid_row_operation_ != rr.Delete && (ce._is_filtered_in_column_filter_ == !1 || ce._is_filtered_in_grid_search_ == !1)
+        ).map((ce) => ce[P.fieldName])
       )
     ], ae = [];
-    return !z || z.length == 0 ? ae = E.map((de) => ({ text: de, isChecked: !0 })) : ae = E.map((de) => {
-      var Ae = z.filter((fe) => fe.text == de);
+    return !z || z.length == 0 ? ae = E.map((ce) => ({ text: ce, isChecked: !0 })) : ae = E.map((ce) => {
+      var Re = z.filter((fe) => fe.text == ce);
       return {
-        text: de,
-        isChecked: Ae.length > 0 ? Ae[0].isChecked : !0
+        text: ce,
+        isChecked: Re.length > 0 ? Re[0].isChecked : !0
       };
     }), [
       ...ae,
-      ...q.filter((de) => !E.includes(de)).map((de) => ({ text: de, isChecked: !1 }))
+      ...q.filter((ce) => !E.includes(ce)).map((ce) => ({ text: ce, isChecked: !1 }))
     ];
   }, To = () => ve.current, Vk = (P) => ve.current[P], mm = (P) => {
     var z = [
@@ -55794,9 +55795,9 @@ const cz = (e) => {
   ), Nc = qr(/* @__PURE__ */ new Map()), $k = () => {
     let P = [], z = [];
     return e.columns.forEach((E, q) => {
-      var ae = "id-" + e.id + "-col-" + q, de = "col" + q, Ae = i1(E.dataType);
+      var ae = "id-" + e.id + "-col-" + q, ce = "col" + q, Re = i1(E.dataType);
       P.push({
-        key: de,
+        key: ce,
         name: E.text,
         headerClassName: ae,
         data: E.data,
@@ -55811,17 +55812,17 @@ const cz = (e) => {
         isPadded: E.isPadded,
         onColumnContextMenu: (
           // !(isGridInEdit || editMode) &&
-          Ae && !n && E.applyColumnFilter && e.enableColumnFilters ? !e.enableSaveGridOnCellValueChange && Y ? void 0 : (fe, ce) => wk(ce, fe, q) : void 0
+          Re && !n && E.applyColumnFilter && e.enableColumnFilters ? !e.enableSaveGridOnCellValueChange && Y ? void 0 : (fe, de) => wk(de, fe, q) : void 0
         ),
-        onColumnClick: !E.disableSort && !n ? !e.enableSaveGridOnCellValueChange && Y ? void 0 : (fe, ce) => Fk(ce) : void 0,
-        isSorted: Me.isEnabled && Me.key == de,
-        isSortedDescending: !(Me.isEnabled && Me.key == de) || !Me.isAscending,
-        isFiltered: !!(Ae && E.applyColumnFilter && e.enableColumnFilters && To() && To().length > 0 && To().filter((fe) => fe.column.key == E.key).length > 0 && To().filter((fe) => fe.column.key == E.key)[0].isApplied),
+        onColumnClick: !E.disableSort && !n ? !e.enableSaveGridOnCellValueChange && Y ? void 0 : (fe, de) => Fk(de) : void 0,
+        isSorted: Me.isEnabled && Me.key == ce,
+        isSortedDescending: !(Me.isEnabled && Me.key == ce) || !Me.isAscending,
+        isFiltered: !!(Re && E.applyColumnFilter && e.enableColumnFilters && To() && To().length > 0 && To().filter((fe) => fe.column.key == E.key).length > 0 && To().filter((fe) => fe.column.key == E.key)[0].isApplied),
         sortAscendingAriaLabel: "Sorted A to Z",
         sortDescendingAriaLabel: "Sorted Z to A",
-        onRender: E.onRender ? E.onRender : (fe, ce) => {
+        onRender: E.onRender ? E.onRender : (fe, de) => {
           var wt, Ze, St, ar, Xr, ir, Kr, on, yr, He, dt, br, fr, sn, eo, Xn, qn, Fm, Dm, Tm, Im, Am, Rm, Pm, Nm, Bm, Mm, Om, Lm, Hm, Wm, Vm, Um, Gm, zm, Km, jm, $m, Ym, Xm, qm, Zm, Jm, Qm, eg, tg, rg, ng, ag, ig, og, sg, lg, ug, cg, dg, fg, hg, pg, mg, gg, vg, _g, xg, yg, bg, Cg, Sg, kg, Eg, wg, Fg, Dg, Tg, Ig, Ag, Rg, Pg, Ng, Bg, Mg, Og, Lg, Hg, Wg, Vg, Ug, Gg, zg, Kg, jg, $g, Yg, Xg, qg, Zg, Jg, Qg, ev, tv, rv, nv, av;
-          if (ce = Number(fe._grid_row_id_), E.dropdownValues && E.inputType == Tt.DropDown && (Nc.current = new Map(
+          if (de = Number(fe._grid_row_id_), E.dropdownValues && E.inputType == Tt.DropDown && (Nc.current = new Map(
             Nc.current
           ).set(E.key, {
             colkey: E.key,
@@ -55834,7 +55835,7 @@ const cz = (e) => {
           }
           if (E.dataType == "date" && fe[E.key] && (fe[E.key] = new Date(fe[E.key]).toDateString()), E.autoGenerate && (V.current = isNaN(parseInt(fe[E.key])) === !1 ? parseInt(fe[E.key]) : V.current + 1), E.comboBoxOptions) {
             const Oe = /* @__PURE__ */ new Map();
-            Oe.set(E.key + ce, E.comboBoxOptions ?? []), jk.current = Oe;
+            Oe.set(E.key + de, E.comboBoxOptions ?? []), jk.current = Oe;
           }
           switch (E.inputType) {
             case Tt.MultilineTextField:
@@ -55843,13 +55844,13 @@ const cz = (e) => {
                 {
                   type: ca.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => Ti(E, ce, fe)
+                    onRenderPlainCard: () => Ti(E, de, fe)
                   },
                   instantOpenOnClick: !0,
                   children: km(
                     e,
                     q,
-                    ce,
+                    de,
                     E,
                     fe,
                     cn
@@ -55858,14 +55859,14 @@ const cz = (e) => {
               ) : km(
                 e,
                 q,
-                ce,
+                de,
                 E,
                 fe,
                 cn
               ) : /* @__PURE__ */ ie.jsx(
                 Dn,
                 {
-                  errorMessage: (Ze = S[ce].properties[E.key]) == null ? void 0 : Ze.error,
+                  errorMessage: (Ze = S[de].properties[E.key]) == null ? void 0 : Ze.error,
                   label: fe.text,
                   ariaLabel: E.key,
                   multiline: !0,
@@ -55875,12 +55876,12 @@ const cz = (e) => {
                     Oe,
                     Pt,
                     fe,
-                    ce,
+                    de,
                     E.key,
                     E
                   ),
                   autoFocus: !e.enableDefaultEditMode && !n && !(S && S[Number(fe._grid_row_id_)] && S[Number(fe._grid_row_id_)].isActivated),
-                  value: ((St = S[ce].properties[E.key]) == null ? void 0 : St.value) ?? "",
+                  value: ((St = S[de].properties[E.key]) == null ? void 0 : St.value) ?? "",
                   maxLength: E.maxLength != null ? E.maxLength : 1e4,
                   onFocus: (Oe) => Ue(
                     E.key,
@@ -55896,13 +55897,13 @@ const cz = (e) => {
                 {
                   type: ca.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => Ti(E, ce, fe)
+                    onRenderPlainCard: () => Ti(E, de, fe)
                   },
                   instantOpenOnClick: !0,
                   children: Sm(
                     e,
                     q,
-                    ce,
+                    de,
                     E,
                     fe,
                     cn
@@ -55911,7 +55912,7 @@ const cz = (e) => {
               ) : Sm(
                 e,
                 q,
-                ce,
+                de,
                 E,
                 fe,
                 cn
@@ -55922,9 +55923,9 @@ const cz = (e) => {
                   placeholder: "Select a date...",
                   ariaLabel: E.key,
                   value: new Date(
-                    S[ce].properties[E.key].value
+                    S[de].properties[E.key].value
                   ),
-                  onSelectDate: (Oe) => Rc(Oe, fe, ce, E),
+                  onSelectDate: (Oe) => Rc(Oe, fe, de, E),
                   onFocus: (Oe) => Ue(
                     E.key,
                     Tt.Date,
@@ -55934,18 +55935,18 @@ const cz = (e) => {
                 }
               ) });
             case Tt.CheckBox:
-              return /* @__PURE__ */ ie.jsx("span", { className: "row-" + ce + "-col-" + q, children: Rt() ? (Xr = E == null ? void 0 : E.hoverComponentOptions) != null && Xr.enable ? /* @__PURE__ */ ie.jsx(
+              return /* @__PURE__ */ ie.jsx("span", { className: "row-" + de + "-col-" + q, children: Rt() ? (Xr = E == null ? void 0 : E.hoverComponentOptions) != null && Xr.enable ? /* @__PURE__ */ ie.jsx(
                 gi,
                 {
                   type: ca.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => Ti(E, ce, fe)
+                    onRenderPlainCard: () => Ti(E, de, fe)
                   },
                   instantOpenOnClick: !0,
                   children: Cm(
                     e,
                     q,
-                    ce,
+                    de,
                     E,
                     fe,
                     cn
@@ -55954,7 +55955,7 @@ const cz = (e) => {
               ) : Cm(
                 e,
                 q,
-                ce,
+                de,
                 E,
                 fe,
                 cn
@@ -55963,11 +55964,11 @@ const cz = (e) => {
                 {
                   styles: { root: { justifyContent: "center" } },
                   ariaLabel: E.key,
-                  checked: (ir = S[ce].properties[E.key]) == null ? void 0 : ir.value,
+                  checked: (ir = S[de].properties[E.key]) == null ? void 0 : ir.value,
                   onChange: (Oe, Pt) => {
                     _k(
                       Oe,
-                      ce,
+                      de,
                       E,
                       Pt,
                       fe
@@ -55980,22 +55981,22 @@ const cz = (e) => {
                 let Oe = new Map(ql.current);
                 for (let Pt = 0; Pt < [E.disableDropdown].length; Pt++) {
                   const Zn = [E.disableDropdown][Pt], Kt = fe[Zn.disableBasedOnThisColumnKey];
-                  Zn.type === go.DisableWhenColKeyHasData ? Kt && (Kt == null ? void 0 : Kt.toString().length) > 0 && (Oe.get(E.key + ce) ?? !1) === !1 ? (Oe.set(E.key + ce, !0), ql.current = Oe) : Oe.get(E.key + ce) == !0 && !Kt && (Oe.set(E.key + ce, !1), ql.current = Oe) : Zn.type === go.DisableWhenColKeyIsEmpty && (Kt == "" || Kt && (Kt == null ? void 0 : Kt.toString().length) <= 0 || Kt == null && (Oe.get(E.key + ce) ?? !1) === !1 ? Oe.set(E.key + ce, !0) : (Oe.get(E.key + ce) ?? !0) !== !1 && Kt && (Kt == null ? void 0 : Kt.toString().length) > 0 && Oe.set(E.key + ce, !1));
+                  Zn.type === go.DisableWhenColKeyHasData ? Kt && (Kt == null ? void 0 : Kt.toString().length) > 0 && (Oe.get(E.key + de) ?? !1) === !1 ? (Oe.set(E.key + de, !0), ql.current = Oe) : Oe.get(E.key + de) == !0 && !Kt && (Oe.set(E.key + de, !1), ql.current = Oe) : Zn.type === go.DisableWhenColKeyIsEmpty && (Kt == "" || Kt && (Kt == null ? void 0 : Kt.toString().length) <= 0 || Kt == null && (Oe.get(E.key + de) ?? !1) === !1 ? Oe.set(E.key + de, !0) : (Oe.get(E.key + de) ?? !0) !== !1 && Kt && (Kt == null ? void 0 : Kt.toString().length) > 0 && Oe.set(E.key + de, !1));
                 }
                 ql.current = Oe;
               }
-              return /* @__PURE__ */ ie.jsx("span", { className: "row-" + ce + "-col-" + q, children: Rt() ? (Kr = E == null ? void 0 : E.hoverComponentOptions) != null && Kr.enable ? /* @__PURE__ */ ie.jsx(
+              return /* @__PURE__ */ ie.jsx("span", { className: "row-" + de + "-col-" + q, children: Rt() ? (Kr = E == null ? void 0 : E.hoverComponentOptions) != null && Kr.enable ? /* @__PURE__ */ ie.jsx(
                 gi,
                 {
                   type: ca.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => Ti(E, ce, fe)
+                    onRenderPlainCard: () => Ti(E, de, fe)
                   },
                   instantOpenOnClick: !0,
                   children: ym(
                     e,
                     q,
-                    ce,
+                    de,
                     E,
                     fe,
                     cn
@@ -56004,7 +56005,7 @@ const cz = (e) => {
               ) : ym(
                 e,
                 q,
-                ce,
+                de,
                 E,
                 fe,
                 cn
@@ -56020,12 +56021,12 @@ const cz = (e) => {
                     ((br = (dt = (He = E.dropdownValues) == null ? void 0 : He.filter(
                       (Oe) => {
                         var Pt;
-                        return (Oe == null ? void 0 : Oe.key) == ((Pt = S[ce].properties[E.key]) == null ? void 0 : Pt.value);
+                        return (Oe == null ? void 0 : Oe.key) == ((Pt = S[de].properties[E.key]) == null ? void 0 : Pt.value);
                       }
                     )[0]) == null ? void 0 : dt.key) == null ? void 0 : br.toString()) ?? ((eo = (sn = (fr = E.dropdownValues) == null ? void 0 : fr.filter(
                       (Oe) => {
                         var Pt;
-                        return (Oe == null ? void 0 : Oe.text) == ((Pt = S[ce].properties[E.key]) == null ? void 0 : Pt.value);
+                        return (Oe == null ? void 0 : Oe.text) == ((Pt = S[de].properties[E.key]) == null ? void 0 : Pt.value);
                       }
                     )[0]) == null ? void 0 : sn.key) == null ? void 0 : eo.toString()) ?? null
                   ),
@@ -56035,11 +56036,11 @@ const cz = (e) => {
                   onChange: (Oe, Pt) => mk(
                     Oe,
                     Pt,
-                    ce,
+                    de,
                     E,
                     fe
                   ),
-                  disabled: ql.current.get(E.key + ce) ?? (typeof E.disableDropdown == "boolean" ? E.disableDropdown : !1)
+                  disabled: ql.current.get(E.key + de) ?? (typeof E.disableDropdown == "boolean" ? E.disableDropdown : !1)
                 }
               ) });
             case Tt.ComboBox:
@@ -56047,22 +56048,22 @@ const cz = (e) => {
                 let Oe = new Map(Zl.current);
                 for (let Pt = 0; Pt < [E.disableComboBox].length; Pt++) {
                   const Zn = [E.disableComboBox][Pt], Kt = fe[Zn.disableBasedOnThisColumnKey];
-                  Zn.type === go.DisableWhenColKeyHasData ? Kt && (Kt == null ? void 0 : Kt.toString().length) > 0 && (Oe.get(E.key + ce) ?? !1) === !1 ? (Oe.set(E.key + ce, !0), Zl.current = Oe) : Oe.get(E.key + ce) == !0 && !Kt && (Oe.set(E.key + ce, !1), Zl.current = Oe) : Zn.type === go.DisableWhenColKeyIsEmpty && (Kt == "" || Kt && (Kt == null ? void 0 : Kt.toString().length) <= 0 || Kt == null && (Oe.get(E.key + ce) ?? !1) === !1 ? Oe.set(E.key + ce, !0) : (Oe.get(E.key + ce) ?? !0) !== !1 && Kt && (Kt == null ? void 0 : Kt.toString().length) > 0 && Oe.set(E.key + ce, !1));
+                  Zn.type === go.DisableWhenColKeyHasData ? Kt && (Kt == null ? void 0 : Kt.toString().length) > 0 && (Oe.get(E.key + de) ?? !1) === !1 ? (Oe.set(E.key + de, !0), Zl.current = Oe) : Oe.get(E.key + de) == !0 && !Kt && (Oe.set(E.key + de, !1), Zl.current = Oe) : Zn.type === go.DisableWhenColKeyIsEmpty && (Kt == "" || Kt && (Kt == null ? void 0 : Kt.toString().length) <= 0 || Kt == null && (Oe.get(E.key + de) ?? !1) === !1 ? Oe.set(E.key + de, !0) : (Oe.get(E.key + de) ?? !0) !== !1 && Kt && (Kt == null ? void 0 : Kt.toString().length) > 0 && Oe.set(E.key + de, !1));
                 }
                 Zl.current = Oe;
               }
-              return /* @__PURE__ */ ie.jsx("span", { className: "row-" + ce + "-col-" + q, children: Rt() ? (Xn = E == null ? void 0 : E.hoverComponentOptions) != null && Xn.enable ? /* @__PURE__ */ ie.jsx(
+              return /* @__PURE__ */ ie.jsx("span", { className: "row-" + de + "-col-" + q, children: Rt() ? (Xn = E == null ? void 0 : E.hoverComponentOptions) != null && Xn.enable ? /* @__PURE__ */ ie.jsx(
                 gi,
                 {
                   type: ca.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => Ti(E, ce, fe)
+                    onRenderPlainCard: () => Ti(E, de, fe)
                   },
                   instantOpenOnClick: !0,
                   children: bm(
                     e,
                     q,
-                    ce,
+                    de,
                     E,
                     fe,
                     cn
@@ -56071,14 +56072,14 @@ const cz = (e) => {
               ) : bm(
                 e,
                 q,
-                ce,
+                de,
                 E,
                 fe,
                 cn
               ) : /* @__PURE__ */ ie.jsx(
                 Uf,
                 {
-                  disabled: Zl.current.get(E.key + ce) ?? (typeof E.disableComboBox == "boolean" ? E.disableComboBox : !1),
+                  disabled: Zl.current.get(E.key + de) ?? (typeof E.disableComboBox == "boolean" ? E.disableComboBox : !1),
                   ariaLabel: E.key,
                   placeholder: ((Fm = (qn = E.comboBoxOptions) == null ? void 0 : qn.filter(
                     (Oe) => Oe.text == fe[E.key]
@@ -56093,12 +56094,12 @@ const cz = (e) => {
                     ((Pm = (Rm = (Am = E.comboBoxOptions) == null ? void 0 : Am.filter(
                       (Oe) => {
                         var Pt;
-                        return (Oe == null ? void 0 : Oe.text) == ((Pt = S[ce].properties[E.key]) == null ? void 0 : Pt.value);
+                        return (Oe == null ? void 0 : Oe.text) == ((Pt = S[de].properties[E.key]) == null ? void 0 : Pt.value);
                       }
                     )[0]) == null ? void 0 : Rm.key) == null ? void 0 : Pm.toString()) ?? ((Mm = (Bm = (Nm = E.comboBoxOptions) == null ? void 0 : Nm.filter(
                       (Oe) => {
                         var Pt;
-                        return (Oe == null ? void 0 : Oe.key) == ((Pt = S[ce].properties[E.key]) == null ? void 0 : Pt.value);
+                        return (Oe == null ? void 0 : Oe.key) == ((Pt = S[de].properties[E.key]) == null ? void 0 : Pt.value);
                       }
                     )[0]) == null ? void 0 : Bm.key) == null ? void 0 : Mm.toString()) ?? null
                   ),
@@ -56110,14 +56111,14 @@ const cz = (e) => {
                   allowFreeform: !1,
                   autoComplete: "on",
                   scrollSelectedToTop: !0,
-                  options: Gk.get(E.key + ce) ?? E.comboBoxOptions ?? [],
+                  options: Gk.get(E.key + de) ?? E.comboBoxOptions ?? [],
                   onClick: () => {
-                    if (!zk.get(E.key + ce)) {
+                    if (!zk.get(E.key + de)) {
                       const Oe = /* @__PURE__ */ new Map();
-                      Oe.set(E.key + ce, !0), Kk(Oe);
+                      Oe.set(E.key + de, !0), Kk(Oe);
                       const Pt = E.comboBoxOptions ? [...E.comboBoxOptions] : [], Zn = /* @__PURE__ */ new Map();
                       Zn.set(
-                        E.key + ce,
+                        E.key + de,
                         Pt.concat([
                           {
                             key: "8509984a-3d7f-45ff-90dc-b560f5b321d9",
@@ -56140,18 +56141,18 @@ const cz = (e) => {
                         }
                       ), iv = /* @__PURE__ */ new Map();
                       iv.set(
-                        E.key + ce,
+                        E.key + de,
                         (Kt == null ? void 0 : Kt.concat([
                           {
                             key: "64830f62-5ab8-490a-a0ed-971f977a3603",
                             text: ""
                           }
                         ])) ?? []
-                      ), Zf(iv), vk(Oe, ce, E, fe);
+                      ), Zf(iv), vk(Oe, de, E, fe);
                     } catch {
                       const Kt = /* @__PURE__ */ new Map();
                       Kt.set(
-                        E.key + ce,
+                        E.key + de,
                         [...E.comboBoxOptions ?? []].concat([
                           {
                             key: "64830f62-5ab8-490a-a0ed-971f977a3603",
@@ -56161,9 +56162,9 @@ const cz = (e) => {
                       ), Zf(Kt);
                     }
                   },
-                  onChange: (Oe, Pt) => gk(Oe, Pt, ce, E, fe),
+                  onChange: (Oe, Pt) => gk(Oe, Pt, de, E, fe),
                   onKeyDown: (Oe) => {
-                    e.enableSingleCellEditOnDoubleClick === !0 ? Qs(Oe, E, ce, !1) : e.enableSingleCellEditOnDoubleClick === !1 && el(
+                    e.enableSingleCellEditOnDoubleClick === !0 ? Qs(Oe, E, de, !1) : e.enableSingleCellEditOnDoubleClick === !1 && el(
                       Oe,
                       fe,
                       Number(fe._grid_row_id_)
@@ -56183,13 +56184,13 @@ const cz = (e) => {
                 {
                   type: ca.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => Ti(E, ce, fe)
+                    onRenderPlainCard: () => Ti(E, de, fe)
                   },
                   instantOpenOnClick: !0,
                   children: xm(
                     e,
                     q,
-                    ce,
+                    de,
                     E,
                     fe,
                     cn
@@ -56198,7 +56199,7 @@ const cz = (e) => {
               ) : xm(
                 e,
                 q,
-                ce,
+                de,
                 E,
                 fe,
                 cn
@@ -56212,7 +56213,7 @@ const cz = (e) => {
                   minCharLimitForSuggestions: (Wm = E.pickerOptions) == null ? void 0 : Wm.minCharLimitForSuggestions,
                   onTaglistChanged: (Oe) => pk(
                     Oe,
-                    ce,
+                    de,
                     E,
                     fe
                   ),
@@ -56226,13 +56227,13 @@ const cz = (e) => {
                 {
                   type: ca.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => Ti(E, ce, fe)
+                    onRenderPlainCard: () => Ti(E, de, fe)
                   },
                   instantOpenOnClick: !0,
                   children: vm(
                     e,
                     q,
-                    ce,
+                    de,
                     E,
                     fe,
                     cn
@@ -56241,7 +56242,7 @@ const cz = (e) => {
               ) : vm(
                 e,
                 q,
-                ce,
+                de,
                 E,
                 fe,
                 cn
@@ -56252,13 +56253,13 @@ const cz = (e) => {
                 {
                   type: ca.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => Ti(E, ce, fe)
+                    onRenderPlainCard: () => Ti(E, de, fe)
                   },
                   instantOpenOnClick: !0,
                   children: _m(
                     e,
                     q,
-                    ce,
+                    de,
                     E,
                     fe,
                     cn
@@ -56267,14 +56268,14 @@ const cz = (e) => {
               ) : _m(
                 e,
                 q,
-                ce,
+                de,
                 E,
                 fe,
                 cn
               ) : /* @__PURE__ */ ie.jsx(
                 Dn,
                 {
-                  errorMessage: (Km = S[ce].properties[E.key]) == null ? void 0 : Km.error,
+                  errorMessage: (Km = S[de].properties[E.key]) == null ? void 0 : Km.error,
                   label: fe.text,
                   ariaLabel: E.key,
                   styles: mo,
@@ -56282,14 +56283,14 @@ const cz = (e) => {
                     Oe,
                     Pt,
                     fe,
-                    ce,
+                    de,
                     E.key,
                     E
                   ),
                   autoFocus: !e.enableDefaultEditMode && !n && !((jm = S == null ? void 0 : S[Number(fe._grid_row_id_)]) != null && jm.isActivated),
-                  value: (($m = S[ce].properties[E.key]) == null ? void 0 : $m.value) ?? "",
+                  value: (($m = S[de].properties[E.key]) == null ? void 0 : $m.value) ?? "",
                   onKeyDown: (Oe) => {
-                    e.enableSingleCellEditOnDoubleClick === !0 ? Qs(Oe, E, ce, !1) : e.enableSingleCellEditOnDoubleClick === !1 && el(
+                    e.enableSingleCellEditOnDoubleClick === !0 ? Qs(Oe, E, de, !1) : e.enableSingleCellEditOnDoubleClick === !1 && el(
                       Oe,
                       fe,
                       Number(fe._grid_row_id_)
@@ -56312,13 +56313,13 @@ const cz = (e) => {
                 {
                   type: ca.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => Ti(E, ce, fe)
+                    onRenderPlainCard: () => Ti(E, de, fe)
                   },
                   instantOpenOnClick: !0,
                   children: Bc(
                     e,
                     q,
-                    ce,
+                    de,
                     E,
                     fe,
                     cn
@@ -56327,14 +56328,14 @@ const cz = (e) => {
               ) : Bc(
                 e,
                 q,
-                ce,
+                de,
                 E,
                 fe,
                 cn
               ) : /* @__PURE__ */ ie.jsx(
                 $f,
                 {
-                  value: ((Zm = (qm = S[ce].properties[E.key]) == null ? void 0 : qm.value) == null ? void 0 : Zm.toString()) ?? "",
+                  value: ((Zm = (qm = S[de].properties[E.key]) == null ? void 0 : qm.value) == null ? void 0 : Zm.toString()) ?? "",
                   placeholder: (eg = (Qm = (Jm = E.validations) == null ? void 0 : Jm.numericFormatProps) == null ? void 0 : Qm.formatBase) == null ? void 0 : eg.placeholder,
                   valueIsNumericString: ((ng = (rg = (tg = E.validations) == null ? void 0 : tg.numericFormatProps) == null ? void 0 : rg.formatBase) == null ? void 0 : ng.valueIsNumericString) ?? !1,
                   type: (og = (ig = (ag = E.validations) == null ? void 0 : ag.numericFormatProps) == null ? void 0 : ig.formatBase) == null ? void 0 : og.type,
@@ -56356,19 +56357,19 @@ const cz = (e) => {
                   allowLeadingZeros: ($g = (jg = (Kg = E.validations) == null ? void 0 : Kg.numericFormatProps) == null ? void 0 : jg.formatProps) == null ? void 0 : $g.allowLeadingZeros,
                   allowNegative: (qg = (Xg = (Yg = E.validations) == null ? void 0 : Yg.numericFormatProps) == null ? void 0 : Xg.formatProps) == null ? void 0 : qg.allowNegative,
                   isAllowed: (Qg = (Jg = (Zg = E.validations) == null ? void 0 : Zg.numericFormatProps) == null ? void 0 : Jg.formatBase) == null ? void 0 : Qg.isAllowed,
-                  errorMessage: (ev = S[ce].properties[E.key]) == null ? void 0 : ev.error,
+                  errorMessage: (ev = S[de].properties[E.key]) == null ? void 0 : ev.error,
                   onValueChange: (Oe, Pt) => {
                     Yn(
                       Pt.event,
                       Oe.formattedValue ?? Oe.value,
                       fe,
-                      ce,
+                      de,
                       E.key,
                       E
                     );
                   },
                   onKeyDown: (Oe) => {
-                    e.enableSingleCellEditOnDoubleClick === !0 ? Qs(Oe, E, ce, !1) : e.enableSingleCellEditOnDoubleClick === !1 && el(
+                    e.enableSingleCellEditOnDoubleClick === !0 ? Qs(Oe, E, de, !1) : e.enableSingleCellEditOnDoubleClick === !1 && el(
                       Oe,
                       fe,
                       Number(fe._grid_row_id_)
@@ -56389,13 +56390,13 @@ const cz = (e) => {
                 {
                   type: ca.plain,
                   plainCardProps: {
-                    onRenderPlainCard: () => Ti(E, ce, fe)
+                    onRenderPlainCard: () => Ti(E, de, fe)
                   },
                   instantOpenOnClick: !0,
                   children: Bc(
                     e,
                     q,
-                    ce,
+                    de,
                     E,
                     fe,
                     cn
@@ -56404,14 +56405,14 @@ const cz = (e) => {
               ) : Bc(
                 e,
                 q,
-                ce,
+                de,
                 E,
                 fe,
                 cn
               ) : /* @__PURE__ */ ie.jsx(
                 Dn,
                 {
-                  errorMessage: (rv = S[ce].properties[E.key]) == null ? void 0 : rv.error,
+                  errorMessage: (rv = S[de].properties[E.key]) == null ? void 0 : rv.error,
                   label: fe.text,
                   ariaLabel: E.key,
                   styles: mo,
@@ -56419,14 +56420,14 @@ const cz = (e) => {
                     Oe,
                     Pt,
                     fe,
-                    ce,
+                    de,
                     E.key,
                     E
                   ),
                   autoFocus: !e.enableDefaultEditMode && !n && !((nv = S == null ? void 0 : S[Number(fe._grid_row_id_)]) != null && nv.isActivated),
-                  value: ((av = S[ce].properties[E.key]) == null ? void 0 : av.value) ?? "",
+                  value: ((av = S[de].properties[E.key]) == null ? void 0 : av.value) ?? "",
                   onKeyDown: (Oe) => {
-                    e.enableSingleCellEditOnDoubleClick === !0 ? Qs(Oe, E, ce, !1) : e.enableSingleCellEditOnDoubleClick === !1 && el(
+                    e.enableSingleCellEditOnDoubleClick === !0 ? Qs(Oe, E, de, !1) : e.enableSingleCellEditOnDoubleClick === !1 && el(
                       Oe,
                       fe,
                       Number(fe._grid_row_id_)
@@ -56444,7 +56445,7 @@ const cz = (e) => {
           }
           function Rt() {
             var Oe, Pt, Zn;
-            return !E.editable || !e.enableDefaultEditMode && !((Oe = S == null ? void 0 : S[ce]) != null && Oe.isActivated) && !((Zn = (Pt = S == null ? void 0 : S[ce]) == null ? void 0 : Pt.properties[E.key]) != null && Zn.activated);
+            return !E.editable || !e.enableDefaultEditMode && !((Oe = S == null ? void 0 : S[de]) != null && Oe.isActivated) && !((Zn = (Pt = S == null ? void 0 : S[de]) == null ? void 0 : Pt.properties[E.key]) != null && Zn.activated);
           }
         }
       }), To().length == 0 && z.push({
@@ -56595,7 +56596,7 @@ const cz = (e) => {
       ariaLabel: (s == null ? void 0 : s.ImportFromExcel) ?? "Import From Excel",
       disabled: Y || n,
       cacheKey: "myCacheKey",
-      onRender: Re
+      onRender: Ae
     }), e.gridCopyOptions && e.gridCopyOptions.enableGridCopy && !n && P.push({
       key: "copy",
       text: (s == null ? void 0 : s.CopyGrid) ?? "Copy Grid",
@@ -56771,23 +56772,23 @@ const cz = (e) => {
     column: P,
     rowNum: z,
     rowData: E
-  }) }), vm = (P, z, E, q, ae, de) => {
-    var Ae, fe, ce, Rt;
+  }) }), vm = (P, z, E, q, ae, ce) => {
+    var Re, fe, de, Rt;
     return /* @__PURE__ */ ie.jsx(
       "span",
       {
         id: `id-${P.id}-col-${z}-row-${E}`,
         className: bd(q, ae[q.key]),
-        onClick: Qi(P, q, de, E),
+        onClick: Qi(P, q, ce, E),
         onDoubleClick: Ji(
           ae,
           Number(ae._grid_row_id_),
           P,
           q,
-          de,
+          ce,
           E
         ),
-        children: (Ae = q.linkOptions) != null && Ae.onClick ? /* @__PURE__ */ ie.jsx(
+        children: (Re = q.linkOptions) != null && Re.onClick ? /* @__PURE__ */ ie.jsx(
           Th,
           {
             target: "_blank",
@@ -56808,7 +56809,7 @@ const cz = (e) => {
           Th,
           {
             target: "_blank",
-            disabled: (ce = q.linkOptions) == null ? void 0 : ce.disabled,
+            disabled: (de = q.linkOptions) == null ? void 0 : de.disabled,
             underline: !0,
             href: (Rt = q.linkOptions) == null ? void 0 : Rt.href,
             children: ae[q.key]
@@ -56816,78 +56817,78 @@ const cz = (e) => {
         )
       }
     );
-  }, Bc = (P, z, E, q, ae, de) => Jl(
+  }, Bc = (P, z, E, q, ae, ce) => Jl(
     P,
     z,
     E,
     q,
     ae,
     Qi,
-    de,
+    ce,
     Ji
-  ), _m = (P, z, E, q, ae, de) => {
-    var Ae;
+  ), _m = (P, z, E, q, ae, ce) => {
+    var Re;
     return /* @__PURE__ */ ie.jsx(
       "span",
       {
         id: `id-${P.id}-col-${z}-row-${E}`,
         className: bd(q, ae[q.key]),
-        onClick: Qi(P, q, de, E),
+        onClick: Qi(P, q, ce, E),
         onDoubleClick: Ji(
           ae,
           Number(ae._grid_row_id_),
           P,
           q,
-          de,
+          ce,
           E
         ),
-        children: (Ae = ae[q.key]) == null ? void 0 : Ae.replace(/./g, "*")
+        children: (Re = ae[q.key]) == null ? void 0 : Re.replace(/./g, "*")
       }
     );
-  }, xm = (P, z, E, q, ae, de) => Jl(
+  }, xm = (P, z, E, q, ae, ce) => Jl(
     P,
     z,
     E,
     q,
     ae,
     Qi,
-    de,
+    ce,
     Ji
-  ), ym = (P, z, E, q, ae, de) => {
-    var fe, ce, Rt;
-    let Ae = ae[q.key];
-    return q.dropdownValues && (Ae = ((Rt = (ce = (fe = q.dropdownValues) == null ? void 0 : fe.filter((wt) => (wt == null ? void 0 : wt.key) == ae[q.key])[0]) == null ? void 0 : ce.text) == null ? void 0 : Rt.toString()) ?? ae[q.key]), Jl(
+  ), ym = (P, z, E, q, ae, ce) => {
+    var fe, de, Rt;
+    let Re = ae[q.key];
+    return q.dropdownValues && (Re = ((Rt = (de = (fe = q.dropdownValues) == null ? void 0 : fe.filter((wt) => (wt == null ? void 0 : wt.key) == ae[q.key])[0]) == null ? void 0 : de.text) == null ? void 0 : Rt.toString()) ?? ae[q.key]), Jl(
       P,
       z,
       E,
       q,
       ae,
       Qi,
-      de,
+      ce,
       Ji,
-      Ae
+      Re
     );
-  }, bm = (P, z, E, q, ae, de) => Jl(
+  }, bm = (P, z, E, q, ae, ce) => Jl(
     P,
     z,
     E,
     q,
     ae,
     Qi,
-    de,
+    ce,
     Ji
-  ), Cm = (P, z, E, q, ae, de) => /* @__PURE__ */ ie.jsx(
+  ), Cm = (P, z, E, q, ae, ce) => /* @__PURE__ */ ie.jsx(
     an,
     {
       horizontalAlign: "center",
       id: `id-${P.id}-col-${z}-row-${E}`,
-      onClick: Qi(P, q, de, E),
+      onClick: Qi(P, q, ce, E),
       onDoubleClick: Ji(
         ae,
         Number(ae._grid_row_id_),
         P,
         q,
-        de,
+        ce,
         E
       ),
       children: ae && ae[q.key] ? /* @__PURE__ */ ie.jsx(
@@ -56921,51 +56922,51 @@ const cz = (e) => {
         }
       )
     }
-  ), Sm = (P, z, E, q, ae, de) => /* @__PURE__ */ ie.jsx(
+  ), Sm = (P, z, E, q, ae, ce) => /* @__PURE__ */ ie.jsx(
     "span",
     {
       id: `id-${P.id}-col-${z}-row-${E}`,
       className: bd(q, ae[q.key]),
-      onClick: Qi(P, q, de, E),
+      onClick: Qi(P, q, ce, E),
       onDoubleClick: Ji(
         ae,
         Number(ae._grid_row_id_),
         P,
         q,
-        de,
+        ce,
         E
       ),
       children: ae && ae[q.key] ? new Date(ae[q.key]).toDateString() : null
     }
-  ), km = (P, z, E, q, ae, de) => Jl(
+  ), km = (P, z, E, q, ae, ce) => Jl(
     P,
     z,
     E,
     q,
     ae,
     Qi,
-    de,
+    ce,
     Ji
-  ), Jl = (P, z, E, q, ae, de, Ae, fe, ce) => /* @__PURE__ */ ie.jsx(
+  ), Jl = (P, z, E, q, ae, ce, Re, fe, de) => /* @__PURE__ */ ie.jsx(
     "span",
     {
       id: `id-${P.id}-col-${z}-row-${E}`,
       className: bd(q, ae[q.key]),
-      onClick: de(P, q, Ae, E),
+      onClick: ce(P, q, Re, E),
       onDoubleClick: fe(
         ae,
         Number(ae._grid_row_id_),
         P,
         q,
-        Ae,
+        Re,
         E
       ),
-      children: ce || ae[q.key]
+      children: de || ae[q.key]
     }
   );
-  function Ji(P, z, E, q, ae, de) {
+  function Ji(P, z, E, q, ae, ce) {
     if (E.enableSingleCellEditOnDoubleClick == !0)
-      return () => !E.disableInlineCellEdit && E.enableSingleCellEditOnDoubleClick == !0 && q.editable == !0 ? ae(q.key, de, !0) : null;
+      return () => !E.disableInlineCellEdit && E.enableSingleCellEditOnDoubleClick == !0 && q.editable == !0 ? ae(q.key, ce, !0) : null;
     if (!E.disableInlineCellEdit && E.enableSingleCellEditOnDoubleClick == !1)
       return () => hs(P, Number(P._grid_row_id_), !0);
   }
