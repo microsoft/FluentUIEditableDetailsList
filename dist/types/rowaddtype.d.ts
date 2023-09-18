@@ -5,4 +5,5 @@ export interface IRowAddWithValues {
     onPreSubmit?: any;
     addToGridButtonText?: string;
     addingToGridButtonText?: string;
+    enableNonEditableColumns?: boolean;
 }

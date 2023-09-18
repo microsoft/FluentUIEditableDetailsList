@@ -5797,6 +5797,9 @@ const EditableGrid = (props: EditableGridProps) => {
                   addToGridButtonText={
                     props.enableGridRowAddWithValues.addToGridButtonText
                   }
+                  enableNonEditableColumns={
+                    props.enableGridRowAddWithValues.enableNonEditableColumns
+                  }
                   autoGenId={
                     (Math.max.apply(
                       Math,

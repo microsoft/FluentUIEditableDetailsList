@@ -60,6 +60,7 @@ interface Props {
   preSubmitCallback?: any;
   addToGridButtonText?: string;
   addingToGridButtonText?: string;
+  enableNonEditableColumns?: boolean;
 }
 
 const AddRowPanel = (props: Props) => {
@@ -711,7 +712,7 @@ const AddRowPanel = (props: Props) => {
         case EditControlType.CheckBox:
           tmpRenderObj.push(
             <Checkbox
-              disabled={!item.editable ?? true}
+              disabled={(!item.editable && !props.enableNonEditableColumns) ?? true}
               checked={columnValuesObj[item.key].value}
               key={item.key}
               label={item.text}
@@ -725,7 +726,7 @@ const AddRowPanel = (props: Props) => {
           tmpRenderObj.push(
             <DatePicker
               key={item.key}
-              disabled={!item.editable ?? true}
+              disabled={(!item.editable && !props.enableNonEditableColumns) ?? true}
               value={columnValuesObj[item.key].value}
               label={item.text}
               strings={DayPickerStrings}
@@ -795,7 +796,7 @@ const AddRowPanel = (props: Props) => {
                 disableComboBox.current.get(item.key + rowNum) ??
                 (typeof item.disableComboBox == "boolean"
                   ? item.disableComboBox
-                  : !item.editable ?? false)
+                  : (!item.editable && !props.enableNonEditableColumns) ?? false)
               }
               placeholder={
                 item.comboBoxOptions?.filter(
@@ -945,7 +946,7 @@ const AddRowPanel = (props: Props) => {
                 disableDropdown.current.get(item.key + rowNum) ??
                 (typeof item.disableDropdown == "boolean"
                   ? item.disableDropdown
-                  : !item.editable ?? false)
+                  : (!item.editable && !props.enableNonEditableColumns) ?? false)
               }
             />
           );
@@ -961,7 +962,7 @@ const AddRowPanel = (props: Props) => {
                 pickerTags={item.pickerOptions?.pickerTags ?? []}
                 minCharLimitForSuggestions={2}
                 onTaglistChanged={(selectedItem: ITag[] | undefined) => {
-                  if (item.editable == true)
+                  if ((item.editable || props.enableNonEditableColumns) == true)
                     onCellPickerTagListChanged(selectedItem, item);
                 }}
                 pickerDescriptionOptions={
@@ -975,7 +976,7 @@ const AddRowPanel = (props: Props) => {
           tmpRenderObj.push(
             <TextField
               key={item.key}
-              disabled={!item.editable ?? true}
+              disabled={(!item.editable && !props.enableNonEditableColumns) ?? true}
               errorMessage={columnValuesObj[item.key].error}
               name={item.text}
               multiline={true}
@@ -992,7 +993,7 @@ const AddRowPanel = (props: Props) => {
           tmpRenderObj.push(
             <TextField
               key={item.key}
-              disabled={!item.editable ?? true}
+              disabled={(!item.editable && !props.enableNonEditableColumns) ?? true}
               errorMessage={columnValuesObj[item.key].error}
               name={item.text}
               id={item.key}
@@ -1010,7 +1011,7 @@ const AddRowPanel = (props: Props) => {
             <NumericFormat
               key={item.key}
               id={item.key}
-              disabled={!item.editable ?? true}
+              disabled={(!item.editable && !props.enableNonEditableColumns) ?? true}
               value={columnValuesObj[item.key]?.value?.toString()?? ''}
               placeholder={
                 item.validations?.numericFormatProps?.formatBase?.placeholder
@@ -1099,7 +1100,7 @@ const AddRowPanel = (props: Props) => {
             tmpRenderObj.push(
               <TextField
                 key={item.key}
-                disabled={!item.editable ?? true}
+                disabled={(!item.editable && !props.enableNonEditableColumns) ?? true}
                 value={columnValuesObj[item.key].value ?? undefined}
                 errorMessage={columnValuesObj[item.key].error}
                 name={item.text}

@@ -52684,7 +52684,7 @@ const WG = (e) => {
             /* @__PURE__ */ ie.jsx(
               zi,
               {
-                disabled: !B.editable,
+                disabled: (!B.editable && !e.enableNonEditableColumns) ?? !0,
                 checked: a[B.key].value,
                 label: B.text,
                 onChange: (je, Gt) => {
@@ -52700,7 +52700,7 @@ const WG = (e) => {
             /* @__PURE__ */ ie.jsx(
               Gf,
               {
-                disabled: !B.editable,
+                disabled: (!B.editable && !e.enableNonEditableColumns) ?? !0,
                 value: a[B.key].value,
                 label: B.text,
                 strings: zf,
@@ -52725,7 +52725,7 @@ const WG = (e) => {
             /* @__PURE__ */ ie.jsx(
               Uf,
               {
-                disabled: t.current.get(B.key + se) ?? (typeof B.disableComboBox == "boolean" ? B.disableComboBox : !B.editable),
+                disabled: t.current.get(B.key + se) ?? (typeof B.disableComboBox == "boolean" ? B.disableComboBox : (!B.editable && !e.enableNonEditableColumns) ?? !1),
                 placeholder: ((K = (I = B.comboBoxOptions) == null ? void 0 : I.filter(
                   (je) => je.text == a[B.key].value
                 )[0]) == null ? void 0 : K.text) ?? ((ne = (W = (X = B.comboBoxOptions) == null ? void 0 : X.filter(
@@ -52813,7 +52813,7 @@ const WG = (e) => {
                 label: B.text,
                 options: B.dropdownValues ?? [],
                 onChange: (je, Gt) => p(je, Gt, B),
-                disabled: n.current.get(B.key + se) ?? (typeof B.disableDropdown == "boolean" ? B.disableDropdown : !B.editable)
+                disabled: n.current.get(B.key + se) ?? (typeof B.disableDropdown == "boolean" ? B.disableDropdown : (!B.editable && !e.enableNonEditableColumns) ?? !1)
               },
               B.key
             )
@@ -52832,7 +52832,7 @@ const WG = (e) => {
                   pickerTags: ((ht = B.pickerOptions) == null ? void 0 : ht.pickerTags) ?? [],
                   minCharLimitForSuggestions: 2,
                   onTaglistChanged: (je) => {
-                    B.editable == !0 && R(je, B);
+                    (B.editable || e.enableNonEditableColumns) == !0 && R(je, B);
                   },
                   pickerDescriptionOptions: (pt = B.pickerOptions) == null ? void 0 : pt.pickerDescriptionOptions
                 }
@@ -52845,7 +52845,7 @@ const WG = (e) => {
             /* @__PURE__ */ ie.jsx(
               Dn,
               {
-                disabled: !B.editable,
+                disabled: (!B.editable && !e.enableNonEditableColumns) ?? !0,
                 errorMessage: a[B.key].error,
                 name: B.text,
                 multiline: !0,
@@ -52865,7 +52865,7 @@ const WG = (e) => {
             /* @__PURE__ */ ie.jsx(
               Dn,
               {
-                disabled: !B.editable,
+                disabled: (!B.editable && !e.enableNonEditableColumns) ?? !0,
                 errorMessage: a[B.key].error,
                 name: B.text,
                 id: B.key,
@@ -52886,7 +52886,7 @@ const WG = (e) => {
               $f,
               {
                 id: B.key,
-                disabled: !B.editable,
+                disabled: (!B.editable && !e.enableNonEditableColumns) ?? !0,
                 value: ((Ft = (Ge = a[B.key]) == null ? void 0 : Ge.value) == null ? void 0 : Ft.toString()) ?? "",
                 placeholder: (Lt = (Et = (gr = B.validations) == null ? void 0 : gr.numericFormatProps) == null ? void 0 : Et.formatBase) == null ? void 0 : Lt.placeholder,
                 valueIsNumericString: (yt = (Ue = (Ye = B.validations) == null ? void 0 : Ye.numericFormatProps) == null ? void 0 : Ue.formatBase) == null ? void 0 : yt.valueIsNumericString,
@@ -52940,7 +52940,7 @@ const WG = (e) => {
             /* @__PURE__ */ ie.jsx(
               Dn,
               {
-                disabled: !B.editable,
+                disabled: (!B.editable && !e.enableNonEditableColumns) ?? !0,
                 value: a[B.key].value ?? void 0,
                 errorMessage: a[B.key].error,
                 name: B.text,
@@ -57036,6 +57036,7 @@ const cz = (e) => {
             },
             addingToGridButtonText: e.enableGridRowAddWithValues.addingToGridButtonText,
             addToGridButtonText: e.enableGridRowAddWithValues.addToGridButtonText,
+            enableNonEditableColumns: e.enableGridRowAddWithValues.enableNonEditableColumns,
             autoGenId: (Math.max.apply(
               Math,
               m.map(function(P) {

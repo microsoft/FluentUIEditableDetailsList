@@ -7,6 +7,7 @@ interface Props {
     preSubmitCallback?: any;
     addToGridButtonText?: string;
     addingToGridButtonText?: string;
+    enableNonEditableColumns?: boolean;
 }
 declare const AddRowPanel: (props: Props) => JSX.Element;
 export default AddRowPanel;
