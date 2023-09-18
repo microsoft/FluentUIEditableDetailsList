@@ -52357,6 +52357,7 @@ const OG = (e) => {
     }), i(Q), u(e.addToGridButtonText ?? "Save To Grid");
   }, [e.columnConfigurationData]);
   const h = (Q, B, se = !0, I = null) => {
+    o && s("");
     var K = { ...a };
     if (K[Q] = {
       value: B,

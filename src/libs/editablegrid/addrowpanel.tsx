@@ -126,12 +126,15 @@ const AddRowPanel = (props: Props) => {
     isChanged: boolean = true,
     errorMessage: string | null = null
   ): void => {
+    if (error) setError("");
+
     var columnValuesObjTmp = { ...columnValuesObj };
     columnValuesObjTmp[key] = {
       value: value,
       isChanged: isChanged,
       error: errorMessage,
     };
+
 
     if (props.onChange) {
       var changed = props.onChange(Object.assign({}, columnValuesObjTmp));
@@ -1141,7 +1144,7 @@ const AddRowPanel = (props: Props) => {
         <MessageBar
           styles={{ root: { marginBottom: 5 } }}
           messageBarType={MessageBarType.error}
-          onDismiss={()=> setError('')}
+          onDismiss={() => setError("")}
         >
           {error}
         </MessageBar>

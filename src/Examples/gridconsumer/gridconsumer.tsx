@@ -361,7 +361,9 @@ const Consumer = () => {
       callbackRequestParamObj.data['name'].error = 'User Alias is duplicated'
     }
 
-    return callbackRequestParamObj.data;
+
+    return (Object.assign({errorMessage: 'Etot', data: callbackRequestParamObj.data}, callbackRequestParamObj))
+
   };
 
   const attachGridValueChangeCallbacks =
@@ -882,8 +884,8 @@ const Consumer = () => {
           enableGridRowAddWithValues={{
             enable: gridConfigOptions.enableGridRowAddWithValues,
             addToGridButtonText: 'Add User',
-            onChange: checkForDup,
-            // onPreSubmit:checkForDup,
+            //onChange: checkForDup,
+            onPreSubmit:checkForDup,
             addingToGridButtonText: 'Adding...',
             enableNonEditableColumns: false,
             showInsertedRowAtTopWhenAddedFromPanel: false
