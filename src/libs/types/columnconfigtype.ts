@@ -168,13 +168,14 @@ export interface IDisableDropCellOptions {
   type: DisableColTypes;
 }
 
+export interface IFilterDropdownOptions {
+  key: string | number;
+  text: string;
+  correspondingKey: string | number;
+}
 export interface IFilterDropCellOptions {
   filterBasedOnThisColumnKey: string;
-  filterOptions: {
-    key: string | number;
-    text: string;
-    correspondingKey: string | number;
-  }[];
+  filterOptions: IFilterDropdownOptions[];
 }
 export interface IColumnDependent {
   /** State the other column key, which this column depends on */

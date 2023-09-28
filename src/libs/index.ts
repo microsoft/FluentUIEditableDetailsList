@@ -22,6 +22,7 @@ export type {
 } from "./types/columnconfigtype";
 export type { IDetailsColumnRenderTooltipPropsExtra } from "./types/columnconfigtype";
 export { DepColTypes, DisableColTypes } from "./types/columnconfigtype";
+export type { IFilterDropdownOptions } from "./types/columnconfigtype";
 export { EditControlType } from "./types/editcontroltype";
 export type { IGridItemsType } from "./types/griditemstype";
 export type {
@@ -29,6 +30,6 @@ export type {
   IContentScrollablePaneStyleProps,
   IUserDefinedOperationKey,
   ICustomKeysToAddOnNewRow,
-  IRenameCommandBarItemsActions
+  IRenameCommandBarItemsActions,
 } from "./types/editabledetailslistprops";
 export type { IRowAddWithValues } from "./types/rowaddtype";
