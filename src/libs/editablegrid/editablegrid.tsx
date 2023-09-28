@@ -4842,7 +4842,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 )}
               </div>
             )}
-            {props.gridCopyOptions &&
+            {/* {props.gridCopyOptions &&
               props.gridCopyOptions.enableSingleRowCopy && (
                 <IconButton
                   onClick={() => HandleRowCopy(Number(item["_grid_row_id_"])!)}
@@ -4858,7 +4858,7 @@ const EditableGrid = (props: EditableGridProps) => {
                   styles={props.actionIconStylesInGrid}
                   title={"Copy Row"}
                 ></IconButton>
-              )}
+              )} */}
             {props.enableRowEditDelete && !props.enableDefaultEditMode && (
               <IconButton
                 onClick={() => {
