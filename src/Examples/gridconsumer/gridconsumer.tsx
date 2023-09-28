@@ -244,10 +244,10 @@ const Consumer = () => {
         // dateofjoining: new Date(),
         payrolltype:
           randomInt % 3 == 0
-            ? "Weekly"
+            ? "WK"
             : randomInt % 3 == 1
-            ? "Bi-Weekly"
-            : "Monthly",
+            ? "BI"
+            : "MT",
         employmenttype: "Employment Type" + GetRandomInt(1, 12),
         // employeelink: "Link",
       });

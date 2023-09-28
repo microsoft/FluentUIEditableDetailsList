@@ -1081,7 +1081,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
     const defaultGridDataTmpWithInternalPropsIgnored =
       defaultGridDataTmpWithDeletedData
-        .filter((x) => {
+        .map((x) => {
           if (trackTransformedData.current) {
             trackTransformedData.current.forEach(function (
               value: any,
@@ -3625,6 +3625,7 @@ const EditableGrid = (props: EditableGridProps) => {
                   colkey: column.key,
                   values: column.dropdownValues,
                 });
+                item[column.key] = column.dropdownValues.filter((x)=> x.key == item[column.key])[0]?.text ?? column.dropdownValues.filter((x)=> x.text == item[column.key])[0]?.text ?? item[column.key]
               }
 
               if (column.precision) {
@@ -5865,7 +5866,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 items={CommandBarItemProps}
                 ariaLabel="Command Bar"
                 overflowItems={CommandBarOverflowItemsProps}
-                overflowButtonProps={{ ariaLabel: 'Overflow' }}
+                overflowButtonProps={{ ariaLabel: "Overflow" }}
                 farItems={CommandBarFarItemProps}
                 styles={props.commandBarStyles}
               />
