@@ -3467,28 +3467,9 @@ const EditableGrid = (props: EditableGridProps) => {
               x._is_filtered_in_column_filter_ == true &&
               x._is_filtered_in_grid_search_ == true
           )
-          
+
           .map((item) => item[column.fieldName!])
-          .map((x) => {
-            if (trackTransformedData.current) {
-              trackTransformedData.current.forEach(function (
-                value: any,
-                key: string
-              ) {
-                for (let index = 0; index < value.values.length; index++) {
-                  const element = value.values[index];
-                  if (
-                    element?.key?.toString()?.toLowerCase() ===
-                    (x?.toString()?.toLowerCase() ?? "")
-                  ) {
-                    x = element?.text;
-                  }
-                }
-              });
-            }
-  
-            return x;
-          })
+          .sort()
       ),
     ];
     var hiddenUniqueVals: string[] = [
@@ -3501,26 +3482,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 x._is_filtered_in_grid_search_ == false)
           )
           .map((item) => item[column.fieldName!])
-          .map((x) => {
-            if (trackTransformedData.current) {
-              trackTransformedData.current.forEach(function (
-                value: any,
-                key: string
-              ) {
-                for (let index = 0; index < value.values.length; index++) {
-                  const element = value.values[index];
-                  if (
-                    element?.key?.toString()?.toLowerCase() ===
-                    (x?.toString()?.toLowerCase() ?? "")
-                  ) {
-                    x = element?.text;
-                  }
-                }
-              });
-            }
-  
-            return x;
-          })
+          .sort()
       ),
     ];
 
@@ -3666,7 +3628,14 @@ const EditableGrid = (props: EditableGridProps) => {
                   colkey: column.key,
                   values: column.dropdownValues,
                 });
-                item[column.key] = column.dropdownValues.filter((x)=> x.key == item[column.key])[0]?.text ?? column.dropdownValues.filter((x)=> x.text == item[column.key])[0]?.text ?? item[column.key]
+                item[column.key] =
+                  column.dropdownValues.filter(
+                    (x) => x.key == item[column.key]
+                  )[0]?.text ??
+                  column.dropdownValues.filter(
+                    (x) => x.text == item[column.key]
+                  )[0]?.text ??
+                  item[column.key];
               }
 
               if (column.precision) {
