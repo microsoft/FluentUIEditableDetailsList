@@ -31,6 +31,7 @@ import {
   IDropdownOption,
   IInputProps,
   ITag,
+  ITextField,
   Link,
   MarqueeSelection,
   mergeStyles,
@@ -335,7 +336,7 @@ const EditableGrid = (props: EditableGridProps) => {
     mapVar.set(key, value);
     const newMap = new Map(mapVar);
     setMessagesState(newMap);
-    
+
     if (
       props.enableMessageBarErrors &&
       props.enableMessageBarErrors.enableSendGroupedErrorsToCallback &&
@@ -1446,10 +1447,12 @@ const EditableGrid = (props: EditableGridProps) => {
       });
     }
 
-    var newGridData:any[] = [];
-    if(props.enableGridRowAddWithValues?.showInsertedRowAtTopWhenAddedFromPanel){
+    var newGridData: any[] = [];
+    if (
+      props.enableGridRowAddWithValues?.showInsertedRowAtTopWhenAddedFromPanel
+    ) {
       newGridData = [...addedRows, ...defaultGridData];
-    }else{
+    } else {
       newGridData = [...defaultGridData, ...addedRows];
     }
     setGridEditState(true);
@@ -2126,6 +2129,7 @@ const EditableGrid = (props: EditableGridProps) => {
   ): void => {
     if (event.key == "Enter" && !props.disableInlineCellEdit) {
       ShowRowEditMode(item, _grid_row_id_!, false);
+
       event.preventDefault();
     }
   };
@@ -3969,7 +3973,18 @@ const EditableGrid = (props: EditableGridProps) => {
                               ?.key?.toString() ??
                             null
                           }
-                          options={column.dropdownValues ?? []}
+                          options={
+                            column.filterDropdownOptions
+                              ? column.filterDropdownOptions.filterOptions.filter(
+                                  (x) =>
+                                    x.correspondingKey ==
+                                    activateCellEdit[rowNum!]["properties"][
+                                      item.filterDropdownOptions
+                                        ?.filterBasedOnThisColumnKey ?? ""
+                                    ]?.value
+                                )
+                              : column.dropdownValues ?? []
+                          }
                           styles={dropdownStyles}
                           dropdownWidth={"auto"}
                           onChange={(ev, selectedItem) =>
@@ -5850,6 +5865,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 items={CommandBarItemProps}
                 ariaLabel="Command Bar"
                 overflowItems={CommandBarOverflowItemsProps}
+                overflowButtonProps={{ ariaLabel: 'Overflow' }}
                 farItems={CommandBarFarItemProps}
                 styles={props.commandBarStyles}
               />

@@ -260,7 +260,18 @@ const ColumnUpdateDialog = (props: Props) => {
           return (
             <Dropdown
               label={column[0].text}
-              options={column[0].dropdownValues ?? []}
+              options={
+                column[0].filterDropdownOptions
+                  ? column[0].filterDropdownOptions.filterOptions.filter(
+                      (x) =>
+                        x.correspondingKey ==
+                        inputValue[
+                          column[0].filterDropdownOptions?.filterBasedOnThisColumnKey ??
+                            ""
+                        ].value
+                    )
+                  : column[0].dropdownValues ?? []
+              }
               onChange={(ev, selected) =>
                 onDropDownChange(ev, selected, column[0])
               }

@@ -190,7 +190,17 @@ const EditPanel = (props: Props) => {
               <Dropdown
                 key={item.key}
                 label={item.text}
-                options={item.dropdownValues ?? []}
+                options={
+                  item.filterDropdownOptions
+                    ? item.filterDropdownOptions.filterOptions.filter(
+                        (x) =>
+                          x.correspondingKey ==
+                          columnValuesObj[
+                            item.filterDropdownOptions?.filterBasedOnThisColumnKey ?? ""
+                          ].value
+                      )
+                    : item.dropdownValues ?? []
+                }
                 onChange={(ev, selected) =>
                   onDropDownChange(ev, selected, item)
                 }

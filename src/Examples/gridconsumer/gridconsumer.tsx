@@ -500,6 +500,7 @@ const Consumer = () => {
         focusZoneProps={{
           direction: FocusZoneDirection.bidirectional,
           handleTabKey: FocusZoneTabbableElements.all,
+          shouldFocusOnMount: true
           // isCircularNavigation: true
         }} /* styles={tableDetailsRowsStyles()} */
       />

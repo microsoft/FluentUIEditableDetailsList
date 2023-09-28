@@ -135,7 +135,6 @@ const AddRowPanel = (props: Props) => {
       error: errorMessage,
     };
 
-
     if (props.onChange) {
       var changed = props.onChange(Object.assign({}, columnValuesObjTmp));
       if (changed?.errorMessage !== undefined) {
@@ -950,7 +949,17 @@ const AddRowPanel = (props: Props) => {
                 null
               }
               label={item.text}
-              options={item.dropdownValues ?? []}
+              options={
+                item.filterDropdownOptions
+                  ? item.filterDropdownOptions.filterOptions.filter(
+                      (x) =>
+                        x.correspondingKey ==
+                        columnValuesObj[
+                          item.filterDropdownOptions?.filterBasedOnThisColumnKey ?? ""
+                        ].value
+                    )
+                  : item.dropdownValues ?? []
+              }
               onChange={(ev, selected) => onDropDownChange(ev, selected, item)}
               disabled={
                 disableDropdown.current.get(item.key + rowNum) ??

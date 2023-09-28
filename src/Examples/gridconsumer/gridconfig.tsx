@@ -269,11 +269,21 @@ export const GridColumnConfig: IColumnConfig[] = [
       { key: "BI", text: "Bi-Weekly" },
       { key: "MT", text: "Monthly" },
     ],
+    applyColumnFilter: true,
+
+    // filterDropdownOptions: {
+    //   filterBasedOnThisColumnKey: 'name',
+    //   filterOptions:[
+    //     { key: "WK", text: "Weekly", correspondingKey: 'CJ' },
+    //   { key: "BI", text: "Bi-Weekly", correspondingKey: 'CJ3'},
+    //   { key: "MT", text: "Monthly", correspondingKey: 'CJ4' },
+    //   ]
+    // }
     // disableDropdown: false,
-    disableDropdown: {
-      disableBasedOnThisColumnKey: "name",
-      type: DisableColTypes.DisableWhenColKeyHasData,
-    },
+    // disableDropdown: {
+    //   disableBasedOnThisColumnKey: "name",
+    //   type: DisableColTypes.DisableWhenColKeyHasData,
+    // },
   },
   {
     key: "employmenttype",

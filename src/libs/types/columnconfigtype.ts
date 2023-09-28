@@ -120,6 +120,9 @@ export interface IColumnConfig extends IColumn {
   /** Values used to populate the comboBox if `inputType` is `EditControlType.ComboBox` */
   comboBoxOptions?: IComboBoxOption[];
 
+  /** if `inputType` is `EditControlType.DropDown` - Filter the options based on the key value */
+  filterDropdownOptions?: IFilterDropCellOptions;
+
   /** if `inputType` is `EditControlType.DropDown` - Disable the dropdown or disable dropdown based on rules */
   disableDropdown?: boolean | IDisableDropCellOptions;
 
@@ -163,6 +166,15 @@ export interface IRequiredColumnsOptions {
 export interface IDisableDropCellOptions {
   disableBasedOnThisColumnKey: string;
   type: DisableColTypes;
+}
+
+export interface IFilterDropCellOptions {
+  filterBasedOnThisColumnKey: string;
+  filterOptions: {
+    key: string | number;
+    text: string;
+    correspondingKey: string | number;
+  }[];
 }
 export interface IColumnDependent {
   /** State the other column key, which this column depends on */
