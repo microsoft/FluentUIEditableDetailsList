@@ -255,7 +255,7 @@ const EditPanel = (props: Props) => {
                 }}
                 onChange={(ev, option) => onComboBoxChange(ev, option, item)}
                 allowFreeInput
-                allowFreeform={false}
+                allowFreeform={item.allowFreeformComboBoxEntry ?? false}
                 autoComplete="on"
               />
             );

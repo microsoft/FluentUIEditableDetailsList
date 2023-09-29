@@ -52740,7 +52740,7 @@ const jG = (e) => {
                 ),
                 label: A.text,
                 allowFreeInput: !0,
-                allowFreeform: !1,
+                allowFreeform: A.allowFreeformComboBoxEntry ?? !1,
                 autoComplete: "on",
                 scrollSelectedToTop: !0,
                 options: Y,
@@ -53584,7 +53584,7 @@ const iz = (e) => {
               },
               onChange: (ee, we) => g(ee, we, R[0]),
               allowFreeInput: !0,
-              allowFreeform: !1,
+              allowFreeform: R[0].allowFreeformComboBoxEntry ?? !1,
               autoComplete: "on"
             },
             az()
@@ -53891,7 +53891,7 @@ const oz = (e, n) => e.map((t, r) => {
                 },
                 onChange: (qe, Et) => o(qe, Et, b),
                 allowFreeInput: !0,
-                allowFreeform: !1,
+                allowFreeform: b.allowFreeformComboBoxEntry ?? !1,
                 autoComplete: "on"
               },
               b.key
@@ -56110,7 +56110,7 @@ const gz = (e) => {
                     directionalHint: kr.bottomCenter
                   },
                   allowFreeInput: !0,
-                  allowFreeform: !1,
+                  allowFreeform: E.allowFreeformComboBoxEntry ?? !1,
                   autoComplete: "on",
                   scrollSelectedToTop: !0,
                   options: Yk.get(E.key + ce) ?? E.comboBoxOptions ?? [],

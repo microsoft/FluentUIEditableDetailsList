@@ -3958,50 +3958,54 @@ const EditableGrid = (props: EditableGridProps) => {
                         <Dropdown
                           ariaLabel={column.key}
                           placeholder={
-                            column.filterDropdownOptions ?  column.filterDropdownOptions.filterOptions?.filter(
-                              (x) => x.text == item[column.key]
-                            )[0]?.text : column.dropdownValues?.filter(
-                              (x) => x.text == item[column.key]
-                            )[0]?.text ?? "Select an option"
+                            column.filterDropdownOptions
+                              ? column.filterDropdownOptions.filterOptions?.filter(
+                                  (x) => x.text == item[column.key]
+                                )[0]?.text
+                              : column.dropdownValues?.filter(
+                                  (x) => x.text == item[column.key]
+                                )[0]?.text ?? "Select an option"
                           }
                           selectedKey={
                             // Keys Select Text
-                            column.filterDropdownOptions ? (column.filterDropdownOptions.filterOptions
-                              ?.filter(
-                                (x) =>
-                                  x?.key ==
-                                    activateCellEdit[rowNum!]["properties"][
-                                      column.key
-                                    ]?.value ?? item[column.key]
-                              )[0]
-                              ?.key?.toString() ??
-                            column.filterDropdownOptions.filterOptions
-                              ?.filter(
-                                (x) =>
-                                  x?.text ==
-                                    activateCellEdit[rowNum!]["properties"][
-                                      column.key
-                                    ]?.value ?? item[column.key]
-                              )[0]
-                              ?.key?.toString()) :(column.dropdownValues
-                              ?.filter(
-                                (x) =>
-                                  x?.key ==
-                                    activateCellEdit[rowNum!]["properties"][
-                                      column.key
-                                    ]?.value ?? item[column.key]
-                              )[0]
-                              ?.key?.toString() ??
-                            column.dropdownValues
-                              ?.filter(
-                                (x) =>
-                                  x?.text ==
-                                    activateCellEdit[rowNum!]["properties"][
-                                      column.key
-                                    ]?.value ?? item[column.key]
-                              )[0]
-                              ?.key?.toString()) ??
-                            null
+                            column.filterDropdownOptions
+                              ? column.filterDropdownOptions.filterOptions
+                                  ?.filter(
+                                    (x) =>
+                                      x?.key ==
+                                        activateCellEdit[rowNum!]["properties"][
+                                          column.key
+                                        ]?.value ?? item[column.key]
+                                  )[0]
+                                  ?.key?.toString() ??
+                                column.filterDropdownOptions.filterOptions
+                                  ?.filter(
+                                    (x) =>
+                                      x?.text ==
+                                        activateCellEdit[rowNum!]["properties"][
+                                          column.key
+                                        ]?.value ?? item[column.key]
+                                  )[0]
+                                  ?.key?.toString()
+                              : column.dropdownValues
+                                  ?.filter(
+                                    (x) =>
+                                      x?.key ==
+                                        activateCellEdit[rowNum!]["properties"][
+                                          column.key
+                                        ]?.value ?? item[column.key]
+                                  )[0]
+                                  ?.key?.toString() ??
+                                column.dropdownValues
+                                  ?.filter(
+                                    (x) =>
+                                      x?.text ==
+                                        activateCellEdit[rowNum!]["properties"][
+                                          column.key
+                                        ]?.value ?? item[column.key]
+                                  )[0]
+                                  ?.key?.toString() ??
+                                null
                           }
                           options={
                             column.filterDropdownOptions
@@ -4174,7 +4178,9 @@ const EditableGrid = (props: EditableGridProps) => {
                             directionalHint: DirectionalHint.bottomCenter,
                           }}
                           allowFreeInput
-                          allowFreeform={false}
+                          allowFreeform={
+                            column.allowFreeformComboBoxEntry ?? false
+                          }
                           autoComplete="on"
                           scrollSelectedToTop
                           options={

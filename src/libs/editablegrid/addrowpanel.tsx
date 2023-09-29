@@ -833,7 +833,7 @@ const AddRowPanel = (props: Props) => {
               }
               label={item.text}
               allowFreeInput
-              allowFreeform={false}
+              allowFreeform={item.allowFreeformComboBoxEntry ?? false}
               autoComplete="on"
               scrollSelectedToTop
               options={comboOptions}

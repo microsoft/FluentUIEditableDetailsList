@@ -317,7 +317,7 @@ const ColumnUpdateDialog = (props: Props) => {
               }}
               onChange={(ev, option) => onComboBoxChange(ev, option, column[0])}
               allowFreeInput
-              allowFreeform={false}
+              allowFreeform={column[0].allowFreeformComboBoxEntry ?? false}
               autoComplete="on"
             />
           );
