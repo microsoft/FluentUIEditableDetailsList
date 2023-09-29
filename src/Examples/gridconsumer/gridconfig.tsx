@@ -274,9 +274,8 @@ export const GridColumnConfig: IColumnConfig[] = [
     // filterDropdownOptions: {
     //   filterBasedOnThisColumnKey: 'name',
     //   filterOptions:[
-    //     { key: "WK", text: "Weekly", correspondingKey: 'CJ' },
-    //   { key: "BI", text: "Bi-Weekly", correspondingKey: 'CJ3'},
-    //   { key: "MT", text: "Monthly", correspondingKey: 'CJ4' },
+    //     { key: "1", text: "001", correspondingKey: '11' },
+    //     { key: "2", text: "0011", correspondingKey: '22'},
     //   ]
     // }
     // disableDropdown: false,

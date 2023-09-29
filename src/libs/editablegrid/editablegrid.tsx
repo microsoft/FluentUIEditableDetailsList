@@ -3958,13 +3958,32 @@ const EditableGrid = (props: EditableGridProps) => {
                         <Dropdown
                           ariaLabel={column.key}
                           placeholder={
-                            column.dropdownValues?.filter(
+                            column.filterDropdownOptions ?  column.filterDropdownOptions.filterOptions?.filter(
+                              (x) => x.text == item[column.key]
+                            )[0]?.text : column.dropdownValues?.filter(
                               (x) => x.text == item[column.key]
                             )[0]?.text ?? "Select an option"
                           }
                           selectedKey={
                             // Keys Select Text
-                            column.dropdownValues
+                            column.filterDropdownOptions ? (column.filterDropdownOptions.filterOptions
+                              ?.filter(
+                                (x) =>
+                                  x?.key ==
+                                    activateCellEdit[rowNum!]["properties"][
+                                      column.key
+                                    ]?.value ?? item[column.key]
+                              )[0]
+                              ?.key?.toString() ??
+                            column.filterDropdownOptions.filterOptions
+                              ?.filter(
+                                (x) =>
+                                  x?.text ==
+                                    activateCellEdit[rowNum!]["properties"][
+                                      column.key
+                                    ]?.value ?? item[column.key]
+                              )[0]
+                              ?.key?.toString()) :(column.dropdownValues
                               ?.filter(
                                 (x) =>
                                   x?.key ==
@@ -3981,7 +4000,7 @@ const EditableGrid = (props: EditableGridProps) => {
                                       column.key
                                     ]?.value ?? item[column.key]
                               )[0]
-                              ?.key?.toString() ??
+                              ?.key?.toString()) ??
                             null
                           }
                           options={

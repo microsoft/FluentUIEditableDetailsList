@@ -930,23 +930,41 @@ const AddRowPanel = (props: Props) => {
               key={item.key}
               ariaLabel={item.key}
               placeholder={
-                item.dropdownValues?.filter((x) => x.text == item.key)[0]
-                  ?.text ?? "Select an option"
+                (item.filterDropdownOptions
+                  ? item.filterDropdownOptions.filterOptions.filter(
+                      (x) => x.text == item.key
+                    )[0]?.text
+                  : item.dropdownValues?.filter((x) => x.text == item.key)[0]
+                      ?.text) ?? "Select an option"
               }
               selectedKey={
                 // Keys Select Text
-                item.dropdownValues
-                  ?.filter(
-                    (x) => x?.key == columnValuesObj[item.key].value ?? item.key
-                  )[0]
-                  ?.key?.toString() ??
-                item.dropdownValues
-                  ?.filter(
-                    (x) =>
-                      x?.text == columnValuesObj[item.key].value ?? item.key
-                  )[0]
-                  ?.key?.toString() ??
-                null
+                item.filterDropdownOptions
+                  ? item
+                      .filterDropdownOptions!.filterOptions?.filter(
+                        (x) =>
+                          x?.key == columnValuesObj[item.key].value ?? item.key
+                      )[0]
+                      ?.key?.toString() ??
+                    item
+                      .filterDropdownOptions!.filterOptions?.filter(
+                        (x) =>
+                          x?.text == columnValuesObj[item.key].value ?? item.key
+                      )[0]
+                      ?.key?.toString()
+                  : item.dropdownValues
+                      ?.filter(
+                        (x) =>
+                          x?.key == columnValuesObj[item.key].value ?? item.key
+                      )[0]
+                      ?.key?.toString() ??
+                    item.dropdownValues
+                      ?.filter(
+                        (x) =>
+                          x?.text == columnValuesObj[item.key].value ?? item.key
+                      )[0]
+                      ?.key?.toString() ??
+                    null
               }
               label={item.text}
               options={
@@ -955,7 +973,8 @@ const AddRowPanel = (props: Props) => {
                       (x) =>
                         x.correspondingKey ==
                         columnValuesObj[
-                          item.filterDropdownOptions?.filterBasedOnThisColumnKey ?? ""
+                          item.filterDropdownOptions
+                            ?.filterBasedOnThisColumnKey ?? ""
                         ].value
                     )
                   : item.dropdownValues ?? []
