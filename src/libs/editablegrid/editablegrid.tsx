@@ -1127,26 +1127,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
   const onGridUpdate = async (): Promise<void> => {
     if (props.onGridUpdate) {
-      await props.onGridUpdate(defaultGridData.map((x) => {
-        if (trackTransformedData.current) {
-          trackTransformedData.current.forEach(function (
-            value: any,
-            key: string
-          ) {
-            for (let index = 0; index < value.values.length; index++) {
-              const element = value.values[index];
-              if (
-                element?.text?.toString()?.toLowerCase() ===
-                (x[key]?.toString()?.toLowerCase() ?? "")
-              ) {
-                x[key] = element?.key;
-              }
-            }
-          });
-        }
-
-        return x;
-      }));
+      await props.onGridUpdate(defaultGridData);
     }
   };
 
@@ -3647,14 +3628,14 @@ const EditableGrid = (props: EditableGridProps) => {
                   colkey: column.key,
                   values: column.dropdownValues,
                 });
-                item[column.key] =
-                  column.dropdownValues.filter(
-                    (x) => x.key == item[column.key]
-                  )[0]?.text ??
-                  column.dropdownValues.filter(
-                    (x) => x.text == item[column.key]
-                  )[0]?.text ??
-                  item[column.key];
+                // item[column.key] =
+                //   column.dropdownValues.filter(
+                //     (x) => x.key == item[column.key]
+                //   )[0]?.text ??
+                //   column.dropdownValues.filter(
+                //     (x) => x.text == item[column.key]
+                //   )[0]?.text ??
+                //   item[column.key];
               }
 
               if (column.precision) {
