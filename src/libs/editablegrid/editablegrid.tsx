@@ -1127,7 +1127,26 @@ const EditableGrid = (props: EditableGridProps) => {
 
   const onGridUpdate = async (): Promise<void> => {
     if (props.onGridUpdate) {
-      await props.onGridUpdate(defaultGridData);
+      await props.onGridUpdate(defaultGridData.map((x) => {
+        if (trackTransformedData.current) {
+          trackTransformedData.current.forEach(function (
+            value: any,
+            key: string
+          ) {
+            for (let index = 0; index < value.values.length; index++) {
+              const element = value.values[index];
+              if (
+                element?.text?.toString()?.toLowerCase() ===
+                (x[key]?.toString()?.toLowerCase() ?? "")
+              ) {
+                x[key] = element?.key;
+              }
+            }
+          });
+        }
+
+        return x;
+      }));
     }
   };
 
