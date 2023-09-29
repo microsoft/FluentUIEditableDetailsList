@@ -271,13 +271,13 @@ export const GridColumnConfig: IColumnConfig[] = [
     ],
     applyColumnFilter: true,
 
-    // filterDropdownOptions: {
-    //   filterBasedOnThisColumnKey: 'name',
-    //   filterOptions:[
-    //     { key: "1", text: "001", correspondingKey: '11' },
-    //     { key: "2", text: "0011", correspondingKey: '22'},
-    //   ]
-    // }
+    filterDropdownOptions: {
+      filterBasedOnThisColumnKey: 'name',
+      filterOptions:[
+        { key: "1", text: "001", correspondingKey: '11' },
+        { key: "2", text: "0011", correspondingKey: '22'},
+      ]
+    }
     // disableDropdown: false,
     // disableDropdown: {
     //   disableBasedOnThisColumnKey: "name",

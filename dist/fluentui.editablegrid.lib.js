@@ -52796,7 +52796,7 @@ const jG = (e) => {
                 placeholder: (A.filterDropdownOptions ? (me = A.filterDropdownOptions.filterOptions.filter(
                   (Ge) => Ge.text == A.key
                 )[0]) == null ? void 0 : me.text : (Ie = (Se = A.dropdownValues) == null ? void 0 : Se.filter((Ge) => Ge.text == A.key)[0]) == null ? void 0 : Ie.text) ?? "Select an option",
-                selectedKey: (
+                defaultSelectedKey: (
                   // Keys Select Text
                   A.filterDropdownOptions ? ((xe = (Me = (ke = A.filterDropdownOptions.filterOptions) == null ? void 0 : ke.filter(
                     (Ge) => (Ge == null ? void 0 : Ge.key) == a[A.key].value
