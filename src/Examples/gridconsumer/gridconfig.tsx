@@ -267,18 +267,18 @@ export const GridColumnConfig: IColumnConfig[] = [
     inputType: EditControlType.DropDown,
     dropdownValues: [
       { key: "WK", text: "Weekly" },
-      { key: "BI", text: "Bi-Weekly" },
+      { key: "BI", text: "Weekly" },
       { key: "MT", text: "Monthly" },
     ],
     applyColumnFilter: true,
 
-    filterDropdownOptions: {
-      filterBasedOnThisColumnKey: 'name',
-      filterOptions:[
-        { key: "1", text: "001", correspondingKey: '11' },
-        { key: "2", text: "0011", correspondingKey: '22'},
-      ]
-    }
+    // filterDropdownOptions: {
+    //   filterBasedOnThisColumnKey: 'name',
+    //   filterOptions:[
+    //     { key: "1", text: "0011", correspondingKey: '11' },
+    //     { key: "2", text: "0011", correspondingKey: '22'},
+    //   ]
+    // }
     // disableDropdown: false,
     // disableDropdown: {
     //   disableBasedOnThisColumnKey: "name",

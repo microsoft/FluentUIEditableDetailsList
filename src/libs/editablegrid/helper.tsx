@@ -53,6 +53,7 @@ export const applyGridColumnFilter = (
   gridColumnFilterArr: IGridColumnFilter[]
 ): any[] => {
   var dataTmp: any[] = [...data];
+
   if (gridColumnFilterArr.filter((item) => item.isApplied == true).length > 0) {
     dataTmp.map((row) => (row._is_filtered_in_column_filter_ = true));
   }

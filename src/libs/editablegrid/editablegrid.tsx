@@ -1080,28 +1080,7 @@ const EditableGrid = (props: EditableGridProps) => {
     };
 
     const defaultGridDataTmpWithInternalPropsIgnored =
-      defaultGridDataTmpWithDeletedData
-        .map((x) => {
-          if (trackTransformedData.current) {
-            trackTransformedData.current.forEach(function (
-              value: any,
-              key: string
-            ) {
-              for (let index = 0; index < value.values.length; index++) {
-                const element = value.values[index];
-                if (
-                  element?.text?.toString()?.toLowerCase() ===
-                  (x[key]?.toString()?.toLowerCase() ?? "")
-                ) {
-                  x[key] = element?.key;
-                }
-              }
-            });
-          }
-
-          return x;
-        })
-        .map(removeIgnoredProperties);
+      defaultGridDataTmpWithDeletedData.map(removeIgnoredProperties);
 
     let localError = false;
     if (parseInt(getGridRecordLength(true)) > 0) {
@@ -2211,7 +2190,7 @@ const EditableGrid = (props: EditableGridProps) => {
     let activateCellEditTmp: any[] = [];
     activateCellEdit.forEach((item, index) => {
       if (row == index) {
-        item.properties[column.key].value = selectedDropdownItem?.text;
+        item.properties[column.key].value = selectedDropdownItem?.key;
       }
 
       activateCellEditTmp.push(item);
@@ -2613,9 +2592,28 @@ const EditableGrid = (props: EditableGridProps) => {
     selectedItems!.forEach((i) => {
       copyText +=
         ConvertObjectToText(
-          defaultGridData.filter(
-            (x) => x["_grid_row_id_"] == i["_grid_row_id_"]
-          )[0],
+          defaultGridData
+            .map((x) => {
+              if (trackTransformedData.current) {
+                trackTransformedData.current.forEach(function (
+                  value: any,
+                  key: string
+                ) {
+                  for (let index = 0; index < value.values.length; index++) {
+                    const element = value.values[index];
+                    if (
+                      element?.key?.toString()?.toLowerCase() ===
+                      (x[key]?.toString()?.toLowerCase() ?? "")
+                    ) {
+                      x[key] = element?.text;
+                    }
+                  }
+                });
+              }
+
+              return x;
+            })
+            .filter((x) => x["_grid_row_id_"] == i["_grid_row_id_"])[0],
           props.columns.filter((x) => x.includeColumnInCopy ?? true == true)
         ) + "\r\n";
     });
@@ -2640,7 +2638,31 @@ const EditableGrid = (props: EditableGridProps) => {
 
   const HandleRowCopy = (rowNum: number): void => {
     navigator.clipboard
-      .writeText(ConvertObjectToText(defaultGridData[rowNum], props.columns))
+      .writeText(
+        ConvertObjectToText(
+          defaultGridData.map((x) => {
+            if (trackTransformedData.current) {
+              trackTransformedData.current.forEach(function (
+                value: any,
+                key: string
+              ) {
+                for (let index = 0; index < value.values.length; index++) {
+                  const element = value.values[index];
+                  if (
+                    element?.key?.toString()?.toLowerCase() ===
+                    (x[key]?.toString()?.toLowerCase() ?? "")
+                  ) {
+                    x[key] = element?.text;
+                  }
+                }
+              });
+            }
+
+            return x;
+          })[rowNum],
+          props.columns
+        )
+      )
       .then(
         function () {
           const newMap = new Map(interalMessagesState).set(
@@ -3391,7 +3413,26 @@ const EditableGrid = (props: EditableGridProps) => {
     UpdateColumnFilterValues(filter);
     var GridColumnFilterArr: IGridColumnFilter[] = getColumnFiltersRef();
     var filteredData = applyGridColumnFilter(
-      defaultGridData,
+      defaultGridData.map((x) => {
+        if (trackTransformedData.current) {
+          trackTransformedData.current.forEach(function (
+            value: any,
+            key: string
+          ) {
+            for (let index = 0; index < value.values.length; index++) {
+              const element = value.values[index];
+              if (
+                element?.key?.toString()?.toLowerCase() ===
+                (x[key]?.toString()?.toLowerCase() ?? "")
+              ) {
+                x[key] = element?.text;
+              }
+            }
+          });
+        }
+
+        return x;
+      }),
       GridColumnFilterArr
     );
     getColumnFiltersRefForColumnKey(filter.columnKey).isApplied =
@@ -3401,7 +3442,26 @@ const EditableGrid = (props: EditableGridProps) => {
         ? true
         : false;
     var activateCellEditTmp = ShallowCopyDefaultGridToEditGrid(
-      defaultGridData,
+      defaultGridData.map((x) => {
+        if (trackTransformedData.current) {
+          trackTransformedData.current.forEach(function (
+            value: any,
+            key: string
+          ) {
+            for (let index = 0; index < value.values.length; index++) {
+              const element = value.values[index];
+              if (
+                element?.key?.toString()?.toLowerCase() ===
+                (x[key]?.toString()?.toLowerCase() ?? "")
+              ) {
+                x[key] = element?.text;
+              }
+            }
+          });
+        }
+
+        return x;
+      }),
       activateCellEdit
     );
     setDefaultGridData(filteredData);
@@ -3469,6 +3529,26 @@ const EditableGrid = (props: EditableGridProps) => {
           )
 
           .map((item) => item[column.fieldName!])
+          .map((x) => {
+            if (trackTransformedData.current) {
+              trackTransformedData.current.forEach(function (
+                value: any,
+                key: string
+              ) {
+                for (let index = 0; index < value.values.length; index++) {
+                  const element = value.values[index];
+                  if (
+                    element?.key?.toString()?.toLowerCase() ===
+                    (x?.toString()?.toLowerCase() ?? "")
+                  ) {
+                    x = element?.text;
+                  }
+                }
+              });
+            }
+
+            return x;
+          })
           .sort()
       ),
     ];
@@ -3482,6 +3562,26 @@ const EditableGrid = (props: EditableGridProps) => {
                 x._is_filtered_in_grid_search_ == false)
           )
           .map((item) => item[column.fieldName!])
+          .map((x) => {
+            if (trackTransformedData.current) {
+              trackTransformedData.current.forEach(function (
+                value: any,
+                key: string
+              ) {
+                for (let index = 0; index < value.values.length; index++) {
+                  const element = value.values[index];
+                  if (
+                    element?.key?.toString()?.toLowerCase() ===
+                    (x?.toString()?.toLowerCase() ?? "")
+                  ) {
+                    x = element?.text;
+                  }
+                }
+              });
+            }
+
+            return x;
+          })
           .sort()
       ),
     ];
@@ -3628,6 +3728,17 @@ const EditableGrid = (props: EditableGridProps) => {
                   colkey: column.key,
                   values: column.dropdownValues,
                 });
+
+                if (column.filterDropdownOptions) {
+                  for (
+                    let index = 0;
+                    index < column.filterDropdownOptions.filterOptions.length;
+                    index++
+                  ) {
+                    const element =
+                      column.filterDropdownOptions.filterOptions[index];
+                  }
+                }
                 // item[column.key] =
                 //   column.dropdownValues.filter(
                 //     (x) => x.key == item[column.key]
@@ -4011,11 +4122,15 @@ const EditableGrid = (props: EditableGridProps) => {
                             column.filterDropdownOptions
                               ? column.filterDropdownOptions.filterOptions.filter(
                                   (x) =>
-                                    x.correspondingKey ==
+                                    x.correspondingKey
+                                      ?.toString()
+                                      ?.toLowerCase() ==
                                     activateCellEdit[rowNum!]["properties"][
                                       item.filterDropdownOptions
                                         ?.filterBasedOnThisColumnKey ?? ""
                                     ]?.value
+                                      ?.toString()
+                                      ?.toLowerCase()
                                 )
                               : column.dropdownValues ?? []
                           }
