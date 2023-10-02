@@ -74,7 +74,8 @@ export interface IColumnConfig extends IColumn {
     cellStyleRule?: ICellStyleRulesType;
     /** Values used to populate the dropdown if `inputType` is `EditControlType.DropDown` */
     dropdownValues?: IDropdownOption[];
-    /** Values used to populate the comboBox if `inputType` is `EditControlType.ComboBox` */
+    /** Values used to populate the comboBox if `inputType` is `EditControlType.ComboBox` NOTICE: KEY & TEXT MUST BE THE SAME,
+     * OR YOU MUST TRUNCATE THE VALUE TO YOU NEED WITH A GRID CALLBACK */
     comboBoxOptions?: IComboBoxOption[];
     /** Whether the ComboBox allows freeform user input, rather than restricting to the provided options. */
     allowFreeformComboBoxEntry?: boolean;

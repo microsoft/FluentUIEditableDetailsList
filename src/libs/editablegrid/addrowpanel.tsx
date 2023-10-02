@@ -157,7 +157,7 @@ const AddRowPanel = (props: Props) => {
     selectedDropdownItem: IDropdownOption | undefined,
     item: any
   ): void => {
-    SetObjValues(item.key, selectedDropdownItem?.text);
+    SetObjValues(item.key, selectedDropdownItem?.key);
   };
 
   const onComboBoxChange = (

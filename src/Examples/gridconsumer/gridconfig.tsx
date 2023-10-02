@@ -237,11 +237,11 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInExport: true,
     includeColumnInSearch: true,
     inputType: EditControlType.ComboBox,
-    allowFreeformComboBoxEntry: true,
+    allowFreeformComboBoxEntry: false,
     comboBoxOptions: [
       { key: "1010", text: "1010 - Black Red" },
-      { key: "BlueKey", text: "Blue" },
-      { key: "brownKey", text: "Brown" },
+      { key: "Blue", text: "Blue" },
+      { key: "Brown", text: "Brown" },
     ],
     // disableComboBox: false,
     // disableComboBox: {

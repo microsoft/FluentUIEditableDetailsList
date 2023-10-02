@@ -10,6 +10,7 @@ import {
   Checkbox,
   CommandBar,
   ConstrainMode,
+  ContextualMenu,
   DatePicker,
   DefaultButton,
   DetailsList,
@@ -20,6 +21,7 @@ import {
   Dropdown,
   FocusZoneDirection,
   FocusZoneTabbableElements,
+  FontWeights,
   HoverCard,
   HoverCardType,
   IBasePickerSuggestionsProps,
@@ -28,10 +30,14 @@ import {
   IComboBoxOption,
   ICommandBarItemProps,
   IconButton,
+  IContextualMenuProps,
+  IDetailsList,
+  IDialogContentStyles,
   IDropdownOption,
   IInputProps,
   ITag,
   ITextField,
+  ITextFieldProps,
   Link,
   MarqueeSelection,
   mergeStyles,
@@ -119,6 +125,9 @@ interface SortOptions {
   isEnabled: boolean;
 }
 
+ const internalDialogContentStyles: Partial<IDialogContentStyles> = {
+  title: { fontSize: 20, color: '#201F1E', fontWeight: FontWeights.regular }
+};
 const EditableGrid = (props: EditableGridProps) => {
   const [editMode, setEditMode] = useState(false);
   const [gridInError, setGridInError] = useState(false);
@@ -177,6 +186,112 @@ const EditableGrid = (props: EditableGridProps) => {
   );
 
   const [cursorFlashing, setCursorFlashing] = useState(false);
+  const columnToResize = React.useRef<IColumn | null>(null);
+  const textfieldResizeRef = React.useRef<ITextField>(null);
+  const inputResizeRef = React.useRef<number | null>(null);
+
+  const confirmResizeDialog = () => {
+    const detailsList = props.componentRef.current;
+
+    if (textfieldResizeRef.current) {
+      inputResizeRef.current = Number(textfieldResizeRef.current.value);
+      console.log(inputResizeRef.current);
+    }
+
+    if (columnToResize.current && inputResizeRef.current && detailsList) {
+      const width = inputResizeRef.current;
+      detailsList.updateColumn(columnToResize.current, { width: width });
+    }
+
+    inputResizeRef.current = null;
+    setDialogContent(undefined);
+  };
+
+  const resizeColumn = (column: IColumn | undefined) => {
+    if (column) columnToResize.current = column;
+    setDialogContent(
+      <div id="Resize Column" className="internal">
+        <NumericFormat
+          componentRef={textfieldResizeRef}
+          ariaLabel={"Enter desired column width pixels:"}
+          onRenderLabel={(props: ITextFieldProps| undefined) => (
+            <Text style={{ color: '#555555', fontWeight: FontWeights.regular, fontFamily: 'Segoe UI'}}>
+              {props?.ariaLabel}
+            </Text>
+          )}
+          customInput={TextField}
+          allowLeadingZeros={false}
+          allowNegative={false}
+          onKeyDown={(event) => {
+            if (event.key == "Enter") {
+              confirmResizeDialog();
+            }
+          }}
+        />
+        <DialogFooter>
+          <PrimaryButton onClick={confirmResizeDialog} text={"Resize"} />
+          <DefaultButton
+            onClick={() => setDialogContent(undefined)}
+            text="Cancel"
+          />
+        </DialogFooter>
+      </div>
+    );
+  };
+
+  const [contextualMenuProps, setContextualMenuProps] = React.useState<
+    IContextualMenuProps | undefined
+  >(undefined);
+  const onHideContextualMenu = React.useCallback(
+    () => setContextualMenuProps(undefined),
+    []
+  );
+
+  const sortColumns = (column: IColumn | undefined) => {
+    var newColumns: IColumn[] = GridColumns.slice();
+    const currColumn: IColumn = newColumns.filter(
+      (currCol) => column!.key === currCol.key
+    )[0];
+    newColumns.forEach((newCol: IColumn) => {
+      if (newCol === currColumn) {
+        currColumn.isSortedDescending = !currColumn.isSortedDescending;
+        currColumn.isSorted = true;
+      } else {
+        newCol.isSorted = false;
+        newCol.isSortedDescending = true;
+      }
+    });
+
+    const newItems = _copyAndSort(
+      defaultGridData,
+      currColumn.fieldName!,
+      currColumn.isSortedDescending
+    );
+    SetGridItems(newItems);
+    setSortColObj({
+      key: column!.key,
+      isAscending: !currColumn.isSortedDescending,
+      isEnabled: true,
+    });
+  };
+
+  const getContextualMenuProps = (
+    ev: React.MouseEvent<HTMLElement> | undefined,
+    column: IColumn | undefined
+  ): IContextualMenuProps => {
+    const items = [
+      { key: "resize", text: "Resize", onClick: () => resizeColumn(column) },
+      { key: "sort", text: "Sort", onClick: () => sortColumns(column) },
+    ];
+
+    return {
+      items: items,
+      target: ev?.currentTarget as HTMLElement,
+      gapSpace: 10,
+      isBeakVisible: true,
+      onDismiss: onHideContextualMenu,
+    };
+  };
 
   const columnKeyPasteRef = useRef<{
     key: string;
@@ -2533,7 +2648,7 @@ const EditableGrid = (props: EditableGridProps) => {
         if (!props.disableInlineCellEdit) {
           ShowRowEditMode(
             selectedItems[0],
-            selectedItems[0]["_grid_row_id_"]!,
+            selectedItems[0]?.["_grid_row_id_"]!,
             !activateCellEdit[selectedItems[0]["_grid_row_id_"]!].isActivated
           );
         }
@@ -3263,31 +3378,7 @@ const EditableGrid = (props: EditableGridProps) => {
     column: IColumn | undefined,
     ev: React.MouseEvent<HTMLElement> | undefined
   ) => {
-    var newColumns: IColumn[] = GridColumns.slice();
-    const currColumn: IColumn = newColumns.filter(
-      (currCol) => column!.key === currCol.key
-    )[0];
-    newColumns.forEach((newCol: IColumn) => {
-      if (newCol === currColumn) {
-        currColumn.isSortedDescending = !currColumn.isSortedDescending;
-        currColumn.isSorted = true;
-      } else {
-        newCol.isSorted = false;
-        newCol.isSortedDescending = true;
-      }
-    });
-
-    const newItems = _copyAndSort(
-      defaultGridData,
-      currColumn.fieldName!,
-      currColumn.isSortedDescending
-    );
-    SetGridItems(newItems);
-    setSortColObj({
-      key: column!.key,
-      isAscending: !currColumn.isSortedDescending,
-      isEnabled: true,
-    });
+    setContextualMenuProps(getContextualMenuProps(ev, column));
   };
 
   function _copyAndSort<T>(
@@ -3330,7 +3421,7 @@ const EditableGrid = (props: EditableGridProps) => {
     tags.push({
       name:
         "'" +
-        filter.column.key +
+        filter.column.name +
         "' " +
         filter.operator +
         " " +
@@ -4266,28 +4357,28 @@ const EditableGrid = (props: EditableGridProps) => {
                               ?.key?.toString() ??
                             "Start typing..."
                           }
-                          selectedKey={
-                            // Text Selects Keys
-                            column.comboBoxOptions
-                              ?.filter(
-                                (x) =>
-                                  x?.text ==
-                                    activateCellEdit[rowNum!]["properties"][
-                                      column.key
-                                    ]?.value ?? item[column.key]
-                              )[0]
-                              ?.key?.toString() ??
-                            column.comboBoxOptions
-                              ?.filter(
-                                (x) =>
-                                  x?.key ==
-                                    activateCellEdit[rowNum!]["properties"][
-                                      column.key
-                                    ]?.value ?? item[column.key]
-                              )[0]
-                              ?.key?.toString() ??
-                            null
-                          }
+                          // defaultSelectedKey={
+                          //   // Text Selects Keys
+                          //   column.comboBoxOptions
+                          //     ?.filter(
+                          //       (x) =>
+                          //         x?.text ==
+                          //           activateCellEdit[rowNum!]["properties"][
+                          //             column.key
+                          //           ]?.value ?? item[column.key]
+                          //     )[0]
+                          //     ?.key?.toString() ??
+                          //   column.comboBoxOptions
+                          //     ?.filter(
+                          //       (x) =>
+                          //         x?.key ==
+                          //           activateCellEdit[rowNum!]["properties"][
+                          //             column.key
+                          //           ]?.value ?? item[column.key]
+                          //     )[0]
+                          //     ?.key?.toString() ??
+                          //   null
+                          // }
                           calloutProps={{
                             calloutMaxHeight: 300,
                             directionalHint: DirectionalHint.bottomCenter,
@@ -6052,6 +6143,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 >
                   <MarqueeSelection selection={_selection}>
                     <DetailsList
+                      componentRef={props.componentRef}
                       compact={true}
                       focusZoneProps={{
                         direction: FocusZoneDirection.bidirectional,
@@ -6090,7 +6182,6 @@ const EditableGrid = (props: EditableGridProps) => {
                       checkboxVisibility={props.checkboxVisibility}
                       className={props.className}
                       columnReorderOptions={props.columnReorderOptions}
-                      componentRef={props.componentRef}
                       disableSelectionZone={props.disableSelectionZone}
                       dragDropEvents={props.dragDropEvents}
                       enableUpdateAnimations={props.enableUpdateAnimations}
@@ -6139,6 +6230,9 @@ const EditableGrid = (props: EditableGridProps) => {
                       viewport={props.viewport}
                     />
                   </MarqueeSelection>
+                  {contextualMenuProps && (
+                    <ContextualMenu {...contextualMenuProps} />
+                  )}
                 </ScrollablePane>
               )}
             </div>
@@ -6149,7 +6243,7 @@ const EditableGrid = (props: EditableGridProps) => {
               closeButtonAriaLabel="Close"
               dialogContentProps={{
                 title: dialogContent?.props.id,
-                styles: props?.dialogProps?.dialogContentStyles,
+                styles: dialogContent?.props.className == 'internal' ? internalDialogContentStyles : props?.dialogProps?.dialogContentStyles,
               }}
             >
               {dialogContent}
@@ -6179,7 +6273,30 @@ const EditableGrid = (props: EditableGridProps) => {
                 )}
                 onDialogCancel={CloseColumnFilterDialog}
                 onDialogSave={onFilterApplied}
-                gridData={defaultGridData}
+                gridData={defaultGridData.map((x) => {
+                  if (trackTransformedData.current) {
+                    trackTransformedData.current.forEach(function (
+                      value: any,
+                      key: string
+                    ) {
+                      for (
+                        let index = 0;
+                        index < value.values.length;
+                        index++
+                      ) {
+                        const element = value.values[index];
+                        if (
+                          element?.key?.toString()?.toLowerCase() ===
+                          (x[key]?.toString()?.toLowerCase() ?? "")
+                        ) {
+                          x[key] = element?.text;
+                        }
+                      }
+                    });
+                  }
+
+                  return x;
+                })}
               />
             ) : null}
           </div>

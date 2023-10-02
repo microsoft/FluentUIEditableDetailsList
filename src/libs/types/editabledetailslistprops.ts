@@ -4,10 +4,12 @@ import {
   ICommandBarItemProps,
   ICommandBarStyleProps,
   ICommandBarStyles,
+  IDetailsList,
   IDetailsListProps,
   IDialogContentStyleProps,
   IDialogContentStyles,
   IDialogProps,
+  IRefObject,
   IScrollablePaneStyleProps,
   IScrollablePaneStyles,
   IStyleFunctionOrObject,
@@ -52,8 +54,11 @@ export type IRenameCommandBarItemsActions = {
   Filter?: string;
   ImportFromExcel?: string;
   PasteIntoGrid?: string;
-  ResetData?: {actionTitle: string, dialogBox?: {title: string, msg: string}};
-  SaveEdits?: string
+  ResetData?: {
+    actionTitle: string;
+    dialogBox?: { title: string; msg: string };
+  };
+  SaveEdits?: string;
 };
 
 export type ICustomKeysToAddOnNewRow = {
@@ -65,9 +70,15 @@ export type ICustomKeysToAddOnNewRow = {
 
 export interface EditableGridProps extends IDetailsListProps {
   /** Shows In Command Bar - Permanently shows a save button in the command bar*/
-  showASaveButtonInCommandbar?: boolean
+  showASaveButtonInCommandbar?: boolean;
   /** If `customOperationsKey` is enabled. This Key/Column will be updated with what operation has been preformed. `(Add, Delete, Updated, None)` */
   customOperationsKey?: IUserDefinedOperationKey;
+
+  /**
+   * Callback to access the IDetailsList interface. Use this instead of ref for accessing
+   * the public methods and properties of the component.
+   */
+  componentRef: React.RefObject<IDetailsList>
 
   /** If `customKeysToAddOnNewRow` is enabled. These Keys/Columns won't be updated, but they will added and assigned the default value given when creating a new row` */
   customKeysToAddOnNewRow?: ICustomKeysToAddOnNewRow[];
@@ -200,7 +211,13 @@ export interface EditableGridProps extends IDetailsListProps {
   >;
 
   /** Sets the styles of the dialog boxes used for the grid */
-  dialogProps?: {props?: IDialogProps , dialogContentStyles?: IStyleFunctionOrObject<IDialogContentStyleProps, IDialogContentStyles>};
+  dialogProps?: {
+    props?: IDialogProps;
+    dialogContentStyles?: IStyleFunctionOrObject<
+      IDialogContentStyleProps,
+      IDialogContentStyles
+    >;
+  };
 
   /** Width Of The Grid */
   width?: string | number;

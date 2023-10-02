@@ -21,6 +21,7 @@ import {
   IDetailsHeaderProps,
   IDetailsHeaderStyleProps,
   IDetailsHeaderStyles,
+  IDetailsList,
   IDetailsRowProps,
   IDetailsRowStyles,
   IRenderFunction,
@@ -94,6 +95,7 @@ interface GridConfigOptions {
 }
 
 const Consumer = () => {
+  const detailsListRef = React.useRef<IDetailsList>(null);
   const [items, setItems] = useState<GridItemsType[]>([]);
   const [teachingBubbleVisible, setToggleTeachingBubbleVisible] =
     useState(true);
@@ -792,6 +794,7 @@ const Consumer = () => {
         />
         
         <EditableGrid
+        componentRef={detailsListRef}
         showASaveButtonInCommandbar ={
           gridConfigOptions.showASaveButtonInCommandbar
         }
