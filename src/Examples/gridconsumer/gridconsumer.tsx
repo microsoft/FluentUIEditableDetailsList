@@ -301,7 +301,7 @@ const Consumer = () => {
   const onPayrollChanged = (
     callbackRequestParamObj: ICallBackParams
   ): any[] => {
-    alert("Payroll Changed");
+    // alert("Payroll Changed");
     return callbackRequestParamObj.data;
   };
 

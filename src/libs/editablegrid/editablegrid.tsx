@@ -3007,7 +3007,9 @@ const EditableGrid = (props: EditableGridProps) => {
               return;
             }
 
-            rowData = row.trim().split("\t");
+            //  October 2, 2023 - Changed Pasting Triming
+            //rowData = row.trim().split("\t");
+            rowData = row.split("\t");
 
             if (
               overwriteFirstRow &&
@@ -3021,11 +3023,12 @@ const EditableGrid = (props: EditableGridProps) => {
 
               let currentElement = 0;
               props.columns.forEach((column, i) => {
-                if (column.editable && columnKeyPasteRef.current) {
+                if ( columnKeyPasteRef.current) {
                   if (i >= valueIndex) {
+                    if(column.editable){
                     singleColChange = true;
                     if (
-                      rowData[currentElement]?.toLowerCase()?.trim() === "false"
+                      rowData[currentElement]?.toLowerCase()?.trim() === "false" 
                     ) {
                       newGridData[columnKeyPasteRef.current._grid_row_id_][
                         column.key
@@ -3037,18 +3040,23 @@ const EditableGrid = (props: EditableGridProps) => {
                         column.key
                       ] = true;
                     } else
-                      rowData[currentElement]?.toLowerCase()?.trim() === "true";
                     {
                       newGridData[columnKeyPasteRef.current._grid_row_id_][
                         column.key
-                      ] = rowData[currentElement] ?? "";
-                    }
+                      ] = rowData[currentElement] ?? newGridData[columnKeyPasteRef.current._grid_row_id_][
+                        column.key
+                      ];
+                    }}
                     currentElement++;
                   }
                 }
               });
               continue;
             }
+
+            var pushsingleRow = undefined
+            if(columnKeyPasteRef.current && overwriteFirstRow && singleColChange)
+           pushsingleRow =  newGridData[columnKeyPasteRef.current._grid_row_id_]
 
             const startPush = setupPastedData(
               [...rowData],
@@ -3091,6 +3099,10 @@ const EditableGrid = (props: EditableGridProps) => {
             }
 
             setInteralMessagesState(newMap);
+
+            if(singleColChange && pushsingleRow){
+              ui[0].splice(0, 0, pushsingleRow)
+            }
 
             SetGridItems(
               CheckBulkUpdateOnChangeCallBack(
