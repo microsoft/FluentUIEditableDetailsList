@@ -195,7 +195,6 @@ const EditableGrid = (props: EditableGridProps) => {
 
     if (textfieldResizeRef.current) {
       inputResizeRef.current = Number(textfieldResizeRef.current.value);
-      console.log(inputResizeRef.current);
     }
 
     if (columnToResize.current && inputResizeRef.current && detailsList) {
@@ -4360,13 +4359,17 @@ const EditableGrid = (props: EditableGridProps) => {
                           ariaLabel={column.key}
                           placeholder={
                             column.comboBoxOptions?.filter(
-                              (x) => x.text == item[column.key]
+                              (x) => x.text == activateCellEdit[rowNum!]["properties"][
+                                column.key
+                              ]?.value
                             )[0]?.text ??
                             column.comboBoxOptions
                               ?.filter(
-                                (x) => x.key?.toString() == item[column.key]
+                                (x) => x.key?.toString() == activateCellEdit[rowNum!]["properties"][
+                                  column.key
+                                ]?.value
                               )[0]
-                              ?.key?.toString() ??
+                              ?.text?.toString() ??
                             "Start typing..."
                           }
                           // defaultSelectedKey={
@@ -5760,6 +5763,13 @@ const EditableGrid = (props: EditableGridProps) => {
       activateCurrentCell: boolean
     ) => void
   ): React.ReactNode => {
+    // let maskText = item[column.key];
+    // if (column.comboBoxOptions) {
+    //   maskText =
+    //     column.comboBoxOptions
+    //       ?.filter((x) => x?.key == item[column.key])[0]
+    //       ?.text?.toString() ?? item[column.key];
+    // }
     return RenderSpan(
       props,
       index,
@@ -5768,7 +5778,8 @@ const EditableGrid = (props: EditableGridProps) => {
       item,
       HandleCellOnClick,
       EditCellValue,
-      HandleCellOnDoubleClick
+      HandleCellOnDoubleClick,
+      // maskText
     );
   };
 

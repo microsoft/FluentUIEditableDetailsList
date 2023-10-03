@@ -940,25 +940,31 @@ const AddRowPanel = (props: Props) => {
               selectedKey={
                 // Keys Select Text
                 item.filterDropdownOptions
-                  ? item
-                      .filterDropdownOptions.filterOptions?.filter(
+                  ? item.filterDropdownOptions.filterOptions
+                      ?.filter(
                         (x) =>
-                          (x?.text == columnValuesObj[item.key].value && x.correspondingKey ==
-                          columnValuesObj[
-                            item.filterDropdownOptions
-                              ?.filterBasedOnThisColumnKey ?? ""
-                          ].value)  ?? item.key
+                          (x?.key == columnValuesObj[item.key].value &&
+                            x.correspondingKey ==
+                              columnValuesObj[
+                                item.filterDropdownOptions
+                                  ?.filterBasedOnThisColumnKey ?? ""
+                              ].value) ??
+                          item.key
                       )[0]
                       ?.key?.toString() ??
-                    item
-                      .filterDropdownOptions.filterOptions?.filter(
+                    item.filterDropdownOptions.filterOptions
+                      ?.filter(
                         (x) =>
-(x?.text == columnValuesObj[item.key].value && x.correspondingKey ==
-                          columnValuesObj[
-                            item.filterDropdownOptions
-                              ?.filterBasedOnThisColumnKey ?? ""
-                          ].value)  ?? item.key                      )[0]
-                      ?.key?.toString() ?? null
+                          (x?.text == columnValuesObj[item.key].value &&
+                            x.correspondingKey ==
+                              columnValuesObj[
+                                item.filterDropdownOptions
+                                  ?.filterBasedOnThisColumnKey ?? ""
+                              ].value) ??
+                          item.key
+                      )[0]
+                      ?.key?.toString() ??
+                    null
                   : item.dropdownValues
                       ?.filter(
                         (x) =>

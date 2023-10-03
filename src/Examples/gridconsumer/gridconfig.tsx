@@ -106,7 +106,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     key: "password",
     name: "Password",
     text: "Password",
-    editable: false,
+    editable: true,
     required: true,
     dataType: "string",
     minWidth: 100,
@@ -269,16 +269,18 @@ export const GridColumnConfig: IColumnConfig[] = [
       { key: "WK", text: "Weekly" },
       { key: "BI", text: "Weekly" },
       { key: "MT", text: "Monthly" },
+      { key: "1", text: "0011" },
+
     ],
     applyColumnFilter: true,
 
-    // filterDropdownOptions: {
-    //   filterBasedOnThisColumnKey: 'name',
-    //   filterOptions:[
-    //     { key: "1", text: "0011", correspondingKey: '11' },
-    //     { key: "2", text: "0011", correspondingKey: '22'},
-    //   ]
-    // }
+    filterDropdownOptions: {
+      filterBasedOnThisColumnKey: 'name',
+      filterOptions:[
+        { key: "1", text: "0011", correspondingKey: '11' },
+        { key: "2", text: "0011", correspondingKey: '22'},
+      ]
+    }
     // disableDropdown: false,
     // disableDropdown: {
     //   disableBasedOnThisColumnKey: "name",
