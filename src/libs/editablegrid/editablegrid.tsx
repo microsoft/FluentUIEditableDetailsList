@@ -125,8 +125,8 @@ interface SortOptions {
   isEnabled: boolean;
 }
 
- const internalDialogContentStyles: Partial<IDialogContentStyles> = {
-  title: { fontSize: 20, color: '#201F1E', fontWeight: FontWeights.regular }
+const internalDialogContentStyles: Partial<IDialogContentStyles> = {
+  title: { fontSize: 20, color: "#201F1E", fontWeight: FontWeights.regular },
 };
 const EditableGrid = (props: EditableGridProps) => {
   const [editMode, setEditMode] = useState(false);
@@ -213,8 +213,14 @@ const EditableGrid = (props: EditableGridProps) => {
         <NumericFormat
           componentRef={textfieldResizeRef}
           ariaLabel={"Enter desired column width pixels:"}
-          onRenderLabel={(props: ITextFieldProps| undefined) => (
-            <Text style={{ color: '#555555', fontWeight: FontWeights.regular, fontFamily: 'Segoe UI'}}>
+          onRenderLabel={(props: ITextFieldProps | undefined) => (
+            <Text
+              style={{
+                color: "#555555",
+                fontWeight: FontWeights.regular,
+                fontFamily: "Segoe UI",
+              }}
+            >
               {props?.ariaLabel}
             </Text>
           )}
@@ -355,15 +361,18 @@ const EditableGrid = (props: EditableGridProps) => {
         });
 
         setDefaultGridData(searchResult);
+        onGridFiltered()
       } else {
         var gridDataTmp: any[] = [...defaultGridData];
         gridDataTmp.map((item) => (item._is_filtered_in_grid_search_ = true));
         setDefaultGridData(gridDataTmp);
+        onGridFiltered()
       }
     } else {
       var gridDataTmp: any[] = [...defaultGridData];
       gridDataTmp.map((item) => (item._is_filtered_in_grid_search_ = true));
       setDefaultGridData(gridDataTmp);
+      onGridFiltered()
     }
   };
 
@@ -436,6 +445,25 @@ const EditableGrid = (props: EditableGridProps) => {
       setShowFilterCallout(true);
     }
   }, [filterCalloutComponent]);
+
+  const onGridFiltered = () => {
+    if (props.onGridFiltered) {
+
+      props.onGridFiltered(defaultGridData.filter(
+        (x) =>{
+          
+          return ( 
+            x._grid_row_operation_ != _Operation.Delete &&
+            x._is_filtered_in_ == true &&
+            x._is_filtered_in_grid_search_ == true &&
+            x._is_filtered_in_column_filter_ == true
+            )
+        
+      
+      }
+      ));
+    }
+  }
 
   const Messages = useRef<Map<string, { msg: string; type: MessageBarType }>>(
     new Map()
@@ -1282,6 +1310,9 @@ const EditableGrid = (props: EditableGridProps) => {
     setDefaultGridData(filteredData);
     setActivateCellEdit(activateCellEditTmp);
     setGridData(filteredData);
+    onGridFiltered()
+
+    
   };
 
   /* #region [Grid Bulk Update Functions] */
@@ -3022,30 +3053,34 @@ const EditableGrid = (props: EditableGridProps) => {
 
               let currentElement = 0;
               props.columns.forEach((column, i) => {
-                if ( columnKeyPasteRef.current) {
+                if (columnKeyPasteRef.current) {
                   if (i >= valueIndex) {
-                    if(column.editable){
-                    singleColChange = true;
-                    if (
-                      rowData[currentElement]?.toLowerCase()?.trim() === "false" 
-                    ) {
-                      newGridData[columnKeyPasteRef.current._grid_row_id_][
-                        column.key
-                      ] = false;
-                    } else if (
-                      rowData[currentElement]?.toLowerCase()?.trim() === "true"
-                    ) {
-                      newGridData[columnKeyPasteRef.current._grid_row_id_][
-                        column.key
-                      ] = true;
-                    } else
-                    {
-                      newGridData[columnKeyPasteRef.current._grid_row_id_][
-                        column.key
-                      ] = rowData[currentElement] ?? newGridData[columnKeyPasteRef.current._grid_row_id_][
-                        column.key
-                      ];
-                    }}
+                    if (column.editable) {
+                      singleColChange = true;
+                      if (
+                        rowData[currentElement]?.toLowerCase()?.trim() ===
+                        "false"
+                      ) {
+                        newGridData[columnKeyPasteRef.current._grid_row_id_][
+                          column.key
+                        ] = false;
+                      } else if (
+                        rowData[currentElement]?.toLowerCase()?.trim() ===
+                        "true"
+                      ) {
+                        newGridData[columnKeyPasteRef.current._grid_row_id_][
+                          column.key
+                        ] = true;
+                      } else {
+                        newGridData[columnKeyPasteRef.current._grid_row_id_][
+                          column.key
+                        ] =
+                          rowData[currentElement] ??
+                          newGridData[columnKeyPasteRef.current._grid_row_id_][
+                            column.key
+                          ];
+                      }
+                    }
                     currentElement++;
                   }
                 }
@@ -3053,9 +3088,14 @@ const EditableGrid = (props: EditableGridProps) => {
               continue;
             }
 
-            var pushsingleRow = undefined
-            if(columnKeyPasteRef.current && overwriteFirstRow && singleColChange)
-           pushsingleRow =  newGridData[columnKeyPasteRef.current._grid_row_id_]
+            var pushsingleRow = undefined;
+            if (
+              columnKeyPasteRef.current &&
+              overwriteFirstRow &&
+              singleColChange
+            )
+              pushsingleRow =
+                newGridData[columnKeyPasteRef.current._grid_row_id_];
 
             const startPush = setupPastedData(
               [...rowData],
@@ -3099,8 +3139,8 @@ const EditableGrid = (props: EditableGridProps) => {
 
             setInteralMessagesState(newMap);
 
-            if(singleColChange && pushsingleRow){
-              ui[0].splice(0, 0, pushsingleRow)
+            if (singleColChange && pushsingleRow) {
+              ui[0].splice(0, 0, pushsingleRow);
             }
 
             SetGridItems(
@@ -3570,6 +3610,8 @@ const EditableGrid = (props: EditableGridProps) => {
     setActivateCellEdit(activateCellEditTmp);
     setGridData(filteredData);
     setFilterCalloutComponent(undefined);
+    onGridFiltered()
+
   };
 
   const UpdateColumnFilterValues = (filter: IFilterListProps): void => {
@@ -4359,15 +4401,19 @@ const EditableGrid = (props: EditableGridProps) => {
                           ariaLabel={column.key}
                           placeholder={
                             column.comboBoxOptions?.filter(
-                              (x) => x.text == activateCellEdit[rowNum!]["properties"][
-                                column.key
-                              ]?.value
+                              (x) =>
+                                x.text ==
+                                activateCellEdit[rowNum!]["properties"][
+                                  column.key
+                                ]?.value
                             )[0]?.text ??
                             column.comboBoxOptions
                               ?.filter(
-                                (x) => x.key?.toString() == activateCellEdit[rowNum!]["properties"][
-                                  column.key
-                                ]?.value
+                                (x) =>
+                                  x.key?.toString() ==
+                                  activateCellEdit[rowNum!]["properties"][
+                                    column.key
+                                  ]?.value
                               )[0]
                               ?.text?.toString() ??
                             "Start typing..."
@@ -4400,7 +4446,8 @@ const EditableGrid = (props: EditableGridProps) => {
                           }}
                           allowFreeInput
                           allowFreeform={
-                            column.comboBoxProps?.allowFreeformComboBoxEntry ?? false
+                            column.comboBoxProps?.allowFreeformComboBoxEntry ??
+                            false
                           }
                           autoComplete="on"
                           scrollSelectedToTop
@@ -4439,14 +4486,21 @@ const EditableGrid = (props: EditableGridProps) => {
                                 "i"
                               );
                               const searchResults =
-                                column.comboBoxOptions?.filter((item) =>{
-                                  if(column?.comboBoxProps?.searchType == 'startswith'){
-                                   return item?.text?.trim()?.toLowerCase()?.startsWith(text?.trim()?.toLowerCase())
-                                  }else{
-                                  return searchPattern.test(item.text?.trim())
+                                column.comboBoxOptions?.filter((item) => {
+                                  if (
+                                    column?.comboBoxProps?.searchType ==
+                                    "startswith"
+                                  ) {
+                                    return item?.text
+                                      ?.trim()
+                                      ?.toLowerCase()
+                                      ?.startsWith(text?.trim()?.toLowerCase());
+                                  } else {
+                                    return searchPattern.test(
+                                      item.text?.trim()
+                                    );
                                   }
-                                }
-                                );
+                                });
 
                               const newMap = new Map();
                               newMap.set(
@@ -5783,7 +5837,7 @@ const EditableGrid = (props: EditableGridProps) => {
       item,
       HandleCellOnClick,
       EditCellValue,
-      HandleCellOnDoubleClick,
+      HandleCellOnDoubleClick
       // maskText
     );
   };
@@ -6036,6 +6090,7 @@ const EditableGrid = (props: EditableGridProps) => {
               headerText="Edit Grid Data"
               closeButtonAriaLabel="Close"
               type={PanelType.smallFixedFar}
+              styles={props.editPanelStyles}
             >
               <EditPanel
                 onChange={onEditPanelChange}
@@ -6054,6 +6109,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 }
                 closeButtonAriaLabel="Close"
                 type={PanelType.smallFixedFar}
+                styles={props.addRowPanelStyles}
               >
                 <AddRowPanel
                   onSubmit={onAddPanelSubmit}
@@ -6271,7 +6327,10 @@ const EditableGrid = (props: EditableGridProps) => {
               closeButtonAriaLabel="Close"
               dialogContentProps={{
                 title: dialogContent?.props.id,
-                styles: dialogContent?.props.className == 'internal' ? internalDialogContentStyles : props?.dialogProps?.dialogContentStyles,
+                styles:
+                  dialogContent?.props.className == "internal"
+                    ? internalDialogContentStyles
+                    : props?.dialogProps?.dialogContentStyles,
               }}
             >
               {dialogContent}

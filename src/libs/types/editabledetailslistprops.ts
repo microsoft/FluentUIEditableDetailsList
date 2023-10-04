@@ -9,6 +9,8 @@ import {
   IDialogContentStyleProps,
   IDialogContentStyles,
   IDialogProps,
+  IPanelStyleProps,
+  IPanelStyles,
   IRefObject,
   IScrollablePaneStyleProps,
   IScrollablePaneStyles,
@@ -75,10 +77,20 @@ export interface EditableGridProps extends IDetailsListProps {
   customOperationsKey?: IUserDefinedOperationKey;
 
   /**
+   * EditRowPanel: Call to provide customized styling that will layer on top of the variant rules.
+   */
+  editPanelStyles?: IStyleFunctionOrObject<IPanelStyleProps, IPanelStyles>;
+
+  /**
+   * AddRowPanelStyles: Call to provide customized styling that will layer on top of the variant rules.
+   */
+  addRowPanelStyles?: IStyleFunctionOrObject<IPanelStyleProps, IPanelStyles>;
+
+  /**
    * Callback to access the IDetailsList interface. Use this instead of ref for accessing
    * the public methods and properties of the component.
    */
-  componentRef: React.RefObject<IDetailsList>
+  componentRef: React.RefObject<IDetailsList>;
 
   /** If `customKeysToAddOnNewRow` is enabled. These Keys/Columns won't be updated, but they will added and assigned the default value given when creating a new row` */
   customKeysToAddOnNewRow?: ICustomKeysToAddOnNewRow[];
@@ -165,6 +177,9 @@ export interface EditableGridProps extends IDetailsListProps {
 
   /** Callback for when the grid data/items are updated */
   onGridUpdate?: (internalGridData: any[]) => Promise<void>;
+
+  /** Returns the rows/data for when the grid is filter by column or by entirety */
+  onGridFiltered?: (filterData: any[]) => void;
 
   /** Callback for when the grid is saved */
   onGridSave?: (internalGridData: any, updatedItems: any) => void;

@@ -1,4 +1,4 @@
-import { ConstrainMode, IButtonStyles, ICommandBarItemProps, ICommandBarStyleProps, ICommandBarStyles, IDetailsList, IDetailsListProps, IDialogContentStyleProps, IDialogContentStyles, IDialogProps, IScrollablePaneStyleProps, IScrollablePaneStyles, IStyleFunctionOrObject } from "@fluentui/react";
+import { ConstrainMode, IButtonStyles, ICommandBarItemProps, ICommandBarStyleProps, ICommandBarStyles, IDetailsList, IDetailsListProps, IDialogContentStyleProps, IDialogContentStyles, IDialogProps, IPanelStyleProps, IPanelStyles, IScrollablePaneStyleProps, IScrollablePaneStyles, IStyleFunctionOrObject } from "@fluentui/react";
 import { IColumnConfig } from "./columnconfigtype";
 import { IGridCopy } from "./gridcopytype";
 import { IRowAddWithValues } from "./rowaddtype";
@@ -54,6 +54,14 @@ export interface EditableGridProps extends IDetailsListProps {
     showASaveButtonInCommandbar?: boolean;
     /** If `customOperationsKey` is enabled. This Key/Column will be updated with what operation has been preformed. `(Add, Delete, Updated, None)` */
     customOperationsKey?: IUserDefinedOperationKey;
+    /**
+     * EditRowPanel: Call to provide customized styling that will layer on top of the variant rules.
+     */
+    editPanelStyles?: IStyleFunctionOrObject<IPanelStyleProps, IPanelStyles>;
+    /**
+     * AddRowPanelStyles: Call to provide customized styling that will layer on top of the variant rules.
+     */
+    addRowPanelStyles?: IStyleFunctionOrObject<IPanelStyleProps, IPanelStyles>;
     /**
      * Callback to access the IDetailsList interface. Use this instead of ref for accessing
      * the public methods and properties of the component.
@@ -117,6 +125,8 @@ export interface EditableGridProps extends IDetailsListProps {
     onGridSelectionChange?: any;
     /** Callback for when the grid data/items are updated */
     onGridUpdate?: (internalGridData: any[]) => Promise<void>;
+    /** Returns the rows/data for when the grid is filter by column or by entirety */
+    onGridFiltered?: (filterData: any[]) => void;
     /** Callback for when the grid is saved */
     onGridSave?: (internalGridData: any, updatedItems: any) => void;
     /** Removed 'Commit Changes' button.

@@ -225,7 +225,7 @@ const FilterList = (props: Props) => {
             text="Apply"
           />
 
-          <ActionButton
+          {/* <ActionButton
             text="Clear All"
             className={styles.button}
             onClick={onReset}
@@ -233,7 +233,7 @@ const FilterList = (props: Props) => {
               appliedFilters.filter((item) => item.isChecked == true).length ==
               0
             }
-          />
+          /> */}
 
           <ActionButton
             text="Cancel"

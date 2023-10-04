@@ -245,11 +245,7 @@ const Consumer = () => {
         salary: GetRandomInt(35000, 75000),
         // dateofjoining: new Date(),
         payrolltype:
-          randomInt % 3 == 0
-            ? "WK"
-            : randomInt % 3 == 1
-            ? "BI"
-            : "MT",
+          randomInt % 3 == 0 ? "WK" : randomInt % 3 == 1 ? "BI" : "MT",
         employmenttype: "Employment Type" + GetRandomInt(1, 12),
         // employeelink: "Link",
       });
@@ -258,7 +254,7 @@ const Consumer = () => {
   };
 
   useEffect(() => {
-    SetDummyData()
+    SetDummyData();
     // setTimeout(   ()=> SetDummyData(), 100    )
   }, []);
 
@@ -279,6 +275,10 @@ const Consumer = () => {
     LogRows(internalGridData);
   };
 
+  const onGridFiltered = (filterData: any[]): void => {
+    console.log("Grid Data Filtered");
+    console.log(filterData);
+  };
   const LogRows = (data: any[]): void => {
     console.log("Updated Rows");
     console.log(
@@ -348,37 +348,41 @@ const Consumer = () => {
         const item = filteredItems[i];
         item._udf_custom_vaule_store_a = item._udf_custom_vaule_store_a + 99;
 
-        item.salary = 888
+        item.salary = 888;
       }
     }
 
     return callbackRequestParamObj.data;
   };
 
-  const checkForDup = (
-    callbackRequestParamObj: ICallBackParams
-  ): any[] => {
-    const exampleOfListOfAlias = ['v-sainar', 'walkercj']
-    if(exampleOfListOfAlias.includes(callbackRequestParamObj.data['name'].value)){
-      callbackRequestParamObj.data['name'].error = 'User Alias is duplicated'
+  const checkForDup = (callbackRequestParamObj: ICallBackParams): any[] => {
+    const exampleOfListOfAlias = ["v-sainar", "walkercj"];
+    if (
+      exampleOfListOfAlias.includes(callbackRequestParamObj.data["name"].value)
+    ) {
+      callbackRequestParamObj.data["name"].error = "User Alias is duplicated";
     }
 
-
-    return (Object.assign({errorMessage: '', data: callbackRequestParamObj.data}, callbackRequestParamObj))
-
+    return Object.assign(
+      { errorMessage: "", data: callbackRequestParamObj.data },
+      callbackRequestParamObj
+    );
   };
 
-  const attachGridValueChangeCallbacks =
-    (columnConfig: IColumnConfig[]): IColumnConfig[] => {
-      columnConfig
-        .filter((item) => item.key == "designation")
-        .map((item) => (item.onChange = onDesignationChangedTest));
+  const attachGridValueChangeCallbacks = (
+    columnConfig: IColumnConfig[]
+  ): IColumnConfig[] => {
+    columnConfig
+      .filter((item) => item.key == "designation")
+      .map((item) => (item.onChange = onDesignationChangedTest));
 
-      // columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChanged);
-      columnConfig.filter((item) => item.key == 'payrolltype').map((item) => item.onChange = onPayrollChanged);
-      //columnConfig.filter((item) => item.key == 'dateofjoining').map((item) => item.onChange = onDateChanged);
-      return columnConfig;
-    }
+    // columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChanged);
+    columnConfig
+      .filter((item) => item.key == "payrolltype")
+      .map((item) => (item.onChange = onPayrollChanged));
+    //columnConfig.filter((item) => item.key == 'dateofjoining').map((item) => item.onChange = onDateChanged);
+    return columnConfig;
+  };
 
   // const attachGridValueChangeCallbacks = useCallback(
   //   (columnConfig: IColumnConfig[]): IColumnConfig[] => {
@@ -502,7 +506,7 @@ const Consumer = () => {
         focusZoneProps={{
           direction: FocusZoneDirection.bidirectional,
           handleTabKey: FocusZoneTabbableElements.all,
-          shouldFocusOnMount: true
+          shouldFocusOnMount: true,
           // isCircularNavigation: true
         }} /* styles={tableDetailsRowsStyles()} */
       />
@@ -736,7 +740,6 @@ const Consumer = () => {
               checked={gridConfigOptions.enableGridPaste}
             />
           </StackItem>
-      
 
           <StackItem className={classNames.checkbox}>
             <Checkbox
@@ -792,18 +795,17 @@ const Consumer = () => {
           text="Save Grid"
           onClick={() => saveAction && saveAction()}
         />
-        
+
         <EditableGrid
-        componentRef={detailsListRef}
-        showASaveButtonInCommandbar ={
-          gridConfigOptions.showASaveButtonInCommandbar
-        }
-        enableEditAllOnCellClick={
-          gridConfigOptions.enableEditAllOnCellClick
-        }
-        renameCommandBarItemsActions={{
-          DeleteRow: 'Remove Row'
-        }}
+          componentRef={detailsListRef}
+          
+          showASaveButtonInCommandbar={
+            gridConfigOptions.showASaveButtonInCommandbar
+          }
+          enableEditAllOnCellClick={gridConfigOptions.enableEditAllOnCellClick}
+          renameCommandBarItemsActions={{
+            DeleteRow: "Remove Row",
+          }}
           customKeysToAddOnNewRow={[
             {
               key: "customKey",
@@ -887,12 +889,12 @@ const Consumer = () => {
           enableColumnFilterRules={gridConfigOptions.enableColumnFilterRules}
           enableGridRowAddWithValues={{
             enable: gridConfigOptions.enableGridRowAddWithValues,
-            addToGridButtonText: 'Add User',
+            addToGridButtonText: "Add User",
             //onChange: checkForDup,
-            onPreSubmit:checkForDup,
-            addingToGridButtonText: 'Adding...',
+            onPreSubmit: checkForDup,
+            addingToGridButtonText: "Adding...",
             enableNonEditableColumns: false,
-            showInsertedRowAtTopWhenAddedFromPanel: false
+            showInsertedRowAtTopWhenAddedFromPanel: false,
           }}
           gridCopyOptions={{
             enableGridCopy: gridConfigOptions.enableGridCopy,
@@ -951,6 +953,7 @@ const Consumer = () => {
             });
           }}
           onGridUpdate={onGridUpdate}
+          onGridFiltered={onGridFiltered}
           enableDefaultEditMode={gridConfigOptions.enableDefaultEditMode}
           customCommandBarItems={[
             {
@@ -963,8 +966,6 @@ const Consumer = () => {
             },
           ]}
         />
-
-
       </div>
 
       {/* {teachingBubbleVisible && (
