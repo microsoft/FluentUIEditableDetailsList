@@ -279,6 +279,7 @@ const Consumer = () => {
     console.log("Grid Data Filtered");
     console.log(filterData);
   };
+
   const LogRows = (data: any[]): void => {
     console.log("Updated Rows");
     console.log(
@@ -797,8 +798,8 @@ const Consumer = () => {
         />
 
         <EditableGrid
+        
           componentRef={detailsListRef}
-          
           showASaveButtonInCommandbar={
             gridConfigOptions.showASaveButtonInCommandbar
           }

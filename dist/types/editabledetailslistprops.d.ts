@@ -45,7 +45,7 @@ export type IRenameCommandBarItemsActions = {
 };
 export type ICustomKeysToAddOnNewRow = {
     key: string;
-    defaultValue: string | number | boolean | bigint;
+    defaultValue: string | number | boolean | bigint | null;
     ignoreKeyWhenDeterminingBlankRows?: boolean;
     useKeyWhenDeterminingDuplicatedRows?: boolean;
 };
