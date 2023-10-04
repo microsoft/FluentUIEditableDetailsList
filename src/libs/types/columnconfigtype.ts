@@ -117,12 +117,19 @@ export interface IColumnConfig extends IColumn {
   /** Values used to populate the dropdown if `inputType` is `EditControlType.DropDown` */
   dropdownValues?: IDropdownOption[];
 
-  /** Values used to populate the comboBox if `inputType` is `EditControlType.ComboBox` NOTICE: KEY & TEXT MUST BE THE SAME, 
+  /** Values used to populate the comboBox if `inputType` is `EditControlType.ComboBox` NOTICE: KEY & TEXT MUST BE THE SAME,
    * OR YOU MUST TRUNCATE THE VALUE TO YOU NEED WITH A GRID CALLBACK */
   comboBoxOptions?: IComboBoxOption[];
 
-  /** Whether the ComboBox allows freeform user input, rather than restricting to the provided options. */
-  allowFreeformComboBoxEntry?: boolean;
+    /** if `inputType` is `EditControlType.ComboBox` - sets different properties for the comboBox */
+  comboBoxProps?: {
+    /** Whether the ComboBox allows freeform user input, rather than restricting to the provided options. */
+    allowFreeformComboBoxEntry?: boolean;
+
+    /** How the ComboBox searches when the user enters a value*/
+    searchType?: 'contains' | 'startswith'
+
+  };
 
   /** if `inputType` is `EditControlType.DropDown` - Filter the options based on the key value */
   filterDropdownOptions?: IFilterDropCellOptions;

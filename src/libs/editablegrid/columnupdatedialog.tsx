@@ -266,8 +266,8 @@ const ColumnUpdateDialog = (props: Props) => {
                       (x) =>
                         x.correspondingKey ==
                         inputValue[
-                          column[0].filterDropdownOptions?.filterBasedOnThisColumnKey ??
-                            ""
+                          column[0].filterDropdownOptions
+                            ?.filterBasedOnThisColumnKey ?? ""
                         ].value
                     )
                   : column[0].dropdownValues ?? []
@@ -297,8 +297,20 @@ const ColumnUpdateDialog = (props: Props) => {
               onInputValueChange={(text) => {
                 try {
                   const searchPattern = new RegExp(text?.trim(), "i");
+
                   const searchResults = column[0].comboBoxOptions?.filter(
-                    (item) => searchPattern.test(item.text?.trim())
+                    (item) => {
+                      if (
+                        column[0]?.comboBoxProps?.searchType == "startswith"
+                      ) {
+                        return item?.text
+                          ?.trim()
+                          ?.toLowerCase()
+                          ?.startsWith(text?.trim()?.toLowerCase());
+                      } else {
+                        return searchPattern.test(item.text?.trim());
+                      }
+                    }
                   );
 
                   setComboOptions(
@@ -317,7 +329,11 @@ const ColumnUpdateDialog = (props: Props) => {
               }}
               onChange={(ev, option) => onComboBoxChange(ev, option, column[0])}
               allowFreeInput
-              allowFreeform={column[0].allowFreeformComboBoxEntry ?? false}
+              allowFreeform={
+                column[0].comboBoxProps?.allowFreeformComboBoxEntry ??
+                false ??
+                false
+              }
               autoComplete="on"
             />
           );

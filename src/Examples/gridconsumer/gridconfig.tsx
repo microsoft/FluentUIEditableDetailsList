@@ -28,10 +28,10 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInSearch: true,
     columnNeededInImport: false,
     includeColumnInCopy: false,
-    
+
     applyColumnFilter: true,
     disableSort: false,
-    isPadded: false
+    isPadded: false,
   },
   // {
   //   key: "customerhovercol",
@@ -57,7 +57,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     name: "Name",
     text: "Name",
     editable: true,
-   defaultOnAddRow: "Mr. Keneedy",
+    defaultOnAddRow: "Mr. Keneedy",
     required: {
       alwaysRequired: false,
       requiredOnlyIfTheseColumnsAreEmpty: { colKeys: ["age", "salary"] },
@@ -85,7 +85,6 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInExport: true,
     includeColumnInSearch: true,
     applyColumnFilter: true,
-    
   },
   {
     key: "excluded",
@@ -189,13 +188,13 @@ export const GridColumnConfig: IColumnConfig[] = [
         //   displayType: 'text',
 
         // },
-        
+
         formatProps: {
           decimalScale: 3,
           fixedDecimalScale: true,
           allowNegative: false,
-          thousandSeparator: ',',
-          thousandsGroupStyle: 'thousand'
+          thousandSeparator: ",",
+          thousandsGroupStyle: "thousand",
         },
       },
     },
@@ -233,15 +232,18 @@ export const GridColumnConfig: IColumnConfig[] = [
     minWidth: 150,
     maxWidth: 150,
     isResizable: true,
-    defaultOnAddRow:"1010" ,
+    defaultOnAddRow: "1010",
     includeColumnInExport: true,
     includeColumnInSearch: true,
     inputType: EditControlType.ComboBox,
-    allowFreeformComboBoxEntry: false,
+    comboBoxProps: {
+      allowFreeformComboBoxEntry: false,
+      searchType: "startswith",
+    },
     comboBoxOptions: [
-      { key: "1010", text: "1010 - Black Red" },
-      { key: "Blue", text: "Blue" },
-      { key: "Brown", text: "Brown" },
+      { key: "1010", text: "Jack" },
+      { key: "Blue", text: "Jabbot" },
+      { key: "Brown", text: "ajaj" },
     ],
     // disableComboBox: false,
     // disableComboBox: {
@@ -270,17 +272,16 @@ export const GridColumnConfig: IColumnConfig[] = [
       { key: "BI", text: "Weekly" },
       { key: "MT", text: "Monthly" },
       { key: "1", text: "0011" },
-
     ],
     applyColumnFilter: true,
 
     filterDropdownOptions: {
-      filterBasedOnThisColumnKey: 'name',
-      filterOptions:[
-        { key: "1", text: "0011", correspondingKey: '11' },
-        { key: "2", text: "0011", correspondingKey: '22'},
-      ]
-    }
+      filterBasedOnThisColumnKey: "name",
+      filterOptions: [
+        { key: "1", text: "0011", correspondingKey: "11" },
+        { key: "2", text: "0011", correspondingKey: "22" },
+      ],
+    },
     // disableDropdown: false,
     // disableDropdown: {
     //   disableBasedOnThisColumnKey: "name",

@@ -4400,7 +4400,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           }}
                           allowFreeInput
                           allowFreeform={
-                            column.allowFreeformComboBoxEntry ?? false
+                            column.comboBoxProps?.allowFreeformComboBoxEntry ?? false
                           }
                           autoComplete="on"
                           scrollSelectedToTop
@@ -4439,8 +4439,13 @@ const EditableGrid = (props: EditableGridProps) => {
                                 "i"
                               );
                               const searchResults =
-                                column.comboBoxOptions?.filter((item) =>
-                                  searchPattern.test(item.text?.trim())
+                                column.comboBoxOptions?.filter((item) =>{
+                                  if(column?.comboBoxProps?.searchType == 'startswith'){
+                                   return item?.text?.trim()?.toLowerCase()?.startsWith(text?.trim()?.toLowerCase())
+                                  }else{
+                                  return searchPattern.test(item.text?.trim())
+                                  }
+                                }
                                 );
 
                               const newMap = new Map();

@@ -833,7 +833,9 @@ const AddRowPanel = (props: Props) => {
               }
               label={item.text}
               allowFreeInput
-              allowFreeform={item.allowFreeformComboBoxEntry ?? false}
+              allowFreeform={
+                item.comboBoxProps?.allowFreeformComboBoxEntry ?? false
+              }
               autoComplete="on"
               scrollSelectedToTop
               options={comboOptions}
@@ -850,8 +852,18 @@ const AddRowPanel = (props: Props) => {
               onInputValueChange={(text) => {
                 try {
                   const searchPattern = new RegExp(text?.trim(), "i");
-                  const searchResults = item.comboBoxOptions?.filter((item) =>
-                    searchPattern.test(item.text?.trim())
+
+                  const searchResults = item.comboBoxOptions?.filter(
+                    (itemInList) => {
+                      if (item?.comboBoxProps?.searchType == "startswith") {
+                        return itemInList?.text
+                          ?.trim()
+                          ?.toLowerCase()
+                          ?.startsWith(text?.trim()?.toLowerCase());
+                      } else {
+                        return searchPattern.test(itemInList.text?.trim());
+                      }
+                    }
                   );
 
                   setComboOptions(
