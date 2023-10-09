@@ -3039,7 +3039,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
             //  October 2, 2023 - Changed Pasting Triming
             //rowData = row.trim().split("\t");
-            rowData = row.split("\t");
+            rowData = row.split("\t")
 
             if (
               overwriteFirstRow &&
@@ -3111,6 +3111,15 @@ const EditableGrid = (props: EditableGridProps) => {
           ui.forEach((i) => {
             newGridData.splice(0, 0, i[0]);
           });
+
+
+          // Use To Reverse Pastings
+          /* for (let index = ui.length - 1; index >= 0; index--) {
+            const newlyPastedRow = ui[index];
+
+             newGridData.splice(0, 0, newlyPastedRow[0]);
+
+          }*/
 
           let newMap = new Map(interalMessagesState);
 

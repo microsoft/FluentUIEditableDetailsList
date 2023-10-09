@@ -1,19 +1,20 @@
 import {
-    DefaultButton,
-    Dialog,
-    DialogFooter,
-    Dropdown,
-    IDropdownOption,
-    PrimaryButton,
-    Stack,
-    TextField
+  DefaultButton,
+  Dialog,
+  DialogFooter,
+  Dropdown,
+  IDropdownOption,
+  PrimaryButton,
+  Stack,
+  StackItem,
+  TextField,
 } from "@fluentui/react";
 import {
-    controlClass,
-    dropdownStyles,
-    modelProps,
-    stackTokens,
-    textFieldStyles,
+  controlClass,
+  dropdownStyles,
+  modelProps,
+  stackTokens,
+  textFieldStyles,
 } from "../../editablegrid/columnfilterdialog/columnfilterdialogStyles";
 import { IColumnConfig } from "../../types/columnconfigtype";
 import { IFilter, operatorsArr } from "../../types/filterstype";
@@ -83,7 +84,7 @@ const ColumnFilterDialog = (props: Props) => {
             );
             setOperatorDropDownContent(
               <Dropdown
-                placeholder="Select the Column"
+                placeholder="Select Filter Condition"
                 options={createCompareOptions()}
                 styles={dropdownStyles}
                 onChange={onSelectOperator}
@@ -94,14 +95,14 @@ const ColumnFilterDialog = (props: Props) => {
             setInputFieldContent(
               <TextField
                 className={controlClass.textFieldClass}
-                placeholder="Value"
+                placeholder="Enter Value"
                 onChange={(ev, text) => onTextUpdate(ev, text!)}
                 styles={textFieldStyles}
               />
             );
             setOperatorDropDownContent(
               <Dropdown
-                placeholder="Select the Column"
+                placeholder="Select Filter Condition"
                 options={createCompareOptions()}
                 styles={dropdownStyles}
                 onChange={onSelectOperator}
@@ -111,7 +112,7 @@ const ColumnFilterDialog = (props: Props) => {
           case "date":
             setInputFieldContent(
               <Dropdown
-                placeholder="Select the Column"
+                placeholder="Select Filter Condition"
                 options={valueOptions}
                 styles={dropdownStyles}
                 onChange={onSelectValue}
@@ -119,7 +120,7 @@ const ColumnFilterDialog = (props: Props) => {
             );
             setOperatorDropDownContent(
               <Dropdown
-                placeholder="Select the Column"
+                placeholder="Select Filter Condition"
                 options={createCompareOptions()}
                 styles={dropdownStyles}
                 onChange={onSelectOperator}
@@ -186,8 +187,8 @@ const ColumnFilterDialog = (props: Props) => {
     JSX.Element | undefined
   >(
     <Dropdown
-      placeholder="Select the Column"
-      options={options}
+      placeholder="Enter/Select Value"
+      options={[]}
       styles={dropdownStyles}
       onChange={onSelectValue}
     />
@@ -197,7 +198,7 @@ const ColumnFilterDialog = (props: Props) => {
     JSX.Element | undefined
   >(
     <Dropdown
-      placeholder="Select the Column"
+      placeholder="Select Filter Condition"
       options={createCompareOptions()}
       styles={dropdownStyles}
       onChange={onSelectValue}
@@ -227,33 +228,37 @@ const ColumnFilterDialog = (props: Props) => {
 
   return (
     <Dialog
+      dialogContentProps={{ title: "Column Filter" }}
       modalProps={modelProps}
       hidden={!inputFieldContent}
       onDismiss={closeDialog}
       closeButtonAriaLabel="Close"
     >
       <Stack verticalAlign="space-between" tokens={stackTokens}>
-        <Stack.Item grow={1}>
+        <StackItem grow={1}>
           <Dropdown
             placeholder="Select the Column"
             options={options}
             styles={dropdownStyles}
             onChange={onSelectGridColumn}
           />
-        </Stack.Item>
-        <Stack.Item grow={1}>{operatorDropDownContent}</Stack.Item>
-        <Stack.Item grow={1}>{inputFieldContent}</Stack.Item>
+        </StackItem>
+        {gridColumn != undefined && (
+          <StackItem grow={1}>{operatorDropDownContent}</StackItem>
+        )}
+        {operator != "" && <StackItem grow={1}>{inputFieldContent}</StackItem>}
       </Stack>
-      <Stack.Item>
+      <StackItem>
         <DialogFooter className={controlClass.dialogFooterStyles}>
           <PrimaryButton
             // eslint-disable-next-line react/jsx-no-bind
             onClick={saveDialog}
-            text="Save"
+            disabled={gridColumn == undefined || operator == ""}
+            text="Filter"
           />
           <DefaultButton onClick={closeDialog} text="Cancel" />
         </DialogFooter>
-      </Stack.Item>
+      </StackItem>
     </Dialog>
   );
 };
