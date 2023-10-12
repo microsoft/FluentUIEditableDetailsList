@@ -361,18 +361,18 @@ const EditableGrid = (props: EditableGridProps) => {
         });
 
         setDefaultGridData(searchResult);
-        onGridFiltered()
+        onGridFiltered();
       } else {
         var gridDataTmp: any[] = [...defaultGridData];
         gridDataTmp.map((item) => (item._is_filtered_in_grid_search_ = true));
         setDefaultGridData(gridDataTmp);
-        onGridFiltered()
+        onGridFiltered();
       }
     } else {
       var gridDataTmp: any[] = [...defaultGridData];
       gridDataTmp.map((item) => (item._is_filtered_in_grid_search_ = true));
       setDefaultGridData(gridDataTmp);
-      onGridFiltered()
+      onGridFiltered();
     }
   };
 
@@ -448,22 +448,18 @@ const EditableGrid = (props: EditableGridProps) => {
 
   const onGridFiltered = () => {
     if (props.onGridFiltered) {
-
-      props.onGridFiltered(defaultGridData.filter(
-        (x) =>{
-          
-          return ( 
+      props.onGridFiltered(
+        defaultGridData.filter((x) => {
+          return (
             x._grid_row_operation_ != _Operation.Delete &&
             x._is_filtered_in_ == true &&
             x._is_filtered_in_grid_search_ == true &&
             x._is_filtered_in_column_filter_ == true
-            )
-        
-      
-      }
-      ));
+          );
+        })
+      );
     }
-  }
+  };
 
   const Messages = useRef<Map<string, { msg: string; type: MessageBarType }>>(
     new Map()
@@ -1162,7 +1158,6 @@ const EditableGrid = (props: EditableGridProps) => {
     Messages.current = new Map();
     setMessagesState(Messages.current);
     setGridInError(false);
-
     setInteralMessagesState(new Map());
 
     if (!props.enableSaveGridOnCellValueChange) {
@@ -1310,9 +1305,7 @@ const EditableGrid = (props: EditableGridProps) => {
     setDefaultGridData(filteredData);
     setActivateCellEdit(activateCellEditTmp);
     setGridData(filteredData);
-    onGridFiltered()
-
-    
+    onGridFiltered();
   };
 
   /* #region [Grid Bulk Update Functions] */
@@ -3039,7 +3032,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
             //  October 2, 2023 - Changed Pasting Triming
             //rowData = row.trim().split("\t");
-            rowData = row.split("\t")
+            rowData = row.split("\t");
 
             if (
               overwriteFirstRow &&
@@ -3111,7 +3104,6 @@ const EditableGrid = (props: EditableGridProps) => {
           ui.forEach((i) => {
             newGridData.splice(0, 0, i[0]);
           });
-
 
           // Use To Reverse Pastings
           /* for (let index = ui.length - 1; index >= 0; index--) {
@@ -3619,8 +3611,7 @@ const EditableGrid = (props: EditableGridProps) => {
     setActivateCellEdit(activateCellEditTmp);
     setGridData(filteredData);
     setFilterCalloutComponent(undefined);
-    onGridFiltered()
-
+    onGridFiltered();
   };
 
   const UpdateColumnFilterValues = (filter: IFilterListProps): void => {
@@ -6086,6 +6077,23 @@ const EditableGrid = (props: EditableGridProps) => {
         );
       else return <></>;
   }, [defaultGridData, props.enableSaveGridOnCellValueChange]);
+
+  const clearAllMessages = () => {
+    GlobalMessages.current = new Map();
+    SetGlobalMessagesState(GlobalMessages.current);
+    Messages.current = new Map();
+    setMessagesState(Messages.current);
+    setGridInError(false);
+    setInteralMessagesState(new Map());
+  };
+
+  useEffect(() => {
+    if(props.clearAllGridMessages){
+    if (props.clearAllGridMessages[0] == true) {
+      clearAllMessages();
+      props.clearAllGridMessages[1](false)
+    }}
+  }, [props.clearAllGridMessages?.[0]]);
 
   return (
     <Stack>

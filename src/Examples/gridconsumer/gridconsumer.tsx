@@ -542,6 +542,7 @@ const Consumer = () => {
   }, [Messages]);
 
   const [saveAction, setSaveAction] = useState<() => boolean | void>();
+  const [clearGridMessages, setClearGridMessages] = useState(false);
 
   return (
     <Stack grow horizontalAlign="center">
@@ -798,7 +799,7 @@ const Consumer = () => {
         />
 
         <EditableGrid
-        
+          clearAllGridMessages={[clearGridMessages, setClearGridMessages]}
           componentRef={detailsListRef}
           showASaveButtonInCommandbar={
             gridConfigOptions.showASaveButtonInCommandbar
