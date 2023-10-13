@@ -793,11 +793,16 @@ const Consumer = () => {
           backgroundColor: "white",
         }}
       >
-        <PrimaryButton
-          text="Save Grid"
-          onClick={() => saveAction && saveAction()}
-        />
-
+        <Stack horizontal tokens={{childrenGap: 5}}>
+          <PrimaryButton
+            text="Save Grid"
+            onClick={() => saveAction && saveAction()}
+          />
+          <PrimaryButton
+            text="Clear All Grid Messages"
+            onClick={() => setClearGridMessages(true)}
+          />
+        </Stack>
         <EditableGrid
           clearAllGridMessages={[clearGridMessages, setClearGridMessages]}
           componentRef={detailsListRef}

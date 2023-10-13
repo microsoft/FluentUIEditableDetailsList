@@ -6091,6 +6091,7 @@ const EditableGrid = (props: EditableGridProps) => {
     if(props.clearAllGridMessages){
     if (props.clearAllGridMessages[0] == true) {
       clearAllMessages();
+      clearSelectedItems();
       props.clearAllGridMessages[1](false)
     }}
   }, [props.clearAllGridMessages?.[0]]);
