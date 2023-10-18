@@ -686,7 +686,7 @@ const EditableGrid = (props: EditableGridProps) => {
             (rowCol == null ||
               rowCol == undefined ||
               rowCol?.toString().length <= 0 ||
-              rowCol == "")
+              (rowCol == "" && element.dataType != "number"))
           ) {
             if (!emptyCol.includes(" " + element.name))
               emptyCol.push(" " + element.name);
@@ -697,7 +697,7 @@ const EditableGrid = (props: EditableGridProps) => {
             (rowCol == null ||
               rowCol == undefined ||
               rowCol?.toString().length <= 0 ||
-              rowCol == "")
+              (rowCol == "" && element.dataType != "number"))
           ) {
             var msg =
               `Row ${
@@ -715,7 +715,7 @@ const EditableGrid = (props: EditableGridProps) => {
             (rowCol == null ||
               rowCol == undefined ||
               rowCol?.toString().length <= 0 ||
-              rowCol == "")
+              (rowCol == "" && element.dataType != "number"))
           ) {
             const checkKeys =
               element.required.requiredOnlyIfTheseColumnsAreEmpty.colKeys;
@@ -729,7 +729,7 @@ const EditableGrid = (props: EditableGridProps) => {
                   str == null ||
                   str == undefined ||
                   str?.toString().length <= 0 ||
-                  str == ""
+                  (str == "" && element.dataType != "number")
                 ) {
                   if (element.required.errorMessage) {
                     var msg =
@@ -753,7 +753,10 @@ const EditableGrid = (props: EditableGridProps) => {
                   }
                 }
               } else {
-                if (str && str?.toString().length > 0) {
+                if (
+                  (str || str.toString().trim() == "0") &&
+                  str?.toString().length > 0
+                ) {
                   skippable = true;
                   break;
                 }
@@ -988,7 +991,7 @@ const EditableGrid = (props: EditableGridProps) => {
                   if (
                     (str == undefined ||
                       str == null ||
-                      str == "" ||
+                      (str == "" && element.dataType != "number") ||
                       (str && str?.toString().length <= 0)) &&
                     colDep.type === DepColTypes.MustHaveData
                   ) {
@@ -1546,32 +1549,35 @@ const EditableGrid = (props: EditableGridProps) => {
     clearSelectedItems();
   };
 
-  const onAddPanelSubmit = (item: any, noOfRows: number): void => {
+  const onAddPanelSubmit = (combinations: any): void => {
     dismissPanelForAdd();
-    if (noOfRows < 0) {
-      return;
-    }
 
-    var addedRows = GetDefaultRowObject(noOfRows);
-    if (Object.keys(item).length > 0) {
-      addedRows.map((row) => {
-        var objectKeys = Object.keys(item);
-        objectKeys.forEach((key) => {
-          row[key] = item[key];
+    var newGridData = [...defaultGridData];
+
+    combinations.forEach(function (combination: any, index: number) {
+      const item = Object.fromEntries(combinations[index]);
+
+      var addedRows = GetDefaultRowObject(1);
+      if (Object.keys(item).length > 0) {
+        addedRows.map((row) => {
+          var objectKeys = Object.keys(item);
+          objectKeys.forEach((key) => {
+            row[key] = item[key];
+          });
+
+          return row;
         });
+      }
 
-        return row;
-      });
-    }
+      if (
+        props.enableGridRowAddWithValues?.showInsertedRowAtTopWhenAddedFromPanel
+      ) {
+        newGridData.splice(0, 0, addedRows[0]);
+      } else {
+        newGridData.splice(newGridData.length, 0, addedRows[0]);
+      }
+    });
 
-    var newGridData: any[] = [];
-    if (
-      props.enableGridRowAddWithValues?.showInsertedRowAtTopWhenAddedFromPanel
-    ) {
-      newGridData = [...addedRows, ...defaultGridData];
-    } else {
-      newGridData = [...defaultGridData, ...addedRows];
-    }
     setGridEditState(true);
     SetGridItems(newGridData);
   };
@@ -4398,6 +4404,7 @@ const EditableGrid = (props: EditableGridProps) => {
                               ? column.disableComboBox
                               : false)
                           }
+                          openOnKeyboardFocus
                           ariaLabel={column.key}
                           placeholder={
                             column.comboBoxOptions?.filter(
@@ -6088,12 +6095,13 @@ const EditableGrid = (props: EditableGridProps) => {
   };
 
   useEffect(() => {
-    if(props.clearAllGridMessages){
-    if (props.clearAllGridMessages[0] == true) {
-      clearAllMessages();
-      clearSelectedItems();
-      props.clearAllGridMessages[1](false)
-    }}
+    if (props.clearAllGridMessages) {
+      if (props.clearAllGridMessages[0] == true) {
+        clearAllMessages();
+        clearSelectedItems();
+        props.clearAllGridMessages[1](false);
+      }
+    }
   }, [props.clearAllGridMessages?.[0]]);
 
   return (
@@ -6246,12 +6254,14 @@ const EditableGrid = (props: EditableGridProps) => {
                   <MarqueeSelection selection={_selection}>
                     <DetailsList
                       componentRef={props.componentRef}
-                      compact={true}
-                      focusZoneProps={{
-                        direction: FocusZoneDirection.bidirectional,
-                        handleTabKey: FocusZoneTabbableElements.all,
-                        // isCircularNavigation: true
-                      }}
+                      compact={props.compact ?? true}
+                      focusZoneProps={
+                        props.focusZoneProps ?? {
+                          direction: FocusZoneDirection.bidirectional,
+                          handleTabKey: FocusZoneTabbableElements.inputOnly,
+                          isCircularNavigation: true,
+                        }
+                      }
                       items={
                         defaultGridData.length > 0
                           ? defaultGridData.filter(

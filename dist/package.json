@@ -44,6 +44,7 @@
     "@types/file-saver": "^2.0.1",
     "file-saver": "^2.0.2",
     "react-number-format": "^5.2.2",
+    "react-select": "^5.7.7",
     "react-toastify": "^7.0.4",
     "uuid": "^9.0.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"

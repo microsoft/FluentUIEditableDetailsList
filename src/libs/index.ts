@@ -19,6 +19,7 @@ export type {
   IRegexValidation,
   IColumnConfig,
   IDisableDropCellOptions,
+  IComboBoxOptionsMulit
 } from "./types/columnconfigtype";
 export type { IDetailsColumnRenderTooltipPropsExtra } from "./types/columnconfigtype";
 export { DepColTypes, DisableColTypes } from "./types/columnconfigtype";

@@ -1,8 +1,12 @@
-import { IColumn, IComboBoxOption, IDropdownOption, IRenderFunction, ITextFieldProps, ITooltipHostProps } from "@fluentui/react";
+import { IColumn, IDropdownOption, IRenderFunction, ITextFieldProps, ITooltipHostProps } from "@fluentui/react";
 import { CalculationType } from "./calculationtype";
 import { ICellStyleRulesType, StringOperators } from "./cellstyleruletype";
 import { EditControlType } from "./editcontroltype";
 import { NumberFormatBaseProps, NumericFormatProps } from "react-number-format";
+export interface IComboBoxOptionsMulit {
+    key: string | number;
+    text: string;
+}
 export interface IColumnConfig extends IColumn {
     key: string;
     name: string;
@@ -76,13 +80,19 @@ export interface IColumnConfig extends IColumn {
     dropdownValues?: IDropdownOption[];
     /** Values used to populate the comboBox if `inputType` is `EditControlType.ComboBox` NOTICE: KEY & TEXT MUST BE THE SAME,
      * OR YOU MUST TRUNCATE THE VALUE TO YOU NEED WITH A GRID CALLBACK */
-    comboBoxOptions?: IComboBoxOption[];
+    comboBoxOptions?: IComboBoxOptionsMulit[];
     /** if `inputType` is `EditControlType.ComboBox` - sets different properties for the comboBox */
     comboBoxProps?: {
+        /**Text to display when there are no options when combobox is filtered. Only works if `multiSelect` is true */
+        noOptionsFoundMessage: string;
+        /** Input placeholder text. Displayed until option is selected.*/
+        placeholder?: string;
+        /** Select mulitple values in combo box at once. Only works when `enableInlineGridAdd` is false. Does not work with inline row editing.*/
+        multiSelect?: boolean;
         /** Whether the ComboBox allows freeform user input, rather than restricting to the provided options. */
         allowFreeformComboBoxEntry?: boolean;
         /** How the ComboBox searches when the user enters a value*/
-        searchType?: 'contains' | 'startswith';
+        searchType?: "contains" | "startswith";
     };
     /** if `inputType` is `EditControlType.DropDown` - Filter the options based on the key value */
     filterDropdownOptions?: IFilterDropCellOptions;

@@ -112,7 +112,7 @@ const Consumer = () => {
       showASaveButtonInCommandbar: false,
       enableEditAllOnCellClick: false,
       disableInlineCellEdit: false,
-      enableInlineGridAdd: true,
+      enableInlineGridAdd: false,
       disableAllRowActions: false,
       enableMessageBarErrors: {
         enableShowErrors: true,
@@ -508,7 +508,7 @@ const Consumer = () => {
           direction: FocusZoneDirection.bidirectional,
           handleTabKey: FocusZoneTabbableElements.all,
           shouldFocusOnMount: true,
-          // isCircularNavigation: true
+          isCircularNavigation: true
         }} /* styles={tableDetailsRowsStyles()} */
       />
     );
@@ -974,7 +974,13 @@ const Consumer = () => {
           ]}
         />
       </div>
-
+      <Link
+          aria-label="Privacy Statement URL"
+          target="_blank"
+          href={'www.msft.com'}
+        >
+          Microsoft Data Privacy Notice
+        </Link>
       {/* {teachingBubbleVisible && (
         // <TeachingBubble
         //   target={teachingBubblePropsConfig?.config.target}

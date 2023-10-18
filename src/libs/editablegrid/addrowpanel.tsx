@@ -20,6 +20,8 @@ import {
   mergeStyles,
 } from "@fluentui/react";
 import { DayPickerStrings } from "../editablegrid/datepickerconfig";
+import Select from "react-select";
+
 import {
   controlClass,
   horizontalGapStackTokens,
@@ -38,6 +40,7 @@ import {
   DepColTypes,
   DisableColTypes,
   IColumnConfig,
+  IComboBoxOptionsMulit,
 } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
 import {
@@ -61,6 +64,12 @@ interface Props {
   addToGridButtonText?: string;
   addingToGridButtonText?: string;
   enableNonEditableColumns?: boolean;
+  _userSecurityCombinationorderingPersonalMethod?: {
+    UserAliasKey: string;
+    RulesetIdKey: string;
+    CycleIdKey: string;
+    DBidKey: string;
+  };
 }
 
 const AddRowPanel = (props: Props) => {
@@ -68,6 +77,7 @@ const AddRowPanel = (props: Props) => {
 
   const disableDropdown = useRef<Map<string, boolean>>(new Map());
   const disableComboBox = useRef<Map<string, boolean>>(new Map());
+  const _comboBoxRef = useRef<IComboBox>(null);
 
   const updateObj: any = {};
   const [columnValuesObj, setColumnValuesObj] = useState<any>(null);
@@ -113,6 +123,7 @@ const AddRowPanel = (props: Props) => {
         error: null,
         defaultValueOnNewRow: item?.defaultOnAddRow ?? null,
         dataType: item.dataType,
+        multiSelect: item.comboBoxProps?.multiSelect ?? false,
         columnEditable: item?.editable ?? false,
       };
     });
@@ -124,12 +135,38 @@ const AddRowPanel = (props: Props) => {
     key: string,
     value: any,
     isChanged: boolean = true,
-    errorMessage: string | null = null
+    errorMessage: string | null = null,
+    multiSelect = false
   ): void => {
     if (error) setError("");
 
     var columnValuesObjTmp = { ...columnValuesObj };
+
+    // if (multiSelect) {
+    //   if (!columnValuesObj[key]?.value || columnValuesObj[key]?.value == "") {
+    //     if (value?.selected) value = [{ key: value.key, text: value.text }];
+    //     else {
+    //       value = [];
+    //     }
+    //   } else {
+    //     if (value?.selected)
+    //       value =
+    //         typeof columnValuesObj[key].value == "string"
+    //           ? [{ key: value.key, text: value.text }]
+    //           : [
+    //               ...columnValuesObj[key].value,
+    //               { key: value.key, text: value.text },
+    //             ];
+    //     else {
+    //       value =
+    //         columnValuesObj[key].value.filter(
+    //           (x: any) => x.key !== value.key
+    //         ) ?? columnValuesObj[key].value;
+    //     }
+    //   }
+    // }
     columnValuesObjTmp[key] = {
+      ...columnValuesObjTmp[key],
       value: value,
       isChanged: isChanged,
       error: errorMessage,
@@ -162,10 +199,23 @@ const AddRowPanel = (props: Props) => {
 
   const onComboBoxChange = (
     event: React.FormEvent<IComboBox>,
-    selectedOption: IComboBoxOption | undefined,
+    selectedOption: IComboBoxOptionsMulit | undefined,
     item: any
   ): void => {
-    SetObjValues(item.key, selectedOption?.text);
+    SetObjValues(
+      item.key,
+      item?.comboBoxProps?.multiSelect ? selectedOption : selectedOption?.text,
+      true,
+      null,
+      item?.comboBoxProps?.multiSelect ?? false
+    );
+  };
+
+  const onComboBoxChangeMultiSelect = (
+    selectedOptions: any,
+    item: any
+  ): void => {
+    SetObjValues(item.key, selectedOptions);
   };
 
   const onComboBoxChangeRaw = (text: string, item: any): void => {
@@ -283,7 +333,7 @@ const AddRowPanel = (props: Props) => {
         (currentValue == null ||
           currentValue == undefined ||
           currentValue?.toString().length <= 0 ||
-          currentValue == "")
+          (currentValue == "" && item.dataType != "number"))
       ) {
         if (!emptyCol.includes(" " + item.name)) emptyCol.push(" " + item.name);
       } else if (
@@ -293,7 +343,7 @@ const AddRowPanel = (props: Props) => {
         (currentValue == null ||
           currentValue == undefined ||
           currentValue?.toString().length <= 0 ||
-          currentValue == "")
+          (currentValue == "" && item.dataType != "number"))
       ) {
         var msg = `${item.name}: ${item.required.errorMessage}.`;
         insertToMessageMap(Messages.current, item.key + row + "empty", {
@@ -306,7 +356,7 @@ const AddRowPanel = (props: Props) => {
         (currentValue == null ||
           currentValue == undefined ||
           currentValue?.toString().length <= 0 ||
-          currentValue == "")
+          (currentValue == "" && item.dataType != "number"))
       ) {
         const checkKeys =
           item.required.requiredOnlyIfTheseColumnsAreEmpty.colKeys;
@@ -320,7 +370,7 @@ const AddRowPanel = (props: Props) => {
               str == null ||
               str == undefined ||
               str?.toString().length <= 0 ||
-              str == ""
+              (str == "" && item.dataType != "number")
             ) {
               if (item.required.errorMessage) {
                 var msg = `${item.name}: ${item.required.errorMessage}.`;
@@ -334,7 +384,10 @@ const AddRowPanel = (props: Props) => {
               }
             }
           } else {
-            if (str && str?.toString().length > 0) {
+            if (
+              (str || str.toString().trim() == "0") &&
+              str?.toString().length > 0
+            ) {
               skippable = true;
               break;
             }
@@ -522,7 +575,7 @@ const AddRowPanel = (props: Props) => {
               if (
                 (str == undefined ||
                   str == null ||
-                  str == "" ||
+                  (str == "" && item.dataType != "number") ||
                   (str && str?.toString().length <= 0)) &&
                 colDep.type === DepColTypes.MustHaveData
               ) {
@@ -642,9 +695,66 @@ const AddRowPanel = (props: Props) => {
     return localError;
   };
 
+  function generateCombinations(
+    obj: any,
+    currentCombination: any,
+    keys: string[],
+    output: string[][]
+  ) {
+    if (keys.length === 0) {
+      output.push(currentCombination);
+      return;
+    }
+
+    var currentKey = keys[0];
+    var remainingKeys = keys.slice(1);
+
+    if (typeof obj[currentKey] != "object") {
+      obj[currentKey] = [obj[currentKey]];
+    }
+    obj[currentKey].forEach(function (value: any) {
+      generateCombinations(
+        obj,
+        currentCombination.concat([[currentKey, value]]),
+        remainingKeys,
+        output
+      );
+    });
+  }
+
+  function generateAllCombinations(data: any) {
+    var keys = Object.keys(data);
+    var output: any = [];
+    generateCombinations(data, [], keys, output);
+    return output;
+  }
+
   const onPanelSubmit = async (): Promise<void> => {
     var columnValuesObjTmp = { ...columnValuesObj };
     setError("");
+
+    const submitAndClose = () => {
+      var objectKeys = Object.keys(columnValuesObj);
+      objectKeys.forEach((objKey) => {
+        if (columnValuesObj[objKey]["isChanged"]) {
+          if (columnValuesObj[objKey]["multiSelect"] == true) {
+            updateObj[objKey] = columnValuesObj[objKey]["value"].map(
+              (obj: any) => obj.text
+            );
+          } else {
+            updateObj[objKey] = columnValuesObj[objKey]["value"];
+          }
+        }
+      });
+
+      var combinations = generateAllCombinations(updateObj);
+      props.onSubmit(combinations);
+
+      // combinations.forEach(function (combination: any, index: number) {
+      //   const post = Object.fromEntries(combinations[index])
+      //   console.log(post)
+      // });
+    };
 
     if (props.preSubmitCallback) {
       setConfirmButtonDisabled(true);
@@ -683,16 +793,6 @@ const AddRowPanel = (props: Props) => {
       const hasErrors = runGridValidations();
       if (!hasErrors) submitAndClose();
     }
-    function submitAndClose() {
-      var objectKeys = Object.keys(columnValuesObj);
-      objectKeys.forEach((objKey) => {
-        if (columnValuesObj[objKey]["isChanged"]) {
-          updateObj[objKey] = columnValuesObj[objKey]["value"];
-        }
-      });
-
-      props.onSubmit(updateObj, 1);
-    }
   };
   const onCellPickerTagListChanged = (
     cellPickerTagList: ITag[] | undefined,
@@ -707,7 +807,7 @@ const AddRowPanel = (props: Props) => {
     SetObjValues(item.key, date);
   };
 
-  const [comboOptions, setComboOptions] = useState<IComboBoxOption[]>([]);
+  const [comboOptions, setComboOptions] = useState<IComboBoxOptionsMulit[]>([]);
   const [init, setInit] = useState<boolean>(false);
   const createTextFields = (): any[] => {
     let tmpRenderObj: any[] = [];
@@ -797,92 +897,155 @@ const AddRowPanel = (props: Props) => {
             }
             disableComboBox.current = newMap;
           }
-          tmpRenderObj.push(
-            <VirtualizedComboBox
-              key={item.key}
-              disabled={
-                disableComboBox.current.get(item.key + rowNum) ??
-                (typeof item.disableComboBox == "boolean"
-                  ? item.disableComboBox
-                  : (!item.editable && !props.enableNonEditableColumns) ??
-                    false)
-              }
-              placeholder={
-                item.comboBoxOptions?.filter(
-                  (x) => x.text == columnValuesObj[item.key].value
-                )[0]?.text ??
-                item.comboBoxOptions
-                  ?.filter(
-                    (x) => x.key?.toString() == columnValuesObj[item.key].value
-                  )[0]
-                  ?.text?.toString() ??
-                "Start typing..."
-              }
-              selectedKey={
-                // Text Selects Keys
-                item.comboBoxOptions
-                  ?.filter(
-                    (x) =>
-                      x?.text == columnValuesObj[item.key]?.value ?? item.key
-                  )[0]
-                  ?.key?.toString() ??
-                item.comboBoxOptions
-                  ?.filter((x) => x?.key == columnValuesObj[item.key]?.value)[0]
-                  ?.key?.toString() ??
-                null
-              }
-              label={item.text}
-              allowFreeInput
-              allowFreeform={
-                item.comboBoxProps?.allowFreeformComboBoxEntry ?? false
-              }
-              autoComplete="on"
-              scrollSelectedToTop
-              options={comboOptions}
-              onClick={() => {
-                if (!init) {
-                  setInit(true);
-                  setComboOptions(
-                    [...(item.comboBoxOptions ?? [])].concat([
-                      { key: "beaddf9d-503a-4753-95d9-158f08d9d37e", text: "" },
-                    ]) ?? []
-                  );
+          if (item.comboBoxProps?.multiSelect) {
+            tmpRenderObj.push(
+              <Select
+                key={item.key}
+                aria-label={item.text}
+                filterOption={item.comboBoxProps?.searchType == 'startswith' ? (option, inputValue)=> option.label?.toLowerCase()?.startsWith(inputValue?.toLowerCase()) : undefined}
+                placeholder={item.comboBoxProps?.placeholder ?? "Select Options"}
+                noOptionsMessage={item.comboBoxProps?.noOptionsFoundMessage ? ()=> item.comboBoxProps?.noOptionsFoundMessage : undefined}
+                isDisabled={
+                  disableComboBox.current.get(item.key + rowNum) ??
+                  (typeof item.disableComboBox == "boolean"
+                    ? item.disableComboBox
+                    : (!item.editable && !props.enableNonEditableColumns) ??
+                      false)
                 }
-              }}
-              onInputValueChange={(text) => {
-                try {
-                  const searchPattern = new RegExp(text?.trim(), "i");
+                isMulti
+                isClearable
+                escapeClearsValue
+                openMenuOnFocus
+                options={
+                  item.comboBoxOptions
+                    ? item.comboBoxOptions.map((item) => {
+                        return { value: item.key, label: item.text };
+                      })
+                    : []
+                }
+                hideSelectedOptions
+                onChange={(options, av) => {
+                  onComboBoxChangeMultiSelect(
+                    options
+                      ? options.map((item) => {
+                          return { key: item.value, text: item.label };
+                        })
+                      : [],
+                    item
+                  );
+                }}
+                theme={(theme) => ({
+                  ...theme,
+                  borderRadius: 2,
+                  colors: {
+                    ...theme.colors,
+                    primary: 'rgb(0,120,212)',
+                  },
+                })}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    borderColor: state.isFocused ? 'rgb(0,120,212)' : state.menuIsOpen ? 'rgb(0,120,212)' : 'black',
+                    border: '1px solid rgba(0,0,0,0.7)',
 
-                  const searchResults = item.comboBoxOptions?.filter(
-                    (itemInList) => {
-                      if (item?.comboBoxProps?.searchType == "startswith") {
-                        return itemInList?.text
-                          ?.trim()
-                          ?.toLowerCase()
-                          ?.startsWith(text?.trim()?.toLowerCase());
-                      } else {
-                        return searchPattern.test(itemInList.text?.trim());
-                      }
+                  }),
+                }}
+              />
+            );
+          } else {
+            tmpRenderObj.push(
+              <VirtualizedComboBox
+                key={item.key}
+                componentRef={_comboBoxRef}
+                disabled={
+                  disableComboBox.current.get(item.key + rowNum) ??
+                  (typeof item.disableComboBox == "boolean"
+                    ? item.disableComboBox
+                    : (!item.editable && !props.enableNonEditableColumns) ??
+                      false)
+                }
+                placeholder={
+                  item.comboBoxProps?.multiSelect
+                    ? item.comboBoxProps?.placeholder ?? "Select Options"
+                    : item.comboBoxOptions?.filter(
+                        (x) => x.text == columnValuesObj[item.key].value
+                      )[0]?.text ??
+                      item.comboBoxOptions
+                        ?.filter(
+                          (x) =>
+                            x.key?.toString() == columnValuesObj[item.key].value
+                        )[0]
+                        ?.text?.toString() ??
+                      item.comboBoxProps?.placeholder ??
+                      "Start typing..."
+                }
+                label={item.text}
+                multiSelect={item.comboBoxProps?.multiSelect ?? false}
+                openOnKeyboardFocus
+                allowFreeInput
+                allowFreeform={
+                  item.comboBoxProps?.allowFreeformComboBoxEntry ?? false
+                }
+                autoComplete="on"
+                scrollSelectedToTop
+                options={comboOptions}
+                onClick={() => {
+                  if (!init) {
+                    setInit(true);
+                    setComboOptions(
+                      [...(item.comboBoxOptions ?? [])].concat([
+                        {
+                          key: "beaddf9d-503a-4753-95d9-158f08d9d37e",
+                          text: "",
+                        },
+                      ]) ?? []
+                    );
+                  }
+                }}
+                onInputValueChange={(text) => {
+                  try {
+                    if (!item.comboBoxProps?.multiSelect) {
+                      const searchPattern = new RegExp(text?.trim(), "i");
+
+                      const searchResults = item.comboBoxOptions?.filter(
+                        (itemInList) => {
+                          if (item?.comboBoxProps?.searchType == "startswith") {
+                            return itemInList?.text
+                              ?.trim()
+                              ?.toLowerCase()
+                              ?.startsWith(text?.trim()?.toLowerCase());
+                          } else {
+                            return searchPattern.test(itemInList.text?.trim());
+                          }
+                        }
+                      );
+
+                      setComboOptions(
+                        searchResults?.concat([
+                          {
+                            key: "64830f62-5ab8-490a-a0ed-971f977a3603",
+                            text: "",
+                          },
+                        ]) ?? []
+                      );
+                      onComboBoxChangeRaw(text, item);
                     }
-                  );
+                  } catch (error) {
+                    setComboOptions(
+                      [...(item.comboBoxOptions ?? [])]?.concat([
+                        {
+                          key: "64830f62-5ab8-490a-a0ed-971f977a3603",
+                          text: "",
+                        },
+                      ]) ?? []
+                    );
+                  }
+                }}
+                onChange={(ev, option) => onComboBoxChange(ev, option, item)}
+              />
+            );
+          }
 
-                  setComboOptions(
-                    searchResults?.concat([
-                      { key: "64830f62-5ab8-490a-a0ed-971f977a3603", text: "" },
-                    ]) ?? []
-                  );
-                  onComboBoxChangeRaw(text, item);
-                } catch (error) {
-                  setComboOptions(
-                    [...(item.comboBoxOptions ?? [])]?.concat([
-                      { key: "64830f62-5ab8-490a-a0ed-971f977a3603", text: "" },
-                    ]) ?? []
-                  );
-                }
-              }}
-              onChange={(ev, option) => onComboBoxChange(ev, option, item)}
-            />
-          );
           break;
         case EditControlType.DropDown:
           if (

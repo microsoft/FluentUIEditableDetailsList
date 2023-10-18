@@ -237,6 +237,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     includeColumnInSearch: true,
     inputType: EditControlType.ComboBox,
     comboBoxProps: {
+      multiSelect: true,
       allowFreeformComboBoxEntry: false,
       searchType: "startswith",
     },
