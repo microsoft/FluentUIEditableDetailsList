@@ -127,6 +127,9 @@ export interface IColumnConfig extends IColumn {
 
   /** if `inputType` is `EditControlType.ComboBox` - sets different properties for the comboBox */
   comboBoxProps?: {
+    /** Use if you want the default value loaded in to not be paired to a text value.*/
+    nonStrictMaskingRequired?: boolean;
+
     /**Text to display when there are no options when combobox is filtered. Only works if `multiSelect` is true */
     noOptionsFoundMessage?: string;
 
@@ -143,7 +146,7 @@ export interface IColumnConfig extends IColumn {
     searchType?: "contains" | "startswith";
   };
 
-  /** if `inputType` is `EditControlType.DropDown` - Filter the options based on the key value */
+  /** if `inputType` is `EditControlType.DropDown` - Filter the options based on the key value. Will work if `inputType` is `EditControlType.ComboBox` only if 'multiselct' is enabled*/
   filterDropdownOptions?: IFilterDropCellOptions;
 
   /** if `inputType` is `EditControlType.DropDown` - Disable the dropdown or disable dropdown based on rules */

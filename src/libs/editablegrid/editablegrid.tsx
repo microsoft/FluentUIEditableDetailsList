@@ -5829,13 +5829,13 @@ const EditableGrid = (props: EditableGridProps) => {
       activateCurrentCell: boolean
     ) => void
   ): React.ReactNode => {
-    // let maskText = item[column.key];
-    // if (column.comboBoxOptions) {
-    //   maskText =
-    //     column.comboBoxOptions
-    //       ?.filter((x) => x?.key == item[column.key])[0]
-    //       ?.text?.toString() ?? item[column.key];
-    // }
+    let maskText = item[column.key];
+    if (column.comboBoxOptions && !column?.comboBoxProps?.nonStrictMaskingRequired) {
+      maskText =
+        column.comboBoxOptions
+          ?.filter((x) => x?.key == item[column.key])[0]
+          ?.text?.toString() ?? item[column.key];
+    }
     return RenderSpan(
       props,
       index,
@@ -5844,8 +5844,8 @@ const EditableGrid = (props: EditableGridProps) => {
       item,
       HandleCellOnClick,
       EditCellValue,
-      HandleCellOnDoubleClick
-      // maskText
+      HandleCellOnDoubleClick,
+      maskText
     );
   };
 

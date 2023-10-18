@@ -246,6 +246,13 @@ export const GridColumnConfig: IColumnConfig[] = [
       { key: "Blue", text: "Jabbot" },
       { key: "Brown", text: "ajaj" },
     ],
+    filterDropdownOptions: {
+      filterBasedOnThisColumnKey: "name",
+      filterOptions: [
+        { key: "1010", text: "Jack", correspondingKey: "11" },
+        { key: "Blue", text: "Jabbot", correspondingKey: "22" },
+      ],
+    },
     // disableComboBox: false,
     // disableComboBox: {
     //   disableBasedOnThisColumnKey: "name",

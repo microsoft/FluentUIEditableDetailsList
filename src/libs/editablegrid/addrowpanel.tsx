@@ -5,6 +5,7 @@ import {
   IComboBox,
   IDropdownOption,
   ITag,
+  Label,
   MessageBar,
   MessageBarType,
   PrimaryButton,
@@ -34,6 +35,7 @@ import {
   DisableColTypes,
   IColumnConfig,
   IComboBoxOptionsMulit,
+  IFilterDropdownOptions,
 } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
 import { createRef, useCallback, useEffect, useRef, useState } from "react";
@@ -55,6 +57,7 @@ const AddRowPanel = (props: Props) => {
 
   const disableDropdown = useRef<Map<string, boolean>>(new Map());
   const disableComboBox = useRef<Map<string, boolean>>(new Map());
+  const trackMulitSelect = useRef<null | any>(0);
   const _comboBoxRef = useRef<IComboBox>(null);
 
   const updateObj: any = {};
@@ -717,7 +720,7 @@ const AddRowPanel = (props: Props) => {
         if (columnValuesObj[objKey]["isChanged"]) {
           if (columnValuesObj[objKey]["multiSelect"] == true) {
             updateObj[objKey] = columnValuesObj[objKey]["value"].map(
-              (obj: any) => obj.text
+              (obj: any) => obj?.key ?? null
             );
           } else {
             updateObj[objKey] = columnValuesObj[objKey]["value"];
@@ -783,6 +786,37 @@ const AddRowPanel = (props: Props) => {
 
   const onCellDateChange = (date: Date | null | undefined, item: any): void => {
     SetObjValues(item.key, date);
+  };
+
+  const filterMultiSelectOptions = (
+    options: IFilterDropdownOptions[],
+    item: any
+  ) => {
+    const filtered = options.filter((x, index) => {
+      return (
+        x.correspondingKey ==
+        columnValuesObj[
+          item.filterDropdownOptions?.filterBasedOnThisColumnKey ?? ""
+        ].value
+      );
+    });
+
+    if (typeof columnValuesObj[item.key].value == 'object' && JSON.stringify(trackMulitSelect.current) != JSON.stringify(filtered)) {
+      const keysCurrentlySelected = new Set(
+        columnValuesObj?.[item.key].value?.map((item:any) => item?.key ?? null)
+      );
+
+      const filteredKeys = filtered.filter((item) =>
+        keysCurrentlySelected.has(item?.key)
+      );
+
+      trackMulitSelect.current = filtered
+      onComboBoxChangeMultiSelect(filteredKeys.length == 0 ? [null]:filteredKeys , item);
+    } 
+8
+    return filtered.map((item, index) => {
+      return { value: item.key, label: item.text };
+    });
   };
 
   const [comboOptions, setComboOptions] = useState<IComboBoxOptionsMulit[]>([]);
@@ -877,54 +911,55 @@ const AddRowPanel = (props: Props) => {
           }
           if (item.comboBoxProps?.multiSelect) {
             tmpRenderObj.push(
-              <Select
-                key={item.key}
+              <><Label style={{marginBottom: -5}}>{item.text}</Label><Select
+                key={`${item.key}_${item?.filterDropdownOptions?.filterOptions
+                    ?.filter(
+                      (x) => x.correspondingKey ==
+                        columnValuesObj[item.filterDropdownOptions
+                          ?.filterBasedOnThisColumnKey ?? ""].value
+                    )
+                    ?.toString() ?? "NT"}`}
+
                 aria-label={item.text}
-                filterOption={
-                  item.comboBoxProps?.searchType == "startswith"
-                    ? (option, inputValue) =>
-                        option.label
-                          ?.toLowerCase()
-                          ?.startsWith(inputValue?.toLowerCase())
-                    : undefined
-                }
-                placeholder={
-                  item.comboBoxProps?.placeholder ?? "Select Options"
-                }
-                noOptionsMessage={
-                  item.comboBoxProps?.noOptionsFoundMessage
-                    ? () => item.comboBoxProps?.noOptionsFoundMessage
-                    : undefined
-                }
-                isDisabled={
-                  disableComboBox.current.get(item.key + rowNum) ??
+                filterOption={item.comboBoxProps?.searchType == "startswith"
+                  ? (option, inputValue) => option.label
+                    ?.toLowerCase()
+                    ?.startsWith(inputValue?.toLowerCase())
+                  : undefined}
+                placeholder={item.comboBoxProps?.placeholder ?? "Select Options"}
+                tabSelectsValue={false}
+                noOptionsMessage={item.comboBoxProps?.noOptionsFoundMessage
+                  ? () => item.comboBoxProps?.noOptionsFoundMessage
+                  : undefined}
+                isDisabled={disableComboBox.current.get(item.key + rowNum) ??
                   (typeof item.disableComboBox == "boolean"
                     ? item.disableComboBox
                     : (!item.editable && !props.enableNonEditableColumns) ??
-                      false)
-                }
+                    false)}
                 isMulti
                 isClearable
                 escapeClearsValue
                 openMenuOnFocus
-                options={
-                  item.comboBoxOptions
+                options={item.filterDropdownOptions
+                  ? filterMultiSelectOptions(
+                    item.filterDropdownOptions.filterOptions, item
+                  )
+                  : item.comboBoxOptions
                     ? item.comboBoxOptions.map((item) => {
-                        return { value: item.key, label: item.text };
-                      })
-                    : []
-                }
+                      return { value: item.key, label: item.text };
+                    })
+                    : []}
                 hideSelectedOptions
                 onChange={(options, av) => {
                   onComboBoxChangeMultiSelect(
                     options
                       ? options.map((item) => {
-                          return { key: item.value, text: item.label };
-                        })
+                        return { key: item.value, text: item.label };
+                      })
                       : [],
                     item
                   );
-                }}
+                } }
                 theme={(theme) => ({
                   ...theme,
                   borderRadius: 2,
@@ -939,12 +974,11 @@ const AddRowPanel = (props: Props) => {
                     borderColor: state.isFocused
                       ? "rgb(0,120,212)"
                       : state.menuIsOpen
-                      ? "rgb(0,120,212)"
-                      : "black",
+                        ? "rgb(0,120,212)"
+                        : "black",
                     border: "1px solid rgba(0,0,0,0.7)",
                   }),
-                }}
-              />
+                }} /></>
             );
           } else {
             tmpRenderObj.push(
