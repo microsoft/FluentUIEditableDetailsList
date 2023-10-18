@@ -84,7 +84,7 @@ export interface IColumnConfig extends IColumn {
     /** if `inputType` is `EditControlType.ComboBox` - sets different properties for the comboBox */
     comboBoxProps?: {
         /**Text to display when there are no options when combobox is filtered. Only works if `multiSelect` is true */
-        noOptionsFoundMessage: string;
+        noOptionsFoundMessage?: string;
         /** Input placeholder text. Displayed until option is selected.*/
         placeholder?: string;
         /** Select mulitple values in combo box at once. Only works when `enableInlineGridAdd` is false. Does not work with inline row editing.*/
