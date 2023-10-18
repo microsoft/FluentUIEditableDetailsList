@@ -61706,7 +61706,7 @@ const zJ = {
                   compact: e.compact ?? !0,
                   focusZoneProps: e.focusZoneProps ?? {
                     direction: mn.bidirectional,
-                    handleTabKey: p0.inputOnly,
+                    handleTabKey: p0.none,
                     isCircularNavigation: !0
                   },
                   items: m.length > 0 ? m.filter(

@@ -1,7 +1,7 @@
 {
   "name": "fluentui.editablegrid.lib",
   "private": false,
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "Wrapper over the existing DetailsList that makes in-place editability work like a dream(among many other new features)",
   "license": "MIT",
   "homepage": "https://github.com/microsoft/FluentUIEditableDetailsList#readme",
@@ -64,5 +64,8 @@
     "@types/react-dom": ">=16.8.0 <19.0.0",
     "react": ">=16.8.0 <19.0.0",
     "react-dom": ">=16.8.0 <19.0.0"
+  },
+  "overrides": {
+    "@types/parse-json": "4.0.0"
   }
 }

@@ -6258,7 +6258,7 @@ const EditableGrid = (props: EditableGridProps) => {
                       focusZoneProps={
                         props.focusZoneProps ?? {
                           direction: FocusZoneDirection.bidirectional,
-                          handleTabKey: FocusZoneTabbableElements.inputOnly,
+                          handleTabKey: FocusZoneTabbableElements.none,
                           isCircularNavigation: true,
                         }
                       }
