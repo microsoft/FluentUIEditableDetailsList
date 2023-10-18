@@ -112,7 +112,7 @@ const Consumer = () => {
       showASaveButtonInCommandbar: false,
       enableEditAllOnCellClick: false,
       disableInlineCellEdit: false,
-      enableInlineGridAdd: false,
+      enableInlineGridAdd: true,
       disableAllRowActions: false,
       enableMessageBarErrors: {
         enableShowErrors: true,

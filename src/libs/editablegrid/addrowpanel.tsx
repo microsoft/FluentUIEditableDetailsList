@@ -3,21 +3,15 @@ import {
   DatePicker,
   Dropdown,
   IComboBox,
-  IComboBoxOption,
   IDropdownOption,
   ITag,
-  Icon,
-  Label,
   MessageBar,
   MessageBarType,
   PrimaryButton,
-  SharedColors,
   Stack,
-  StackItem,
   Sticky,
   TextField,
   VirtualizedComboBox,
-  mergeStyles,
 } from "@fluentui/react";
 import { DayPickerStrings } from "../editablegrid/datepickerconfig";
 import Select from "react-select";
@@ -25,7 +19,6 @@ import Select from "react-select";
 import {
   controlClass,
   horizontalGapStackTokens,
-  stackStyles,
   textFieldStyles,
   verticalGapStackTokens,
 } from "../editablegrid/editablegridstyles";
@@ -43,17 +36,8 @@ import {
   IComboBoxOptionsMulit,
 } from "../types/columnconfigtype";
 import { EditControlType } from "../types/editcontroltype";
-import {
-  createRef,
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { createRef, useCallback, useEffect, useRef, useState } from "react";
 import { NumericFormat } from "react-number-format";
-import { _Operation } from "../types/operation";
-import { ICallBackParams } from "../types/callbackparams";
 
 interface Props {
   onSubmit: any;
@@ -64,12 +48,6 @@ interface Props {
   addToGridButtonText?: string;
   addingToGridButtonText?: string;
   enableNonEditableColumns?: boolean;
-  _userSecurityCombinationorderingPersonalMethod?: {
-    UserAliasKey: string;
-    RulesetIdKey: string;
-    CycleIdKey: string;
-    DBidKey: string;
-  };
 }
 
 const AddRowPanel = (props: Props) => {
@@ -902,9 +880,22 @@ const AddRowPanel = (props: Props) => {
               <Select
                 key={item.key}
                 aria-label={item.text}
-                filterOption={item.comboBoxProps?.searchType == 'startswith' ? (option, inputValue)=> option.label?.toLowerCase()?.startsWith(inputValue?.toLowerCase()) : undefined}
-                placeholder={item.comboBoxProps?.placeholder ?? "Select Options"}
-                noOptionsMessage={item.comboBoxProps?.noOptionsFoundMessage ? ()=> item.comboBoxProps?.noOptionsFoundMessage : undefined}
+                filterOption={
+                  item.comboBoxProps?.searchType == "startswith"
+                    ? (option, inputValue) =>
+                        option.label
+                          ?.toLowerCase()
+                          ?.startsWith(inputValue?.toLowerCase())
+                    : undefined
+                }
+                placeholder={
+                  item.comboBoxProps?.placeholder ?? "Select Options"
+                }
+                noOptionsMessage={
+                  item.comboBoxProps?.noOptionsFoundMessage
+                    ? () => item.comboBoxProps?.noOptionsFoundMessage
+                    : undefined
+                }
                 isDisabled={
                   disableComboBox.current.get(item.key + rowNum) ??
                   (typeof item.disableComboBox == "boolean"
@@ -939,15 +930,18 @@ const AddRowPanel = (props: Props) => {
                   borderRadius: 2,
                   colors: {
                     ...theme.colors,
-                    primary: 'rgb(0,120,212)',
+                    primary: "rgb(0,120,212)",
                   },
                 })}
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
-                    borderColor: state.isFocused ? 'rgb(0,120,212)' : state.menuIsOpen ? 'rgb(0,120,212)' : 'black',
-                    border: '1px solid rgba(0,0,0,0.7)',
-
+                    borderColor: state.isFocused
+                      ? "rgb(0,120,212)"
+                      : state.menuIsOpen
+                      ? "rgb(0,120,212)"
+                      : "black",
+                    border: "1px solid rgba(0,0,0,0.7)",
                   }),
                 }}
               />
