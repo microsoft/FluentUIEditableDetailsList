@@ -58968,11 +58968,7 @@ const zJ = {
       e.customOperationsKey
     );
     if (v(B), _(B.map((G) => ({ ...G }))), z(!1), Le.current && B && B.length <= 50) {
-      const G = vv(
-        B,
-        Le.current,
-        !1
-      );
+      const G = vv(B, Le.current, !1);
       V(G);
     } else
       V(B);
@@ -59339,8 +59335,9 @@ const zJ = {
     ), Ct()), ce;
   }, j = async () => {
     if (e.onGridUpdate) {
+      let B = g;
       if (e.ignoreInternalPropertiesOnGridUpdateCallback) {
-        const B = [
+        const G = [
           "_grid_row_id_",
           "_grid_row_operation_",
           "_is_filtered_in_",
@@ -59349,10 +59346,10 @@ const zJ = {
           "_is_data_transformed",
           "_udf_custom_vaule_store_a",
           "_udf_custom_vaule_store_b"
-        ], G = (k) => Object.keys(k).reduce((Z, ee) => (B.includes(ee) || (Z[ee] = k[ee]), Z), {});
-        g.map(G);
+        ], k = (Z) => Object.keys(Z).reduce((ee, le) => (G.includes(le) || (ee[le] = Z[le]), ee), {});
+        g.map(k);
       }
-      await e.onGridUpdate(g);
+      await e.onGridUpdate(B);
     }
   }, W = () => {
     var B = !1, G = {};
@@ -60187,7 +60184,9 @@ const zJ = {
                     we[Pt.current._grid_row_id_][Br.key] = !0;
                   else {
                     if (qn.current) {
-                      const Xs = qn.current.get(Br.key);
+                      const Xs = qn.current.get(
+                        Br.key
+                      );
                       if (Xs) {
                         console.log(Xs);
                         for (let Ll = 0; Ll < Xs.values.length; Ll++) {

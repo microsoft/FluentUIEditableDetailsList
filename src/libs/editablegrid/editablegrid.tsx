@@ -397,17 +397,11 @@ const EditableGrid = (props: EditableGridProps) => {
     setGridEditState(false);
 
     // Sort columns by the indentiferColumn if the length is less than 50
-    if(indentiferColumn.current && data && data.length <= 50){
-
-      const newItems = _copyAndSort(
-        data,
-        indentiferColumn.current,
-        false
-      );
+    if (indentiferColumn.current && data && data.length <= 50) {
+      const newItems = _copyAndSort(data, indentiferColumn.current, false);
       SetGridItems(newItems);
-    } else{
-    SetGridItems(data);
-
+    } else {
+      SetGridItems(data);
     }
   }, [props.items]);
 
@@ -1259,8 +1253,6 @@ const EditableGrid = (props: EditableGridProps) => {
       }
 
       onGridFiltered();
-
-
     }
 
     return localError;
@@ -1268,33 +1260,32 @@ const EditableGrid = (props: EditableGridProps) => {
 
   const onGridUpdate = async (): Promise<void> => {
     if (props.onGridUpdate) {
+      let updatedItems = defaultGridData;
+      if (props.ignoreInternalPropertiesOnGridUpdateCallback) {
+        const ignoredProperties = [
+          "_grid_row_id_",
+          "_grid_row_operation_",
+          "_is_filtered_in_",
+          "_is_filtered_in_grid_search_",
+          "_is_filtered_in_column_filter_",
+          "_is_data_transformed",
+          "_udf_custom_vaule_store_a",
+          "_udf_custom_vaule_store_b",
+        ];
 
-      let updatedItems = defaultGridData
-      if(props.ignoreInternalPropertiesOnGridUpdateCallback){
-      const ignoredProperties = [
-        '_grid_row_id_',
-        '_grid_row_operation_',
-        '_is_filtered_in_',
-        '_is_filtered_in_grid_search_',
-        '_is_filtered_in_column_filter_',
-        '_is_data_transformed',
-        '_udf_custom_vaule_store_a',
-        '_udf_custom_vaule_store_b'
-      ];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const removeIgnoredProperties = (obj: any) => {
+          return Object.keys(obj).reduce((acc: any, key: any) => {
+            if (!ignoredProperties.includes(key)) {
+              acc[key] = obj[key];
+            }
+            return acc;
+          }, {});
+        };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const removeIgnoredProperties = (obj: any) => {
-        return Object.keys(obj).reduce((acc: any, key: any) => {
-          if (!ignoredProperties.includes(key)) {
-            acc[key] = obj[key];
-          }
-          return acc;
-        }, {});
-      };
-
-      const updatedItems = defaultGridData.map(removeIgnoredProperties);
-}
-      await props.onGridUpdate(defaultGridData);
+        const updatedItems = defaultGridData.map(removeIgnoredProperties);
+      }
+      await props.onGridUpdate(updatedItems);
     }
   };
 
@@ -3008,25 +2999,19 @@ const EditableGrid = (props: EditableGridProps) => {
       }
     }
 
-
-      if (trackTransformedData.current) {
-        trackTransformedData.current.forEach(function (
-          value: any,
-          key: string
-        ) {
-          for (let index = 0; index < value.values.length; index++) {
-            const element = value.values[index];
-            if (
-              element?.text?.toString()?.toLowerCase() ===
-              (newColObj[key]?.toString()?.toLowerCase() ?? "")
-            ) {
-              newColObj[key] = element?.key;
-            }
+    if (trackTransformedData.current) {
+      trackTransformedData.current.forEach(function (value: any, key: string) {
+        for (let index = 0; index < value.values.length; index++) {
+          const element = value.values[index];
+          if (
+            element?.text?.toString()?.toLowerCase() ===
+            (newColObj[key]?.toString()?.toLowerCase() ?? "")
+          ) {
+            newColObj[key] = element?.key;
           }
-        });
-      }    
-
-
+        }
+      });
+    }
 
     addedRows.map((row: any) => {
       var objectKeys = Object.keys(newColObj);
@@ -3140,23 +3125,29 @@ const EditableGrid = (props: EditableGridProps) => {
                           column.key
                         ] = true;
                       } else {
-
                         if (trackTransformedData.current) {
-                          const quickGrab = trackTransformedData.current.get(column.key)
-                          if(quickGrab){
-                            console.log(quickGrab)
-                            for (let index = 0; index < quickGrab.values.length; index++) {
+                          const quickGrab = trackTransformedData.current.get(
+                            column.key
+                          );
+                          if (quickGrab) {
+                            console.log(quickGrab);
+                            for (
+                              let index = 0;
+                              index < quickGrab.values.length;
+                              index++
+                            ) {
                               const element = quickGrab.values[index];
                               if (
                                 element?.text?.toString()?.toLowerCase() ===
-                                (rowData[currentElement]?.toString()?.toLowerCase() ?? "")
+                                (rowData[currentElement]
+                                  ?.toString()
+                                  ?.toLowerCase() ?? "")
                               ) {
                                 rowData[currentElement] = element?.key;
                               }
                             }
                           }
-                        } 
-
+                        }
 
                         newGridData[columnKeyPasteRef.current._grid_row_id_][
                           column.key
