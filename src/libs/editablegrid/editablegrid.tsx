@@ -395,7 +395,20 @@ const EditableGrid = (props: EditableGridProps) => {
     setGridData(data);
     setBackupDefaultGridData(data.map((obj) => ({ ...obj })));
     setGridEditState(false);
+
+    // Sort columns by the indentiferColumn if the length is less than 50
+    if(indentiferColumn.current && data && data.length <= 50){
+
+      const newItems = _copyAndSort(
+        data,
+        indentiferColumn.current,
+        false
+      );
+      SetGridItems(newItems);
+    } else{
     SetGridItems(data);
+
+    }
   }, [props.items]);
 
   useEffect(() => {
@@ -1246,6 +1259,8 @@ const EditableGrid = (props: EditableGridProps) => {
       }
 
       onGridFiltered();
+
+
     }
 
     return localError;
