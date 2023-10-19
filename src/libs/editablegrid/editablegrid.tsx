@@ -2967,6 +2967,26 @@ const EditableGrid = (props: EditableGridProps) => {
       }
     }
 
+
+      if (trackTransformedData.current) {
+        trackTransformedData.current.forEach(function (
+          value: any,
+          key: string
+        ) {
+          for (let index = 0; index < value.values.length; index++) {
+            const element = value.values[index];
+            if (
+              element?.text?.toString()?.toLowerCase() ===
+              (newColObj[key]?.toString()?.toLowerCase() ?? "")
+            ) {
+              newColObj[key] = element?.key;
+            }
+          }
+        });
+      }    
+
+
+
     addedRows.map((row: any) => {
       var objectKeys = Object.keys(newColObj);
       objectKeys.forEach((key) => {
@@ -3079,6 +3099,24 @@ const EditableGrid = (props: EditableGridProps) => {
                           column.key
                         ] = true;
                       } else {
+
+                        if (trackTransformedData.current) {
+                          const quickGrab = trackTransformedData.current.get(column.key)
+                          if(quickGrab){
+                            console.log(quickGrab)
+                            for (let index = 0; index < quickGrab.values.length; index++) {
+                              const element = quickGrab.values[index];
+                              if (
+                                element?.text?.toString()?.toLowerCase() ===
+                                (rowData[currentElement]?.toString()?.toLowerCase() ?? "")
+                              ) {
+                                rowData[currentElement] = element?.key;
+                              }
+                            }
+                          }
+                        } 
+
+
                         newGridData[columnKeyPasteRef.current._grid_row_id_][
                           column.key
                         ] =

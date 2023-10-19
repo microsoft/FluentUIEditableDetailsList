@@ -100,7 +100,9 @@ export interface EditableGridProps extends IDetailsListProps {
     enableCSVExport?: boolean;
     /** Shows In Command Bar - Show Excel Export Option - If CSV Export Is Selected As Well This Two Will Combine -- Use onExcelExport to override what happens with this action  */
     enableExcelExport?: boolean;
-    /** Shows In Command Bar - Show Excel Import Option -- Use onExcelImport to override what happens with this action */
+    /** Shows In Command Bar - Show Excel Import Option -- Use onExcelImport to override what happens with this action
+     * @deprecated It works but needs to be updated to account for key/value pairs in dropdowns and combo boxes
+     */
     enableExcelImport?: boolean;
     /** Change The File Name of File On Export Excel, CSV, etc. */
     exportFileName?: string;
