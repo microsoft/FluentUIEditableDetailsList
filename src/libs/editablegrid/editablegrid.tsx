@@ -1268,6 +1268,32 @@ const EditableGrid = (props: EditableGridProps) => {
 
   const onGridUpdate = async (): Promise<void> => {
     if (props.onGridUpdate) {
+
+      let updatedItems = defaultGridData
+      if(props.ignoreInternalPropertiesOnGridUpdateCallback){
+      const ignoredProperties = [
+        '_grid_row_id_',
+        '_grid_row_operation_',
+        '_is_filtered_in_',
+        '_is_filtered_in_grid_search_',
+        '_is_filtered_in_column_filter_',
+        '_is_data_transformed',
+        '_udf_custom_vaule_store_a',
+        '_udf_custom_vaule_store_b'
+      ];
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const removeIgnoredProperties = (obj: any) => {
+        return Object.keys(obj).reduce((acc: any, key: any) => {
+          if (!ignoredProperties.includes(key)) {
+            acc[key] = obj[key];
+          }
+          return acc;
+        }, {});
+      };
+
+      const updatedItems = defaultGridData.map(removeIgnoredProperties);
+}
       await props.onGridUpdate(defaultGridData);
     }
   };
