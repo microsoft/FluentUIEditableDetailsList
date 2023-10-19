@@ -59347,7 +59347,7 @@ const zJ = {
           "_udf_custom_vaule_store_a",
           "_udf_custom_vaule_store_b"
         ], k = (Z) => Object.keys(Z).reduce((ee, le) => (G.includes(le) || (ee[le] = Z[le]), ee), {});
-        g.map(k);
+        B = g.map(k);
       }
       await e.onGridUpdate(B);
     }

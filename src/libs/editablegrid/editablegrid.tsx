@@ -1283,7 +1283,7 @@ const EditableGrid = (props: EditableGridProps) => {
           }, {});
         };
 
-        const updatedItems = defaultGridData.map(removeIgnoredProperties);
+        updatedItems = defaultGridData.map(removeIgnoredProperties);
       }
       await props.onGridUpdate(updatedItems);
     }
