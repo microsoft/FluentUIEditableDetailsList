@@ -28,7 +28,7 @@ export const controlClass = mergeStyleSets({
 });
 
 export const stackTokens: IStackTokens = { childrenGap: 20, maxWidth: 1000 };
-export const textFieldStyles: Partial<ITextFieldStyles> = { fieldGroup: {} };
+export const textFieldStyles: Partial<ITextFieldStyles> = {root: {margin: 0, width: '100%'} };
 export const modelProps = {
   isBlocking: false,
   styles: { main: { maxWidth: "100vh" } },

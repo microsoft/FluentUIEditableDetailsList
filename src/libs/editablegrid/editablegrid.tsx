@@ -328,6 +328,10 @@ const EditableGrid = (props: EditableGridProps) => {
     setCursorFlashing(false);
   };
 
+  const resetFilters = () => {
+    ClearFilters();
+  };
+
   const onSearchHandler = (event: any) => {
     if (event && event.target) {
       let queryText = event.target.value;
@@ -459,6 +463,7 @@ const EditableGrid = (props: EditableGridProps) => {
         })
       );
     }
+    clearSelectedItems();
   };
 
   const Messages = useRef<Map<string, { msg: string; type: MessageBarType }>>(
@@ -1239,6 +1244,8 @@ const EditableGrid = (props: EditableGridProps) => {
           defaultGridDataTmpWithInternalPropsIgnored
         );
       }
+
+      onGridFiltered();
     }
 
     return localError;
@@ -1322,6 +1329,7 @@ const EditableGrid = (props: EditableGridProps) => {
     );
 
     SetGridItems(defaultGridDataTmp);
+    resetFilters();
   };
   /* #endregion */
 
@@ -3613,6 +3621,7 @@ const EditableGrid = (props: EditableGridProps) => {
       }),
       activateCellEdit
     );
+
     setDefaultGridData(filteredData);
     setActivateCellEdit(activateCellEditTmp);
     setGridData(filteredData);
@@ -5216,7 +5225,8 @@ const EditableGrid = (props: EditableGridProps) => {
         key: "exportToExcel",
         text: CommandBarTitles?.ExcelExport ?? "Export To Excel",
         ariaLabel: CommandBarTitles?.ExcelExport ?? "Export To Excel",
-        disabled: isGridInEdit || editMode,
+        disabled:
+          (isGridInEdit && !props.enableSaveGridOnCellValueChange) || editMode,
         cacheKey: "myCacheKey",
         iconProps: { iconName: "ExcelDocument" },
         onClick: () => onExportClick(ExportType.XLSX),
@@ -5227,7 +5237,8 @@ const EditableGrid = (props: EditableGridProps) => {
         key: "exportToCSV",
         text: CommandBarTitles?.CSVExport ?? "CSV Export",
         ariaLabel: CommandBarTitles?.CSVExport ?? "CSV Export",
-        disabled: isGridInEdit || editMode,
+        disabled:
+          (isGridInEdit && !props.enableSaveGridOnCellValueChange) || editMode,
         cacheKey: "myCacheKey",
         iconProps: { iconName: "LandscapeOrientation" },
         onClick: () => onExportClick(ExportType.CSV),
@@ -5237,7 +5248,8 @@ const EditableGrid = (props: EditableGridProps) => {
         key: "exportGrid",
         text: CommandBarTitles?.Export ?? "Export",
         ariaLabel: CommandBarTitles?.Export ?? "Export",
-        disabled: isGridInEdit || editMode,
+        disabled:
+          (isGridInEdit && !props.enableSaveGridOnCellValueChange) || editMode,
         cacheKey: "myCacheKey",
         iconProps: { iconName: "Download" },
         subMenuProps: {
@@ -5264,7 +5276,8 @@ const EditableGrid = (props: EditableGridProps) => {
         key: "importFromExcel",
         text: CommandBarTitles?.ImportFromExcel ?? "Import From Excel",
         ariaLabel: CommandBarTitles?.ImportFromExcel ?? "Import From Excel",
-        disabled: isGridInEdit || editMode,
+        disabled:
+          (isGridInEdit && !props.enableSaveGridOnCellValueChange) || editMode,
         cacheKey: "myCacheKey",
         onRender: renderItem,
       });
@@ -5359,7 +5372,8 @@ const EditableGrid = (props: EditableGridProps) => {
         key: "columnFilters",
         text: CommandBarTitles?.Filter ?? "Filter",
         ariaLabel: "Filter",
-        disabled: isGridInEdit || editMode,
+        disabled:
+          editMode || (isGridInEdit && !props.enableSaveGridOnCellValueChange),
         cacheKey: "myColumnFilterCacheKey",
         iconProps: { iconName: "QueryList" },
         subMenuProps: {
@@ -5465,7 +5479,10 @@ const EditableGrid = (props: EditableGridProps) => {
       commandBarItems.push({
         key: "bulkedit",
         text: CommandBarTitles?.BulkEdit ?? "Bulk Edit",
-        disabled: isGridInEdit || editMode || _selection.count == 0,
+        disabled:
+          (isGridInEdit && !props.enableSaveGridOnCellValueChange) ||
+          editMode ||
+          _selection.count == 0,
         iconProps: { iconName: "TripleColumnEdit" },
         onClick: () => RowSelectOperations(EditType.BulkEdit, {}),
       });
@@ -5490,7 +5507,10 @@ const EditableGrid = (props: EditableGridProps) => {
     if (props.enableColumnEdit && !editMode) {
       commandBarItems.push({
         key: "updatecolumn",
-        disabled: isGridInEdit || editMode || _selection.count == 0,
+        disabled:
+          (isGridInEdit && !props.enableSaveGridOnCellValueChange) ||
+          editMode ||
+          _selection.count == 0,
         text: !isUpdateColumnClicked ? "Update Column" : "Save Column Update",
         iconProps: { iconName: "SingleColumnEdit" },
         onClick: () => RowSelectOperations(EditType.ColumnEdit, {}),
@@ -5830,7 +5850,10 @@ const EditableGrid = (props: EditableGridProps) => {
     ) => void
   ): React.ReactNode => {
     let maskText = item[column.key];
-    if (column.comboBoxOptions && !column?.comboBoxProps?.nonStrictMaskingRequired) {
+    if (
+      column.comboBoxOptions &&
+      !column?.comboBoxProps?.nonStrictMaskingRequired
+    ) {
       maskText =
         column.comboBoxOptions
           ?.filter((x) => x?.key == item[column.key])[0]

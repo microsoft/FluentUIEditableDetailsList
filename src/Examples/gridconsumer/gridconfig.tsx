@@ -90,7 +90,7 @@ export const GridColumnConfig: IColumnConfig[] = [
     key: "excluded",
     name: "Exclued",
     text: "Excluded",
-    editable: false,
+    editable: true,
     required: false,
     dataType: "boolean",
     minWidth: 100,

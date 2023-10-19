@@ -801,19 +801,25 @@ const AddRowPanel = (props: Props) => {
       );
     });
 
-    if (typeof columnValuesObj[item.key].value == 'object' && JSON.stringify(trackMulitSelect.current) != JSON.stringify(filtered)) {
+    if (
+      typeof columnValuesObj[item.key].value == "object" &&
+      JSON.stringify(trackMulitSelect.current) != JSON.stringify(filtered)
+    ) {
       const keysCurrentlySelected = new Set(
-        columnValuesObj?.[item.key].value?.map((item:any) => item?.key ?? null)
+        columnValuesObj?.[item.key].value?.map((item: any) => item?.key ?? null)
       );
 
       const filteredKeys = filtered.filter((item) =>
         keysCurrentlySelected.has(item?.key)
       );
 
-      trackMulitSelect.current = filtered
-      onComboBoxChangeMultiSelect(filteredKeys.length == 0 ? [null]:filteredKeys , item);
-    } 
-8
+      trackMulitSelect.current = filtered;
+      onComboBoxChangeMultiSelect(
+        filteredKeys.length == 0 ? [null] : filteredKeys,
+        item
+      );
+    }
+    8;
     return filtered.map((item, index) => {
       return { value: item.key, label: item.text };
     });
@@ -911,74 +917,94 @@ const AddRowPanel = (props: Props) => {
           }
           if (item.comboBoxProps?.multiSelect) {
             tmpRenderObj.push(
-              <><Label style={{marginBottom: -5}}>{item.text}</Label><Select
-                key={`${item.key}_${item?.filterDropdownOptions?.filterOptions
-                    ?.filter(
-                      (x) => x.correspondingKey ==
-                        columnValuesObj[item.filterDropdownOptions
-                          ?.filterBasedOnThisColumnKey ?? ""].value
-                    )
-                    ?.toString() ?? "NT"}`}
-
-                aria-label={item.text}
-                filterOption={item.comboBoxProps?.searchType == "startswith"
-                  ? (option, inputValue) => option.label
-                    ?.toLowerCase()
-                    ?.startsWith(inputValue?.toLowerCase())
-                  : undefined}
-                placeholder={item.comboBoxProps?.placeholder ?? "Select Options"}
-                tabSelectsValue={false}
-                noOptionsMessage={item.comboBoxProps?.noOptionsFoundMessage
-                  ? () => item.comboBoxProps?.noOptionsFoundMessage
-                  : undefined}
-                isDisabled={disableComboBox.current.get(item.key + rowNum) ??
-                  (typeof item.disableComboBox == "boolean"
-                    ? item.disableComboBox
-                    : (!item.editable && !props.enableNonEditableColumns) ??
-                    false)}
-                isMulti
-                isClearable
-                escapeClearsValue
-                openMenuOnFocus
-                options={item.filterDropdownOptions
-                  ? filterMultiSelectOptions(
-                    item.filterDropdownOptions.filterOptions, item
-                  )
-                  : item.comboBoxOptions
-                    ? item.comboBoxOptions.map((item) => {
-                      return { value: item.key, label: item.text };
-                    })
-                    : []}
-                hideSelectedOptions
-                onChange={(options, av) => {
-                  onComboBoxChangeMultiSelect(
-                    options
-                      ? options.map((item) => {
-                        return { key: item.value, text: item.label };
-                      })
-                      : [],
-                    item
-                  );
-                } }
-                theme={(theme) => ({
-                  ...theme,
-                  borderRadius: 2,
-                  colors: {
-                    ...theme.colors,
-                    primary: "rgb(0,120,212)",
-                  },
-                })}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    borderColor: state.isFocused
-                      ? "rgb(0,120,212)"
-                      : state.menuIsOpen
+              <>
+                <Label style={{ marginBottom: -5 }}>{item.text}</Label>
+                <Select
+                  key={`${item.key}_${
+                    item?.filterDropdownOptions?.filterOptions
+                      ?.filter(
+                        (x) =>
+                          x.correspondingKey ==
+                          columnValuesObj[
+                            item.filterDropdownOptions
+                              ?.filterBasedOnThisColumnKey ?? ""
+                          ].value
+                      )
+                      ?.toString() ?? "NT"
+                  }`}
+                  aria-label={item.text}
+                  filterOption={
+                    item.comboBoxProps?.searchType == "startswith"
+                      ? (option, inputValue) =>
+                          option.label
+                            ?.toLowerCase()
+                            ?.startsWith(inputValue?.toLowerCase())
+                      : undefined
+                  }
+                  placeholder={
+                    item.comboBoxProps?.placeholder ?? "Select Options"
+                  }
+                  tabSelectsValue={false}
+                  noOptionsMessage={
+                    item.comboBoxProps?.noOptionsFoundMessage
+                      ? () => item.comboBoxProps?.noOptionsFoundMessage
+                      : undefined
+                  }
+                  isDisabled={
+                    disableComboBox.current.get(item.key + rowNum) ??
+                    (typeof item.disableComboBox == "boolean"
+                      ? item.disableComboBox
+                      : (!item.editable && !props.enableNonEditableColumns) ??
+                        false)
+                  }
+                  isMulti
+                  isClearable
+                  escapeClearsValue
+                  openMenuOnFocus
+                  options={
+                    item.filterDropdownOptions
+                      ? filterMultiSelectOptions(
+                          item.filterDropdownOptions.filterOptions,
+                          item
+                        )
+                      : item.comboBoxOptions
+                      ? item.comboBoxOptions.map((item) => {
+                          return { value: item.key, label: item.text };
+                        })
+                      : []
+                  }
+                  hideSelectedOptions
+                  onChange={(options, av) => {
+                    onComboBoxChangeMultiSelect(
+                      options
+                        ? options.map((item) => {
+                            return { key: item.value, text: item.label };
+                          })
+                        : [],
+                      item
+                    );
+                  }}
+                  theme={(theme) => ({
+                    ...theme,
+                    borderRadius: 2,
+                    colors: {
+                      ...theme.colors,
+                      primary: "rgb(0,120,212)",
+                    },
+                  })}
+                  styles={{
+                    control: (baseStyles, state) => ({
+                      ...baseStyles,
+                      borderColor: state.isFocused
+                        ? "rgb(0,120,212)"
+                        : state.menuIsOpen
                         ? "rgb(0,120,212)"
                         : "black",
-                    border: "1px solid rgba(0,0,0,0.7)",
-                  }),
-                }} /></>
+                      border: "1px solid rgba(0,0,0,0.7)",
+                    }),
+                  }}
+                />
+              </>
             );
           } else {
             tmpRenderObj.push(

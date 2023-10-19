@@ -1,24 +1,21 @@
 import {
   DefaultButton,
   Dialog,
-  DialogFooter,
-  Dropdown,
-  IDropdownOption,
+  DialogFooter, IDropdownOption,
   PrimaryButton,
   Stack,
   StackItem,
-  TextField,
+  TextField
 } from "@fluentui/react";
 import {
-  controlClass,
-  dropdownStyles,
-  modelProps,
+  controlClass, modelProps,
   stackTokens,
-  textFieldStyles,
+  textFieldStyles
 } from "../../editablegrid/columnfilterdialog/columnfilterdialogStyles";
 import { IColumnConfig } from "../../types/columnconfigtype";
 import { IFilter, operatorsArr } from "../../types/filterstype";
 import { useCallback, useEffect, useState } from "react";
+import Select, { SingleValue } from "react-select";
 
 interface Props {
   columnConfigurationData: IColumnConfig[];
@@ -33,29 +30,32 @@ const ColumnFilterDialog = (props: Props) => {
   const [value, setValue] = useState("");
 
   const onSelectGridColumn = (
-    event: React.FormEvent<HTMLDivElement>,
-    item: IDropdownOption | undefined,
-    index: number | undefined
+    item: SingleValue<{
+      value: string | number;
+      label: string;
+    }>
   ): void => {
     setGridColumn(
-      props.columnConfigurationData.filter((val) => val.key == item!.key)[0]
+      props.columnConfigurationData.filter((val) => val.key == item!.value)[0]
     );
   };
 
   const onSelectOperator = (
-    event: React.FormEvent<HTMLDivElement>,
-    item: IDropdownOption | undefined,
-    index: number | undefined
+    item: SingleValue<{
+      value: string | number;
+      label: string;
+    }>
   ): void => {
-    setOperator(item!.text.toString());
+    setOperator(item!.label.toString());
   };
 
   const onSelectValue = (
-    event: React.FormEvent<HTMLDivElement>,
-    item: IDropdownOption | undefined,
-    index: number | undefined
+    item: SingleValue<{
+      value: string | number;
+      label: string;
+    }>
   ): void => {
-    setValue(item!.key.toString());
+    setValue(item!.value.toString());
   };
 
   const onTextUpdate = (
@@ -71,6 +71,8 @@ const ColumnFilterDialog = (props: Props) => {
         (x) => x.key == gridColumn!.key
       );
       if (column.length > 0) {
+        setOperator('')
+        setValue('');
         var valueOptions = createValueOptions(column[0]);
         switch (column[0].dataType) {
           case "number":
@@ -83,11 +85,38 @@ const ColumnFilterDialog = (props: Props) => {
               />
             );
             setOperatorDropDownContent(
-              <Dropdown
+              <Select
+              key={`${gridColumn.key}-${column[0].dataType}_1`}
+                menuPlacement="auto"
+                menuPosition="fixed"
+                defaultValue={null}
+                aria-label={"Select Filter Condition"}
                 placeholder="Select Filter Condition"
+                tabSelectsValue={false}
                 options={createCompareOptions()}
-                styles={dropdownStyles}
-                onChange={onSelectOperator}
+                hideSelectedOptions
+                onChange={(options, av) => {
+                  if (options) onSelectOperator(options);
+                }}
+                theme={(theme) => ({
+                  ...theme,
+                  borderRadius: 2,
+                  colors: {
+                    ...theme.colors,
+                    primary: "rgb(0,120,212)",
+                  },
+                })}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    borderColor: state.isFocused
+                      ? "rgb(0,120,212)"
+                      : state.menuIsOpen
+                      ? "rgb(0,120,212)"
+                      : "black",
+                    border: "1px solid rgba(0,0,0,0.7)",
+                  }),
+                }}
               />
             );
             break;
@@ -101,29 +130,108 @@ const ColumnFilterDialog = (props: Props) => {
               />
             );
             setOperatorDropDownContent(
-              <Dropdown
+              <Select
+              key={`${gridColumn.key}-${column[0].dataType}_1`}
+                menuPlacement="auto"
+                menuPosition="fixed"
+                aria-label={"Select Filter Condition"}
                 placeholder="Select Filter Condition"
+                tabSelectsValue={false}
                 options={createCompareOptions()}
-                styles={dropdownStyles}
-                onChange={onSelectOperator}
+                hideSelectedOptions
+                onChange={(options, av) => {
+                  if (options) onSelectOperator(options);
+                }}
+                theme={(theme) => ({
+                  ...theme,
+                  borderRadius: 2,
+                  colors: {
+                    ...theme.colors,
+                    primary: "rgb(0,120,212)",
+                  },
+                })}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    borderColor: state.isFocused
+                      ? "rgb(0,120,212)"
+                      : state.menuIsOpen
+                      ? "rgb(0,120,212)"
+                      : "black",
+                    border: "1px solid rgba(0,0,0,0.7)",
+                  }),
+                }}
               />
             );
             break;
           case "date":
             setInputFieldContent(
-              <Dropdown
+              <Select
+              key={`${gridColumn.key}-${column[0].dataType}_1`}
+
+                menuPlacement="auto"
+                menuPosition="fixed"
+                aria-label={"Select Filter Condition"}
                 placeholder="Select Filter Condition"
+                tabSelectsValue={false}
                 options={valueOptions}
-                styles={dropdownStyles}
-                onChange={onSelectValue}
+                hideSelectedOptions
+                onChange={(options, av) => {
+                  if (options) onSelectValue(options);
+                }}
+                theme={(theme) => ({
+                  ...theme,
+                  borderRadius: 2,
+                  colors: {
+                    ...theme.colors,
+                    primary: "rgb(0,120,212)",
+                  },
+                })}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    borderColor: state.isFocused
+                      ? "rgb(0,120,212)"
+                      : state.menuIsOpen
+                      ? "rgb(0,120,212)"
+                      : "black",
+                    border: "1px solid rgba(0,0,0,0.7)",
+                  }),
+                }}
               />
             );
             setOperatorDropDownContent(
-              <Dropdown
+              <Select
+              key={`${gridColumn.key}-${column[0].dataType}_2`}
+                menuPlacement="auto"
+                menuPosition="fixed"
+                aria-label={"Select Filter Condition"}
                 placeholder="Select Filter Condition"
+                tabSelectsValue={false}
                 options={createCompareOptions()}
-                styles={dropdownStyles}
-                onChange={onSelectOperator}
+                hideSelectedOptions
+                onChange={(options, av) => {
+                  if (options) onSelectOperator(options);
+                }}
+                theme={(theme) => ({
+                  ...theme,
+                  borderRadius: 2,
+                  colors: {
+                    ...theme.colors,
+                    primary: "rgb(0,120,212)",
+                  },
+                })}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    borderColor: state.isFocused
+                      ? "rgb(0,120,212)"
+                      : state.menuIsOpen
+                      ? "rgb(0,120,212)"
+                      : "black",
+                    border: "1px solid rgba(0,0,0,0.7)",
+                  }),
+                }}
               />
             );
             break;
@@ -143,14 +251,14 @@ const ColumnFilterDialog = (props: Props) => {
 
   const options = createDropDownOptions();
 
-  const createCompareOptions = (): IDropdownOption[] => {
+  const createCompareOptions = () => {
     if (!(gridColumn && gridColumn.key && gridColumn.key.length > 0)) {
       return [];
     }
     let dataType = props.columnConfigurationData.filter(
       (x) => x.key == gridColumn.key
     )[0].dataType;
-    let dropdownOptions: IDropdownOption[] = [];
+    let dropdownOptions: any[] = [];
     let operatorsOptions: any[] = [];
     switch (dataType) {
       case "string":
@@ -165,17 +273,17 @@ const ColumnFilterDialog = (props: Props) => {
         break;
     }
     operatorsOptions.forEach((item, index) => {
-      dropdownOptions.push({ key: item + index, text: item });
+      dropdownOptions.push({ value: item + index, label: item });
     });
 
     return dropdownOptions;
   };
 
-  const createValueOptions = (column: IColumnConfig): IDropdownOption[] => {
+  const createValueOptions = (column: IColumnConfig) => {
     var columnData = props.gridData.map((item) => item[column.key]);
-    let dropdownOptions: IDropdownOption[] = [];
+    let dropdownOptions: any[] = [];
     columnData.forEach((item, index) => {
-      dropdownOptions.push({ key: item + index, text: item });
+      dropdownOptions.push({ value: item + index, label: item });
     });
 
     return dropdownOptions;
@@ -186,22 +294,72 @@ const ColumnFilterDialog = (props: Props) => {
   const [inputFieldContent, setInputFieldContent] = useState<
     JSX.Element | undefined
   >(
-    <Dropdown
+    <Select
+      menuPlacement="auto"
+      menuPosition="fixed"
+      aria-label={"Enter/Select Value"}
       placeholder="Enter/Select Value"
+      tabSelectsValue={false}
       options={[]}
-      styles={dropdownStyles}
-      onChange={onSelectValue}
+      hideSelectedOptions
+      onChange={(options, av) => {
+        if (options) onSelectValue(options);
+      }}
+      theme={(theme) => ({
+        ...theme,
+        borderRadius: 2,
+        colors: {
+          ...theme.colors,
+          primary: "rgb(0,120,212)",
+        },
+      })}
+      styles={{
+        control: (baseStyles, state) => ({
+          ...baseStyles,
+          borderColor: state.isFocused
+            ? "rgb(0,120,212)"
+            : state.menuIsOpen
+            ? "rgb(0,120,212)"
+            : "black",
+          border: "1px solid rgba(0,0,0,0.7)",
+        }),
+      }}
     />
   );
 
   const [operatorDropDownContent, setOperatorDropDownContent] = useState<
     JSX.Element | undefined
   >(
-    <Dropdown
+    <Select
+      menuPlacement="auto"
+      menuPosition="fixed"
+      aria-label={"Select Filter Condition"}
       placeholder="Select Filter Condition"
+      tabSelectsValue={false}
       options={createCompareOptions()}
-      styles={dropdownStyles}
-      onChange={onSelectValue}
+      hideSelectedOptions
+      onChange={(options, av) => {
+        if (options) onSelectValue(options);
+      }}
+      theme={(theme) => ({
+        ...theme,
+        borderRadius: 2,
+        colors: {
+          ...theme.colors,
+          primary: "rgb(0,120,212)",
+        },
+      })}
+      styles={{
+        control: (baseStyles, state) => ({
+          ...baseStyles,
+          borderColor: state.isFocused
+            ? "rgb(0,120,212)"
+            : state.menuIsOpen
+            ? "rgb(0,120,212)"
+            : "black",
+          border: "1px solid rgba(0,0,0,0.7)",
+        }),
+      }}
     />
   );
 
@@ -235,18 +393,48 @@ const ColumnFilterDialog = (props: Props) => {
       closeButtonAriaLabel="Close"
     >
       <Stack verticalAlign="space-between" tokens={stackTokens}>
-        <StackItem grow={1}>
-          <Dropdown
+        <StackItem grow>
+          <Select
+            menuPlacement="auto"
+            menuPosition="fixed"
+            aria-label={"Select the Column"}
+            filterOption={(option, inputValue) =>
+              option.label?.toLowerCase()?.startsWith(inputValue?.toLowerCase())
+            }
             placeholder="Select the Column"
-            options={options}
-            styles={dropdownStyles}
-            onChange={onSelectGridColumn}
+            tabSelectsValue={false}
+            options={options.map((item) => {
+              return { value: item.key, label: item.text };
+            })}
+            hideSelectedOptions
+            onChange={(options, av) => {
+              if (options) onSelectGridColumn(options);
+            }}
+            theme={(theme) => ({
+              ...theme,
+              borderRadius: 2,
+              colors: {
+                ...theme.colors,
+                primary: "rgb(0,120,212)",
+              },
+            })}
+            styles={{
+              control: (baseStyles, state) => ({
+                ...baseStyles,
+                borderColor: state.isFocused
+                  ? "rgb(0,120,212)"
+                  : state.menuIsOpen
+                  ? "rgb(0,120,212)"
+                  : "black",
+                border: "1px solid rgba(0,0,0,0.7)",
+              }),
+            }}
           />
         </StackItem>
         {gridColumn != undefined && (
-          <StackItem grow={1}>{operatorDropDownContent}</StackItem>
+          <StackItem grow>{operatorDropDownContent}</StackItem>
         )}
-        {operator != "" && <StackItem grow={1}>{inputFieldContent}</StackItem>}
+        {operator != "" && <StackItem grow >{inputFieldContent}</StackItem>}
       </Stack>
       <StackItem>
         <DialogFooter className={controlClass.dialogFooterStyles}>
