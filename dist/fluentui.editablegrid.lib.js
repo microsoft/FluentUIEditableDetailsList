@@ -57184,6 +57184,8 @@ const kJ = (e) => {
               /* @__PURE__ */ ae.jsx(
                 fs,
                 {
+                  menuPlacement: "auto",
+                  menuPosition: "fixed",
                   "aria-label": F.text,
                   filterOption: ((ne = F.comboBoxProps) == null ? void 0 : ne.searchType) == "startswith" ? (Be, it) => {
                     var jn, Kt;

@@ -920,6 +920,8 @@ const AddRowPanel = (props: Props) => {
               <>
                 <Label style={{ marginBottom: -5 }}>{item.text}</Label>
                 <Select
+                  menuPlacement="auto"
+                  menuPosition="fixed"
                   key={`${item.key}_${
                     item?.filterDropdownOptions?.filterOptions
                       ?.filter(
