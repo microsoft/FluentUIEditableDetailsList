@@ -37903,7 +37903,7 @@ var jV = {
   };
 }, Id = Ct(KV, YV, void 0, {
   scope: "Label"
-}), $V = yt(), JV = "", ns = "TextField", qV = "RedEye", QV = "Hide", e7 = (
+}), $V = yt(), JV = "", ns = "TextField", qV = "RedEye", QV = "Hide", eG = (
   /** @class */
   function(e) {
     mt(n, e);
@@ -37966,7 +37966,7 @@ var jV = {
       var c = ep(t, r), d = this.value;
       c !== d && (this._warnControlledUsage(t), this.state.errorMessage && !i.errorMessage && this.setState({ errorMessage: "" }), this._adjustInputHeight(), R_(i) && this._delayedValidate(d));
     }, n.prototype.render = function() {
-      var t = this.props, r = t.borderless, a = t.className, i = t.disabled, o = t.invalid, s = t.iconProps, l = t.inputClassName, u = t.label, c = t.multiline, d = t.required, f = t.underlined, h = t.prefix, p = t.resizable, v = t.suffix, g = t.theme, m = t.styles, b = t.autoAdjustHeight, _ = t.canRevealPassword, C = t.revealPasswordAriaLabel, E = t.type, S = t.onRenderPrefix, y = S === void 0 ? this._onRenderPrefix : S, I = t.onRenderSuffix, T = I === void 0 ? this._onRenderSuffix : I, M = t.onRenderLabel, H = M === void 0 ? this._onRenderLabel : M, R = t.onRenderDescription, Y = R === void 0 ? this._onRenderDescription : R, B = this.state, O = B.isFocused, j = B.isRevealingPassword, Q = this._errorMessage, ie = typeof o == "boolean" ? o : !!Q, G = !!_ && E === "password" && t7(), xe = this._classNames = $V(m, {
+      var t = this.props, r = t.borderless, a = t.className, i = t.disabled, o = t.invalid, s = t.iconProps, l = t.inputClassName, u = t.label, c = t.multiline, d = t.required, f = t.underlined, h = t.prefix, p = t.resizable, v = t.suffix, g = t.theme, m = t.styles, b = t.autoAdjustHeight, _ = t.canRevealPassword, C = t.revealPasswordAriaLabel, E = t.type, S = t.onRenderPrefix, y = S === void 0 ? this._onRenderPrefix : S, I = t.onRenderSuffix, T = I === void 0 ? this._onRenderSuffix : I, M = t.onRenderLabel, H = M === void 0 ? this._onRenderLabel : M, R = t.onRenderDescription, Y = R === void 0 ? this._onRenderDescription : R, B = this.state, O = B.isFocused, j = B.isRevealingPassword, Q = this._errorMessage, ie = typeof o == "boolean" ? o : !!Q, G = !!_ && E === "password" && tG(), xe = this._classNames = $V(m, {
         theme: g,
         className: a,
         disabled: i,
@@ -38163,7 +38163,7 @@ function R_(e) {
   return !(e.validateOnFocusIn || e.validateOnFocusOut);
 }
 var cf;
-function t7() {
+function tG() {
   if (typeof cf != "boolean") {
     var e = Fr();
     if (e != null && e.navigator) {
@@ -38174,7 +38174,7 @@ function t7() {
   }
   return cf;
 }
-var r7 = {
+var rG = {
   root: "ms-TextField",
   description: "ms-TextField-description",
   errorMessage: "ms-TextField-errorMessage",
@@ -38192,7 +38192,7 @@ var r7 = {
   disabled: "is-disabled",
   active: "is-active"
 };
-function n7(e) {
+function nG(e) {
   var n = e.underlined, t = e.disabled, r = e.focused, a = e.theme, i = a.palette, o = a.fonts;
   return function() {
     var s;
@@ -38219,8 +38219,8 @@ function n7(e) {
     };
   };
 }
-function a7(e) {
-  var n, t, r, a, i, o, s, l, u, c, d, f, h = e.theme, p = e.className, v = e.disabled, g = e.focused, m = e.required, b = e.multiline, _ = e.hasLabel, C = e.borderless, E = e.underlined, S = e.hasIcon, y = e.resizable, I = e.hasErrorMessage, T = e.inputClassName, M = e.autoAdjustHeight, H = e.hasRevealButton, R = h.semanticColors, Y = h.effects, B = h.fonts, O = Vt(r7, h), j = {
+function aG(e) {
+  var n, t, r, a, i, o, s, l, u, c, d, f, h = e.theme, p = e.className, v = e.disabled, g = e.focused, m = e.required, b = e.multiline, _ = e.hasLabel, C = e.borderless, E = e.underlined, S = e.hasIcon, y = e.resizable, I = e.hasErrorMessage, T = e.inputClassName, M = e.autoAdjustHeight, H = e.hasRevealButton, R = h.semanticColors, Y = h.effects, B = h.fonts, O = Vt(rG, h), j = {
     // Suffix/Prefix are not editable so the disabled slot perfectly fits.
     background: R.disabledBackground,
     color: v ? R.disabledText : R.inputPlaceholderText,
@@ -38530,13 +38530,13 @@ function a7(e) {
       lineHeight: 18
     },
     subComponentStyles: {
-      label: n7(e)
+      label: nG(e)
     }
   };
 }
-var Rn = Ct(e7, a7, void 0, {
+var Rn = Ct(eG, aG, void 0, {
   scope: "TextField"
-}), tp, rp, i7 = 32, o7 = 30, vw = 32, fg = 36, hg = br(function(e) {
+}), tp, rp, iG = 32, oG = 30, vw = 32, fg = 36, hg = br(function(e) {
   var n, t = e.semanticColors;
   return {
     backgroundColor: t.disabledBackground,
@@ -38559,7 +38559,7 @@ var Rn = Ct(e7, a7, void 0, {
   selectors: (tp = {}, tp[ye] = k({ backgroundColor: "Highlight", borderColor: "Highlight", color: "HighlightText" }, Et()), tp)
 }, np = {
   selectors: (rp = {}, rp[ye] = k({ color: "WindowText", backgroundColor: "Window" }, Et()), rp)
-}, s7 = br(function(e, n, t, r, a, i) {
+}, sG = br(function(e, n, t, r, a, i) {
   var o, s = e.palette, l = e.semanticColors, u = {
     textHoveredColor: l.menuItemTextHovered,
     textSelectedColor: s.neutralDark,
@@ -38646,7 +38646,7 @@ var Rn = Ct(e7, a7, void 0, {
     }
   };
   return Ma(c, n, t);
-}), l7 = br(function(e, n) {
+}), lG = br(function(e, n) {
   var t, r, a = e.semanticColors, i = e.fonts, o = {
     buttonTextColor: a.bodySubtext,
     buttonTextHoveredCheckedColor: a.buttonTextChecked,
@@ -38662,7 +38662,7 @@ var Rn = Ct(e7, a7, void 0, {
       position: "absolute",
       top: 0,
       height: "100%",
-      lineHeight: o7,
+      lineHeight: oG,
       width: vw,
       textAlign: "center",
       cursor: "default",
@@ -38708,7 +38708,7 @@ var Rn = Ct(e7, a7, void 0, {
     ]
   };
   return Ma(l, n);
-}), u7 = br(function(e, n, t) {
+}), uG = br(function(e, n, t) {
   var r, a, i, o, s, l, u = e.semanticColors, c = e.fonts, d = e.effects, f = {
     textColor: u.inputText,
     borderColor: u.inputBorder,
@@ -38761,7 +38761,7 @@ var Rn = Ct(e7, a7, void 0, {
         backgroundColor: f.backgroundColor,
         cursor: "text",
         display: "block",
-        height: i7,
+        height: iG,
         whiteSpace: "nowrap",
         textOverflow: "ellipsis",
         boxSizing: "border-box",
@@ -38901,7 +38901,7 @@ var Rn = Ct(e7, a7, void 0, {
     }
   };
   return Ma(C, n);
-}), c7 = br(function(e, n, t, r, a, i, o, s) {
+}), cG = br(function(e, n, t, r, a, i, o, s) {
   return {
     container: en("ms-ComboBox-container", n, e.container),
     label: en(e.label, r && e.labelDisabled),
@@ -38953,7 +38953,7 @@ var Fo;
 (function(e) {
   e[e.clearAll = -2] = "clearAll", e[e.default = -1] = "default";
 })(Fo || (Fo = {}));
-var d7 = 250, f7 = 500, h7 = 1e3, p7 = x.memo(function(e) {
+var dG = 250, fG = 500, hG = 1e3, pG = x.memo(function(e) {
   var n = e.render;
   return n();
 }, function(e, n) {
@@ -38962,15 +38962,15 @@ var d7 = 250, f7 = 500, h7 = 1e3, p7 = x.memo(function(e) {
   n.render;
   var r = ia(n, ["render"]);
   return Cs(t, r);
-}), xw = "ComboBox", g7 = {
+}), xw = "ComboBox", gG = {
   options: [],
   allowFreeform: !1,
   autoComplete: "on",
   buttonIconProps: { iconName: "ChevronDown" }
 };
-function m7(e) {
+function mG(e) {
   var n = e.options, t = e.defaultSelectedKey, r = e.selectedKey, a = x.useState(function() {
-    return B_(n, x7(t, r));
+    return B_(n, xG(t, r));
   }), i = a[0], o = a[1], s = x.useState(n), l = s[0], u = s[1], c = x.useState(), d = c[0], f = c[1];
   return x.useEffect(function() {
     if (r !== void 0) {
@@ -38990,10 +38990,10 @@ function m7(e) {
   ];
 }
 var bw = x.forwardRef(function(e, n) {
-  var t = zi(g7, e);
+  var t = zi(gG, e);
   t.ref;
-  var r = ia(t, ["ref"]), a = x.useRef(null), i = Pa(a, n), o = m7(r), s = o[0], l = o[1], u = o[2], c = o[3], d = o[4], f = o[5];
-  return x.createElement(v7, k({}, r, { hoisted: {
+  var r = ia(t, ["ref"]), a = x.useRef(null), i = Pa(a, n), o = mG(r), s = o[0], l = o[1], u = o[2], c = o[3], d = o[4], f = o[5];
+  return x.createElement(vG, k({}, r, { hoisted: {
     mergedRootRef: i,
     rootRef: a,
     selectedIndices: s,
@@ -39016,7 +39016,7 @@ function _w(e, n) {
   }
   return null;
 }
-var v7 = (
+var vG = (
   /** @class */
   function(e) {
     mt(n, e);
@@ -39194,7 +39194,7 @@ var v7 = (
             title: p
           }, x.createElement("span", { className: h.optionTextWrapper, ref: u ? r._selectedElement : void 0 }, s(a, r._onRenderOptionContent)));
         };
-        return x.createElement(p7, {
+        return x.createElement(pG, {
           key: a.key,
           index: a.index,
           disabled: a.disabled,
@@ -39212,7 +39212,7 @@ var v7 = (
         var a;
         !r._isScrollIdle && r._scrollIdleTimeoutId !== void 0 ? (r._async.clearTimeout(r._scrollIdleTimeoutId), r._scrollIdleTimeoutId = void 0) : r._isScrollIdle = !1, !((a = r.props.calloutProps) === null || a === void 0) && a.onScroll && r.props.calloutProps.onScroll(), r._scrollIdleTimeoutId = r._async.setTimeout(function() {
           r._isScrollIdle = !0;
-        }, d7);
+        }, dG);
       }, r._onRenderOptionContent = function(a) {
         var i = ap(r._getCurrentOptionStyles(a));
         return x.createElement("span", { className: i.optionText }, a.text);
@@ -39395,7 +39395,7 @@ var v7 = (
         "aria-describedby",
         "aria-labelledby"
       ]), O = !!(l && l.length > 0);
-      this._classNames = this.props.getClassNames ? this.props.getClassNames(E, !!R, !!o, !!s, !!this._hasFocus(), !!_, !!O, i) : c7(u7(E, C), i, !!R, !!o, !!s, !!this._hasFocus(), !!_, !!O);
+      this._classNames = this.props.getClassNames ? this.props.getClassNames(E, !!R, !!o, !!s, !!this._hasFocus(), !!_, !!O, i) : cG(uG(E, C), i, !!R, !!o, !!s, !!this._hasFocus(), !!_, !!O);
       var j = this._renderComboBoxWrapper(Y, r);
       return x.createElement(
         "div",
@@ -39455,7 +39455,7 @@ var v7 = (
         var s = this._updateAutocompleteIndexWithoutFreeform(t);
         return this._autoCompleteTimeout = this._async.setTimeout(function() {
           r._autoCompleteTimeout = void 0;
-        }, h7), s;
+        }, hG), s;
       }
       var l = o >= 0 ? o : this._getFirstSelectedIndex();
       return this._setPendingInfoFromIndex(l), l;
@@ -39678,13 +39678,13 @@ var v7 = (
       var t = this;
       this._lastTouchTimeoutId !== void 0 && (this._async.clearTimeout(this._lastTouchTimeoutId), this._lastTouchTimeoutId = void 0), this._processingTouch = !0, this._lastTouchTimeoutId = this._async.setTimeout(function() {
         t._processingTouch = !1, t._lastTouchTimeoutId = void 0;
-      }, f7);
+      }, fG);
     }, n.prototype._getCaretButtonStyles = function() {
       var t = this.props.caretDownButtonStyles;
-      return l7(this.props.theme, t);
+      return lG(this.props.theme, t);
     }, n.prototype._getCurrentOptionStyles = function(t) {
       var r = this.props.comboBoxOptionStyles, a = t.styles;
-      return s7(this.props.theme, r, a, this._isPendingOption(t), t.hidden, this._isOptionHighlighted(t.index));
+      return sG(this.props.theme, r, a, this._isPendingOption(t), t.hidden, this._isOptionHighlighted(t.index));
     }, n.prototype._getAriaAutoCompleteValue = function() {
       var t = !this.props.disabled && this.props.autoComplete === "on";
       return t ? this.props.allowFreeform ? "inline" : "both" : "list";
@@ -39715,7 +39715,7 @@ function B_(e, n) {
   }
   return Object.keys(t).map(Number).sort();
 }
-function x7(e, n) {
+function xG(e, n) {
   var t = gg(e);
   return t.length ? t : gg(n);
 }
@@ -39757,7 +39757,7 @@ var ff = {
    * Attempts to scroll the list so the desired item is in the exact center of the viewport.
    */
   center: 3
-}, b7 = function(e) {
+}, bG = function(e) {
   if (e === void 0)
     return 0;
   var n = 0;
@@ -39769,7 +39769,7 @@ var ff = {
   return "scrollTop" in e ? n = e.scrollTop : "scrollY" in e && (n = e.scrollY), Math.ceil(n);
 }, hf = function(e, n) {
   "scrollTop" in e ? e.scrollTop = n : "scrollY" in e && e.scrollTo(e.scrollX, n);
-}, _7 = 16, y7 = 100, C7 = 500, S7 = 200, E7 = 500, O_ = 10, k7 = 30, w7 = 2, I7 = 2, F7 = "page-", L_ = "spacer-", H_ = {
+}, _G = 16, yG = 100, CG = 500, SG = 200, EG = 500, O_ = 10, kG = 30, wG = 2, IG = 2, FG = "page-", L_ = "spacer-", H_ = {
   top: -1,
   bottom: -1,
   left: -1,
@@ -39778,7 +39778,7 @@ var ff = {
   height: 0
 }, yw = function(e) {
   return e.getBoundingClientRect();
-}, T7 = yw, D7 = yw, Qc = (
+}, TG = yw, DG = yw, Qc = (
   /** @class */
   function(e) {
     mt(n, e);
@@ -39805,14 +39805,14 @@ var ff = {
         isScrolling: !1,
         getDerivedStateFromProps: r._getDerivedStateFromProps,
         hasMounted: !1
-      }, r._async = new Gn(r), r._events = new Er(r), r._estimatedPageHeight = 0, r._totalEstimates = 0, r._requiredWindowsAhead = 0, r._requiredWindowsBehind = 0, r._measureVersion = 0, r._onAsyncScroll = r._async.debounce(r._onAsyncScroll, y7, {
+      }, r._async = new Gn(r), r._events = new Er(r), r._estimatedPageHeight = 0, r._totalEstimates = 0, r._requiredWindowsAhead = 0, r._requiredWindowsBehind = 0, r._measureVersion = 0, r._onAsyncScroll = r._async.debounce(r._onAsyncScroll, yG, {
         leading: !1,
-        maxWait: C7
-      }), r._onAsyncIdle = r._async.debounce(r._onAsyncIdle, S7, {
+        maxWait: CG
+      }), r._onAsyncIdle = r._async.debounce(r._onAsyncIdle, SG, {
         leading: !1
-      }), r._onAsyncResize = r._async.debounce(r._onAsyncResize, _7, {
+      }), r._onAsyncResize = r._async.debounce(r._onAsyncResize, _G, {
         leading: !1
-      }), r._onScrollingDone = r._async.debounce(r._onScrollingDone, E7, {
+      }), r._onScrollingDone = r._async.debounce(r._onScrollingDone, EG, {
         leading: !1
       }), r._cachedPageHeights = {}, r._estimatedPageHeight = 0, r._focusedIndex = -1, r._pageCache = {}, r;
     }
@@ -39832,7 +39832,7 @@ var ff = {
         var p = d <= t && d + c > t;
         if (p) {
           if (r && this._scrollElement) {
-            for (var v = D7(this._scrollElement), g = M_(this._scrollElement), m = {
+            for (var v = DG(this._scrollElement), g = M_(this._scrollElement), m = {
               top: g,
               bottom: g + v.height
             }, b = t - d, _ = 0; _ < b; ++_)
@@ -39974,7 +39974,7 @@ var ff = {
     }, n.prototype._resetRequiredWindows = function() {
       this._requiredWindowsAhead = 0, this._requiredWindowsBehind = 0;
     }, n.prototype._onAsyncScroll = function() {
-      this._updateRenderRects(this.props, this.state), (!this._materializedRect || !A7(this._requiredRect, this._materializedRect)) && this.setState(this._updatePages(this.props, this.state));
+      this._updateRenderRects(this.props, this.state), (!this._materializedRect || !AG(this._requiredRect, this._materializedRect)) && this.setState(this._updatePages(this.props, this.state));
     }, n.prototype._onAsyncIdle = function() {
       var t = this.props, r = t.renderedWindowsAhead, a = t.renderedWindowsBehind, i = this, o = i._requiredWindowsAhead, s = i._requiredWindowsBehind, l = Math.min(r, o + 1), u = Math.min(a, s + 1);
       (l !== o || u !== s) && (this._requiredWindowsAhead = l, this._requiredWindowsBehind = u, this._updateRenderRects(this.props, this.state), this.setState(this._updatePages(this.props, this.state))), (r > l || a > u) && this._onAsyncIdle();
@@ -40040,7 +40040,7 @@ var ff = {
         if (O || j || Q) {
           f && (u.push(f), f = null);
           var ie = Math.min(c, p - S), G = _._createPage(M, i.slice(S, S + ie), S, void 0, void 0, T);
-          G.top = d, G.height = I, _._visibleRect && _._visibleRect.bottom && (G.isVisible = H >= _._visibleRect.top && d <= _._visibleRect.bottom), u.push(G), B && _._allowedRect && R7(l, {
+          G.top = d, G.height = I, _._visibleRect && _._visibleRect.bottom && (G.isVisible = H >= _._visibleRect.top && d <= _._visibleRect.bottom), u.push(G), B && _._allowedRect && RG(l, {
             top: d,
             bottom: H,
             height: I,
@@ -40088,12 +40088,12 @@ var ff = {
       if (this.props.getPageHeight)
         return this.props.getPageHeight(t, r, a);
       var i = this._cachedPageHeights[t];
-      return i ? i.height : this._estimatedPageHeight || k7;
+      return i ? i.height : this._estimatedPageHeight || kG;
     }, n.prototype._getItemCountForPage = function(t, r) {
       var a = this.props.getItemCountForPage ? this.props.getItemCountForPage(t, r) : O_;
       return a || O_;
     }, n.prototype._createPage = function(t, r, a, i, o, s, l) {
-      a === void 0 && (a = -1), i === void 0 && (i = r ? r.length : 0), o === void 0 && (o = {}), t = t || F7 + a;
+      a === void 0 && (a = -1), i === void 0 && (i = r ? r.length : 0), o === void 0 && (o = {}), t = t || FG + a;
       var u = this._pageCache[t];
       return u && u.page ? u.page : {
         key: t,
@@ -40112,8 +40112,8 @@ var ff = {
     }, n.prototype._updateRenderRects = function(t, r, a) {
       var i = t.renderedWindowsAhead, o = t.renderedWindowsBehind, s = r.pages;
       if (this._shouldVirtualize(t)) {
-        var l = this._surfaceRect || k({}, H_), u = b7(this._scrollElement), c = M_(this._scrollElement);
-        this._surface.current && (a || !s || !this._surfaceRect || !u || u !== this._scrollHeight || Math.abs(this._scrollTop - c) > this._estimatedPageHeight / 3) && (l = this._surfaceRect = T7(this._surface.current), this._scrollTop = c), (a || !u || u !== this._scrollHeight) && this._measureVersion++, this._scrollHeight = u || 0;
+        var l = this._surfaceRect || k({}, H_), u = bG(this._scrollElement), c = M_(this._scrollElement);
+        this._surface.current && (a || !s || !this._surfaceRect || !u || u !== this._scrollHeight || Math.abs(this._scrollTop - c) > this._estimatedPageHeight / 3) && (l = this._surfaceRect = TG(this._surface.current), this._scrollTop = c), (a || !u || u !== this._scrollHeight) && this._measureVersion++, this._scrollHeight = u || 0;
         var d = Math.max(0, -l.top), f = Fr(this._root.current), h = {
           top: d,
           left: l.left,
@@ -40130,8 +40130,8 @@ var ff = {
         return x.createElement(x.Fragment, null, t && t.name || "");
       },
       onRenderCellConditional: void 0,
-      renderedWindowsAhead: I7,
-      renderedWindowsBehind: w7
+      renderedWindowsAhead: IG,
+      renderedWindowsBehind: wG
     }, n;
   }(x.Component)
 );
@@ -40146,10 +40146,10 @@ function W_(e, n, t) {
     width: e.width
   };
 }
-function A7(e, n) {
+function AG(e, n) {
   return e.top >= n.top && e.left >= n.left && e.bottom <= n.bottom && e.right <= n.right;
 }
-function R7(e, n) {
+function RG(e, n) {
   return e.top = n.top < e.top || e.top === -1 ? n.top : e.top, e.left = n.left < e.left || e.left === -1 ? n.left : e.left, e.bottom = n.bottom > e.bottom || e.bottom === -1 ? n.bottom : e.bottom, e.right = n.right > e.right || e.right === -1 ? n.right : e.right, e.width = e.right - e.left + 1, e.height = e.bottom - e.top + 1, e;
 }
 var oh = (
@@ -40195,7 +40195,7 @@ var oh = (
       return x.createElement(bw, k({}, this.props, { componentRef: this._comboBox, onRenderList: this._onRenderList, onScrollToItem: this._onScrollToItem }));
     }, n;
   }(x.Component)
-), N7 = 44, B7 = function(e) {
+), NG = 44, BG = function(e) {
   var n = e.className, t = e.theme, r = t.semanticColors;
   return {
     root: [
@@ -40205,7 +40205,7 @@ var oh = (
         display: "flex",
         backgroundColor: r.bodyBackground,
         padding: "0 14px 0 24px",
-        height: N7
+        height: NG
       },
       n
     ],
@@ -40226,7 +40226,7 @@ var oh = (
       }
     ]
   };
-}, P7 = br(function(e) {
+}, PG = br(function(e) {
   var n = {
     height: "100%"
   }, t = {
@@ -40243,7 +40243,7 @@ var oh = (
     var a = r[t];
     e.unregister(n[a], a, !0), delete n[a];
   }
-}, M7 = function(e, n, t) {
+}, MG = function(e, n, t) {
   var r = Gi(e);
   x.useEffect(function() {
     r && (G_(t, r), V_(n, t, e));
@@ -40277,8 +40277,8 @@ var oh = (
         h == null || h.push(p);
     }) : h = r, { modifiedOverflowItems: h, keytipsToRegister: f };
   }, [r, l, n, a]), c = u.modifiedOverflowItems, d = u.keytipsToRegister;
-  return M7(s, d, n), x.createElement("div", { className: t }, o(c));
-}, O7 = yt(), L7 = "OverflowSet", H7 = function(e, n) {
+  return MG(s, d, n), x.createElement("div", { className: t }, o(c));
+}, OG = yt(), LG = "OverflowSet", HG = function(e, n) {
   x.useImperativeHandle(e.componentRef, function() {
     return {
       focus: function(t, r) {
@@ -40293,8 +40293,8 @@ var oh = (
   }, [n]);
 }, Cw = x.forwardRef(function(e, n) {
   var t = x.useRef(null), r = Pa(t, n);
-  H7(e, t);
-  var a = e.items, i = e.overflowItems, o = e.className, s = e.styles, l = e.vertical, u = e.role, c = e.overflowSide, d = c === void 0 ? "end" : c, f = e.onRenderItem, h = O7(s, { className: o, vertical: l }), p = !!i && i.length > 0;
+  HG(e, t);
+  var a = e.items, i = e.overflowItems, o = e.className, s = e.styles, l = e.vertical, u = e.role, c = e.overflowSide, d = c === void 0 ? "end" : c, f = e.onRenderItem, h = OG(s, { className: o, vertical: l }), p = !!i && i.length > 0;
   return x.createElement(
     "div",
     k({}, Wt(e, on), { role: u || "group", "aria-orientation": u === "menubar" ? l === !0 ? "vertical" : "horizontal" : void 0, className: h.root, ref: r }),
@@ -40305,11 +40305,11 @@ var oh = (
     d === "end" && p && x.createElement(U_, k({}, e, { className: h.overflowButton }))
   );
 });
-Cw.displayName = L7;
+Cw.displayName = LG;
 var z_ = {
   flexShrink: 0,
   display: "inherit"
-}, W7 = function(e) {
+}, WG = function(e) {
   var n = e.className, t = e.vertical;
   return {
     root: [
@@ -40325,9 +40325,9 @@ var z_ = {
     item: ["ms-OverflowSet-item", z_],
     overflowButton: ["ms-OverflowSet-overflowButton", z_]
   };
-}, j_ = Ct(Cw, W7, void 0, {
+}, j_ = Ct(Cw, WG, void 0, {
   scope: "OverflowSet"
-}), V7 = yt(), G7 = (
+}), VG = yt(), GG = (
   /** @class */
   function(e) {
     mt(n, e);
@@ -40345,7 +40345,7 @@ var z_ = {
         if (a.onRender)
           return a.onRender(a, function() {
           });
-        var i = a.text || a.name, o = k(k({ allowDisabledFocus: !0, role: "menuitem" }, a), { styles: P7(a.buttonStyles), className: ot("ms-CommandBarItem-link", a.className), text: a.iconOnly ? void 0 : i, menuProps: a.subMenuProps, onClick: r._onButtonClick(a) });
+        var i = a.text || a.name, o = k(k({ allowDisabledFocus: !0, role: "menuitem" }, a), { styles: PG(a.buttonStyles), className: ot("ms-CommandBarItem-link", a.className), text: a.iconOnly ? void 0 : i, menuProps: a.subMenuProps, onClick: r._onButtonClick(a) });
         return a.iconOnly && (i !== void 0 || a.tooltipHostProps) ? x.createElement(Y6, k({ role: "none", content: i, setAriaDescribedBy: !1 }, a.tooltipHostProps), r._commandButton(a, o)) : r._commandButton(a, o);
       }, r._commandButton = function(a, i) {
         var o = r.props.buttonAs, s = a.commandBarButtonAs, l = qh, u = l;
@@ -40381,7 +40381,7 @@ var z_ = {
           farItems: i
         })
       };
-      this._classNames = V7(o, { theme: s });
+      this._classNames = VG(o, { theme: s });
       var g = Wt(this.props, on);
       return x.createElement(p, k({}, g, { componentRef: this._resizeGroup, data: v, onReduceData: c, onGrowData: f, onRenderData: this._onRenderData, dataDidRender: l }));
     }, n.prototype.focus = function() {
@@ -40404,9 +40404,9 @@ var z_ = {
       overflowItems: []
     }, n;
   }(x.Component)
-), U7 = Ct(G7, B7, void 0, {
+), UG = Ct(GG, BG, void 0, {
   scope: "CommandBar"
-}), z7 = k(k({}, _V), { prevMonthAriaLabel: "Go to previous month", nextMonthAriaLabel: "Go to next month", prevYearAriaLabel: "Go to previous year", nextYearAriaLabel: "Go to next year", closeButtonAriaLabel: "Close date picker", isRequiredErrorMessage: "Field is required", invalidInputErrorMessage: "Invalid date format", isResetStatusMessage: 'Invalid entry "{0}", date reset to "{1}"' }), j7 = yt(), X7 = {
+}), zG = k(k({}, _V), { prevMonthAriaLabel: "Go to previous month", nextMonthAriaLabel: "Go to next month", prevYearAriaLabel: "Go to previous year", nextYearAriaLabel: "Go to next year", closeButtonAriaLabel: "Close date picker", isRequiredErrorMessage: "Field is required", invalidInputErrorMessage: "Invalid date format", isResetStatusMessage: 'Invalid entry "{0}", date reset to "{1}"' }), jG = yt(), XG = {
   allowTextInput: !1,
   formatDate: function(e) {
     return e ? e.toDateString() : "";
@@ -40421,7 +40421,7 @@ var z_ = {
   isRequired: !1,
   isMonthPickerVisible: !0,
   showMonthPickerAsOverlay: !1,
-  strings: z7,
+  strings: zG,
   highlightCurrentMonth: !1,
   highlightSelectedMonth: !1,
   borderless: !1,
@@ -40433,7 +40433,7 @@ var z_ = {
   underlined: !1,
   allFocusable: !1
 };
-function Z7() {
+function ZG() {
   var e = x.useRef(null), n = x.useRef(!1), t = function() {
     var a, i;
     (i = (a = e.current) === null || a === void 0 ? void 0 : a.focus) === null || i === void 0 || i.call(a);
@@ -40442,13 +40442,13 @@ function Z7() {
   };
   return [e, t, n, r];
 }
-function K7(e, n) {
+function KG(e, n) {
   var t = e.allowTextInput, r = e.onAfterMenuDismiss, a = x.useState(!1), i = a[0], o = a[1], s = x.useRef(!1), l = Yo();
   return x.useEffect(function() {
     s.current && !i && (t && l.requestAnimationFrame(n), r == null || r()), s.current = !0;
   }, [i]), [i, o];
 }
-function Y7(e) {
+function YG(e) {
   var n = e.formatDate, t = e.value, r = e.onSelectDate, a = _l(t, void 0, function(d, f) {
     return r == null ? void 0 : r(f);
   }), i = a[0], o = a[1], s = x.useState(function() {
@@ -40460,7 +40460,7 @@ function Y7(e) {
     u(t && n ? n(t) : "");
   }, [n, t]), [i, l, c, u];
 }
-function $7(e, n, t, r, a) {
+function $G(e, n, t, r, a) {
   var i, o = e.isRequired, s = e.allowTextInput, l = e.strings, u = e.parseDateFromString, c = e.onSelectDate, d = e.formatDate, f = e.minDate, h = e.maxDate, p = e.textField, v = x.useState(), g = v[0], m = v[1], b = x.useState(), _ = b[0], C = b[1], E = x.useRef(!0), S = (i = p == null ? void 0 : p.validateOnLoad) !== null && i !== void 0 ? i : !0, y = function(I) {
     if (I === void 0 && (I = null), s)
       if (r || I) {
@@ -40498,7 +40498,7 @@ function $7(e, n, t, r, a) {
   ];
 }
 var Sw = x.forwardRef(function(e, n) {
-  var t, r, a, i = zi(X7, e), o = i.firstDayOfWeek, s = i.strings, l = i.label, u = i.theme, c = i.className, d = i.styles, f = i.initialPickerDate, h = i.isRequired, p = i.disabled, v = i.ariaLabel, g = i.pickerAriaLabel, m = i.placeholder, b = i.allowTextInput, _ = i.borderless, C = i.minDate, E = i.maxDate, S = i.showCloseButton, y = i.calendarProps, I = i.calloutProps, T = i.textField, M = i.underlined, H = i.allFocusable, R = i.calendarAs, Y = R === void 0 ? HV : R, B = i.tabIndex, O = i.disableAutoFocus, j = O === void 0 ? !0 : O, Q = Ba("DatePicker", i.id), ie = Ba("DatePicker-Callout"), G = x.useRef(null), xe = x.useRef(null), me = Z7(), ve = me[0], Ee = me[1], L = me[2], oe = me[3], J = K7(i, Ee), P = J[0], F = J[1], te = Y7(i), le = te[0], ne = te[1], D = te[2], be = te[3], ge = $7(i, le, D, ne, P), se = ge[0], Fe = ge[1], Ge = ge[2], Ie = ge[3], Me = ge[4], Se = x.useCallback(function() {
+  var t, r, a, i = zi(XG, e), o = i.firstDayOfWeek, s = i.strings, l = i.label, u = i.theme, c = i.className, d = i.styles, f = i.initialPickerDate, h = i.isRequired, p = i.disabled, v = i.ariaLabel, g = i.pickerAriaLabel, m = i.placeholder, b = i.allowTextInput, _ = i.borderless, C = i.minDate, E = i.maxDate, S = i.showCloseButton, y = i.calendarProps, I = i.calloutProps, T = i.textField, M = i.underlined, H = i.allFocusable, R = i.calendarAs, Y = R === void 0 ? HV : R, B = i.tabIndex, O = i.disableAutoFocus, j = O === void 0 ? !0 : O, Q = Ba("DatePicker", i.id), ie = Ba("DatePicker-Callout"), G = x.useRef(null), xe = x.useRef(null), me = ZG(), ve = me[0], Ee = me[1], L = me[2], oe = me[3], J = KG(i, Ee), P = J[0], F = J[1], te = YG(i), le = te[0], ne = te[1], D = te[2], be = te[3], ge = $G(i, le, D, ne, P), se = ge[0], Fe = ge[1], Ge = ge[2], Ie = ge[3], Me = ge[4], Se = x.useCallback(function() {
     P || (oe(), F(!0));
   }, [P, oe, F]);
   x.useImperativeHandle(i.componentRef, function() {
@@ -40564,7 +40564,7 @@ var Sw = x.forwardRef(function(e, n) {
     P && (ft.stopPropagation(), At());
   }, Nt = function(ft) {
     At();
-  }, ur = j7(d, {
+  }, ur = jG(d, {
     theme: u,
     className: c,
     disabled: p,
@@ -40641,14 +40641,14 @@ Sw.displayName = "DatePickerBase";
 function X_(e, n, t) {
   return !!n && Ka(n, e) > 0 || !!t && Ka(t, e) < 0;
 }
-var J7 = {
+var JG = {
   root: "ms-DatePicker",
   callout: "ms-DatePicker-callout",
   withLabel: "ms-DatePicker-event--with-label",
   withoutLabel: "ms-DatePicker-event--without-label",
   disabled: "msDatePickerDisabled "
-}, op = 32, q7 = function(e) {
-  var n, t = e.className, r = e.theme, a = e.disabled, i = e.underlined, o = e.label, s = e.isDatePickerShown, l = r.palette, u = r.semanticColors, c = r.fonts, d = Vt(J7, r), f = {
+}, op = 32, qG = function(e) {
+  var n, t = e.className, r = e.theme, a = e.disabled, i = e.underlined, o = e.label, s = e.isDatePickerShown, l = r.palette, u = r.semanticColors, c = r.fonts, d = Vt(JG, r), f = {
     color: l.neutralSecondary,
     fontSize: Qr.icon,
     lineHeight: "18px",
@@ -40725,9 +40725,9 @@ var J7 = {
       color: "GrayText"
     }, n)
   };
-}, sh = Ct(Sw, q7, void 0, {
+}, sh = Ct(Sw, qG, void 0, {
   scope: "DatePicker"
-}), Q7 = "data-selection-disabled", Z_ = "data-selection-index", eG = "data-selection-span", $u = "data-selection-toggle", pf = "data-selection-invoke", tG = "data-selection-touch-invoke", K_ = "data-selection-all-toggle", rG = "data-selection-select", Lm = (
+}), QG = "data-selection-disabled", Z_ = "data-selection-index", e7 = "data-selection-span", $u = "data-selection-toggle", pf = "data-selection-invoke", t7 = "data-selection-touch-invoke", K_ = "data-selection-all-toggle", r7 = "data-selection-select", Lm = (
   /** @class */
   function(e) {
     mt(n, e);
@@ -40796,7 +40796,7 @@ var J7 = {
             if (r._hasAttribute(u, $u)) {
               d || (r._isShiftPressed ? r._onItemSurfaceClick("click", f, h) : r._onToggleClick(o, f, h));
               break;
-            } else if (r._isTouch && l && r._hasAttribute(u, tG) || r._hasAttribute(u, pf)) {
+            } else if (r._isTouch && l && r._hasAttribute(u, t7) || r._hasAttribute(u, pf)) {
               h === void 0 && r._onInvokeClick(o, f);
               break;
             } else if (u === c) {
@@ -40902,7 +40902,7 @@ var J7 = {
       if (this._getSelectionMode() === Lt.none)
         return !0;
       for (; t !== this._root.current; ) {
-        if (this._hasAttribute(t, Q7))
+        if (this._hasAttribute(t, QG))
           return !0;
         t = yn(t);
       }
@@ -40966,10 +40966,10 @@ var J7 = {
       var r, a = parseInt((r = t.getAttribute(Z_)) !== null && r !== void 0 ? r : "", 10);
       return isNaN(a) ? -1 : a;
     }, n.prototype._getItemSpan = function(t) {
-      var r, a = parseInt((r = t.getAttribute(eG)) !== null && r !== void 0 ? r : "", 10);
+      var r, a = parseInt((r = t.getAttribute(e7)) !== null && r !== void 0 ? r : "", 10);
       return isNaN(a) ? void 0 : a;
     }, n.prototype._shouldAutoSelect = function(t) {
-      return this._hasAttribute(t, rG);
+      return this._hasAttribute(t, r7);
     }, n.prototype._hasAttribute = function(t, r) {
       for (var a = !1; !a && t !== this._root.current; ) {
         var i = t.getAttribute(r);
@@ -41038,16 +41038,16 @@ var Za;
 var td = 36, ku = function(e) {
   var n = e.count, t = e.indentWidth, r = t === void 0 ? td : t, a = e.role, i = a === void 0 ? "presentation" : a, o = n * r;
   return n > 0 ? x.createElement("span", { className: "ms-GroupSpacer", style: { display: "inline-block", width: o }, role: i }) : null;
-}, nG = {
+}, n7 = {
   root: "ms-GroupedList",
   compact: "ms-GroupedList--Compact",
   group: "ms-GroupedList-group",
   link: "ms-Link",
   listCell: "ms-List-cell"
-}, aG = {
+}, a7 = {
   easeInOutSine: "cubic-bezier(0.445, 0.050, 0.550, 0.950)"
-}, iG = function(e) {
-  var n, t, r = e.theme, a = e.className, i = e.compact, o = r.palette, s = Vt(nG, r);
+}, i7 = function(e) {
+  var n, t, r = e.theme, a = e.className, i = e.compact, o = r.palette, s = Vt(n7, r);
   return {
     root: [
       s.root,
@@ -41073,14 +41073,14 @@ var td = 36, ku = function(e) {
     group: [
       s.group,
       {
-        transition: "background-color " + Do.durationValue2 + " " + aG.easeInOutSine
+        transition: "background-color " + Do.durationValue2 + " " + a7.easeInOutSine
       }
     ],
     groupIsDropping: {
       backgroundColor: o.neutralLight
     }
   };
-}, oG = {
+}, o7 = {
   root: "ms-DetailsRow",
   // TODO: in Fabric 7.0 lowercase the 'Compact' for consistency across other components.
   compact: "ms-DetailsList--Compact",
@@ -41095,15 +41095,15 @@ var td = 36, ku = function(e) {
   isCheckVisible: "is-check-visible",
   isRowHeader: "is-row-header",
   fields: "ms-DetailsRow-fields"
-}, sG = "[data-is-focusable='true']", $o = {
+}, s7 = "[data-is-focusable='true']", $o = {
   cellLeftPadding: 12,
   cellRightPadding: 8,
   cellExtraRightPadding: 24
 }, rd = {
   rowHeight: 42,
   compactRowHeight: 32
-}, is = k(k({}, rd), { rowVerticalPadding: 11, compactRowVerticalPadding: 6 }), lG = function(e) {
-  var n, t, r, a, i, o, s, l, u, c, d, f, h, p, v = e.theme, g = e.isSelected, m = e.canSelect, b = e.droppingClassName, _ = e.isCheckVisible, C = e.checkboxCellClassName, E = e.compact, S = e.className, y = e.cellStyleProps, I = y === void 0 ? $o : y, T = e.enableUpdateAnimations, M = e.disabled, H = v.palette, R = v.fonts, Y = H.neutralPrimary, B = H.white, O = H.neutralSecondary, j = H.neutralLighter, Q = H.neutralLight, ie = H.neutralDark, G = H.neutralQuaternaryAlt, xe = v.semanticColors, me = xe.focusBorder, ve = xe.linkHovered, Ee = Vt(oG, v), L = {
+}, is = k(k({}, rd), { rowVerticalPadding: 11, compactRowVerticalPadding: 6 }), l7 = function(e) {
+  var n, t, r, a, i, o, s, l, u, c, d, f, h, p, v = e.theme, g = e.isSelected, m = e.canSelect, b = e.droppingClassName, _ = e.isCheckVisible, C = e.checkboxCellClassName, E = e.compact, S = e.className, y = e.cellStyleProps, I = y === void 0 ? $o : y, T = e.enableUpdateAnimations, M = e.disabled, H = v.palette, R = v.fonts, Y = H.neutralPrimary, B = H.white, O = H.neutralSecondary, j = H.neutralLighter, Q = H.neutralLight, ie = H.neutralDark, G = H.neutralQuaternaryAlt, xe = v.semanticColors, me = xe.focusBorder, ve = xe.linkHovered, Ee = Vt(o7, v), L = {
     // Default
     defaultHeaderText: Y,
     defaultMetaText: O,
@@ -41245,7 +41245,7 @@ var td = 36, ku = function(e) {
         "& > button": {
           maxWidth: "100%"
         }
-      }, u[sG] = jr(v, { inset: -1, borderColor: O, outlineColor: B }), u)
+      }, u[s7] = jr(v, { inset: -1, borderColor: O, outlineColor: B }), u)
     },
     g && {
       selectors: (c = {}, c[ye] = k({ background: "Highlight", color: "HighlightText" }, Et()), c)
@@ -41402,7 +41402,7 @@ var td = 36, ku = function(e) {
       textAlign: "left"
     }
   ];
-}, uG = function(e) {
+}, u7 = function(e) {
   var n, t, r, a, i = e.theme, o = e.className, s = e.isAllSelected, l = e.isResizingColumn, u = e.isSizing, c = e.isAllCollapsed, d = e.cellStyleProps, f = d === void 0 ? $o : d, h = i.semanticColors, p = i.palette, v = i.fonts, g = Vt(Ew, i), m = {
     iconForegroundColor: h.bodySubtext,
     headerForegroundColor: h.bodyText,
@@ -41625,12 +41625,12 @@ var td = 36, ku = function(e) {
       position: "absolute"
     }
   };
-}, cG = {
+}, c7 = {
   root: "ms-DetailsRow-check",
   isDisabled: "ms-DetailsRow-check--isDisabled",
   isHeader: "ms-DetailsRow-check--isHeader"
-}, nd = 48, dG = function(e) {
-  var n = e.theme, t = e.className, r = e.isHeader, a = e.selected, i = e.anySelected, o = e.canSelect, s = e.compact, l = e.isVisible, u = Vt(cG, n), c = rd.rowHeight, d = rd.compactRowHeight, f = r ? Cc : s ? d : c, h = l || a || i;
+}, nd = 48, d7 = function(e) {
+  var n = e.theme, t = e.className, r = e.isHeader, a = e.selected, i = e.anySelected, o = e.canSelect, s = e.compact, l = e.isVisible, u = Vt(c7, n), c = rd.rowHeight, d = rd.compactRowHeight, f = r ? Cc : s ? d : c, h = l || a || i;
   return {
     root: [u.root, t],
     check: [
@@ -41658,7 +41658,7 @@ var td = 36, ku = function(e) {
     ],
     isDisabled: []
   };
-}, fG = {
+}, f7 = {
   root: "ms-GroupHeader",
   compact: "ms-GroupHeader--compact",
   check: "ms-GroupHeader-check",
@@ -41674,8 +41674,8 @@ var td = 36, ku = function(e) {
   easeOutCirc: "cubic-bezier(0.075, 0.820, 0.165, 1.000)",
   easeOutSine: "cubic-bezier(0.390, 0.575, 0.565, 1.000)",
   easeInBack: "cubic-bezier(0.600, -0.280, 0.735, 0.045)"
-}, hG = 48, pG = 40, gG = function(e) {
-  var n, t, r, a, i, o = e.theme, s = e.className, l = e.selected, u = e.isCollapsed, c = e.compact, d = $o.cellLeftPadding, f = c ? pG : hG, h = o.semanticColors, p = o.palette, v = o.fonts, g = Vt(fG, o), m = [
+}, h7 = 48, p7 = 40, g7 = function(e) {
+  var n, t, r, a, i, o = e.theme, s = e.className, l = e.selected, u = e.isCollapsed, c = e.compact, d = $o.cellLeftPadding, f = c ? p7 : h7, h = o.semanticColors, p = o.palette, v = o.fonts, g = Vt(f7, o), m = [
     jr(o),
     {
       cursor: "default",
@@ -41840,7 +41840,7 @@ var mg;
 (function(e) {
   e[e.normal = 0] = "normal", e[e.large = 1] = "large";
 })(mg || (mg = {}));
-var mG = yt(), vG = (
+var m7 = yt(), v7 = (
   /** @class */
   function(e) {
     mt(n, e);
@@ -41850,7 +41850,7 @@ var mG = yt(), vG = (
     return n.prototype.render = function() {
       var t = this.props, r = t.type, a = t.size, i = t.ariaLabel, o = t.ariaLive, s = t.styles, l = t.label, u = t.theme, c = t.className, d = t.labelPosition, f = i, h = Wt(this.props, on, ["size"]), p = a;
       p === void 0 && r !== void 0 && (p = r === mg.large ? Li.large : Li.medium);
-      var v = mG(s, {
+      var v = m7(s, {
         theme: u,
         size: p,
         className: c,
@@ -41877,11 +41877,11 @@ var mG = yt(), vG = (
       labelPosition: "bottom"
     }, n;
   }(x.Component)
-), xG = {
+), x7 = {
   root: "ms-Spinner",
   circle: "ms-Spinner-circle",
   label: "ms-Spinner-label"
-}, bG = br(function() {
+}, b7 = br(function() {
   return qa({
     "0%": {
       transform: "rotate(0deg)"
@@ -41890,8 +41890,8 @@ var mG = yt(), vG = (
       transform: "rotate(360deg)"
     }
   });
-}), _G = function(e) {
-  var n, t = e.theme, r = e.size, a = e.className, i = e.labelPosition, o = t.palette, s = Vt(xG, t);
+}), _7 = function(e) {
+  var n, t = e.theme, r = e.size, a = e.className, i = e.labelPosition, o = t.palette, s = Vt(x7, t);
   return {
     root: [
       s.root,
@@ -41919,7 +41919,7 @@ var mG = yt(), vG = (
         borderRadius: "50%",
         border: "1.5px solid " + o.themeLight,
         borderTopColor: o.themePrimary,
-        animationName: bG(),
+        animationName: b7(),
         animationDuration: "1.3s",
         animationIterationCount: "infinite",
         animationTimingFunction: "cubic-bezier(.53,.21,.29,.67)",
@@ -41974,7 +41974,7 @@ var mG = yt(), vG = (
     ],
     screenReaderText: ji
   };
-}, ad = Ct(vG, _G, void 0, { scope: "Spinner" }), yG = yt(), CG = (
+}, ad = Ct(v7, _7, void 0, { scope: "Spinner" }), y7 = yt(), C7 = (
   /** @class */
   function(e) {
     mt(n, e);
@@ -42031,7 +42031,7 @@ var mG = yt(), vG = (
       return r;
     }, n.prototype.render = function() {
       var t = this.props, r = t.group, a = t.groupLevel, i = a === void 0 ? 0 : a, o = t.viewport, s = t.selectionMode, l = t.loadingText, u = t.isSelected, c = u === void 0 ? !1 : u, d = t.selected, f = d === void 0 ? !1 : d, h = t.indentWidth, p = t.onRenderGroupHeaderCheckbox, v = t.isCollapsedGroupSelectVisible, g = v === void 0 ? !0 : v, m = t.expandButtonProps, b = t.expandButtonIcon, _ = t.selectAllButtonProps, C = t.theme, E = t.styles, S = t.className, y = t.compact, I = t.ariaLevel, T = t.ariaPosInSet, M = t.ariaSetSize, H = t.ariaRowIndex, R = t.useFastIcons, Y = this.props.onRenderTitle ? $a(this.props.onRenderTitle, this._onRenderTitle) : this._onRenderTitle, B = R ? this._fastDefaultCheckboxRender : this._defaultCheckboxRender, O = p ? $a(p, B) : B, j = this.state, Q = j.isCollapsed, ie = j.isLoadingVisible, G = s === Lt.multiple, xe = G && (g || !(r && r.isCollapsed)), me = f || c, ve = or(C);
-      return this._classNames = yG(E, {
+      return this._classNames = y7(E, {
         theme: C,
         className: S,
         selected: me,
@@ -42074,20 +42074,20 @@ var mG = yt(), vG = (
     }, n.prototype._defaultCheckboxRender = function(t) {
       return x.createElement(ih, { checked: t.checked });
     }, n.prototype._fastDefaultCheckboxRender = function(t) {
-      return x.createElement(SG, { theme: t.theme, checked: t.checked });
+      return x.createElement(S7, { theme: t.theme, checked: t.checked });
     }, n.defaultProps = {
       expandButtonProps: { "aria-label": "expand collapse group" }
     }, n;
   }(x.Component)
-), SG = x.memo(function(e) {
+), S7 = x.memo(function(e) {
   return x.createElement(ih, { theme: e.theme, checked: e.checked, className: e.className, useFastIcons: !0 });
-}), EG = Ct(CG, gG, void 0, {
+}), E7 = Ct(C7, g7, void 0, {
   scope: "GroupHeader"
-}), kG = {
+}), k7 = {
   root: "ms-GroupShowAll",
   link: "ms-Link"
-}, wG = function(e) {
-  var n, t = e.theme, r = t.fonts, a = Vt(kG, t);
+}, w7 = function(e) {
+  var n, t = e.theme, r = t.fonts, a = Vt(k7, t);
   return {
     root: [
       a.root,
@@ -42101,8 +42101,8 @@ var mG = yt(), vG = (
       }
     ]
   };
-}, IG = yt(), FG = function(e) {
-  var n = e.group, t = e.groupLevel, r = e.showAllLinkText, a = r === void 0 ? "Show All" : r, i = e.styles, o = e.theme, s = e.onToggleSummarize, l = IG(i, { theme: o }), u = Kr(function(c) {
+}, I7 = yt(), F7 = function(e) {
+  var n = e.group, t = e.groupLevel, r = e.showAllLinkText, a = r === void 0 ? "Show All" : r, i = e.styles, o = e.theme, s = e.onToggleSummarize, l = I7(i, { theme: o }), u = Kr(function(c) {
     s(n), c.stopPropagation(), c.preventDefault();
   }, [s, n]);
   return n ? x.createElement(
@@ -42111,10 +42111,10 @@ var mG = yt(), vG = (
     x.createElement(ku, { count: t }),
     x.createElement(og, { onClick: u }, a)
   ) : null;
-}, TG = Ct(FG, wG, void 0, { scope: "GroupShowAll" }), DG = {
+}, T7 = Ct(F7, w7, void 0, { scope: "GroupShowAll" }), D7 = {
   root: "ms-groupFooter"
-}, AG = function(e) {
-  var n = e.theme, t = e.className, r = Vt(DG, n);
+}, A7 = function(e) {
+  var n = e.theme, t = e.className, r = Vt(D7, n);
   return {
     root: [
       n.fonts.medium,
@@ -42126,28 +42126,28 @@ var mG = yt(), vG = (
       t
     ]
   };
-}, RG = yt(), NG = function(e) {
-  var n = e.group, t = e.groupLevel, r = e.footerText, a = e.indentWidth, i = e.styles, o = e.theme, s = RG(i, { theme: o });
+}, R7 = yt(), N7 = function(e) {
+  var n = e.group, t = e.groupLevel, r = e.footerText, a = e.indentWidth, i = e.styles, o = e.theme, s = R7(i, { theme: o });
   return n && r ? x.createElement(
     "div",
     { className: s.root },
     x.createElement(ku, { indentWidth: a, count: t }),
     r
   ) : null;
-}, BG = Ct(NG, AG, void 0, {
+}, B7 = Ct(N7, A7, void 0, {
   scope: "GroupFooter"
-}), PG = "is-dropping", MG = (
+}), P7 = "is-dropping", M7 = (
   /** @class */
   function(e) {
     mt(n, e);
     function n(t) {
       var r = e.call(this, t) || this;
       r._root = x.createRef(), r._list = x.createRef(), r._subGroupRefs = {}, r._droppingClassName = "", r._onRenderGroupHeader = function(o) {
-        return x.createElement(EG, k({}, o));
+        return x.createElement(E7, k({}, o));
       }, r._onRenderGroupShowAll = function(o) {
-        return x.createElement(TG, k({}, o));
+        return x.createElement(T7, k({}, o));
       }, r._onRenderGroupFooter = function(o) {
-        return x.createElement(BG, k({}, o));
+        return x.createElement(B7, k({}, o));
       }, r._renderSubGroup = function(o, s) {
         var l = r.props, u = l.dragDropEvents, c = l.dragDropHelper, d = l.eventsToRegister, f = l.getGroupItemLimit, h = l.groupNestingDepth, p = l.groupProps, v = l.items, g = l.headerProps, m = l.showAllProps, b = l.footerProps, _ = l.listProps, C = l.onRenderCell, E = l.selection, S = l.selectionMode, y = l.viewport, I = l.onRenderGroupHeader, T = l.onRenderGroupShowAll, M = l.onRenderGroupFooter, H = l.onShouldVirtualize, R = l.group, Y = l.compact, B = o.level ? o.level + 1 : h;
         return !o || o.count > 0 || p && p.showEmptyGroups ? x.createElement(n, { ref: function(O) {
@@ -42244,10 +42244,10 @@ var mG = yt(), vG = (
       return "group-" + (t && t.key ? t.key : String(t.level) + String(r));
     }, n.prototype._getDroppingClassName = function() {
       var t = this.state.isDropping, r = this.props, a = r.group, i = r.groupedListClassNames;
-      return t = !!(a && t), ot(t && this._droppingClassName, t && PG, t && i && i.groupIsDropping);
+      return t = !!(a && t), ot(t && this._droppingClassName, t && P7, t && i && i.groupIsDropping);
     }, n;
   }(x.Component)
-), OG = yt(), LG = rd.rowHeight, HG = rd.compactRowHeight, WG = (
+), O7 = yt(), L7 = rd.rowHeight, H7 = rd.compactRowHeight, W7 = (
   /** @class */
   function(e) {
     mt(n, e);
@@ -42262,14 +42262,14 @@ var mG = yt(), vG = (
         if (!p.showEmptyGroups && l && l.count === 0)
           return null;
         var Y = k(k({}, g || {}), { version: r.state.version });
-        return x.createElement(MG, { key: r._getGroupKey(l, u), dragDropEvents: d, dragDropHelper: f, eventsToRegister: h, footerProps: H, getGroupItemLimit: p && p.getGroupItemLimit, group: l, groupIndex: u, groupNestingDepth: R, groupProps: p, headerProps: T, listProps: Y, items: v, onRenderCell: m, onRenderGroupHeader: p.onRenderHeader, onRenderGroupShowAll: p.onRenderShowAll, onRenderGroupFooter: p.onRenderFooter, selectionMode: b, selection: _, showAllProps: M, viewport: C, onShouldVirtualize: E, groupedListClassNames: r._classNames, groups: S, compact: y });
+        return x.createElement(M7, { key: r._getGroupKey(l, u), dragDropEvents: d, dragDropHelper: f, eventsToRegister: h, footerProps: H, getGroupItemLimit: p && p.getGroupItemLimit, group: l, groupIndex: u, groupNestingDepth: R, groupProps: p, headerProps: T, listProps: Y, items: v, onRenderCell: m, onRenderGroupHeader: p.onRenderHeader, onRenderGroupShowAll: p.onRenderShowAll, onRenderGroupFooter: p.onRenderFooter, selectionMode: b, selection: _, showAllProps: M, viewport: C, onShouldVirtualize: E, groupedListClassNames: r._classNames, groups: S, compact: y });
       }, r._getDefaultGroupItemLimit = function(l) {
         return l.children && l.children.length > 0 ? l.children.length : l.count;
       }, r._getGroupItemLimit = function(l) {
         var u = r.props.groupProps, c = u && u.getGroupItemLimit ? u.getGroupItemLimit : r._getDefaultGroupItemLimit;
         return c(l);
       }, r._getGroupHeight = function(l) {
-        var u = r.props.compact ? HG : LG;
+        var u = r.props.compact ? H7 : L7;
         return u + (l.isCollapsed ? 0 : u * r._getGroupItemLimit(l));
       }, r._getPageHeight = function(l) {
         var u = r.state.groups, c = r.props.getGroupHeight, d = c === void 0 ? r._getGroupHeight : c, f = u && u[l];
@@ -42311,7 +42311,7 @@ var mG = yt(), vG = (
       r && r.isAllGroupsCollapsed && this._setGroupsCollapsedState(i, r.isAllGroupsCollapsed);
     }, n.prototype.render = function() {
       var t = this.props, r = t.className, a = t.usePageCache, i = t.onShouldVirtualize, o = t.theme, s = t.role, l = s === void 0 ? "treegrid" : s, u = t.styles, c = t.compact, d = t.focusZoneProps, f = d === void 0 ? {} : d, h = t.rootListProps, p = h === void 0 ? {} : h, v = this.state, g = v.groups, m = v.version;
-      this._classNames = OG(u, {
+      this._classNames = O7(u, {
         theme: o,
         className: r,
         compact: c
@@ -42353,18 +42353,18 @@ var mG = yt(), vG = (
       compact: !1
     }, n;
   }(x.Component)
-), Y_ = Ct(WG, iG, void 0, {
+), Y_ = Ct(W7, i7, void 0, {
   scope: "GroupedList"
-}), VG = function(e) {
+}), V7 = function(e) {
   var n = 0;
   if (e)
     for (var t = tr([], e), r = void 0; t && t.length > 0; )
       ++n, r = t.pop(), r && r.children && t.push.apply(t, r.children);
   return n;
-}, GG = yt(), UG = function(e) {
+}, G7 = yt(), U7 = function(e) {
   var n = e.isVisible, t = n === void 0 ? !1 : n, r = e.canSelect, a = r === void 0 ? !1 : r, i = e.anySelected, o = i === void 0 ? !1 : i, s = e.selected, l = s === void 0 ? !1 : s, u = e.selectionMode, c = e.isHeader, d = c === void 0 ? !1 : c, f = e.className;
   e.checkClassName;
-  var h = e.styles, p = e.theme, v = e.compact, g = e.onRenderDetailsCheckbox, m = e.useFastIcons, b = m === void 0 ? !0 : m, _ = ia(e, ["isVisible", "canSelect", "anySelected", "selected", "selectionMode", "isHeader", "className", "checkClassName", "styles", "theme", "compact", "onRenderDetailsCheckbox", "useFastIcons"]), C = b ? XG : jG, E = g ? $a(g, C) : C, S = GG(h, {
+  var h = e.styles, p = e.theme, v = e.compact, g = e.onRenderDetailsCheckbox, m = e.useFastIcons, b = m === void 0 ? !0 : m, _ = ia(e, ["isVisible", "canSelect", "anySelected", "selected", "selectionMode", "isHeader", "className", "checkClassName", "styles", "theme", "compact", "onRenderDetailsCheckbox", "useFastIcons"]), C = b ? X7 : j7, E = g ? $a(g, C) : C, S = G7(h, {
     theme: p,
     canSelect: a,
     selected: l,
@@ -42389,16 +42389,16 @@ var mG = yt(), vG = (
     // eslint-disable-next-line deprecation/deprecation
     x.createElement("div", k({}, I, { className: ot(S.root, S.check) }))
   );
-}, zG = x.memo(function(e) {
+}, z7 = x.memo(function(e) {
   return x.createElement(ih, { theme: e.theme, checked: e.checked, className: e.className, useFastIcons: !0 });
 });
-function jG(e) {
+function j7(e) {
   return x.createElement(ih, { checked: e.checked });
 }
-function XG(e) {
-  return x.createElement(zG, { theme: e.theme, checked: e.checked });
+function X7(e) {
+  return x.createElement(z7, { theme: e.theme, checked: e.checked });
 }
-var ww = Ct(UG, dG, void 0, { scope: "DetailsRowCheck" }, !0), ZG = 0, $_ = 1, vg = (
+var ww = Ct(U7, d7, void 0, { scope: "DetailsRowCheck" }, !0), Z7 = 0, $_ = 1, vg = (
   /** @class */
   function() {
     function e(n) {
@@ -42489,7 +42489,7 @@ var ww = Ct(UG, dG, void 0, { scope: "DetailsRowCheck" }, !0), ZG = 0, $_ = 1, v
     }, e.prototype._onMouseLeave = function(n, t) {
       this._isDragging && this._dragData && this._dragData.dropTarget && this._dragData.dropTarget.key === n.key && (Er.raise(n.root, "dragleave"), this._dragData.dropTarget = void 0);
     }, e.prototype._onMouseDown = function(n, t) {
-      if (t.button === ZG)
+      if (t.button === Z7)
         if (this._isDraggable(n)) {
           this._dragData = {
             clientX: t.clientX,
@@ -42518,11 +42518,11 @@ var ww = Ct(UG, dG, void 0, { scope: "DetailsRowCheck" }, !0), ZG = 0, $_ = 1, v
       return !!(t.canDrop && t.canDrop(t.context, r));
     }, e;
   }()
-), KG = 0, YG = yt(), $G = 200, J_ = 1500, sp = 20, q_ = function(e) {
+), K7 = 0, Y7 = yt(), $7 = 200, J_ = 1500, sp = 20, q_ = function(e) {
   return function(n) {
     return n ? n.column.isIconOnly ? x.createElement("span", { className: e.accessibleLabel }, n.column.name) : x.createElement(x.Fragment, null, n.column.name) : null;
   };
-}, JG = (
+}, J7 = (
   /** @class */
   function(e) {
     mt(n, e);
@@ -42553,12 +42553,12 @@ var ww = Ct(UG, dG, void 0, { scope: "DetailsRowCheck" }, !0), ZG = 0, $_ = 1, v
         s.onColumnContextMenu && (s.onColumnContextMenu(s, a), a.preventDefault()), o && (o(s, a), a.preventDefault());
       }, r._onRootMouseDown = function(a) {
         var i = r.props.isDraggable;
-        i && a.button === KG && a.stopPropagation();
+        i && a.button === K7 && a.stopPropagation();
       }, kr(r), r._async = new Gn(r), r._events = new Er(r), r;
     }
     return n.prototype.render = function() {
       var t = this.props, r = t.column, a = t.parentId, i = t.isDraggable, o = t.styles, s = t.theme, l = t.cellStyleProps, u = l === void 0 ? $o : l, c = t.useFastIcons, d = c === void 0 ? !0 : c, f = this.props.onRenderColumnHeaderTooltip, h = f === void 0 ? this._onRenderColumnHeaderTooltip : f;
-      this._classNames = YG(o, {
+      this._classNames = Y7(o, {
         theme: s,
         headerClassName: r.headerClassName,
         iconClassName: r.iconClassName,
@@ -42568,7 +42568,7 @@ var ww = Ct(UG, dG, void 0, { scope: "DetailsRowCheck" }, !0), ZG = 0, $_ = 1, v
         isPadded: r.isPadded,
         isIconOnly: r.isIconOnly,
         cellStyleProps: u,
-        transitionDurationDrag: $G,
+        transitionDurationDrag: $7,
         transitionDurationDrop: J_
       });
       var p = this._classNames, v = d ? Ds : Jr, g = r.onRenderFilterIcon ? $a(r.onRenderFilterIcon, this._onRenderFilterIcon(this._classNames)) : this._onRenderFilterIcon(this._classNames), m = r.onRenderHeader ? $a(r.onRenderHeader, q_(this._classNames)) : q_(this._classNames), b = r.columnActionsMode !== pi.disabled && (r.onColumnClick !== void 0 || this.props.onColumnClick !== void 0), _ = {
@@ -42661,7 +42661,7 @@ var ww = Ct(UG, dG, void 0, { scope: "DetailsRowCheck" }, !0), ZG = 0, $_ = 1, v
       this._dragDropSubscription = this.props.dragDropHelper.subscribe(this._root.current, this._events, this._getColumnDragDropOptions()), this._events.on(this._root.current, "mousedown", this._onRootMouseDown);
     }, n;
   }(x.Component)
-), qG = {
+), q7 = {
   isActionable: "is-actionable",
   cellIsCheck: "ms-DetailsHeader-cellIsCheck",
   collapseButton: "ms-DetailsHeader-collapseButton",
@@ -42680,8 +42680,8 @@ var ww = Ct(UG, dG, void 0, { scope: "DetailsRowCheck" }, !0), ZG = 0, $_ = 1, v
   filterChevron: "ms-DetailsHeader-filterChevron",
   gripperBarVerticalStyle: "ms-DetailsColumn-gripperBar",
   nearIcon: "ms-DetailsColumn-nearIcon"
-}, QG = function(e) {
-  var n, t = e.theme, r = e.headerClassName, a = e.iconClassName, i = e.isActionable, o = e.isEmpty, s = e.isIconVisible, l = e.isPadded, u = e.isIconOnly, c = e.cellStyleProps, d = c === void 0 ? $o : c, f = e.transitionDurationDrag, h = e.transitionDurationDrop, p = t.semanticColors, v = t.palette, g = t.fonts, m = Vt(qG, t), b = {
+}, Q7 = function(e) {
+  var n, t = e.theme, r = e.headerClassName, a = e.iconClassName, i = e.isActionable, o = e.isEmpty, s = e.isIconVisible, l = e.isPadded, u = e.isIconOnly, c = e.cellStyleProps, d = c === void 0 ? $o : c, f = e.transitionDurationDrag, h = e.transitionDurationDrop, p = t.semanticColors, v = t.palette, g = t.fonts, m = Vt(q7, t), b = {
     iconForegroundColor: p.bodySubtext,
     headerForegroundColor: p.bodyText,
     headerBackgroundColor: p.bodyBackground,
@@ -42803,7 +42803,7 @@ var ww = Ct(UG, dG, void 0, { scope: "DetailsRowCheck" }, !0), ZG = 0, $_ = 1, v
     borderAfterDropping: C,
     noBorderAfterDropping: [E, { transition: "outline  " + h + "ms ease" }]
   };
-}, eU = Ct(JG, QG, void 0, { scope: "DetailsColumn" }), xi;
+}, eU = Ct(J7, Q7, void 0, { scope: "DetailsColumn" }), xi;
 (function(e) {
   e[e.none = 0] = "none", e[e.hidden = 1] = "hidden", e[e.visible = 2] = "visible";
 })(xi || (xi = {}));
@@ -43125,7 +43125,7 @@ function ey(e, n, t) {
 function iU(e) {
   e.stopPropagation();
 }
-var oU = Ct(aU, uG, void 0, { scope: "DetailsHeader" }), sU = function(e, n) {
+var oU = Ct(aU, u7, void 0, { scope: "DetailsHeader" }), sU = function(e, n) {
   var t = e && n && n.fieldName ? e[n.fieldName] : "";
   return t == null && (t = ""), typeof t == "boolean" ? t.toString() : t;
 }, ty = function(e) {
@@ -43296,7 +43296,7 @@ function vf(e) {
     isSelectionModal: !!(!((n = r == null ? void 0 : r.isModal) === null || n === void 0) && n.call(r))
   };
 }
-var fU = Ct(dU, lG, void 0, {
+var fU = Ct(dU, l7, void 0, {
   scope: "DetailsRow"
 }), ny = 500, hU = 3;
 function pU(e) {
@@ -43413,7 +43413,7 @@ var gU = yt(), mU = "DetailsList", ds = 100, vU = 2, xU = 2, bU = { tabIndex: 0 
   }, [de, be]), pe = x.useMemo(function() {
     if (Fe)
       return k(k({}, Fe), { onColumnDragEnd: he });
-  }, [Fe, he]), _e = (v ? 1 : 0) + (e.onRenderDetailsFooter ? 1 : 0) + VG(c) + (h ? h.length : 0), Ne = (De !== xi.none ? 1 : 0) + (F ? F.length : 0) + (c ? 1 : 0), Ae = x.useMemo(function() {
+  }, [Fe, he]), _e = (v ? 1 : 0) + (e.onRenderDetailsFooter ? 1 : 0) + V7(c) + (h ? h.length : 0), Ne = (De !== xi.none ? 1 : 0) + (F ? F.length : 0) + (c ? 1 : 0), Ae = x.useMemo(function() {
     return gU(me, {
       theme: ve,
       compact: s,
@@ -57491,7 +57491,7 @@ const kJ = (e) => {
       }
     }), P;
   };
-  return /* @__PURE__ */ ae.jsxs(Jn, { children: [
+  return /* @__PURE__ */ ae.jsxs(Jn, { grow: !0, style: { height: "100%" }, children: [
     l && /* @__PURE__ */ ae.jsx(
       _0,
       {
@@ -57502,7 +57502,7 @@ const kJ = (e) => {
       }
     ),
     /* @__PURE__ */ ae.jsx("div", { style: { marginBottom: 15 }, children: /* @__PURE__ */ ae.jsx(WX, { children: M.map((P) => P) }) }),
-    /* @__PURE__ */ ae.jsx(Jn, { tokens: HI, children: o && J() }),
+    /* @__PURE__ */ ae.jsx(Jn, { grow: !0, tokens: HI, children: o && J() }),
     /* @__PURE__ */ ae.jsx(Jn, { horizontal: !0, tokens: WI, children: /* @__PURE__ */ ae.jsx(
       Ao,
       {
@@ -59019,9 +59019,9 @@ const ZJ = {
     }
     return V;
   }, st = () => {
-    e.onGridFiltered && ((g == null ? void 0 : g.length) == 0 ? e.onGridFiltered(null) : e.onGridFiltered(
+    e.onGridFiltered && ((g == null ? void 0 : g.length) == 0 ? e.onGridFiltered(null) : (e.onGridFiltered(
       Tr(g, "text", !1).filter((N) => N._grid_row_operation_ != ar.Delete && N._is_filtered_in_ == !0 && N._is_filtered_in_grid_search_ == !0 && N._is_filtered_in_column_filter_ == !0)
-    )), ut();
+    ), e.triggerOnGridUpdateCallbackWhenOnGridFilteredIsCalled && e.onGridUpdate && X())), ut();
   }, ht = hr(
     /* @__PURE__ */ new Map()
   ), [re, ke] = rt(/* @__PURE__ */ new Map()), De = hr(/* @__PURE__ */ new Map()), qe = (N, V, w) => {
@@ -61837,7 +61837,7 @@ const ZJ = {
     e.enableMessageBarErrors ? /* @__PURE__ */ ae.jsx("div", { style: { marginBottom: 15 }, children: Dd.map((N) => N) }) : null,
     NF(),
     e.enableCommandBar === void 0 || e.enableCommandBar === !0 ? /* @__PURE__ */ ae.jsx(
-      U7,
+      UG,
       {
         items: TF,
         ariaLabel: "Command Bar",

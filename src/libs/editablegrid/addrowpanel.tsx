@@ -1411,7 +1411,7 @@ const AddRowPanel = (props: Props) => {
   };
 
   return (
-    <Stack>
+    <Stack grow style={{height: '100%'}}>
       {error && (
         <MessageBar
           styles={{ root: { marginBottom: 5 } }}
@@ -1424,7 +1424,7 @@ const AddRowPanel = (props: Props) => {
       <div style={{ marginBottom: 15 }}>
         <Sticky>{messagesJSXState.map((element) => element)}</Sticky>
       </div>
-      <Stack tokens={verticalGapStackTokens}>
+      <Stack grow tokens={verticalGapStackTokens}>
         {columnValuesObj && createTextFields()}
       </Stack>
       <Stack horizontal tokens={horizontalGapStackTokens}>

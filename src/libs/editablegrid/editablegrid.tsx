@@ -539,6 +539,12 @@ const EditableGrid = (props: EditableGridProps) => {
             );
           })
         );
+
+        if(props.triggerOnGridUpdateCallbackWhenOnGridFilteredIsCalled){
+          if(props.onGridUpdate){
+            onGridUpdate()
+          }
+        }
       }
   
     }
