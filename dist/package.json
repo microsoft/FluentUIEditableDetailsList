@@ -6,8 +6,7 @@
   "license": "MIT",
   "homepage": "https://github.com/microsoft/FluentUIEditableDetailsList#readme",
   "author": "",
-  "main": "./dist/fluentui.editablegrid.lib.cjs",
-  "module": "./dist/fluentui.editablegrid.lib.js",
+  "main": "./dist/js/fluentui.editablegrid.lib.js",
   "type": "module",
   "typings": "./dist/index.d.ts",
   "files": [
@@ -15,8 +14,7 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/fluentui.editablegrid.lib.js",
-      "require": "./dist/fluentui.editablegrid.lib.cjs",
+      "import": "./dist/js/fluentui.editablegrid.lib.js",
       "types": "./dist/index.d.ts"
     }
   },

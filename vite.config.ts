@@ -37,7 +37,7 @@ export default defineConfig({
     copyPublicDir: false,
     lib: {
       entry: path.resolve(__dirname, "src/libs/index.ts"),
-      formats: ["es", "cjs"],
+      formats: ["es"],
     },
     rollupOptions: {
       input:{
@@ -51,10 +51,11 @@ export default defineConfig({
           react: "React",
           "react-dom": "ReactDOM",
         },
+        assetFileNames: 'assets/[name].js',
         entryFileNames: assetInfo => {
           return assetInfo.name === 'runGridValidations.worker'
-             ? '[name].js'
-             : 'assets/js/[name]-[hash].js' // others in `assets/js/`
+             ? 'assets/[name].js'
+             :  'js/[name].js'
         }
 
       },
