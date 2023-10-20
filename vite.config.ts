@@ -1,5 +1,5 @@
 import path from "path";
-import { defineConfig, normalizePath } from "vite";
+import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import checker from "vite-plugin-checker";
 import { viteStaticCopy } from "vite-plugin-static-copy";
