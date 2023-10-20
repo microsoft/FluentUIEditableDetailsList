@@ -55,6 +55,8 @@ export interface EditableGridProps extends IDetailsListProps {
         boolean,
         React.Dispatch<React.SetStateAction<boolean>>
     ];
+    /** Triggers the onGridUpdate callback on component mount and data initialization    */
+    triggerOnGridUpdateOnMount?: boolean;
     /** Shows In Command Bar - Permanently shows a save button in the command bar*/
     showASaveButtonInCommandbar?: boolean;
     /** If `customOperationsKey` is enabled. This Key/Column will be updated with what operation has been preformed. `(Add, Delete, Updated, None)` */

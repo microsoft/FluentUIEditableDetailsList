@@ -424,6 +424,8 @@ const EditableGrid = (props: EditableGridProps) => {
           .length > 0
       ) {
         await onGridUpdate();
+      } else if(props.triggerOnGridUpdateOnMount && defaultGridData.length > 0){
+        await onGridUpdate();
       }
     };
 
