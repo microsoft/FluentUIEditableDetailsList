@@ -54,7 +54,7 @@ export default defineConfig({
         assetFileNames: 'assets/[name].js',
         entryFileNames: assetInfo => {
           return assetInfo.name === 'runGridValidations.worker'
-             ? 'assets/[name].js'
+             ? '[name].js'
              :  'js/[name].js'
         }
 
