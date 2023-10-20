@@ -729,7 +729,7 @@ const EditableGrid = (props: EditableGridProps) => {
     return true;
   }
 
-  const runGridValidations = (): {isError: boolean, messages: Map<any, any>} => {
+  const runGridValidations = async(): Promise<{isError: boolean, messages: Map<any, any>}> => {
     let localError = false;
     const msgMap = new Map();
 
@@ -1254,7 +1254,7 @@ const EditableGrid = (props: EditableGridProps) => {
     }
   }, [defaultGridData]);
 
-  const onGridSave = (): boolean => {
+  const onGridSave = async (): Promise<boolean> => {
     GlobalMessages.current = new Map();
     SetGlobalMessagesState(GlobalMessages.current);
     Messages.current = new Map();
@@ -1325,7 +1325,7 @@ const EditableGrid = (props: EditableGridProps) => {
     if (parseInt(getGridRecordLength(true)) > 0) {
       
 
-      const results = runGridValidations()
+      const results = await runGridValidations()
       localError = results.isError
 
       results.messages.forEach(function (
