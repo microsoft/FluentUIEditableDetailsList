@@ -81,7 +81,7 @@ export interface EditableGridProps extends IDetailsListProps {
   triggerOnGridUpdateOnMount?: boolean
 
   /** Trigggers onGridUpdate callback - non async */
-  triggerOnGridUpdateCallbackWhenOnGridFilteredIsCalled: boolean
+  triggerOnGridUpdateCallbackWhenOnGridFilteredIsCalled?: boolean
 
   /** Shows In Command Bar - Permanently shows a save button in the command bar*/
   showASaveButtonInCommandbar?: boolean;
