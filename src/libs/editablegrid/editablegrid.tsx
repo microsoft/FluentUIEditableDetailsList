@@ -458,7 +458,7 @@ const EditableGrid = (props: EditableGridProps) => {
   }, [filterCalloutComponent]);
 
   /** Take all dropdowns + comboBoxs and force the key to be returned not the text if looseMapping is false. If looseMapping is true, return the text*/
-  const forceKeyMapping = (data: any[], looseMapping: boolean = true) => {
+  const forceKeyMapping = (data: any[], mapOn: 'key' | 'text' = 'key', looseMapping: boolean = true) => {
     const mapping = data.map((x) => {
       if (trackTransformedData.current) {
         trackTransformedData.current.forEach(function (
@@ -467,8 +467,10 @@ const EditableGrid = (props: EditableGridProps) => {
         ) {
           for (let index = 0; index < value.values.length; index++) {
             const element = value.values[index];
+            const compareWith = mapOn == 'key' ? element?.key?.toString()?.toLowerCase() : element?.text?.toString()?.toLowerCase()
+
             if (
-              element?.key?.toString()?.toLowerCase() ===
+              compareWith ===
               (x[key]?.toString()?.toLowerCase() ?? "")
             ) {
               x[key] = looseMapping ? element?.text : element?.key;
@@ -484,7 +486,7 @@ const EditableGrid = (props: EditableGridProps) => {
   }
 
     /** Same as `forceKeyMapping` except **Key is already known**. */
-    const forceKeyMappingOptimized = (key: string, valueToCompare: any, mapOn: 'key' | 'text' , looseMapping: boolean = true) => {
+    const forceKeyMappingOptimized = (key: string, valueToCompare: any, mapOn: 'key' | 'text' = 'key' , looseMapping: boolean = true) => {
       if (trackTransformedData.current) {
         const quickGrab = trackTransformedData.current?.get(
           key
@@ -519,7 +521,7 @@ const EditableGrid = (props: EditableGridProps) => {
         props.onGridFiltered(null);
       }else{
         props.onGridFiltered(
-          forceKeyMapping(defaultGridData, false).filter((x) => {
+          forceKeyMapping(defaultGridData, 'text', false).filter((x) => {
             return (
               x._grid_row_operation_ != _Operation.Delete &&
               x._is_filtered_in_ == true &&
@@ -1346,7 +1348,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
         updatedItems = defaultGridData.map(removeIgnoredProperties);
       }
-      await props.onGridUpdate(forceKeyMapping(updatedItems, false));
+      await props.onGridUpdate(forceKeyMapping(updatedItems, 'text', false));
     }
   };
 
@@ -2837,7 +2839,7 @@ const EditableGrid = (props: EditableGridProps) => {
     selectedItems!.forEach((i) => {
       copyText +=
         ConvertObjectToText(
-          forceKeyMapping(defaultGridData)
+          forceKeyMapping(defaultGridData, 'key')
            
             .filter((x) => x["_grid_row_id_"] == i["_grid_row_id_"])[0],
           props.columns.filter((x) => x.includeColumnInCopy ?? true == true)
@@ -2866,7 +2868,7 @@ const EditableGrid = (props: EditableGridProps) => {
     navigator.clipboard
       .writeText(
         ConvertObjectToText(
-          forceKeyMapping(defaultGridData)[rowNum],
+          forceKeyMapping(defaultGridData, 'key')[rowNum],
           props.columns
         )
       )
@@ -3641,7 +3643,7 @@ const EditableGrid = (props: EditableGridProps) => {
     UpdateColumnFilterValues(filter);
     var GridColumnFilterArr: IGridColumnFilter[] = getColumnFiltersRef();
     var filteredData = applyGridColumnFilter(
-      forceKeyMapping(defaultGridData),
+      forceKeyMapping(defaultGridData, 'key'),
       GridColumnFilterArr
     );
     getColumnFiltersRefForColumnKey(filter.columnKey).isApplied =
@@ -3651,7 +3653,7 @@ const EditableGrid = (props: EditableGridProps) => {
         ? true
         : false;
     var activateCellEditTmp = ShallowCopyDefaultGridToEditGrid(
-      forceKeyMapping(defaultGridData),
+      forceKeyMapping(defaultGridData, 'key'),
       activateCellEdit
     );
 
@@ -6411,7 +6413,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 )}
                 onDialogCancel={CloseColumnFilterDialog}
                 onDialogSave={onFilterApplied}
-                gridData={forceKeyMapping(defaultGridData)}
+                gridData={forceKeyMapping(defaultGridData, 'key')}
               />
             ) : null}
           </div>
