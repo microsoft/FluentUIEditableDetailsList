@@ -417,14 +417,21 @@ const EditableGrid = (props: EditableGridProps) => {
   //     console.log(cancellableRows);
   // }, [cancellableRows]);
 
+  const triggeredOnGridUpdateOnMount = useRef(false)
   useEffect(() => {
     const CheckOnUpdate = async () => {
+      let ran = false
       if (
         defaultGridData.filter((x) => x._grid_row_operation_ != _Operation.None)
           .length > 0
       ) {
+        ran = true
         await onGridUpdate();
-      } else if(props.triggerOnGridUpdateOnMount && defaultGridData.length > 0){
+      } 
+      
+      if(!ran && props.triggerOnGridUpdateOnMount && defaultGridData.length > 0 && triggeredOnGridUpdateOnMount.current){
+
+        triggeredOnGridUpdateOnMount.current = true
         await onGridUpdate();
       }
     };
