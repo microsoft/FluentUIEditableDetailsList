@@ -186,13 +186,13 @@ export interface EditableGridProps extends IDetailsListProps {
   /** Callback for when the grid data/items are updated */
   onGridUpdate?: (internalGridData: any[]) => Promise<void>;
 
-  /** Removes the internal properties from the updated data `onGridUpdate` callback for `internalGridData` 
+  /** Removes the internal properties from the updated data `onGridUpdate` callback for `internalGridData`
    * @default false
-  */
+   */
   ignoreInternalPropertiesOnGridUpdateCallback?: boolean;
 
-  /** Returns the rows/data for when the grid is filter by column or by entirety */
-  onGridFiltered?: (filterData: any[]) => void;
+  /** Returns the rows/data for when the grid is filter by column or by entirety. When there is no data in the grid at all, filterData is null  */
+  onGridFiltered?: (filterData: any[] | null) => void;
 
   /** Callback for when the grid is saved */
   onGridSave?: (internalGridData: any, updatedItems: any) => void;

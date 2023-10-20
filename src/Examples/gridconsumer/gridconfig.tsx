@@ -279,7 +279,7 @@ export const GridColumnConfig: IColumnConfig[] = [
       { key: "WK", text: "Weekly" },
       { key: "BI", text: "Weekly" },
       { key: "MT", text: "Monthly" },
-      { key: "1", text: "0011" },
+      { key: "1", text: "ui" },
     ],
     applyColumnFilter: true,
 
