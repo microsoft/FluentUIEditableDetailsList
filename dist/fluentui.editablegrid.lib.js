@@ -59097,7 +59097,7 @@ const ZJ = {
         return !1;
     return !0;
   }
-  const W = () => {
+  const W = async () => {
     var fe, le, gt, Xt, Ot, Pt, wr;
     let N = !1;
     const V = /* @__PURE__ */ new Map(), w = (rt, ht) => {
@@ -59327,7 +59327,7 @@ const ZJ = {
   fr(() => {
     e.GridSaveAction && g !== void 0 && e.GridSaveAction(() => U);
   }, [g]);
-  const U = () => {
+  const U = async () => {
     De.current = /* @__PURE__ */ new Map(), we(De.current), Ut.current = /* @__PURE__ */ new Map(), Us(Ut.current), a(!1), nt(/* @__PURE__ */ new Map()), e.enableSaveGridOnCellValueChange || Wu(!1);
     let N = 0;
     if (g.filter((le) => le._grid_row_operation_ != or.Delete).filter((le) => z(le)).forEach((le) => {
@@ -59352,7 +59352,7 @@ const ZJ = {
     ], ce = (le) => Object.keys(le).reduce((gt, Xt) => (se.includes(Xt) || (gt[Xt] = le[Xt]), gt), {}), Ce = Z.map(ce);
     let fe = !1;
     if (parseInt(Hl(!0)) > 0) {
-      const le = W();
+      const le = await W();
       fe = le.isError, le.messages.forEach(function(gt, Xt) {
         ut(Ut.current, Xt, gt);
       });
