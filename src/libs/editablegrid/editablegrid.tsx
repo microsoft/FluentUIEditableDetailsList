@@ -429,7 +429,7 @@ const EditableGrid = (props: EditableGridProps) => {
         await onGridUpdate();
       } 
       
-      if(!ran && props.triggerOnGridUpdateOnMount && defaultGridData.length > 0 && triggeredOnGridUpdateOnMount.current){
+      if(!ran && props.triggerOnGridUpdateOnMount && defaultGridData.length > 0 && triggeredOnGridUpdateOnMount.current == false){
 
         triggeredOnGridUpdateOnMount.current = true
         await onGridUpdate();

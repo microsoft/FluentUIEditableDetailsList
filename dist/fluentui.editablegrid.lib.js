@@ -58981,7 +58981,7 @@ const ZJ = {
   fr(() => {
     (async () => {
       let V = !1;
-      g.filter((w) => w._grid_row_operation_ != ar.None).length > 0 && (V = !0, await X()), !V && e.triggerOnGridUpdateOnMount && g.length > 0 && Pt.current && (Pt.current = !0, await X());
+      g.filter((w) => w._grid_row_operation_ != ar.None).length > 0 && (V = !0, await X()), !V && e.triggerOnGridUpdateOnMount && g.length > 0 && Pt.current == !1 && (Pt.current = !0, await X());
     })();
   }, [g]), fr(() => {
     K(), e.enableDefaultEditMode && m(

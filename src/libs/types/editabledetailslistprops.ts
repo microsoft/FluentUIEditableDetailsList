@@ -186,6 +186,9 @@ export interface EditableGridProps extends IDetailsListProps {
   /** Callback for when a row is selected/unselected */
   onGridSelectionChange?: any;
 
+  /** Callback for when the grid is mount and the data is process in the grid's interal state*/
+  onDataInternallyInitialized?: (InitializedData: any[]) => void;
+
   /** Callback for when the grid data/items are updated */
   onGridUpdate?: (internalGridData: any[]) => Promise<void>;
 
