@@ -417,21 +417,25 @@ const EditableGrid = (props: EditableGridProps) => {
   //     console.log(cancellableRows);
   // }, [cancellableRows]);
 
-  const triggeredOnGridUpdateOnMount = useRef(false)
+  const triggeredOnGridUpdateOnMount = useRef(false);
   useEffect(() => {
     const CheckOnUpdate = async () => {
-      let ran = false
+      let ran = false;
       if (
         defaultGridData.filter((x) => x._grid_row_operation_ != _Operation.None)
           .length > 0
       ) {
-        ran = true
+        ran = true;
         await onGridUpdate();
-      } 
-      
-      if(!ran && props.triggerOnGridUpdateOnMount && defaultGridData.length > 0 && triggeredOnGridUpdateOnMount.current == false){
+      }
 
-        triggeredOnGridUpdateOnMount.current = true
+      if (
+        !ran &&
+        props.triggerOnGridUpdateOnMount &&
+        defaultGridData.length > 0 &&
+        triggeredOnGridUpdateOnMount.current == false
+      ) {
+        triggeredOnGridUpdateOnMount.current = true;
         await onGridUpdate();
       }
     };
@@ -467,7 +471,11 @@ const EditableGrid = (props: EditableGridProps) => {
   }, [filterCalloutComponent]);
 
   /** Take all dropdowns + comboBoxs and force the key to be returned not the text if looseMapping is false. If looseMapping is true, return the text*/
-  const forceKeyMapping = (data: any[], mapOn: 'key' | 'text' = 'key', looseMapping: boolean = true) => {
+  const forceKeyMapping = (
+    data: any[],
+    mapOn: "key" | "text" = "key",
+    looseMapping: boolean = true
+  ) => {
     const mapping = data.map((x) => {
       if (trackTransformedData.current) {
         trackTransformedData.current.forEach(function (
@@ -476,12 +484,12 @@ const EditableGrid = (props: EditableGridProps) => {
         ) {
           for (let index = 0; index < value.values.length; index++) {
             const element = value.values[index];
-            const compareWith = mapOn == 'key' ? element?.key?.toString()?.toLowerCase() : element?.text?.toString()?.toLowerCase()
+            const compareWith =
+              mapOn == "key"
+                ? element?.key?.toString()?.toLowerCase()
+                : element?.text?.toString()?.toLowerCase();
 
-            if (
-              compareWith ===
-              (x[key]?.toString()?.toLowerCase() ?? "")
-            ) {
+            if (compareWith === (x[key]?.toString()?.toLowerCase() ?? "")) {
               x[key] = looseMapping ? element?.text : element?.key;
             }
           }
@@ -489,48 +497,46 @@ const EditableGrid = (props: EditableGridProps) => {
       }
 
       return x;
-    })
+    });
 
-    return mapping
-  }
+    return mapping;
+  };
 
-    /** Same as `forceKeyMapping` except **Key is already known**. */
-    const forceKeyMappingOptimized = (key: string, valueToCompare: any, mapOn: 'key' | 'text' = 'key' , looseMapping: boolean = true) => {
-      if (trackTransformedData.current) {
-        const quickGrab = trackTransformedData.current?.get(
-          key
-        );
-        if (quickGrab) {
-          for (
-            let index = 0;
-            index < quickGrab.values.length;
-            index++
+  /** Same as `forceKeyMapping` except **Key is already known**. */
+  const forceKeyMappingOptimized = (
+    key: string,
+    valueToCompare: any,
+    mapOn: "key" | "text" = "key",
+    looseMapping: boolean = true
+  ) => {
+    if (trackTransformedData.current) {
+      const quickGrab = trackTransformedData.current?.get(key);
+      if (quickGrab) {
+        for (let index = 0; index < quickGrab.values.length; index++) {
+          const element = quickGrab.values[index];
+          const compareWith =
+            mapOn == "key"
+              ? element?.key?.toString()?.toLowerCase()
+              : element?.text?.toString()?.toLowerCase();
+          if (
+            compareWith === (valueToCompare?.toString()?.toLowerCase() ?? "")
           ) {
-            const element = quickGrab.values[index];
-            const compareWith = mapOn == 'key' ? element?.key?.toString()?.toLowerCase() : element?.text?.toString()?.toLowerCase()
-            if (
-              compareWith ===
-              (valueToCompare
-                ?.toString()
-                ?.toLowerCase() ?? "")
-            ) {
-              valueToCompare = looseMapping ? element?.text : element?.key;
-            }
+            valueToCompare = looseMapping ? element?.text : element?.key;
           }
         }
       }
-  
-      return valueToCompare
     }
 
+    return valueToCompare;
+  };
 
   const onGridFiltered = () => {
     if (props.onGridFiltered) {
       if (defaultGridData?.length == 0) {
         props.onGridFiltered(null);
-      }else{
+      } else {
         props.onGridFiltered(
-          forceKeyMapping(defaultGridData, 'text', false).filter((x) => {
+          forceKeyMapping(defaultGridData, "text", false).filter((x) => {
             return (
               x._grid_row_operation_ != _Operation.Delete &&
               x._is_filtered_in_ == true &&
@@ -540,13 +546,12 @@ const EditableGrid = (props: EditableGridProps) => {
           })
         );
 
-        if(props.triggerOnGridUpdateCallbackWhenOnGridFilteredIsCalled){
-          if(props.onGridUpdate){
-            onGridUpdate()
+        if (props.triggerOnGridUpdateCallbackWhenOnGridFilteredIsCalled) {
+          if (props.onGridUpdate) {
+            onGridUpdate();
           }
         }
       }
-  
     }
     clearSelectedItems();
   };
@@ -724,8 +729,14 @@ const EditableGrid = (props: EditableGridProps) => {
     return true;
   }
 
-  const runGridValidations = (): boolean => {
+  const runGridValidations = (): {isError: boolean, messages: Map<any, any>} => {
     let localError = false;
+    const msgMap = new Map();
+
+    const tmpInsertToMessageMap = (key: any, value: any) => {
+      msgMap.set(key, value);
+    };
+
     const defaultGridDataTmp =
       defaultGridData.length > 0
         ? defaultGridData.filter(
@@ -733,7 +744,7 @@ const EditableGrid = (props: EditableGridProps) => {
           )
         : [];
 
-    //Duplicate Rows
+    //Duplicate Rows Check
     const duplicates = findDuplicates(defaultGridDataTmp);
     if (duplicates.length > 0) {
       duplicates.forEach((dups, index) => {
@@ -742,10 +753,10 @@ const EditableGrid = (props: EditableGridProps) => {
             ? `Rows Located At IDs: ${dups} are duplicated`
             : `Rows Located At Indexes ${dups} are duplicated`;
 
-        insertToMessageMap(Messages.current, "dups" + index, {
-          msg: msg,
-          type: MessageBarType.error,
-        });
+            tmpInsertToMessageMap( "dups" + index, {
+              msg: msg,
+              type: MessageBarType.error,
+            })
       });
 
       localError = true;
@@ -795,7 +806,7 @@ const EditableGrid = (props: EditableGridProps) => {
                   ? "With ID: " + (gridData as any)[indentiferColumn.current]
                   : "With Index:" + row + 1
               } - ` + `${element.required.errorMessage}'.`;
-            insertToMessageMap(Messages.current, element.key + row + "empty", {
+              tmpInsertToMessageMap( element.key + row + "empty", {
               msg: msg,
               type: MessageBarType.error,
             });
@@ -829,8 +840,7 @@ const EditableGrid = (props: EditableGridProps) => {
                             (gridData as any)[indentiferColumn.current]
                           : "With Index:" + row + 1
                       } - ` + `${element.required.errorMessage}'.`;
-                    insertToMessageMap(
-                      Messages.current,
+                      tmpInsertToMessageMap(
                       element.key + row + "empty",
                       {
                         msg: msg,
@@ -844,7 +854,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 }
               } else {
                 if (
-                  (str || str.toString().trim() == "0") &&
+                  (str || str?.toString()?.trim() == "0") &&
                   str?.toString().length > 0
                 ) {
                   skippable = true;
@@ -866,8 +876,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         (gridData as any)[indentiferColumn.current]
                       : "With Index:" + row + 1
                   } - ` + `${element.required.errorMessage}'.`;
-                insertToMessageMap(
-                  Messages.current,
+                  tmpInsertToMessageMap(
                   element.key + row + "empty",
                   {
                     msg: msg,
@@ -892,7 +901,7 @@ const EditableGrid = (props: EditableGridProps) => {
                       : "With Index:" + row + 1
                   } Col: ${element.name} - ` +
                   `Value is not a '${element.dataType}'.`;
-                insertToMessageMap(Messages.current, element.key + row, {
+                  tmpInsertToMessageMap( element.key + row, {
                   msg: msg,
                   type: MessageBarType.error,
                 });
@@ -915,7 +924,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           : "With Index:" + row + 1
                       } Col: ${element.name} - ` +
                       `Value outside of range '${min} - ${max}'. Entered value ${rowCol}`;
-                    insertToMessageMap(Messages.current, element.key + row, {
+                      tmpInsertToMessageMap( element.key + row, {
                       msg: msg,
                       type: MessageBarType.error,
                     });
@@ -932,7 +941,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           : "With Index:" + row + 1
                       } Col: ${element.name} - ` +
                       `Value is lower than required range: '${min}'. Entered value ${rowCol}`;
-                    insertToMessageMap(Messages.current, element.key + row, {
+                      tmpInsertToMessageMap( element.key + row, {
                       msg: msg,
                       type: MessageBarType.error,
                     });
@@ -949,7 +958,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           : "With Index:" + row + 1
                       } Col: ${element.name} - ` +
                       `Value is greater than required range: '${max}'. Entered value ${rowCol}`;
-                    insertToMessageMap(Messages.current, element.key + row, {
+                      tmpInsertToMessageMap( element.key + row, {
                       msg: msg,
                       type: MessageBarType.error,
                     });
@@ -970,7 +979,7 @@ const EditableGrid = (props: EditableGridProps) => {
                       : "With Index:" + row + 1
                   } Col: ${element.name} - ` +
                   `Value is not a '${element.dataType}'.`;
-                insertToMessageMap(Messages.current, element.key + row, {
+                  tmpInsertToMessageMap(element.key + row, {
                   msg: msg,
                   type: MessageBarType.error,
                 });
@@ -993,7 +1002,7 @@ const EditableGrid = (props: EditableGridProps) => {
                       : "With Index:" + row + 1
                   } Col: ${element.name} - ` +
                   `Value is not a '${element.dataType}'.`;
-                insertToMessageMap(Messages.current, element.key + row, {
+                  tmpInsertToMessageMap(element.key + row, {
                   msg: msg,
                   type: MessageBarType.error,
                 });
@@ -1069,7 +1078,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           (colDep.errorMessage ??
                             `Data cannot be entered in ${element.name} and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
 
-                        insertToMessageMap(Messages.current, row + "ColDep", {
+                            tmpInsertToMessageMap( row + "ColDep", {
                           msg: msg,
                           type: MessageBarType.error,
                         });
@@ -1095,7 +1104,7 @@ const EditableGrid = (props: EditableGridProps) => {
                       (colDep.errorMessage ??
                         ` Data needs to entered in ${colDep.dependentColumnName} and in ${element.name} Column.`);
 
-                    insertToMessageMap(Messages.current, row + "ColDep", {
+                        tmpInsertToMessageMap( row + "ColDep", {
                       msg: msg,
                       type: MessageBarType.error,
                     });
@@ -1121,7 +1130,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         (gridData as any)[indentiferColumn.current]
                       : "With Index:" + row + 1
                   } - ` + `${data.errorMessage}`;
-                insertToMessageMap(Messages.current, element.key + row, {
+                  tmpInsertToMessageMap( element.key + row, {
                   msg: msg,
                   type: MessageBarType.error,
                 });
@@ -1147,7 +1156,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         (gridData as any)[indentiferColumn.current]
                       : "With Index:" + row + 1
                   } - ` + `${element.validations.stringValidations?.errMsg}`;
-                insertToMessageMap(Messages.current, element.key + row, {
+                  tmpInsertToMessageMap( element.key + row, {
                   msg: msg,
                   type: MessageBarType.error,
                 });
@@ -1166,7 +1175,7 @@ const EditableGrid = (props: EditableGridProps) => {
                           (gridData as any)[indentiferColumn.current]
                         : "With Index:" + row + 1
                     } - ` + `${element.validations.stringValidations?.errMsg}`;
-                  insertToMessageMap(Messages.current, element.key + row, {
+                    tmpInsertToMessageMap( element.key + row, {
                     msg: msg,
                     type: MessageBarType.error,
                   });
@@ -1186,7 +1195,7 @@ const EditableGrid = (props: EditableGridProps) => {
             : "With Index:" + row + 1
         } - ${emptyReqCol} cannot all be empty`;
 
-        insertToMessageMap(Messages.current, row + "erc", {
+        tmpInsertToMessageMap( row + "erc", {
           msg: msg,
           type: MessageBarType.error,
         });
@@ -1199,7 +1208,7 @@ const EditableGrid = (props: EditableGridProps) => {
             : row + 1
         } - ${emptyReqCol} cannot be empty`;
 
-        insertToMessageMap(Messages.current, row + "erc", {
+        tmpInsertToMessageMap( row + "erc", {
           msg: msg,
           type: MessageBarType.error,
         });
@@ -1214,7 +1223,7 @@ const EditableGrid = (props: EditableGridProps) => {
             : "With Index: " + row + 1
         } - ${emptyCol?.toString()} cannot be empty at all`;
 
-        insertToMessageMap(Messages.current, row + "ec", {
+        tmpInsertToMessageMap( row + "ec", {
           msg: msg,
           type: MessageBarType.error,
         });
@@ -1227,7 +1236,7 @@ const EditableGrid = (props: EditableGridProps) => {
             : "With Index: " + row + 1
         } - ${emptyCol?.toString()} cannot be empty`;
 
-        insertToMessageMap(Messages.current, row + "ec", {
+        tmpInsertToMessageMap( row + "ec", {
           msg: msg,
           type: MessageBarType.error,
         });
@@ -1236,7 +1245,7 @@ const EditableGrid = (props: EditableGridProps) => {
       }
     }
 
-    return localError;
+    return {isError: localError, messages: msgMap};
   };
 
   useEffect(() => {
@@ -1314,7 +1323,17 @@ const EditableGrid = (props: EditableGridProps) => {
 
     let localError = false;
     if (parseInt(getGridRecordLength(true)) > 0) {
-      localError = runGridValidations();
+      
+
+      const results = runGridValidations()
+      localError = results.isError
+
+      results.messages.forEach(function (
+        value: any,
+        key: string
+      ) {
+        insertToMessageMap(Messages.current, key, value)
+      });
     }
     if (localError === true) setGridInError(true);
 
@@ -1363,7 +1382,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
         updatedItems = defaultGridData.map(removeIgnoredProperties);
       }
-      await props.onGridUpdate(forceKeyMapping(updatedItems, 'text', false));
+      await props.onGridUpdate(forceKeyMapping(updatedItems, "text", false));
     }
   };
 
@@ -2854,9 +2873,9 @@ const EditableGrid = (props: EditableGridProps) => {
     selectedItems!.forEach((i) => {
       copyText +=
         ConvertObjectToText(
-          forceKeyMapping(defaultGridData, 'key')
-           
-            .filter((x) => x["_grid_row_id_"] == i["_grid_row_id_"])[0],
+          forceKeyMapping(defaultGridData, "key").filter(
+            (x) => x["_grid_row_id_"] == i["_grid_row_id_"]
+          )[0],
           props.columns.filter((x) => x.includeColumnInCopy ?? true == true)
         ) + "\r\n";
     });
@@ -2883,7 +2902,7 @@ const EditableGrid = (props: EditableGridProps) => {
     navigator.clipboard
       .writeText(
         ConvertObjectToText(
-          forceKeyMapping(defaultGridData, 'key')[rowNum],
+          forceKeyMapping(defaultGridData, "key")[rowNum],
           props.columns
         )
       )
@@ -3165,12 +3184,15 @@ const EditableGrid = (props: EditableGridProps) => {
                           column.key
                         ] = true;
                       } else {
-   
                         newGridData[columnKeyPasteRef.current._grid_row_id_][
                           column.key
                         ] =
-                        forceKeyMappingOptimized(column.key, rowData[currentElement], 'text', false)
-                           ??
+                          forceKeyMappingOptimized(
+                            column.key,
+                            rowData[currentElement],
+                            "text",
+                            false
+                          ) ??
                           newGridData[columnKeyPasteRef.current._grid_row_id_][
                             column.key
                           ];
@@ -3658,7 +3680,7 @@ const EditableGrid = (props: EditableGridProps) => {
     UpdateColumnFilterValues(filter);
     var GridColumnFilterArr: IGridColumnFilter[] = getColumnFiltersRef();
     var filteredData = applyGridColumnFilter(
-      forceKeyMapping(defaultGridData, 'key'),
+      forceKeyMapping(defaultGridData, "key"),
       GridColumnFilterArr
     );
     getColumnFiltersRefForColumnKey(filter.columnKey).isApplied =
@@ -3668,7 +3690,7 @@ const EditableGrid = (props: EditableGridProps) => {
         ? true
         : false;
     var activateCellEditTmp = ShallowCopyDefaultGridToEditGrid(
-      forceKeyMapping(defaultGridData, 'key'),
+      forceKeyMapping(defaultGridData, "key"),
       activateCellEdit
     );
 
@@ -3739,8 +3761,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
           .map((item) => item[column.fieldName!])
           .map((x) => {
-
-            return forceKeyMappingOptimized(column.fieldName!, x, 'key');
+            return forceKeyMappingOptimized(column.fieldName!, x, "key");
           })
           .sort()
       ),
@@ -3756,7 +3777,7 @@ const EditableGrid = (props: EditableGridProps) => {
           )
           .map((item) => item[column.fieldName!])
           .map((x) => {
-            return  forceKeyMappingOptimized(column.fieldName!, x, 'key')            
+            return forceKeyMappingOptimized(column.fieldName!, x, "key");
           })
           .sort()
       ),
@@ -6428,7 +6449,7 @@ const EditableGrid = (props: EditableGridProps) => {
                 )}
                 onDialogCancel={CloseColumnFilterDialog}
                 onDialogSave={onFilterApplied}
-                gridData={forceKeyMapping(defaultGridData, 'key')}
+                gridData={forceKeyMapping(defaultGridData, "key")}
               />
             ) : null}
           </div>

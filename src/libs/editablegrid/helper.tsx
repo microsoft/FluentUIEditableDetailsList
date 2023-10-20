@@ -8,6 +8,7 @@ import {
   stringOperatorEval,
 } from "../types/filterstype";
 
+
 export const filterGridData = (data: any[], filters: IFilter[]): any[] => {
   var dataTmp: any[] = [...data];
   dataTmp.forEach((row) => {
@@ -147,7 +148,11 @@ export const ConvertObjectToText = (
   return text.substring(0, text.lastIndexOf("\t"));
 };
 
-export const ParseType = (type: string | undefined, text: string, isTextModified?: boolean): any => {
+export const ParseType = (
+  type: string | undefined,
+  text: string,
+  isTextModified?: boolean
+): any => {
   if (text?.trim().length == 0) {
     return null;
   }
@@ -161,8 +166,8 @@ export const ParseType = (type: string | undefined, text: string, isTextModified
 
   switch (type) {
     case "number":
-      if (!isNaN(parseFloat(text?.toString().replace(',', '')))) {
-        const newNum = parseFloat(text?.toString().replace(',', ''));
+      if (!isNaN(parseFloat(text?.toString().replace(",", "")))) {
+        const newNum = parseFloat(text?.toString().replace(",", ""));
         return newNum;
       }
       return text;

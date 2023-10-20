@@ -366,7 +366,7 @@ const AddRowPanel = (props: Props) => {
             }
           } else {
             if (
-              (str || str.toString().trim() == "0") &&
+              (str || str?.toString().trim() == "0") &&
               str?.toString().length > 0
             ) {
               skippable = true;
