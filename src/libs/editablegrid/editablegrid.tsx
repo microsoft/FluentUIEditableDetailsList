@@ -729,7 +729,10 @@ const EditableGrid = (props: EditableGridProps) => {
     return true;
   }
 
-  const runGridValidations = async(): Promise<{isError: boolean, messages: Map<any, any>}> => {
+  const runGridValidations = (): {
+    isError: boolean;
+    messages: Map<any, any>;
+  } => {
     let localError = false;
     const msgMap = new Map();
 
@@ -753,508 +756,509 @@ const EditableGrid = (props: EditableGridProps) => {
             ? `Rows Located At IDs: ${dups} are duplicated`
             : `Rows Located At Indexes ${dups} are duplicated`;
 
-            tmpInsertToMessageMap( "dups" + index, {
-              msg: msg,
-              type: MessageBarType.error,
-            })
+        tmpInsertToMessageMap("dups" + index, {
+          msg: msg,
+          type: MessageBarType.error,
+        });
       });
 
       localError = true;
     }
 
-    for (let row = 0; row < defaultGridDataTmp.length; row++) {
-      const gridData = defaultGridDataTmp[row];
-      var elementColNames = Object.keys(gridData);
-      let emptyCol: string[] = [];
-      let emptyReqCol: string[] = [];
-      for (
-        let indexInner = 0;
-        indexInner < elementColNames.length;
-        indexInner++
-      ) {
-        const colNames = elementColNames[indexInner];
-        const rowCol = gridData[colNames];
-        const currentCol = props.columns.filter((x) => x.key === colNames);
+    return { isError: localError, messages: msgMap };
 
-        // ValidDataTypeCheck
-        for (let j = 0; j < currentCol.length; j++) {
-          const element = currentCol[j];
-          const rowCol = gridData[element.key];
+    // Grid Validations - Non Worker
+    // for (let row = 0; row < defaultGridDataTmp.length; row++) {
+    //   const gridData = defaultGridDataTmp[row];
+    //   var elementColNames = Object.keys(gridData);
+    //   let emptyCol: string[] = [];
+    //   let emptyReqCol: string[] = [];
+    //   for (
+    //     let indexInner = 0;
+    //     indexInner < elementColNames.length;
+    //     indexInner++
+    //   ) {
+    //     const colNames = elementColNames[indexInner];
+    //     const rowCol = gridData[colNames];
+    //     const currentCol = props.columns.filter((x) => x.key === colNames);
 
-          if (
-            element.required &&
-            typeof element.required == "boolean" &&
-            (rowCol == null ||
-              rowCol == undefined ||
-              rowCol?.toString().length <= 0 ||
-              (rowCol == "" && element.dataType != "number"))
-          ) {
-            if (!emptyCol.includes(" " + element.name))
-              emptyCol.push(" " + element.name);
-          } else if (
-            typeof element.required !== "boolean" &&
-            !element.required.requiredOnlyIfTheseColumnsAreEmpty &&
-            element.required.errorMessage &&
-            (rowCol == null ||
-              rowCol == undefined ||
-              rowCol?.toString().length <= 0 ||
-              (rowCol == "" && element.dataType != "number"))
-          ) {
-            var msg =
-              `Row ${
-                indentiferColumn.current
-                  ? "With ID: " + (gridData as any)[indentiferColumn.current]
-                  : "With Index:" + row + 1
-              } - ` + `${element.required.errorMessage}'.`;
-              tmpInsertToMessageMap( element.key + row + "empty", {
-              msg: msg,
-              type: MessageBarType.error,
-            });
-          } else if (
-            typeof element.required !== "boolean" &&
-            element.required.requiredOnlyIfTheseColumnsAreEmpty &&
-            (rowCol == null ||
-              rowCol == undefined ||
-              rowCol?.toString().length <= 0 ||
-              (rowCol == "" && element.dataType != "number"))
-          ) {
-            const checkKeys =
-              element.required.requiredOnlyIfTheseColumnsAreEmpty.colKeys;
-            let skippable = false;
-            for (let index = 0; index < checkKeys.length; index++) {
-              const columnKey = checkKeys[index];
-              const str = (gridData as any)[columnKey];
+    //     // ValidDataTypeCheck
+    //     for (let j = 0; j < currentCol.length; j++) {
+    //       const element = currentCol[j];
+    //       const rowCol = gridData[element.key];
 
-              if (element.required.alwaysRequired) {
-                if (
-                  str == null ||
-                  str == undefined ||
-                  str?.toString().length <= 0 ||
-                  (str == "" && element.dataType != "number")
-                ) {
-                  if (element.required.errorMessage) {
-                    var msg =
-                      `Row ${
-                        indentiferColumn.current
-                          ? "With ID: " +
-                            (gridData as any)[indentiferColumn.current]
-                          : "With Index:" + row + 1
-                      } - ` + `${element.required.errorMessage}'.`;
-                      tmpInsertToMessageMap(
-                      element.key + row + "empty",
-                      {
-                        msg: msg,
-                        type: MessageBarType.error,
-                      }
-                    );
-                  } else if (!emptyReqCol.includes(" " + element.name)) {
-                    emptyReqCol.push(" " + element.name);
-                    break;
-                  }
-                }
-              } else {
-                if (
-                  (str || str?.toString()?.trim() == "0") &&
-                  str?.toString().length > 0
-                ) {
-                  skippable = true;
-                  break;
-                }
-              }
-            }
-            if (
-              !emptyReqCol.includes(" " + element.name) &&
-              skippable == false
-            ) {
-              if (!element.required.errorMessage)
-                emptyReqCol.push(" " + element.name);
-              else {
-                var msg =
-                  `Row ${
-                    indentiferColumn.current
-                      ? "With ID: " +
-                        (gridData as any)[indentiferColumn.current]
-                      : "With Index:" + row + 1
-                  } - ` + `${element.required.errorMessage}'.`;
-                  tmpInsertToMessageMap(
-                  element.key + row + "empty",
-                  {
-                    msg: msg,
-                    type: MessageBarType.error,
-                  }
-                );
-              }
-            }
-          }
+    //       if (
+    //         element.required &&
+    //         typeof element.required == "boolean" &&
+    //         (rowCol == null ||
+    //           rowCol == undefined ||
+    //           rowCol?.toString().length <= 0 ||
+    //           (rowCol == "" && element.dataType != "number"))
+    //       ) {
+    //         if (!emptyCol.includes(" " + element.name))
+    //           emptyCol.push(" " + element.name);
+    //       } else if (
+    //         typeof element.required !== "boolean" &&
+    //         !element.required.requiredOnlyIfTheseColumnsAreEmpty &&
+    //         element.required.errorMessage &&
+    //         (rowCol == null ||
+    //           rowCol == undefined ||
+    //           rowCol?.toString().length <= 0 ||
+    //           (rowCol == "" && element.dataType != "number"))
+    //       ) {
+    //         var msg =
+    //           `Row ${
+    //             indentiferColumn.current
+    //               ? "With ID: " + (gridData as any)[indentiferColumn.current]
+    //               : "With Index:" + row + 1
+    //           } - ` + `${element.required.errorMessage}'.`;
+    //           tmpInsertToMessageMap( element.key + row + "empty", {
+    //           msg: msg,
+    //           type: MessageBarType.error,
+    //         });
+    //       } else if (
+    //         typeof element.required !== "boolean" &&
+    //         element.required.requiredOnlyIfTheseColumnsAreEmpty &&
+    //         (rowCol == null ||
+    //           rowCol == undefined ||
+    //           rowCol?.toString().length <= 0 ||
+    //           (rowCol == "" && element.dataType != "number"))
+    //       ) {
+    //         const checkKeys =
+    //           element.required.requiredOnlyIfTheseColumnsAreEmpty.colKeys;
+    //         let skippable = false;
+    //         for (let index = 0; index < checkKeys.length; index++) {
+    //           const columnKey = checkKeys[index];
+    //           const str = (gridData as any)[columnKey];
 
-          if (
-            rowCol !== null &&
-            (typeof rowCol !== element.dataType || typeof rowCol === "number")
-          ) {
-            if (element.dataType === "number") {
-              if (rowCol && isNaN(parseInt(rowCol)) && rowCol !== "") {
-                var msg =
-                  `Row ${
-                    indentiferColumn.current
-                      ? "With ID: " +
-                        (gridData as any)[indentiferColumn.current]
-                      : "With Index:" + row + 1
-                  } Col: ${element.name} - ` +
-                  `Value is not a '${element.dataType}'.`;
-                  tmpInsertToMessageMap( element.key + row, {
-                  msg: msg,
-                  type: MessageBarType.error,
-                });
+    //           if (element.required.alwaysRequired) {
+    //             if (
+    //               str == null ||
+    //               str == undefined ||
+    //               str?.toString().length <= 0 ||
+    //               (str == "" && element.dataType != "number")
+    //             ) {
+    //               if (element.required.errorMessage) {
+    //                 var msg =
+    //                   `Row ${
+    //                     indentiferColumn.current
+    //                       ? "With ID: " +
+    //                         (gridData as any)[indentiferColumn.current]
+    //                       : "With Index:" + row + 1
+    //                   } - ` + `${element.required.errorMessage}'.`;
+    //                   tmpInsertToMessageMap(
+    //                   element.key + row + "empty",
+    //                   {
+    //                     msg: msg,
+    //                     type: MessageBarType.error,
+    //                   }
+    //                 );
+    //               } else if (!emptyReqCol.includes(" " + element.name)) {
+    //                 emptyReqCol.push(" " + element.name);
+    //                 break;
+    //               }
+    //             }
+    //           } else {
+    //             if (
+    //               (str || str?.toString()?.trim() == "0") &&
+    //               str?.toString().length > 0
+    //             ) {
+    //               skippable = true;
+    //               break;
+    //             }
+    //           }
+    //         }
+    //         if (
+    //           !emptyReqCol.includes(" " + element.name) &&
+    //           skippable == false
+    //         ) {
+    //           if (!element.required.errorMessage)
+    //             emptyReqCol.push(" " + element.name);
+    //           else {
+    //             var msg =
+    //               `Row ${
+    //                 indentiferColumn.current
+    //                   ? "With ID: " +
+    //                     (gridData as any)[indentiferColumn.current]
+    //                   : "With Index:" + row + 1
+    //               } - ` + `${element.required.errorMessage}'.`;
+    //               tmpInsertToMessageMap(
+    //               element.key + row + "empty",
+    //               {
+    //                 msg: msg,
+    //                 type: MessageBarType.error,
+    //               }
+    //             );
+    //           }
+    //         }
+    //       }
 
-                localError = true;
-              } else if (
-                element.validations &&
-                element.validations.numberBoundaries
-              ) {
-                const min = element.validations.numberBoundaries.minRange;
-                const max = element.validations.numberBoundaries.maxRange;
+    //       if (
+    //         rowCol !== null &&
+    //         (typeof rowCol !== element.dataType || typeof rowCol === "number")
+    //       ) {
+    //         if (element.dataType === "number") {
+    //           if (rowCol && isNaN(parseInt(rowCol)) && rowCol !== "") {
+    //             var msg =
+    //               `Row ${
+    //                 indentiferColumn.current
+    //                   ? "With ID: " +
+    //                     (gridData as any)[indentiferColumn.current]
+    //                   : "With Index:" + row + 1
+    //               } Col: ${element.name} - ` +
+    //               `Value is not a '${element.dataType}'.`;
+    //               tmpInsertToMessageMap( element.key + row, {
+    //               msg: msg,
+    //               type: MessageBarType.error,
+    //             });
 
-                if (min && max) {
-                  if (!(min <= parseInt(rowCol) && max >= parseInt(rowCol))) {
-                    var msg =
-                      `Row ${
-                        indentiferColumn.current
-                          ? "With ID: " +
-                            (gridData as any)[indentiferColumn.current]
-                          : "With Index:" + row + 1
-                      } Col: ${element.name} - ` +
-                      `Value outside of range '${min} - ${max}'. Entered value ${rowCol}`;
-                      tmpInsertToMessageMap( element.key + row, {
-                      msg: msg,
-                      type: MessageBarType.error,
-                    });
+    //             localError = true;
+    //           } else if (
+    //             element.validations &&
+    //             element.validations.numberBoundaries
+    //           ) {
+    //             const min = element.validations.numberBoundaries.minRange;
+    //             const max = element.validations.numberBoundaries.maxRange;
 
-                    localError = true;
-                  }
-                } else if (min) {
-                  if (!(min <= parseInt(rowCol))) {
-                    var msg =
-                      `Row ${
-                        indentiferColumn.current
-                          ? "With ID: " +
-                            (gridData as any)[indentiferColumn.current]
-                          : "With Index:" + row + 1
-                      } Col: ${element.name} - ` +
-                      `Value is lower than required range: '${min}'. Entered value ${rowCol}`;
-                      tmpInsertToMessageMap( element.key + row, {
-                      msg: msg,
-                      type: MessageBarType.error,
-                    });
+    //             if (min && max) {
+    //               if (!(min <= parseInt(rowCol) && max >= parseInt(rowCol))) {
+    //                 var msg =
+    //                   `Row ${
+    //                     indentiferColumn.current
+    //                       ? "With ID: " +
+    //                         (gridData as any)[indentiferColumn.current]
+    //                       : "With Index:" + row + 1
+    //                   } Col: ${element.name} - ` +
+    //                   `Value outside of range '${min} - ${max}'. Entered value ${rowCol}`;
+    //                   tmpInsertToMessageMap( element.key + row, {
+    //                   msg: msg,
+    //                   type: MessageBarType.error,
+    //                 });
 
-                    localError = true;
-                  }
-                } else if (max) {
-                  if (!(max >= parseInt(rowCol))) {
-                    var msg =
-                      `Row ${
-                        indentiferColumn.current
-                          ? "With ID: " +
-                            (gridData as any)[indentiferColumn.current]
-                          : "With Index:" + row + 1
-                      } Col: ${element.name} - ` +
-                      `Value is greater than required range: '${max}'. Entered value ${rowCol}`;
-                      tmpInsertToMessageMap( element.key + row, {
-                      msg: msg,
-                      type: MessageBarType.error,
-                    });
+    //                 localError = true;
+    //               }
+    //             } else if (min) {
+    //               if (!(min <= parseInt(rowCol))) {
+    //                 var msg =
+    //                   `Row ${
+    //                     indentiferColumn.current
+    //                       ? "With ID: " +
+    //                         (gridData as any)[indentiferColumn.current]
+    //                       : "With Index:" + row + 1
+    //                   } Col: ${element.name} - ` +
+    //                   `Value is lower than required range: '${min}'. Entered value ${rowCol}`;
+    //                   tmpInsertToMessageMap( element.key + row, {
+    //                   msg: msg,
+    //                   type: MessageBarType.error,
+    //                 });
 
-                    localError = true;
-                  }
-                }
-              }
-            } else if (element.dataType === "boolean") {
-              try {
-                Boolean(rowCol);
-              } catch (error) {
-                var msg =
-                  `Row ${
-                    indentiferColumn.current
-                      ? "With ID: " +
-                        (gridData as any)[indentiferColumn.current]
-                      : "With Index:" + row + 1
-                  } Col: ${element.name} - ` +
-                  `Value is not a '${element.dataType}'.`;
-                  tmpInsertToMessageMap(element.key + row, {
-                  msg: msg,
-                  type: MessageBarType.error,
-                });
+    //                 localError = true;
+    //               }
+    //             } else if (max) {
+    //               if (!(max >= parseInt(rowCol))) {
+    //                 var msg =
+    //                   `Row ${
+    //                     indentiferColumn.current
+    //                       ? "With ID: " +
+    //                         (gridData as any)[indentiferColumn.current]
+    //                       : "With Index:" + row + 1
+    //                   } Col: ${element.name} - ` +
+    //                   `Value is greater than required range: '${max}'. Entered value ${rowCol}`;
+    //                   tmpInsertToMessageMap( element.key + row, {
+    //                   msg: msg,
+    //                   type: MessageBarType.error,
+    //                 });
 
-                localError = true;
-              }
-            } else if (element.dataType === "date") {
-              try {
-                if (!isValidDate(rowCol)) {
-                  throw {};
-                } else {
-                  continue;
-                }
-              } catch (error) {
-                var msg =
-                  `Row ${
-                    indentiferColumn.current
-                      ? "With ID: " +
-                        (gridData as any)[indentiferColumn.current]
-                      : "With Index:" + row + 1
-                  } Col: ${element.name} - ` +
-                  `Value is not a '${element.dataType}'.`;
-                  tmpInsertToMessageMap(element.key + row, {
-                  msg: msg,
-                  type: MessageBarType.error,
-                });
+    //                 localError = true;
+    //               }
+    //             }
+    //           }
+    //         } else if (element.dataType === "boolean") {
+    //           try {
+    //             Boolean(rowCol);
+    //           } catch (error) {
+    //             var msg =
+    //               `Row ${
+    //                 indentiferColumn.current
+    //                   ? "With ID: " +
+    //                     (gridData as any)[indentiferColumn.current]
+    //                   : "With Index:" + row + 1
+    //               } Col: ${element.name} - ` +
+    //               `Value is not a '${element.dataType}'.`;
+    //               tmpInsertToMessageMap(element.key + row, {
+    //               msg: msg,
+    //               type: MessageBarType.error,
+    //             });
 
-                localError = true;
-              }
-            }
-          }
+    //             localError = true;
+    //           }
+    //         } else if (element.dataType === "date") {
+    //           try {
+    //             if (!isValidDate(rowCol)) {
+    //               throw {};
+    //             } else {
+    //               continue;
+    //             }
+    //           } catch (error) {
+    //             var msg =
+    //               `Row ${
+    //                 indentiferColumn.current
+    //                   ? "With ID: " +
+    //                     (gridData as any)[indentiferColumn.current]
+    //                   : "With Index:" + row + 1
+    //               } Col: ${element.name} - ` +
+    //               `Value is not a '${element.dataType}'.`;
+    //               tmpInsertToMessageMap(element.key + row, {
+    //               msg: msg,
+    //               type: MessageBarType.error,
+    //             });
 
-          if (element.validations && element.validations.columnDependent) {
-            for (
-              let index = 0;
-              index < element.validations.columnDependent.length;
-              index++
-            ) {
-              const colDep = element.validations.columnDependent[index];
+    //             localError = true;
+    //           }
+    //         }
+    //       }
 
-              if (
-                (gridData as any)[colDep.dependentColumnKey] ||
-                (gridData as any)[colDep.dependentColumnKey] !== undefined
-              ) {
-                const str = (gridData as any)[colDep.dependentColumnKey];
-                let skip = false;
+    //       if (element.validations && element.validations.columnDependent) {
+    //         for (
+    //           let index = 0;
+    //           index < element.validations.columnDependent.length;
+    //           index++
+    //         ) {
+    //           const colDep = element.validations.columnDependent[index];
 
-                if (
-                  colDep.skipCheckIfTheseColumnsHaveData &&
-                  colDep.skipCheckIfTheseColumnsHaveData.colKeys
-                ) {
-                  for (const skipForKey of colDep
-                    .skipCheckIfTheseColumnsHaveData.colKeys) {
-                    if (colDep.skipCheckIfTheseColumnsHaveData?.partial) {
-                      const str = (gridData as any)[skipForKey];
-                      if (
-                        str &&
-                        str !== null &&
-                        str !== undefined &&
-                        str?.toString().length > 0
-                      ) {
-                        skip = true;
-                        break;
-                      }
-                    } else {
-                      const str = (gridData as any)[skipForKey];
-                      if (
-                        str &&
-                        str !== null &&
-                        str !== undefined &&
-                        str?.toString().length > 0
-                      ) {
-                        skip = true;
-                      } else {
-                        skip = false;
-                        break;
-                      }
-                    }
-                  }
-                }
+    //           if (
+    //             (gridData as any)[colDep.dependentColumnKey] ||
+    //             (gridData as any)[colDep.dependentColumnKey] !== undefined
+    //           ) {
+    //             const str = (gridData as any)[colDep.dependentColumnKey];
+    //             let skip = false;
 
-                if (!skip) {
-                  if (str !== undefined && str !== null) {
-                    if (
-                      str?.toString().length > 0 &&
-                      colDep.type === DepColTypes.MustBeEmpty
-                    ) {
-                      if (rowCol !== null && rowCol?.toString().length > 0) {
-                        var msg =
-                          `Row ${
-                            indentiferColumn.current
-                              ? "With ID: " +
-                                (gridData as any)[indentiferColumn.current]
-                              : "With Index:" + row + 1
-                          } - ` +
-                          (colDep.errorMessage ??
-                            `Data cannot be entered in ${element.name} and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
+    //             if (
+    //               colDep.skipCheckIfTheseColumnsHaveData &&
+    //               colDep.skipCheckIfTheseColumnsHaveData.colKeys
+    //             ) {
+    //               for (const skipForKey of colDep
+    //                 .skipCheckIfTheseColumnsHaveData.colKeys) {
+    //                 if (colDep.skipCheckIfTheseColumnsHaveData?.partial) {
+    //                   const str = (gridData as any)[skipForKey];
+    //                   if (
+    //                     str &&
+    //                     str !== null &&
+    //                     str !== undefined &&
+    //                     str?.toString().length > 0
+    //                   ) {
+    //                     skip = true;
+    //                     break;
+    //                   }
+    //                 } else {
+    //                   const str = (gridData as any)[skipForKey];
+    //                   if (
+    //                     str &&
+    //                     str !== null &&
+    //                     str !== undefined &&
+    //                     str?.toString().length > 0
+    //                   ) {
+    //                     skip = true;
+    //                   } else {
+    //                     skip = false;
+    //                     break;
+    //                   }
+    //                 }
+    //               }
+    //             }
 
-                            tmpInsertToMessageMap( row + "ColDep", {
-                          msg: msg,
-                          type: MessageBarType.error,
-                        });
+    //             if (!skip) {
+    //               if (str !== undefined && str !== null) {
+    //                 if (
+    //                   str?.toString().length > 0 &&
+    //                   colDep.type === DepColTypes.MustBeEmpty
+    //                 ) {
+    //                   if (rowCol !== null && rowCol?.toString().length > 0) {
+    //                     var msg =
+    //                       `Row ${
+    //                         indentiferColumn.current
+    //                           ? "With ID: " +
+    //                             (gridData as any)[indentiferColumn.current]
+    //                           : "With Index:" + row + 1
+    //                       } - ` +
+    //                       (colDep.errorMessage ??
+    //                         `Data cannot be entered in ${element.name} and in ${colDep.dependentColumnName} Column. Remove data in ${colDep.dependentColumnName} Column to enter data here.`);
 
-                        localError = true;
-                      }
-                    }
-                  }
-                  if (
-                    (str == undefined ||
-                      str == null ||
-                      (str == "" && element.dataType != "number") ||
-                      (str && str?.toString().length <= 0)) &&
-                    colDep.type === DepColTypes.MustHaveData
-                  ) {
-                    var msg =
-                      `Row ${
-                        indentiferColumn.current
-                          ? "With ID: " +
-                            (gridData as any)[indentiferColumn.current]
-                          : "With Index:" + row + 1
-                      } - ` +
-                      (colDep.errorMessage ??
-                        ` Data needs to entered in ${colDep.dependentColumnName} and in ${element.name} Column.`);
+    //                         tmpInsertToMessageMap( row + "ColDep", {
+    //                       msg: msg,
+    //                       type: MessageBarType.error,
+    //                     });
 
-                        tmpInsertToMessageMap( row + "ColDep", {
-                      msg: msg,
-                      type: MessageBarType.error,
-                    });
-                    localError = true;
-                  }
-                }
-              }
-            }
-          }
+    //                     localError = true;
+    //                   }
+    //                 }
+    //               }
+    //               if (
+    //                 (str == undefined ||
+    //                   str == null ||
+    //                   (str == "" && element.dataType != "number") ||
+    //                   (str && str?.toString().length <= 0)) &&
+    //                 colDep.type === DepColTypes.MustHaveData
+    //               ) {
+    //                 var msg =
+    //                   `Row ${
+    //                     indentiferColumn.current
+    //                       ? "With ID: " +
+    //                         (gridData as any)[indentiferColumn.current]
+    //                       : "With Index:" + row + 1
+    //                   } - ` +
+    //                   (colDep.errorMessage ??
+    //                     ` Data needs to entered in ${colDep.dependentColumnName} and in ${element.name} Column.`);
 
-          if (element.validations && element.validations.regexValidation) {
-            for (
-              let index = 0;
-              index < element.validations.regexValidation.length;
-              index++
-            ) {
-              const data = element.validations.regexValidation[index];
-              if (!data.regex.test(rowCol)) {
-                var msg =
-                  `Row ${
-                    indentiferColumn.current
-                      ? "With ID: " +
-                        (gridData as any)[indentiferColumn.current]
-                      : "With Index:" + row + 1
-                  } - ` + `${data.errorMessage}`;
-                  tmpInsertToMessageMap( element.key + row, {
-                  msg: msg,
-                  type: MessageBarType.error,
-                });
+    //                     tmpInsertToMessageMap( row + "ColDep", {
+    //                   msg: msg,
+    //                   type: MessageBarType.error,
+    //                 });
+    //                 localError = true;
+    //               }
+    //             }
+    //           }
+    //         }
+    //       }
 
-                localError = true;
-              }
-            }
-          }
+    //       if (element.validations && element.validations.regexValidation) {
+    //         for (
+    //           let index = 0;
+    //           index < element.validations.regexValidation.length;
+    //           index++
+    //         ) {
+    //           const data = element.validations.regexValidation[index];
+    //           if (!data.regex.test(rowCol)) {
+    //             var msg =
+    //               `Row ${
+    //                 indentiferColumn.current
+    //                   ? "With ID: " +
+    //                     (gridData as any)[indentiferColumn.current]
+    //                   : "With Index:" + row + 1
+    //               } - ` + `${data.errorMessage}`;
+    //               tmpInsertToMessageMap( element.key + row, {
+    //               msg: msg,
+    //               type: MessageBarType.error,
+    //             });
 
-          if (element.validations && element.validations.stringValidations) {
-            const caseInsensitive =
-              element.validations.stringValidations.caseInsensitive;
-            if (caseInsensitive) {
-              if (
-                rowCol !== null &&
-                element.validations.stringValidations?.conditionCantEqual?.toLowerCase() ===
-                  rowCol?.toString().toLowerCase()
-              ) {
-                var msg =
-                  `Row ${
-                    indentiferColumn.current
-                      ? "With ID: " +
-                        (gridData as any)[indentiferColumn.current]
-                      : "With Index:" + row + 1
-                  } - ` + `${element.validations.stringValidations?.errMsg}`;
-                  tmpInsertToMessageMap( element.key + row, {
-                  msg: msg,
-                  type: MessageBarType.error,
-                });
+    //             localError = true;
+    //           }
+    //         }
+    //       }
 
-                localError = true;
-              } else {
-                if (
-                  rowCol !== null &&
-                  element.validations.stringValidations?.conditionCantEqual ===
-                    rowCol?.toString()
-                ) {
-                  var msg =
-                    `Row ${
-                      indentiferColumn.current
-                        ? "With ID: " +
-                          (gridData as any)[indentiferColumn.current]
-                        : "With Index:" + row + 1
-                    } - ` + `${element.validations.stringValidations?.errMsg}`;
-                    tmpInsertToMessageMap( element.key + row, {
-                    msg: msg,
-                    type: MessageBarType.error,
-                  });
+    //       if (element.validations && element.validations.stringValidations) {
+    //         const caseInsensitive =
+    //           element.validations.stringValidations.caseInsensitive;
+    //         if (caseInsensitive) {
+    //           if (
+    //             rowCol !== null &&
+    //             element.validations.stringValidations?.conditionCantEqual?.toLowerCase() ===
+    //               rowCol?.toString().toLowerCase()
+    //           ) {
+    //             var msg =
+    //               `Row ${
+    //                 indentiferColumn.current
+    //                   ? "With ID: " +
+    //                     (gridData as any)[indentiferColumn.current]
+    //                   : "With Index:" + row + 1
+    //               } - ` + `${element.validations.stringValidations?.errMsg}`;
+    //               tmpInsertToMessageMap( element.key + row, {
+    //               msg: msg,
+    //               type: MessageBarType.error,
+    //             });
 
-                  localError = true;
-                }
-              }
-            }
-          }
-        }
-      }
+    //             localError = true;
+    //           } else {
+    //             if (
+    //               rowCol !== null &&
+    //               element.validations.stringValidations?.conditionCantEqual ===
+    //                 rowCol?.toString()
+    //             ) {
+    //               var msg =
+    //                 `Row ${
+    //                   indentiferColumn.current
+    //                     ? "With ID: " +
+    //                       (gridData as any)[indentiferColumn.current]
+    //                     : "With Index:" + row + 1
+    //                 } - ` + `${element.validations.stringValidations?.errMsg}`;
+    //                 tmpInsertToMessageMap( element.key + row, {
+    //                 msg: msg,
+    //                 type: MessageBarType.error,
+    //               });
 
-      if (emptyReqCol.length > 1) {
-        var msg = `Row ${
-          indentiferColumn.current
-            ? "With ID: " + (gridData as any)[indentiferColumn.current]
-            : "With Index:" + row + 1
-        } - ${emptyReqCol} cannot all be empty`;
+    //               localError = true;
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
 
-        tmpInsertToMessageMap( row + "erc", {
-          msg: msg,
-          type: MessageBarType.error,
-        });
+    //   if (emptyReqCol.length > 1) {
+    //     var msg = `Row ${
+    //       indentiferColumn.current
+    //         ? "With ID: " + (gridData as any)[indentiferColumn.current]
+    //         : "With Index:" + row + 1
+    //     } - ${emptyReqCol} cannot all be empty`;
 
-        localError = true;
-      } else if (emptyReqCol.length == 1) {
-        var msg = `Row: ${
-          indentiferColumn.current
-            ? "With ID: " + (gridData as any)[indentiferColumn.current]
-            : row + 1
-        } - ${emptyReqCol} cannot be empty`;
+    //     tmpInsertToMessageMap( row + "erc", {
+    //       msg: msg,
+    //       type: MessageBarType.error,
+    //     });
 
-        tmpInsertToMessageMap( row + "erc", {
-          msg: msg,
-          type: MessageBarType.error,
-        });
+    //     localError = true;
+    //   } else if (emptyReqCol.length == 1) {
+    //     var msg = `Row: ${
+    //       indentiferColumn.current
+    //         ? "With ID: " + (gridData as any)[indentiferColumn.current]
+    //         : row + 1
+    //     } - ${emptyReqCol} cannot be empty`;
 
-        localError = true;
-      }
+    //     tmpInsertToMessageMap( row + "erc", {
+    //       msg: msg,
+    //       type: MessageBarType.error,
+    //     });
 
-      if (emptyCol.length > 1) {
-        var msg = `Row ${
-          indentiferColumn.current
-            ? "With ID: " + (gridData as any)[indentiferColumn.current]
-            : "With Index: " + row + 1
-        } - ${emptyCol?.toString()} cannot be empty at all`;
+    //     localError = true;
+    //   }
 
-        tmpInsertToMessageMap( row + "ec", {
-          msg: msg,
-          type: MessageBarType.error,
-        });
+    //   if (emptyCol.length > 1) {
+    //     var msg = `Row ${
+    //       indentiferColumn.current
+    //         ? "With ID: " + (gridData as any)[indentiferColumn.current]
+    //         : "With Index: " + row + 1
+    //     } - ${emptyCol?.toString()} cannot be empty at all`;
 
-        localError = true;
-      } else if (emptyCol.length == 1) {
-        var msg = `Row ${
-          indentiferColumn.current
-            ? "With ID: " + (gridData as any)[indentiferColumn.current]
-            : "With Index: " + row + 1
-        } - ${emptyCol?.toString()} cannot be empty`;
+    //     tmpInsertToMessageMap( row + "ec", {
+    //       msg: msg,
+    //       type: MessageBarType.error,
+    //     });
 
-        tmpInsertToMessageMap( row + "ec", {
-          msg: msg,
-          type: MessageBarType.error,
-        });
+    //     localError = true;
+    //   } else if (emptyCol.length == 1) {
+    //     var msg = `Row ${
+    //       indentiferColumn.current
+    //         ? "With ID: " + (gridData as any)[indentiferColumn.current]
+    //         : "With Index: " + row + 1
+    //     } - ${emptyCol?.toString()} cannot be empty`;
 
-        localError = true;
-      }
-    }
+    //     tmpInsertToMessageMap( row + "ec", {
+    //       msg: msg,
+    //       type: MessageBarType.error,
+    //     });
 
-    return {isError: localError, messages: msgMap};
+    //     localError = true;
+    //   }
+    // }
   };
 
   useEffect(() => {
     if (props.GridSaveAction && defaultGridData !== undefined) {
-      props.GridSaveAction(() => onGridSave);
+      props.GridSaveAction(() =>  onGridSave);
     }
   }, [defaultGridData]);
 
-  const onGridSave = async (): Promise<boolean> => {
+  const onGridSave = (): Promise<boolean> => {
     GlobalMessages.current = new Map();
     SetGlobalMessagesState(GlobalMessages.current);
     Messages.current = new Map();
@@ -1322,37 +1326,72 @@ const EditableGrid = (props: EditableGridProps) => {
       defaultGridDataTmpWithDeletedData.map(removeIgnoredProperties);
 
     let localError = false;
+    return new Promise((resolve) => {
+
     if (parseInt(getGridRecordLength(true)) > 0) {
-      
+      const results = runGridValidations();
 
-      const results = await runGridValidations()
-      localError = results.isError
+      const runGridValidationsWorker = new Worker(
+        new URL("./workers/runGridValidations.worker.js", import.meta.url)
+      );
 
-      results.messages.forEach(function (
-        value: any,
-        key: string
-      ) {
-        insertToMessageMap(Messages.current, key, value)
-      });
+      const defaultGridDataTmp =
+        defaultGridData.length > 0
+          ? defaultGridData.filter(
+              (x) => x._grid_row_operation_ != _Operation.Delete
+            )
+          : [];
+
+
+
+        const args = {
+          inError: results.isError,
+          messages: results.messages,
+          defaultGridDataTmp,
+          indentiferColumn: indentiferColumn.current,
+          propColumns: props.columns.map((x) => {
+            return { ...x, onChange: undefined, linkOptions: undefined };
+          }),
+          MessageBarType,
+          DepColTypes,
+        };
+        runGridValidationsWorker.postMessage(args);
+  
+        runGridValidationsWorker.onmessage = function (event) {
+          localError = event.data.isError;
+  
+          event.data.messages.forEach(function (value: any, key: string) {
+            insertToMessageMap(Messages.current, key, value);
+          });
+  
+          if (localError === true) setGridInError(true);
+  
+          if (!localError) {
+            if (props.onBeforeGridSave) {
+              props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
+            }
+  
+            if (props.onGridSave) {
+              props.onGridSave(
+                defaultGridData,
+                defaultGridDataTmpWithInternalPropsIgnored
+              );
+            }
+  
+            onGridFiltered();
+          }
+
+          resolve(localError);
+
+        };
+  
+
+    }else{
+      resolve(false)
     }
-    if (localError === true) setGridInError(true);
+    
+  });
 
-    if (!localError) {
-      if (props.onBeforeGridSave) {
-        props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
-      }
-
-      if (props.onGridSave) {
-        props.onGridSave(
-          defaultGridData,
-          defaultGridDataTmpWithInternalPropsIgnored
-        );
-      }
-
-      onGridFiltered();
-    }
-
-    return localError;
   };
 
   const onGridUpdate = async (): Promise<void> => {

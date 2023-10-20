@@ -275,7 +275,7 @@ const Consumer = () => {
     LogRows(internalGridData);
   };
 
-  const onGridFiltered = (filterData: any[]): void => {
+  const onGridFiltered = (filterData: any[]| null): void => {
     console.log("Grid Data Filtered");
     console.log(filterData);
   };
@@ -539,7 +539,7 @@ const Consumer = () => {
     return messageTmp;
   }, [Messages]);
 
-  const [saveAction, setSaveAction] = useState<() => boolean | void>();
+  const [saveAction, setSaveAction] = useState<() => Promise<boolean>>();
   const [clearGridMessages, setClearGridMessages] = useState(false);
 
   return (
@@ -794,7 +794,7 @@ const Consumer = () => {
         <Stack horizontal tokens={{childrenGap: 5}}>
           <PrimaryButton
             text="Save Grid"
-            onClick={() => saveAction && saveAction()}
+            onClick={() => saveAction && saveAction()/*. then((x)=> console.log(x)) */}
           />
           <PrimaryButton
             text="Clear All Grid Messages"
