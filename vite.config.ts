@@ -40,13 +40,18 @@ export default defineConfig({
       formats: ["es", "cjs"],
     },
     rollupOptions: {
+      input:{
+        App: path.resolve(__dirname, "src/libs"),
+        'runGridValidations.worker': "src/libs/editablegrid/workers/runGridValidations.worker.js"
+      },
       external: ["react", "react-dom"],
       output: {
         
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
-        }
+        },
+       
 
       },
     },
