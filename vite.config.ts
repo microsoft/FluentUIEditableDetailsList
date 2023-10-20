@@ -51,7 +51,9 @@ export default defineConfig({
           react: "React",
           "react-dom": "ReactDOM",
         },
-       
+        entryFileNames: assetInfo => {
+          return 'assets/[name]-[hash].js'
+        }
 
       },
     },
