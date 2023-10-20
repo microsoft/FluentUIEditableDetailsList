@@ -1,11 +1,11 @@
 {
   "src/libs/editablegrid/workers/runGridValidations.worker.js": {
-    "file": "assets/runGridValidations.worker-e05bac35.js",
+    "file": "runGridValidations.worker.js",
     "isEntry": true,
     "src": "src/libs/editablegrid/workers/runGridValidations.worker.js"
   },
   "src/libs/index.ts": {
-    "file": "assets/App-b68e53d8.js",
+    "file": "assets/js/fluentui.editablegrid.lib-b68e53d8.js",
     "isEntry": true,
     "src": "src/libs/index.ts"
   }

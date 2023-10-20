@@ -41,7 +41,7 @@ export default defineConfig({
     },
     rollupOptions: {
       input:{
-        App: path.resolve(__dirname, "src/libs"),
+        [packageJson.name]: path.resolve(__dirname, "src/libs/index.ts"),
         'runGridValidations.worker': "src/libs/editablegrid/workers/runGridValidations.worker.js"
       },
       external: ["react", "react-dom"],
@@ -52,7 +52,9 @@ export default defineConfig({
           "react-dom": "ReactDOM",
         },
         entryFileNames: assetInfo => {
-          return 'assets/[name]-[hash].js'
+          return assetInfo.name === 'runGridValidations.worker'
+             ? '[name].js'
+             : 'assets/js/[name]-[hash].js' // others in `assets/js/`
         }
 
       },
