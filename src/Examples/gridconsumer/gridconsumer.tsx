@@ -260,7 +260,6 @@ const Consumer = () => {
   }, []);
 
   const onGridSave = (internalGridData: any[], updatedItems: any): void => {
-    alert("Grid Data Saved");
     LogRows(internalGridData);
     setItems([
       ...internalGridData,
@@ -276,7 +275,7 @@ const Consumer = () => {
     LogRows(internalGridData);
   };
 
-  const onGridFiltered = (filterData: any[]| null): void => {
+  const onGridFiltered = (filterData: any[] | null): void => {
     console.log("Grid Data Filtered");
     console.log(filterData);
   };
@@ -791,11 +790,20 @@ const Consumer = () => {
           backgroundColor: "white",
         }}
       >
-        <Stack horizontal tokens={{childrenGap: 5}}>
+        <Stack horizontal tokens={{ childrenGap: 5 }}>
           <PrimaryButton
             text="Save Grid"
-            onClick={() => saveAction && saveAction().catch((x)=> {alert('Saving Action Crashed: ' + x)}
-            )}
+            onClick={async () =>
+              saveAction &&
+              await saveAction()
+                .then((hasErrors) => {
+                  if(hasErrors == false)
+                  alert("Grid Data Saved");
+                })
+                .catch((fatalErrors) => {
+                  alert("Saving Action Crashed: " + fatalErrors);
+                })
+            }
           />
           <PrimaryButton
             text="Clear All Grid Messages"
@@ -974,12 +982,12 @@ const Consumer = () => {
         />
       </div>
       <Link
-          aria-label="Privacy Statement URL"
-          target="_blank"
-          href={'www.msft.com'}
-        >
-          Microsoft Data Privacy Notice
-        </Link>
+        aria-label="Privacy Statement URL"
+        target="_blank"
+        href={"www.msft.com"}
+      >
+        Microsoft Data Privacy Notice
+      </Link>
       {/* {teachingBubbleVisible && (
         // <TeachingBubble
         //   target={teachingBubblePropsConfig?.config.target}

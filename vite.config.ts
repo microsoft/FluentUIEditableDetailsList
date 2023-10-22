@@ -34,7 +34,6 @@ export default defineConfig({
     manifest: true,
     reportCompressedSize: true,
     sourcemap: true,
-    copyPublicDir: false,
     lib: {
       entry: path.resolve(__dirname, "src/libs/index.ts"),
       formats: ["es", "cjs"],

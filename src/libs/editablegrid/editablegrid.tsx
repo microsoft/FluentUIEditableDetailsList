@@ -4,6 +4,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
+import GridValidationsWorker from './workers/runGridValidations.worker.js?worker&inline'
 
 import {
   Announced,
@@ -601,7 +602,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
   function isRowBlank(obj: any) {
     if (!obj || obj.length < 0) return;
-    const ignoredProperties:string[] = [...InternalEditableGridPropertiesKeys]
+    const ignoredProperties: string[] = [...InternalEditableGridPropertiesKeys];
     if (indentiferColumn.current !== null) {
       ignoredProperties.push(indentiferColumn.current);
     }
@@ -1158,7 +1159,7 @@ const EditableGrid = (props: EditableGridProps) => {
     //   }
     // }
 
-    console.log(msgMap)
+   // console.log(msgMap)
   }; */
 
   useEffect(() => {
@@ -1215,7 +1216,7 @@ const EditableGrid = (props: EditableGridProps) => {
 
     const defaultGridDataTmpWithDeletedData = [...defaultGridData] ?? [];
 
-    const ignoredProperties:string[] = [...InternalEditableGridPropertiesKeys]
+    const ignoredProperties: string[] = [...InternalEditableGridPropertiesKeys];
 
     const removeIgnoredProperties = (obj: any) => {
       return Object.keys(obj).reduce((acc: any, key: any) => {
@@ -1232,12 +1233,7 @@ const EditableGrid = (props: EditableGridProps) => {
     let localError = false;
     return new Promise<boolean>((resolve, reject) => {
       if (parseInt(getGridRecordLength(true)) > 0) {
-        const runGridValidationsWorker = new Worker(
-          new URL("./workers/runGridValidations.worker.js", import.meta.url),
-          {
-            type: "module",
-          }
-        );
+        const runGridValidationsWorker = new GridValidationsWorker()
 
         const defaultGridDataTmp =
           defaultGridData.length > 0
@@ -1261,6 +1257,16 @@ const EditableGrid = (props: EditableGridProps) => {
             MessageBarType,
             DepColTypes,
           };
+
+          runGridValidationsWorker.onmessageerror = function (event) {
+            console.error(event);
+            reject("error with message returned by 'runGridValidationsWorker'");
+          };
+          runGridValidationsWorker.onerror = function (event) {
+            console.error(event);
+            reject("error with 'runGridValidationsWorker'");
+          };
+
           runGridValidationsWorker.postMessage(args);
 
           runGridValidationsWorker.onmessage = function (event) {
@@ -1291,13 +1297,6 @@ const EditableGrid = (props: EditableGridProps) => {
 
             resolve(localError);
           };
-
-          runGridValidationsWorker.onmessageerror = function (/* event */) {
-            reject("error");
-          };
-          runGridValidationsWorker.onerror = function (/* event */) {
-            reject("error");
-          };
         } catch (error) {
           console.error(error);
           reject(error);
@@ -1312,8 +1311,9 @@ const EditableGrid = (props: EditableGridProps) => {
     if (props.onGridUpdate) {
       let updatedItems = defaultGridData;
       if (props.ignoreInternalPropertiesOnGridUpdateCallback) {
-        const ignoredProperties:string[] = [...InternalEditableGridPropertiesKeys]
-
+        const ignoredProperties: string[] = [
+          ...InternalEditableGridPropertiesKeys,
+        ];
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const removeIgnoredProperties = (obj: any) => {
@@ -1501,15 +1501,22 @@ const EditableGrid = (props: EditableGridProps) => {
   }, []);
   const tempAutoGenId = useRef(0);
 
-  const GetDefaultRowObject = (rowCount: number, _tmp_overide_grid_row_id_?:number ): any[] => {
+  const GetDefaultRowObject = (
+    rowCount: number,
+    _tmp_overide_grid_row_id_?: number
+  ): any[] => {
     let obj: any = {};
     let addedRows: any[] = [];
-    let _new_grid_row_id_ = _tmp_overide_grid_row_id_ !== null && _tmp_overide_grid_row_id_ !== undefined ? _tmp_overide_grid_row_id_ : Math.max.apply(
-      Math,
-      defaultGridData.map(function (o) {
-        return o._grid_row_id_;
-      })
-    );
+    let _new_grid_row_id_ =
+      _tmp_overide_grid_row_id_ !== null &&
+      _tmp_overide_grid_row_id_ !== undefined
+        ? _tmp_overide_grid_row_id_
+        : Math.max.apply(
+            Math,
+            defaultGridData.map(function (o) {
+              return o._grid_row_id_;
+            })
+          );
     let _autoGenId = tempAutoGenId.current;
 
     if (
@@ -3156,15 +3163,15 @@ const EditableGrid = (props: EditableGridProps) => {
               overwriteFirstRow &&
               singleColChange
             )
-            pushSingleRow =
+              pushSingleRow =
                 newGridData[columnKeyPasteRef.current._grid_row_id_];
 
-                let _temp_new_grid_row_id_ = Math.max.apply(
-                  Math,
-                  defaultGridData.map(function (o) {
-                    return o._grid_row_id_ + index + 1;
-                  })
-                );
+            let _temp_new_grid_row_id_ = Math.max.apply(
+              Math,
+              defaultGridData.map(function (o) {
+                return o._grid_row_id_ + index + 1;
+              })
+            );
 
             const startPush = setupPastedData(
               [...rowData],

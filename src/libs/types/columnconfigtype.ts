@@ -48,7 +48,7 @@ export interface IColumnConfig extends IColumn {
   required: boolean | IRequiredColumnsOptions;
 
   /** Default value you desire to see on add row */
-  defaultOnAddRow?: string | number | null  | undefined | string[] | number[];
+  defaultOnAddRow?: boolean | string | number | null  | undefined | string[] | number[];
 
   /** Majority of properties to be set for the validation engine to run against during save */
   validations?: {

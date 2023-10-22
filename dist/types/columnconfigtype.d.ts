@@ -22,7 +22,7 @@ export interface IColumnConfig extends IColumn {
     /** Tells the valdation engine that runs on save if the column is required to have data or not */
     required: boolean | IRequiredColumnsOptions;
     /** Default value you desire to see on add row */
-    defaultOnAddRow?: string | number | null | undefined | string[] | number[];
+    defaultOnAddRow?: boolean | string | number | null | undefined | string[] | number[];
     /** Majority of properties to be set for the validation engine to run against during save */
     validations?: {
         /** Column Dependent: If two columns can NOT have data or If two columns MUST have data */

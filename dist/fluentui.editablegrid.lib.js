@@ -3077,28 +3077,28 @@ var CFB = /* @__PURE__ */ function _CFB() {
     val.setSeconds(S << 1);
     return val;
   }
-  function parse_extra_field(blob) {
-    prep_blob(blob, 0);
+  function parse_extra_field(blob2) {
+    prep_blob(blob2, 0);
     var o = (
       /*::(*/
       {}
     );
     var flags = 0;
-    while (blob.l <= blob.length - 4) {
-      var type = blob.read_shift(2);
-      var sz = blob.read_shift(2), tgt = blob.l + sz;
+    while (blob2.l <= blob2.length - 4) {
+      var type = blob2.read_shift(2);
+      var sz = blob2.read_shift(2), tgt = blob2.l + sz;
       var p = {};
       switch (type) {
         case 21589:
           {
-            flags = blob.read_shift(1);
+            flags = blob2.read_shift(1);
             if (flags & 1)
-              p.mtime = blob.read_shift(4);
+              p.mtime = blob2.read_shift(4);
             if (sz > 5) {
               if (flags & 2)
-                p.atime = blob.read_shift(4);
+                p.atime = blob2.read_shift(4);
               if (flags & 4)
-                p.ctime = blob.read_shift(4);
+                p.ctime = blob2.read_shift(4);
             }
             if (p.mtime)
               p.mt = new Date(p.mtime * 1e3);
@@ -3106,15 +3106,15 @@ var CFB = /* @__PURE__ */ function _CFB() {
           break;
         case 1:
           {
-            var sz1 = blob.read_shift(4), sz2 = blob.read_shift(4);
+            var sz1 = blob2.read_shift(4), sz2 = blob2.read_shift(4);
             p.usz = sz2 * Math.pow(2, 32) + sz1;
-            sz1 = blob.read_shift(4);
-            sz2 = blob.read_shift(4);
+            sz1 = blob2.read_shift(4);
+            sz2 = blob2.read_shift(4);
             p.csz = sz2 * Math.pow(2, 32) + sz1;
           }
           break;
       }
-      blob.l = tgt;
+      blob2.l = tgt;
       o[type] = p;
     }
     return o;
@@ -3138,12 +3138,12 @@ var CFB = /* @__PURE__ */ function _CFB() {
     var minifat_start = 0;
     var difat_start = 0;
     var fat_addrs = [];
-    var blob = (
+    var blob2 = (
       /*::(*/
       file.slice(0, 512)
     );
-    prep_blob(blob, 0);
-    var mv = check_get_mver(blob);
+    prep_blob(blob2, 0);
+    var mv = check_get_mver(blob2);
     mver = mv[0];
     switch (mver) {
       case 3:
@@ -3159,29 +3159,29 @@ var CFB = /* @__PURE__ */ function _CFB() {
         throw new Error("Major Version: Expected 3 or 4 saw " + mver);
     }
     if (ssz !== 512) {
-      blob = /*::(*/
+      blob2 = /*::(*/
       file.slice(0, ssz);
       prep_blob(
-        blob,
+        blob2,
         28
         /* blob.l */
       );
     }
     var header = file.slice(0, ssz);
-    check_shifts(blob, mver);
-    var dir_cnt = blob.read_shift(4, "i");
+    check_shifts(blob2, mver);
+    var dir_cnt = blob2.read_shift(4, "i");
     if (mver === 3 && dir_cnt !== 0)
       throw new Error("# Directory Sectors: Expected 0 saw " + dir_cnt);
-    blob.l += 4;
-    dir_start = blob.read_shift(4, "i");
-    blob.l += 4;
-    blob.chk("00100000", "Mini Stream Cutoff Size: ");
-    minifat_start = blob.read_shift(4, "i");
-    nmfs = blob.read_shift(4, "i");
-    difat_start = blob.read_shift(4, "i");
-    difat_sec_cnt = blob.read_shift(4, "i");
+    blob2.l += 4;
+    dir_start = blob2.read_shift(4, "i");
+    blob2.l += 4;
+    blob2.chk("00100000", "Mini Stream Cutoff Size: ");
+    minifat_start = blob2.read_shift(4, "i");
+    nmfs = blob2.read_shift(4, "i");
+    difat_start = blob2.read_shift(4, "i");
+    difat_sec_cnt = blob2.read_shift(4, "i");
     for (var q2 = -1, j = 0; j < 109; ++j) {
-      q2 = blob.read_shift(4, "i");
+      q2 = blob2.read_shift(4, "i");
       if (q2 < 0)
         break;
       fat_addrs[j] = q2;
@@ -3208,18 +3208,18 @@ var CFB = /* @__PURE__ */ function _CFB() {
       o.raw = { header, sectors };
     return o;
   }
-  function check_get_mver(blob) {
-    if (blob[blob.l] == 80 && blob[blob.l + 1] == 75)
+  function check_get_mver(blob2) {
+    if (blob2[blob2.l] == 80 && blob2[blob2.l + 1] == 75)
       return [0, 0];
-    blob.chk(HEADER_SIGNATURE, "Header Signature: ");
-    blob.l += 16;
-    var mver = blob.read_shift(2, "u");
-    return [blob.read_shift(2, "u"), mver];
+    blob2.chk(HEADER_SIGNATURE, "Header Signature: ");
+    blob2.l += 16;
+    var mver = blob2.read_shift(2, "u");
+    return [blob2.read_shift(2, "u"), mver];
   }
-  function check_shifts(blob, mver) {
+  function check_shifts(blob2, mver) {
     var shift = 9;
-    blob.l += 2;
-    switch (shift = blob.read_shift(2)) {
+    blob2.l += 2;
+    switch (shift = blob2.read_shift(2)) {
       case 9:
         if (mver != 3)
           throw new Error("Sector Shift: Expected 9 saw " + shift);
@@ -3231,8 +3231,8 @@ var CFB = /* @__PURE__ */ function _CFB() {
       default:
         throw new Error("Sector Shift: Expected 9 or 12 saw " + shift);
     }
-    blob.chk("0600", "Mini Sector Shift: ");
-    blob.chk("000000000000", "Reserved: ");
+    blob2.chk("0600", "Mini Sector Shift: ");
+    blob2.chk("000000000000", "Reserved: ");
   }
   function sectorify(file, ssz) {
     var nsectors = Math.ceil(file.length / ssz) - 1;
@@ -3384,34 +3384,34 @@ var CFB = /* @__PURE__ */ function _CFB() {
     var sector = sector_list[dir_start].data;
     var i2 = 0, namelen = 0, name;
     for (; i2 < sector.length; i2 += 128) {
-      var blob = (
+      var blob2 = (
         /*::(*/
         sector.slice(i2, i2 + 128)
       );
-      prep_blob(blob, 64);
-      namelen = blob.read_shift(2);
-      name = __utf16le(blob, 0, namelen - pl);
+      prep_blob(blob2, 64);
+      namelen = blob2.read_shift(2);
+      name = __utf16le(blob2, 0, namelen - pl);
       Paths.push(name);
       var o = {
         name,
-        type: blob.read_shift(1),
-        color: blob.read_shift(1),
-        L: blob.read_shift(4, "i"),
-        R: blob.read_shift(4, "i"),
-        C: blob.read_shift(4, "i"),
-        clsid: blob.read_shift(16),
-        state: blob.read_shift(4, "i"),
+        type: blob2.read_shift(1),
+        color: blob2.read_shift(1),
+        L: blob2.read_shift(4, "i"),
+        R: blob2.read_shift(4, "i"),
+        C: blob2.read_shift(4, "i"),
+        clsid: blob2.read_shift(16),
+        state: blob2.read_shift(4, "i"),
         start: 0,
         size: 0
       };
-      var ctime = blob.read_shift(2) + blob.read_shift(2) + blob.read_shift(2) + blob.read_shift(2);
+      var ctime = blob2.read_shift(2) + blob2.read_shift(2) + blob2.read_shift(2) + blob2.read_shift(2);
       if (ctime !== 0)
-        o.ct = read_date(blob, blob.l - 8);
-      var mtime = blob.read_shift(2) + blob.read_shift(2) + blob.read_shift(2) + blob.read_shift(2);
+        o.ct = read_date(blob2, blob2.l - 8);
+      var mtime = blob2.read_shift(2) + blob2.read_shift(2) + blob2.read_shift(2) + blob2.read_shift(2);
       if (mtime !== 0)
-        o.mt = read_date(blob, blob.l - 8);
-      o.start = blob.read_shift(4, "i");
-      o.size = blob.read_shift(4, "i");
+        o.mt = read_date(blob2, blob2.l - 8);
+      o.start = blob2.read_shift(4, "i");
+      o.size = blob2.read_shift(4, "i");
       if (o.size < 0 && o.start < 0) {
         o.size = o.type = 0;
         o.start = ENDOFCHAIN;
@@ -3441,30 +3441,30 @@ var CFB = /* @__PURE__ */ function _CFB() {
       FileIndex.push(o);
     }
   }
-  function read_date(blob, offset) {
-    return new Date((__readUInt32LE(blob, offset + 4) / 1e7 * Math.pow(2, 32) + __readUInt32LE(blob, offset) / 1e7 - 11644473600) * 1e3);
+  function read_date(blob2, offset) {
+    return new Date((__readUInt32LE(blob2, offset + 4) / 1e7 * Math.pow(2, 32) + __readUInt32LE(blob2, offset) / 1e7 - 11644473600) * 1e3);
   }
   function read_file(filename2, options2) {
     get_fs();
     return parse2(fs.readFileSync(filename2), options2);
   }
-  function read(blob, options2) {
+  function read(blob2, options2) {
     var type = options2 && options2.type;
     if (!type) {
-      if (has_buf && Buffer.isBuffer(blob))
+      if (has_buf && Buffer.isBuffer(blob2))
         type = "buffer";
     }
     switch (type || "base64") {
       case "file":
-        return read_file(blob, options2);
+        return read_file(blob2, options2);
       case "base64":
-        return parse2(s2a(Base64_decode(blob)), options2);
+        return parse2(s2a(Base64_decode(blob2)), options2);
       case "binary":
-        return parse2(s2a(blob), options2);
+        return parse2(s2a(blob2), options2);
     }
     return parse2(
       /*::typeof blob == 'string' ? new Buffer(blob, 'utf-8') : */
-      blob,
+      blob2,
       options2
     );
   }
@@ -4365,73 +4365,73 @@ var CFB = /* @__PURE__ */ function _CFB() {
       throw new Error(msg);
   }
   function parse_zip2(file, options2) {
-    var blob = (
+    var blob2 = (
       /*::(*/
       file
     );
-    prep_blob(blob, 0);
+    prep_blob(blob2, 0);
     var FileIndex = [], FullPaths = [];
     var o = {
       FileIndex,
       FullPaths
     };
     init_cfb(o, { root: options2.root });
-    var i2 = blob.length - 4;
-    while ((blob[i2] != 80 || blob[i2 + 1] != 75 || blob[i2 + 2] != 5 || blob[i2 + 3] != 6) && i2 >= 0)
+    var i2 = blob2.length - 4;
+    while ((blob2[i2] != 80 || blob2[i2 + 1] != 75 || blob2[i2 + 2] != 5 || blob2[i2 + 3] != 6) && i2 >= 0)
       --i2;
-    blob.l = i2 + 4;
-    blob.l += 4;
-    var fcnt = blob.read_shift(2);
-    blob.l += 6;
-    var start_cd = blob.read_shift(4);
-    blob.l = start_cd;
+    blob2.l = i2 + 4;
+    blob2.l += 4;
+    var fcnt = blob2.read_shift(2);
+    blob2.l += 6;
+    var start_cd = blob2.read_shift(4);
+    blob2.l = start_cd;
     for (i2 = 0; i2 < fcnt; ++i2) {
-      blob.l += 20;
-      var csz = blob.read_shift(4);
-      var usz = blob.read_shift(4);
-      var namelen = blob.read_shift(2);
-      var efsz = blob.read_shift(2);
-      var fcsz = blob.read_shift(2);
-      blob.l += 8;
-      var offset = blob.read_shift(4);
+      blob2.l += 20;
+      var csz = blob2.read_shift(4);
+      var usz = blob2.read_shift(4);
+      var namelen = blob2.read_shift(2);
+      var efsz = blob2.read_shift(2);
+      var fcsz = blob2.read_shift(2);
+      blob2.l += 8;
+      var offset = blob2.read_shift(4);
       var EF = parse_extra_field(
         /*::(*/
-        blob.slice(blob.l + namelen, blob.l + namelen + efsz)
+        blob2.slice(blob2.l + namelen, blob2.l + namelen + efsz)
         /*:: :any)*/
       );
-      blob.l += namelen + efsz + fcsz;
-      var L = blob.l;
-      blob.l = offset + 4;
+      blob2.l += namelen + efsz + fcsz;
+      var L = blob2.l;
+      blob2.l = offset + 4;
       if (EF && EF[1]) {
         if ((EF[1] || {}).usz)
           usz = EF[1].usz;
         if ((EF[1] || {}).csz)
           csz = EF[1].csz;
       }
-      parse_local_file(blob, csz, usz, o, EF);
-      blob.l = L;
+      parse_local_file(blob2, csz, usz, o, EF);
+      blob2.l = L;
     }
     return o;
   }
-  function parse_local_file(blob, csz, usz, o, EF) {
-    blob.l += 2;
-    var flags = blob.read_shift(2);
-    var meth = blob.read_shift(2);
-    var date = parse_dos_date(blob);
+  function parse_local_file(blob2, csz, usz, o, EF) {
+    blob2.l += 2;
+    var flags = blob2.read_shift(2);
+    var meth = blob2.read_shift(2);
+    var date = parse_dos_date(blob2);
     if (flags & 8257)
       throw new Error("Unsupported ZIP encryption");
-    var crc32 = blob.read_shift(4);
-    var _csz = blob.read_shift(4);
-    var _usz = blob.read_shift(4);
-    var namelen = blob.read_shift(2);
-    var efsz = blob.read_shift(2);
+    var crc32 = blob2.read_shift(4);
+    var _csz = blob2.read_shift(4);
+    var _usz = blob2.read_shift(4);
+    var namelen = blob2.read_shift(2);
+    var efsz = blob2.read_shift(2);
     var name = "";
     for (var i2 = 0; i2 < namelen; ++i2)
-      name += String.fromCharCode(blob[blob.l++]);
+      name += String.fromCharCode(blob2[blob2.l++]);
     if (efsz) {
       var ef = parse_extra_field(
         /*::(*/
-        blob.slice(blob.l, blob.l + efsz)
+        blob2.slice(blob2.l, blob2.l + efsz)
         /*:: :any)*/
       );
       if ((ef[21589] || {}).mt)
@@ -4449,11 +4449,11 @@ var CFB = /* @__PURE__ */ function _CFB() {
           _csz = ef[1].csz;
       }
     }
-    blob.l += efsz;
-    var data = blob.slice(blob.l, blob.l + _csz);
+    blob2.l += efsz;
+    var data = blob2.slice(blob2.l, blob2.l + _csz);
     switch (meth) {
       case 8:
-        data = _inflateRawSync(blob, _usz);
+        data = _inflateRawSync(blob2, _usz);
         break;
       case 0:
         break;
@@ -4462,13 +4462,13 @@ var CFB = /* @__PURE__ */ function _CFB() {
     }
     var wrn = false;
     if (flags & 8) {
-      crc32 = blob.read_shift(4);
+      crc32 = blob2.read_shift(4);
       if (crc32 == 134695760) {
-        crc32 = blob.read_shift(4);
+        crc32 = blob2.read_shift(4);
         wrn = true;
       }
-      _csz = blob.read_shift(4);
-      _usz = blob.read_shift(4);
+      _csz = blob2.read_shift(4);
+      _usz = blob2.read_shift(4);
     }
     if (_csz != csz)
       warn_or_throw(wrn, "Bad compressed size: " + csz + " != " + _csz);
@@ -4877,13 +4877,13 @@ function write_dl(fname, payload, enc) {
   if (typeof IE_SaveFile !== "undefined")
     return IE_SaveFile(data, fname);
   if (typeof Blob !== "undefined") {
-    var blob = new Blob([blobify(data)], { type: "application/octet-stream" });
+    var blob2 = new Blob([blobify(data)], { type: "application/octet-stream" });
     if (typeof navigator !== "undefined" && navigator.msSaveBlob)
-      return navigator.msSaveBlob(blob, fname);
+      return navigator.msSaveBlob(blob2, fname);
     if (typeof saveAs !== "undefined")
-      return saveAs(blob, fname);
+      return saveAs(blob2, fname);
     if (typeof URL !== "undefined" && typeof document !== "undefined" && document.createElement && URL.createObjectURL) {
-      var url = URL.createObjectURL(blob);
+      var url = URL.createObjectURL(blob2);
       if (typeof chrome === "object" && typeof (chrome.downloads || {}).download == "function") {
         if (URL.revokeObjectURL && typeof setTimeout !== "undefined")
           setTimeout(function() {
@@ -6087,15 +6087,15 @@ function CheckField(hexstr, fld) {
     throw new Error(fld + "Expected " + hexstr + " saw " + m);
   this.l += hexstr.length >> 1;
 }
-function prep_blob(blob, pos) {
-  blob.l = pos;
-  blob.read_shift = /*::(*/
+function prep_blob(blob2, pos) {
+  blob2.l = pos;
+  blob2.read_shift = /*::(*/
   ReadShift;
-  blob.chk = CheckField;
-  blob.write_shift = WriteShift;
+  blob2.chk = CheckField;
+  blob2.write_shift = WriteShift;
 }
-function parsenoop(blob, length2) {
-  blob.l += length2;
+function parsenoop(blob2, length2) {
+  blob2.l += length2;
 }
 function new_buf(sz) {
   var o = new_raw_buf(sz);
@@ -8160,8 +8160,8 @@ function xlml_write_custprops(Props, Custprops) {
     });
   return "<" + T + ' xmlns="' + XLMLNS.o + '">' + o.join("") + "</" + T + ">";
 }
-function parse_FILETIME(blob) {
-  var dwLowDateTime = blob.read_shift(4), dwHighDateTime = blob.read_shift(4);
+function parse_FILETIME(blob2) {
+  var dwLowDateTime = blob2.read_shift(4), dwHighDateTime = blob2.read_shift(4);
   return new Date((dwHighDateTime / 1e7 * Math.pow(2, 32) + dwLowDateTime / 1e7 - 11644473600) * 1e3).toISOString().replace(/\.000/, "");
 }
 function write_FILETIME(time) {
@@ -8180,138 +8180,138 @@ function write_FILETIME(time) {
   o.write_shift(4, h);
   return o;
 }
-function parse_lpstr(blob, type, pad) {
-  var start = blob.l;
-  var str = blob.read_shift(0, "lpstr-cp");
+function parse_lpstr(blob2, type, pad) {
+  var start = blob2.l;
+  var str = blob2.read_shift(0, "lpstr-cp");
   if (pad)
-    while (blob.l - start & 3)
-      ++blob.l;
+    while (blob2.l - start & 3)
+      ++blob2.l;
   return str;
 }
-function parse_lpwstr(blob, type, pad) {
-  var str = blob.read_shift(0, "lpwstr");
+function parse_lpwstr(blob2, type, pad) {
+  var str = blob2.read_shift(0, "lpwstr");
   if (pad)
-    blob.l += 4 - (str.length + 1 & 3) & 3;
+    blob2.l += 4 - (str.length + 1 & 3) & 3;
   return str;
 }
-function parse_VtStringBase(blob, stringType, pad) {
+function parse_VtStringBase(blob2, stringType, pad) {
   if (stringType === 31)
-    return parse_lpwstr(blob);
-  return parse_lpstr(blob, stringType, pad);
+    return parse_lpwstr(blob2);
+  return parse_lpstr(blob2, stringType, pad);
 }
-function parse_VtString(blob, t, pad) {
-  return parse_VtStringBase(blob, t, pad === false ? 0 : 4);
+function parse_VtString(blob2, t, pad) {
+  return parse_VtStringBase(blob2, t, pad === false ? 0 : 4);
 }
-function parse_VtUnalignedString(blob, t) {
+function parse_VtUnalignedString(blob2, t) {
   if (!t)
     throw new Error("VtUnalignedString must have positive length");
-  return parse_VtStringBase(blob, t, 0);
+  return parse_VtStringBase(blob2, t, 0);
 }
-function parse_VtVecLpwstrValue(blob) {
-  var length2 = blob.read_shift(4);
+function parse_VtVecLpwstrValue(blob2) {
+  var length2 = blob2.read_shift(4);
   var ret = [];
   for (var i = 0; i != length2; ++i) {
-    var start = blob.l;
-    ret[i] = blob.read_shift(0, "lpwstr").replace(chr0, "");
-    if (blob.l - start & 2)
-      blob.l += 2;
+    var start = blob2.l;
+    ret[i] = blob2.read_shift(0, "lpwstr").replace(chr0, "");
+    if (blob2.l - start & 2)
+      blob2.l += 2;
   }
   return ret;
 }
-function parse_VtVecUnalignedLpstrValue(blob) {
-  var length2 = blob.read_shift(4);
+function parse_VtVecUnalignedLpstrValue(blob2) {
+  var length2 = blob2.read_shift(4);
   var ret = [];
   for (var i = 0; i != length2; ++i)
-    ret[i] = blob.read_shift(0, "lpstr-cp").replace(chr0, "");
+    ret[i] = blob2.read_shift(0, "lpstr-cp").replace(chr0, "");
   return ret;
 }
-function parse_VtHeadingPair(blob) {
-  var start = blob.l;
-  var headingString = parse_TypedPropertyValue(blob, VT_USTR);
-  if (blob[blob.l] == 0 && blob[blob.l + 1] == 0 && blob.l - start & 2)
-    blob.l += 2;
-  var headerParts = parse_TypedPropertyValue(blob, VT_I4);
+function parse_VtHeadingPair(blob2) {
+  var start = blob2.l;
+  var headingString = parse_TypedPropertyValue(blob2, VT_USTR);
+  if (blob2[blob2.l] == 0 && blob2[blob2.l + 1] == 0 && blob2.l - start & 2)
+    blob2.l += 2;
+  var headerParts = parse_TypedPropertyValue(blob2, VT_I4);
   return [headingString, headerParts];
 }
-function parse_VtVecHeadingPairValue(blob) {
-  var cElements = blob.read_shift(4);
+function parse_VtVecHeadingPairValue(blob2) {
+  var cElements = blob2.read_shift(4);
   var out = [];
   for (var i = 0; i < cElements / 2; ++i)
-    out.push(parse_VtHeadingPair(blob));
+    out.push(parse_VtHeadingPair(blob2));
   return out;
 }
-function parse_dictionary(blob, CodePage) {
-  var cnt = blob.read_shift(4);
+function parse_dictionary(blob2, CodePage) {
+  var cnt = blob2.read_shift(4);
   var dict = {};
   for (var j = 0; j != cnt; ++j) {
-    var pid = blob.read_shift(4);
-    var len = blob.read_shift(4);
-    dict[pid] = blob.read_shift(len, CodePage === 1200 ? "utf16le" : "utf8").replace(chr0, "").replace(chr1, "!");
+    var pid = blob2.read_shift(4);
+    var len = blob2.read_shift(4);
+    dict[pid] = blob2.read_shift(len, CodePage === 1200 ? "utf16le" : "utf8").replace(chr0, "").replace(chr1, "!");
     if (CodePage === 1200 && len % 2)
-      blob.l += 2;
+      blob2.l += 2;
   }
-  if (blob.l & 3)
-    blob.l = blob.l >> 2 + 1 << 2;
+  if (blob2.l & 3)
+    blob2.l = blob2.l >> 2 + 1 << 2;
   return dict;
 }
-function parse_BLOB(blob) {
-  var size = blob.read_shift(4);
-  var bytes = blob.slice(blob.l, blob.l + size);
-  blob.l += size;
+function parse_BLOB(blob2) {
+  var size = blob2.read_shift(4);
+  var bytes = blob2.slice(blob2.l, blob2.l + size);
+  blob2.l += size;
   if ((size & 3) > 0)
-    blob.l += 4 - (size & 3) & 3;
+    blob2.l += 4 - (size & 3) & 3;
   return bytes;
 }
-function parse_ClipboardData(blob) {
+function parse_ClipboardData(blob2) {
   var o = {};
-  o.Size = blob.read_shift(4);
-  blob.l += o.Size + 3 - (o.Size - 1) % 4;
+  o.Size = blob2.read_shift(4);
+  blob2.l += o.Size + 3 - (o.Size - 1) % 4;
   return o;
 }
-function parse_TypedPropertyValue(blob, type, _opts) {
-  var t = blob.read_shift(2), ret, opts = _opts || {};
-  blob.l += 2;
+function parse_TypedPropertyValue(blob2, type, _opts) {
+  var t = blob2.read_shift(2), ret, opts = _opts || {};
+  blob2.l += 2;
   if (type !== VT_VARIANT) {
     if (t !== type && VT_CUSTOM.indexOf(type) === -1 && !((type & 65534) == 4126 && (t & 65534) == 4126))
       throw new Error("Expected type " + type + " saw " + t);
   }
   switch (type === VT_VARIANT ? t : type) {
     case 2:
-      ret = blob.read_shift(2, "i");
+      ret = blob2.read_shift(2, "i");
       if (!opts.raw)
-        blob.l += 2;
+        blob2.l += 2;
       return ret;
     case 3:
-      ret = blob.read_shift(4, "i");
+      ret = blob2.read_shift(4, "i");
       return ret;
     case 11:
-      return blob.read_shift(4) !== 0;
+      return blob2.read_shift(4) !== 0;
     case 19:
-      ret = blob.read_shift(4);
+      ret = blob2.read_shift(4);
       return ret;
     case 30:
-      return parse_lpstr(blob, t, 4).replace(chr0, "");
+      return parse_lpstr(blob2, t, 4).replace(chr0, "");
     case 31:
-      return parse_lpwstr(blob);
+      return parse_lpwstr(blob2);
     case 64:
-      return parse_FILETIME(blob);
+      return parse_FILETIME(blob2);
     case 65:
-      return parse_BLOB(blob);
+      return parse_BLOB(blob2);
     case 71:
-      return parse_ClipboardData(blob);
+      return parse_ClipboardData(blob2);
     case 80:
-      return parse_VtString(blob, t, !opts.raw).replace(chr0, "");
+      return parse_VtString(blob2, t, !opts.raw).replace(chr0, "");
     case 81:
       return parse_VtUnalignedString(
-        blob,
+        blob2,
         t
         /*, 4*/
       ).replace(chr0, "");
     case 4108:
-      return parse_VtVecHeadingPairValue(blob);
+      return parse_VtVecHeadingPairValue(blob2);
     case 4126:
     case 4127:
-      return t == 4127 ? parse_VtVecLpwstrValue(blob) : parse_VtVecUnalignedLpstrValue(blob);
+      return t == 4127 ? parse_VtVecLpwstrValue(blob2) : parse_VtVecUnalignedLpstrValue(blob2);
     default:
       throw new Error("TypedPropertyValue unrecognized type " + type + " " + t);
   }
@@ -8346,16 +8346,16 @@ function write_TypedPropertyValue(type, value) {
   }
   return bconcat([o, p]);
 }
-function parse_PropertySet(blob, PIDSI) {
-  var start_addr = blob.l;
-  var size = blob.read_shift(4);
-  var NumProps = blob.read_shift(4);
+function parse_PropertySet(blob2, PIDSI) {
+  var start_addr = blob2.l;
+  var size = blob2.read_shift(4);
+  var NumProps = blob2.read_shift(4);
   var Props = [], i = 0;
   var CodePage = 0;
   var Dictionary = -1, DictObj = {};
   for (i = 0; i != NumProps; ++i) {
-    var PropID = blob.read_shift(4);
-    var Offset = blob.read_shift(4);
+    var PropID = blob2.read_shift(4);
+    var Offset = blob2.read_shift(4);
     Props[i] = [PropID, Offset + start_addr];
   }
   Props.sort(function(x, y) {
@@ -8363,41 +8363,41 @@ function parse_PropertySet(blob, PIDSI) {
   });
   var PropH = {};
   for (i = 0; i != NumProps; ++i) {
-    if (blob.l !== Props[i][1]) {
+    if (blob2.l !== Props[i][1]) {
       var fail = true;
       if (i > 0 && PIDSI)
         switch (PIDSI[Props[i - 1][0]].t) {
           case 2:
-            if (blob.l + 2 === Props[i][1]) {
-              blob.l += 2;
+            if (blob2.l + 2 === Props[i][1]) {
+              blob2.l += 2;
               fail = false;
             }
             break;
           case 80:
-            if (blob.l <= Props[i][1]) {
-              blob.l = Props[i][1];
+            if (blob2.l <= Props[i][1]) {
+              blob2.l = Props[i][1];
               fail = false;
             }
             break;
           case 4108:
-            if (blob.l <= Props[i][1]) {
-              blob.l = Props[i][1];
+            if (blob2.l <= Props[i][1]) {
+              blob2.l = Props[i][1];
               fail = false;
             }
             break;
         }
-      if ((!PIDSI || i == 0) && blob.l <= Props[i][1]) {
+      if ((!PIDSI || i == 0) && blob2.l <= Props[i][1]) {
         fail = false;
-        blob.l = Props[i][1];
+        blob2.l = Props[i][1];
       }
       if (fail)
-        throw new Error("Read Error: Expected address " + Props[i][1] + " at " + blob.l + " :" + i);
+        throw new Error("Read Error: Expected address " + Props[i][1] + " at " + blob2.l + " :" + i);
     }
     if (PIDSI) {
       if (Props[i][0] == 0 && Props.length > i + 1 && Props[i][1] == Props[i + 1][1])
         continue;
       var piddsi = PIDSI[Props[i][0]];
-      PropH[piddsi.n] = parse_TypedPropertyValue(blob, piddsi.t, { raw: true });
+      PropH[piddsi.n] = parse_TypedPropertyValue(blob2, piddsi.t, { raw: true });
       if (piddsi.p === "version")
         PropH[piddsi.n] = String(PropH[piddsi.n] >> 16) + "." + ("0000" + String(PropH[piddsi.n] & 65535)).slice(-4);
       if (piddsi.n == "CodePage")
@@ -8432,65 +8432,65 @@ function parse_PropertySet(blob, PIDSI) {
         }
     } else {
       if (Props[i][0] === 1) {
-        CodePage = PropH.CodePage = parse_TypedPropertyValue(blob, VT_I2);
+        CodePage = PropH.CodePage = parse_TypedPropertyValue(blob2, VT_I2);
         set_cp(CodePage);
         if (Dictionary !== -1) {
-          var oldpos = blob.l;
-          blob.l = Props[Dictionary][1];
-          DictObj = parse_dictionary(blob, CodePage);
-          blob.l = oldpos;
+          var oldpos = blob2.l;
+          blob2.l = Props[Dictionary][1];
+          DictObj = parse_dictionary(blob2, CodePage);
+          blob2.l = oldpos;
         }
       } else if (Props[i][0] === 0) {
         if (CodePage === 0) {
           Dictionary = i;
-          blob.l = Props[i + 1][1];
+          blob2.l = Props[i + 1][1];
           continue;
         }
-        DictObj = parse_dictionary(blob, CodePage);
+        DictObj = parse_dictionary(blob2, CodePage);
       } else {
         var name = DictObj[Props[i][0]];
         var val;
-        switch (blob[blob.l]) {
+        switch (blob2[blob2.l]) {
           case 65:
-            blob.l += 4;
-            val = parse_BLOB(blob);
+            blob2.l += 4;
+            val = parse_BLOB(blob2);
             break;
           case 30:
-            blob.l += 4;
-            val = parse_VtString(blob, blob[blob.l - 4]).replace(/\u0000+$/, "");
+            blob2.l += 4;
+            val = parse_VtString(blob2, blob2[blob2.l - 4]).replace(/\u0000+$/, "");
             break;
           case 31:
-            blob.l += 4;
-            val = parse_VtString(blob, blob[blob.l - 4]).replace(/\u0000+$/, "");
+            blob2.l += 4;
+            val = parse_VtString(blob2, blob2[blob2.l - 4]).replace(/\u0000+$/, "");
             break;
           case 3:
-            blob.l += 4;
-            val = blob.read_shift(4, "i");
+            blob2.l += 4;
+            val = blob2.read_shift(4, "i");
             break;
           case 19:
-            blob.l += 4;
-            val = blob.read_shift(4);
+            blob2.l += 4;
+            val = blob2.read_shift(4);
             break;
           case 5:
-            blob.l += 4;
-            val = blob.read_shift(8, "f");
+            blob2.l += 4;
+            val = blob2.read_shift(8, "f");
             break;
           case 11:
-            blob.l += 4;
-            val = parsebool(blob, 4);
+            blob2.l += 4;
+            val = parsebool(blob2, 4);
             break;
           case 64:
-            blob.l += 4;
-            val = parseDate(parse_FILETIME(blob));
+            blob2.l += 4;
+            val = parseDate(parse_FILETIME(blob2));
             break;
           default:
-            throw new Error("unparsed value: " + blob[blob.l]);
+            throw new Error("unparsed value: " + blob2[blob2.l]);
         }
         PropH[name] = val;
       }
     }
   }
-  blob.l = start_addr + size;
+  blob2.l = start_addr + size;
   return PropH;
 }
 var XLSPSSkip = ["CodePage", "Thumbnail", "_PID_LINKBASE", "_PID_HLINKS", "SystemIdentifier", "FMTID"];
@@ -8579,42 +8579,42 @@ function write_PropertySet(entries, RE, PIDSI) {
   return bconcat([hdr].concat(piao).concat(prop));
 }
 function parse_PropertySetStream(file, PIDSI, clsid) {
-  var blob = file.content;
-  if (!blob)
+  var blob2 = file.content;
+  if (!blob2)
     return {};
-  prep_blob(blob, 0);
+  prep_blob(blob2, 0);
   var NumSets, FMTID0, FMTID1, Offset0, Offset1 = 0;
-  blob.chk("feff", "Byte Order: ");
-  blob.read_shift(2);
-  var SystemIdentifier = blob.read_shift(4);
-  var CLSID = blob.read_shift(16);
+  blob2.chk("feff", "Byte Order: ");
+  blob2.read_shift(2);
+  var SystemIdentifier = blob2.read_shift(4);
+  var CLSID = blob2.read_shift(16);
   if (CLSID !== CFB.utils.consts.HEADER_CLSID && CLSID !== clsid)
     throw new Error("Bad PropertySet CLSID " + CLSID);
-  NumSets = blob.read_shift(4);
+  NumSets = blob2.read_shift(4);
   if (NumSets !== 1 && NumSets !== 2)
     throw new Error("Unrecognized #Sets: " + NumSets);
-  FMTID0 = blob.read_shift(16);
-  Offset0 = blob.read_shift(4);
-  if (NumSets === 1 && Offset0 !== blob.l)
-    throw new Error("Length mismatch: " + Offset0 + " !== " + blob.l);
+  FMTID0 = blob2.read_shift(16);
+  Offset0 = blob2.read_shift(4);
+  if (NumSets === 1 && Offset0 !== blob2.l)
+    throw new Error("Length mismatch: " + Offset0 + " !== " + blob2.l);
   else if (NumSets === 2) {
-    FMTID1 = blob.read_shift(16);
-    Offset1 = blob.read_shift(4);
+    FMTID1 = blob2.read_shift(16);
+    Offset1 = blob2.read_shift(4);
   }
-  var PSet0 = parse_PropertySet(blob, PIDSI);
+  var PSet0 = parse_PropertySet(blob2, PIDSI);
   var rval = { SystemIdentifier };
   for (var y in PSet0)
     rval[y] = PSet0[y];
   rval.FMTID = FMTID0;
   if (NumSets === 1)
     return rval;
-  if (Offset1 - blob.l == 2)
-    blob.l += 2;
-  if (blob.l !== Offset1)
-    throw new Error("Length mismatch 2: " + blob.l + " !== " + Offset1);
+  if (Offset1 - blob2.l == 2)
+    blob2.l += 2;
+  if (blob2.l !== Offset1)
+    throw new Error("Length mismatch 2: " + blob2.l + " !== " + Offset1);
   var PSet1;
   try {
-    PSet1 = parse_PropertySet(blob, null);
+    PSet1 = parse_PropertySet(blob2, null);
   } catch (e) {
   }
   for (y in PSet1)
@@ -8642,8 +8642,8 @@ function write_PropertySetStream(entries, clsid, RE, PIDSI, entries2, clsid2) {
   }
   return bconcat(bufs);
 }
-function parsenoop2(blob, length2) {
-  blob.read_shift(length2);
+function parsenoop2(blob2, length2) {
+  blob2.read_shift(length2);
   return null;
 }
 function writezeroes(n, o) {
@@ -8653,16 +8653,16 @@ function writezeroes(n, o) {
     o.write_shift(1, 0);
   return o;
 }
-function parslurp(blob, length2, cb) {
-  var arr = [], target = blob.l + length2;
-  while (blob.l < target)
-    arr.push(cb(blob, target - blob.l));
-  if (target !== blob.l)
+function parslurp(blob2, length2, cb) {
+  var arr = [], target = blob2.l + length2;
+  while (blob2.l < target)
+    arr.push(cb(blob2, target - blob2.l));
+  if (target !== blob2.l)
     throw new Error("Slurp error");
   return arr;
 }
-function parsebool(blob, length2) {
-  return blob.read_shift(length2) === 1;
+function parsebool(blob2, length2) {
+  return blob2.read_shift(length2) === 1;
 }
 function writebool(v, o) {
   if (!o)
@@ -8670,8 +8670,8 @@ function writebool(v, o) {
   o.write_shift(2, +!!v);
   return o;
 }
-function parseuint16(blob) {
-  return blob.read_shift(2, "u");
+function parseuint16(blob2) {
+  return blob2.read_shift(2, "u");
 }
 function writeuint16(v, o) {
   if (!o)
@@ -8679,11 +8679,11 @@ function writeuint16(v, o) {
   o.write_shift(2, v);
   return o;
 }
-function parseuint16a(blob, length2) {
-  return parslurp(blob, length2, parseuint16);
+function parseuint16a(blob2, length2) {
+  return parslurp(blob2, length2, parseuint16);
 }
-function parse_Bes(blob) {
-  var v = blob.read_shift(1), t = blob.read_shift(1);
+function parse_Bes(blob2) {
+  var v = blob2.read_shift(1), t = blob2.read_shift(1);
   return t === 1 ? v : v === 1;
 }
 function write_Bes(v, t, o) {
@@ -8693,14 +8693,14 @@ function write_Bes(v, t, o) {
   o.write_shift(1, t == "e" ? 1 : 0);
   return o;
 }
-function parse_ShortXLUnicodeString(blob, length2, opts) {
-  var cch = blob.read_shift(opts && opts.biff >= 12 ? 2 : 1);
+function parse_ShortXLUnicodeString(blob2, length2, opts) {
+  var cch = blob2.read_shift(opts && opts.biff >= 12 ? 2 : 1);
   var encoding = "sbcs-cont";
   var cp = current_codepage;
   if (opts && opts.biff >= 8)
     current_codepage = 1200;
   if (!opts || opts.biff == 8) {
-    var fHighByte = blob.read_shift(1);
+    var fHighByte = blob2.read_shift(1);
     if (fHighByte) {
       encoding = "dbcs-cont";
     }
@@ -8709,28 +8709,28 @@ function parse_ShortXLUnicodeString(blob, length2, opts) {
   }
   if (opts.biff >= 2 && opts.biff <= 5)
     encoding = "cpstr";
-  var o = cch ? blob.read_shift(cch, encoding) : "";
+  var o = cch ? blob2.read_shift(cch, encoding) : "";
   current_codepage = cp;
   return o;
 }
-function parse_XLUnicodeRichExtendedString(blob) {
+function parse_XLUnicodeRichExtendedString(blob2) {
   var cp = current_codepage;
   current_codepage = 1200;
-  var cch = blob.read_shift(2), flags = blob.read_shift(1);
+  var cch = blob2.read_shift(2), flags = blob2.read_shift(1);
   var fExtSt = flags & 4, fRichSt = flags & 8;
   var width = 1 + (flags & 1);
   var cRun = 0, cbExtRst;
   var z = {};
   if (fRichSt)
-    cRun = blob.read_shift(2);
+    cRun = blob2.read_shift(2);
   if (fExtSt)
-    cbExtRst = blob.read_shift(4);
+    cbExtRst = blob2.read_shift(4);
   var encoding = width == 2 ? "dbcs-cont" : "sbcs-cont";
-  var msg = cch === 0 ? "" : blob.read_shift(cch, encoding);
+  var msg = cch === 0 ? "" : blob2.read_shift(cch, encoding);
   if (fRichSt)
-    blob.l += 4 * cRun;
+    blob2.l += 4 * cRun;
   if (fExtSt)
-    blob.l += cbExtRst;
+    blob2.l += cbExtRst;
   z.t = msg;
   if (!fRichSt) {
     z.raw = "<t>" + z.t + "</t>";
@@ -8749,39 +8749,39 @@ function write_XLUnicodeRichExtendedString(xlstr) {
   var out = [hdr, otext];
   return bconcat(out);
 }
-function parse_XLUnicodeStringNoCch(blob, cch, opts) {
+function parse_XLUnicodeStringNoCch(blob2, cch, opts) {
   var retval;
   if (opts) {
     if (opts.biff >= 2 && opts.biff <= 5)
-      return blob.read_shift(cch, "cpstr");
+      return blob2.read_shift(cch, "cpstr");
     if (opts.biff >= 12)
-      return blob.read_shift(cch, "dbcs-cont");
+      return blob2.read_shift(cch, "dbcs-cont");
   }
-  var fHighByte = blob.read_shift(1);
+  var fHighByte = blob2.read_shift(1);
   if (fHighByte === 0) {
-    retval = blob.read_shift(cch, "sbcs-cont");
+    retval = blob2.read_shift(cch, "sbcs-cont");
   } else {
-    retval = blob.read_shift(cch, "dbcs-cont");
+    retval = blob2.read_shift(cch, "dbcs-cont");
   }
   return retval;
 }
-function parse_XLUnicodeString(blob, length2, opts) {
-  var cch = blob.read_shift(opts && opts.biff == 2 ? 1 : 2);
+function parse_XLUnicodeString(blob2, length2, opts) {
+  var cch = blob2.read_shift(opts && opts.biff == 2 ? 1 : 2);
   if (cch === 0) {
-    blob.l++;
+    blob2.l++;
     return "";
   }
-  return parse_XLUnicodeStringNoCch(blob, cch, opts);
+  return parse_XLUnicodeStringNoCch(blob2, cch, opts);
 }
-function parse_XLUnicodeString2(blob, length2, opts) {
+function parse_XLUnicodeString2(blob2, length2, opts) {
   if (opts.biff > 5)
-    return parse_XLUnicodeString(blob, length2, opts);
-  var cch = blob.read_shift(1);
+    return parse_XLUnicodeString(blob2, length2, opts);
+  var cch = blob2.read_shift(1);
   if (cch === 0) {
-    blob.l++;
+    blob2.l++;
     return "";
   }
-  return blob.read_shift(cch, opts.biff <= 4 || !blob.lens ? "cpstr" : "sbcs-cont");
+  return blob2.read_shift(cch, opts.biff <= 4 || !blob2.lens ? "cpstr" : "sbcs-cont");
 }
 function write_XLUnicodeString(str, opts, o) {
   if (!o)
@@ -8791,59 +8791,59 @@ function write_XLUnicodeString(str, opts, o) {
   o.write_shift(31, str, "utf16le");
   return o;
 }
-function parse_ControlInfo(blob) {
-  var flags = blob.read_shift(1);
-  blob.l++;
-  var accel = blob.read_shift(2);
-  blob.l += 2;
+function parse_ControlInfo(blob2) {
+  var flags = blob2.read_shift(1);
+  blob2.l++;
+  var accel = blob2.read_shift(2);
+  blob2.l += 2;
   return [flags, accel];
 }
-function parse_URLMoniker(blob) {
-  var len = blob.read_shift(4), start = blob.l;
+function parse_URLMoniker(blob2) {
+  var len = blob2.read_shift(4), start = blob2.l;
   var extra = false;
   if (len > 24) {
-    blob.l += len - 24;
-    if (blob.read_shift(16) === "795881f43b1d7f48af2c825dc4852763")
+    blob2.l += len - 24;
+    if (blob2.read_shift(16) === "795881f43b1d7f48af2c825dc4852763")
       extra = true;
-    blob.l = start;
+    blob2.l = start;
   }
-  var url = blob.read_shift((extra ? len - 24 : len) >> 1, "utf16le").replace(chr0, "");
+  var url = blob2.read_shift((extra ? len - 24 : len) >> 1, "utf16le").replace(chr0, "");
   if (extra)
-    blob.l += 24;
+    blob2.l += 24;
   return url;
 }
-function parse_FileMoniker(blob) {
-  var cAnti = blob.read_shift(2);
+function parse_FileMoniker(blob2) {
+  var cAnti = blob2.read_shift(2);
   var preamble = "";
   while (cAnti-- > 0)
     preamble += "../";
-  var ansiPath = blob.read_shift(0, "lpstr-ansi");
-  blob.l += 2;
-  if (blob.read_shift(2) != 57005)
+  var ansiPath = blob2.read_shift(0, "lpstr-ansi");
+  blob2.l += 2;
+  if (blob2.read_shift(2) != 57005)
     throw new Error("Bad FileMoniker");
-  var sz = blob.read_shift(4);
+  var sz = blob2.read_shift(4);
   if (sz === 0)
     return preamble + ansiPath.replace(/\\/g, "/");
-  var bytes = blob.read_shift(4);
-  if (blob.read_shift(2) != 3)
+  var bytes = blob2.read_shift(4);
+  if (blob2.read_shift(2) != 3)
     throw new Error("Bad FileMoniker");
-  var unicodePath = blob.read_shift(bytes >> 1, "utf16le").replace(chr0, "");
+  var unicodePath = blob2.read_shift(bytes >> 1, "utf16le").replace(chr0, "");
   return preamble + unicodePath;
 }
-function parse_HyperlinkMoniker(blob, length2) {
-  var clsid = blob.read_shift(16);
+function parse_HyperlinkMoniker(blob2, length2) {
+  var clsid = blob2.read_shift(16);
   switch (clsid) {
     case "e0c9ea79f9bace118c8200aa004ba90b":
-      return parse_URLMoniker(blob);
+      return parse_URLMoniker(blob2);
     case "0303000000000000c000000000000046":
-      return parse_FileMoniker(blob);
+      return parse_FileMoniker(blob2);
     default:
       throw new Error("Unsupported Moniker " + clsid);
   }
 }
-function parse_HyperlinkString(blob) {
-  var len = blob.read_shift(4);
-  var o = len > 0 ? blob.read_shift(len, "utf16le").replace(chr0, "") : "";
+function parse_HyperlinkString(blob2) {
+  var len = blob2.read_shift(4);
+  var o = len > 0 ? blob2.read_shift(len, "utf16le").replace(chr0, "") : "";
   return o;
 }
 function write_HyperlinkString(str, o) {
@@ -8855,32 +8855,32 @@ function write_HyperlinkString(str, o) {
   o.write_shift(2, 0);
   return o;
 }
-function parse_Hyperlink(blob, length2) {
-  var end = blob.l + length2;
-  var sVer = blob.read_shift(4);
+function parse_Hyperlink(blob2, length2) {
+  var end = blob2.l + length2;
+  var sVer = blob2.read_shift(4);
   if (sVer !== 2)
     throw new Error("Unrecognized streamVersion: " + sVer);
-  var flags = blob.read_shift(2);
-  blob.l += 2;
+  var flags = blob2.read_shift(2);
+  blob2.l += 2;
   var displayName, targetFrameName, moniker, oleMoniker, Loc = "", guid, fileTime;
   if (flags & 16)
-    displayName = parse_HyperlinkString(blob, end - blob.l);
+    displayName = parse_HyperlinkString(blob2, end - blob2.l);
   if (flags & 128)
-    targetFrameName = parse_HyperlinkString(blob, end - blob.l);
+    targetFrameName = parse_HyperlinkString(blob2, end - blob2.l);
   if ((flags & 257) === 257)
-    moniker = parse_HyperlinkString(blob, end - blob.l);
+    moniker = parse_HyperlinkString(blob2, end - blob2.l);
   if ((flags & 257) === 1)
-    oleMoniker = parse_HyperlinkMoniker(blob, end - blob.l);
+    oleMoniker = parse_HyperlinkMoniker(blob2, end - blob2.l);
   if (flags & 8)
-    Loc = parse_HyperlinkString(blob, end - blob.l);
+    Loc = parse_HyperlinkString(blob2, end - blob2.l);
   if (flags & 32)
-    guid = blob.read_shift(16);
+    guid = blob2.read_shift(16);
   if (flags & 64)
     fileTime = parse_FILETIME(
-      blob
+      blob2
       /*, 8*/
     );
-  blob.l = end;
+  blob2.l = end;
   var target = targetFrameName || moniker || oleMoniker || "";
   if (target && Loc)
     target += "#" + Loc;
@@ -8950,19 +8950,19 @@ function write_Hyperlink(hl) {
   }
   return out.slice(0, out.l);
 }
-function parse_LongRGBA(blob) {
-  var r = blob.read_shift(1), g = blob.read_shift(1), b = blob.read_shift(1), a = blob.read_shift(1);
+function parse_LongRGBA(blob2) {
+  var r = blob2.read_shift(1), g = blob2.read_shift(1), b = blob2.read_shift(1), a = blob2.read_shift(1);
   return [r, g, b, a];
 }
-function parse_LongRGB(blob, length2) {
-  var x = parse_LongRGBA(blob);
+function parse_LongRGB(blob2, length2) {
+  var x = parse_LongRGBA(blob2);
   x[3] = 0;
   return x;
 }
-function parse_XLSCell(blob) {
-  var rw = blob.read_shift(2);
-  var col = blob.read_shift(2);
-  var ixfe = blob.read_shift(2);
+function parse_XLSCell(blob2) {
+  var rw = blob2.read_shift(2);
+  var col = blob2.read_shift(2);
+  var ixfe = blob2.read_shift(2);
   return { r: rw, c: col, ixfe };
 }
 function write_XLSCell(R, C, ixfe, o) {
@@ -8973,42 +8973,42 @@ function write_XLSCell(R, C, ixfe, o) {
   o.write_shift(2, ixfe || 0);
   return o;
 }
-function parse_frtHeader(blob) {
-  var rt = blob.read_shift(2);
-  var flags = blob.read_shift(2);
-  blob.l += 8;
+function parse_frtHeader(blob2) {
+  var rt = blob2.read_shift(2);
+  var flags = blob2.read_shift(2);
+  blob2.l += 8;
   return { type: rt, flags };
 }
-function parse_OptXLUnicodeString(blob, length2, opts) {
-  return length2 === 0 ? "" : parse_XLUnicodeString2(blob, length2, opts);
+function parse_OptXLUnicodeString(blob2, length2, opts) {
+  return length2 === 0 ? "" : parse_XLUnicodeString2(blob2, length2, opts);
 }
-function parse_XTI(blob, length2, opts) {
+function parse_XTI(blob2, length2, opts) {
   var w2 = opts.biff > 8 ? 4 : 2;
-  var iSupBook = blob.read_shift(w2), itabFirst = blob.read_shift(w2, "i"), itabLast = blob.read_shift(w2, "i");
+  var iSupBook = blob2.read_shift(w2), itabFirst = blob2.read_shift(w2, "i"), itabLast = blob2.read_shift(w2, "i");
   return [iSupBook, itabFirst, itabLast];
 }
-function parse_RkRec(blob) {
-  var ixfe = blob.read_shift(2);
-  var RK = parse_RkNumber(blob);
+function parse_RkRec(blob2) {
+  var ixfe = blob2.read_shift(2);
+  var RK = parse_RkNumber(blob2);
   return [ixfe, RK];
 }
-function parse_AddinUdf(blob, length2, opts) {
-  blob.l += 4;
+function parse_AddinUdf(blob2, length2, opts) {
+  blob2.l += 4;
   length2 -= 4;
-  var l = blob.l + length2;
-  var udfName = parse_ShortXLUnicodeString(blob, length2, opts);
-  var cb = blob.read_shift(2);
-  l -= blob.l;
+  var l = blob2.l + length2;
+  var udfName = parse_ShortXLUnicodeString(blob2, length2, opts);
+  var cb = blob2.read_shift(2);
+  l -= blob2.l;
   if (cb !== l)
     throw new Error("Malformed AddinUdf: padding = " + l + " != " + cb);
-  blob.l += cb;
+  blob2.l += cb;
   return udfName;
 }
-function parse_Ref8U(blob) {
-  var rwFirst = blob.read_shift(2);
-  var rwLast = blob.read_shift(2);
-  var colFirst = blob.read_shift(2);
-  var colLast = blob.read_shift(2);
+function parse_Ref8U(blob2) {
+  var rwFirst = blob2.read_shift(2);
+  var rwLast = blob2.read_shift(2);
+  var colFirst = blob2.read_shift(2);
+  var colLast = blob2.read_shift(2);
   return { s: { c: colFirst, r: rwFirst }, e: { c: colLast, r: rwLast } };
 }
 function write_Ref8U(r, o) {
@@ -9020,39 +9020,39 @@ function write_Ref8U(r, o) {
   o.write_shift(2, r.e.c);
   return o;
 }
-function parse_RefU(blob) {
-  var rwFirst = blob.read_shift(2);
-  var rwLast = blob.read_shift(2);
-  var colFirst = blob.read_shift(1);
-  var colLast = blob.read_shift(1);
+function parse_RefU(blob2) {
+  var rwFirst = blob2.read_shift(2);
+  var rwLast = blob2.read_shift(2);
+  var colFirst = blob2.read_shift(1);
+  var colLast = blob2.read_shift(1);
   return { s: { c: colFirst, r: rwFirst }, e: { c: colLast, r: rwLast } };
 }
 var parse_Ref = parse_RefU;
-function parse_FtCmo(blob) {
-  blob.l += 4;
-  var ot = blob.read_shift(2);
-  var id = blob.read_shift(2);
-  var flags = blob.read_shift(2);
-  blob.l += 12;
+function parse_FtCmo(blob2) {
+  blob2.l += 4;
+  var ot = blob2.read_shift(2);
+  var id = blob2.read_shift(2);
+  var flags = blob2.read_shift(2);
+  blob2.l += 12;
   return [id, ot, flags];
 }
-function parse_FtNts(blob) {
+function parse_FtNts(blob2) {
   var out = {};
-  blob.l += 4;
-  blob.l += 16;
-  out.fSharedNote = blob.read_shift(2);
-  blob.l += 4;
+  blob2.l += 4;
+  blob2.l += 16;
+  out.fSharedNote = blob2.read_shift(2);
+  blob2.l += 4;
   return out;
 }
-function parse_FtCf(blob) {
+function parse_FtCf(blob2) {
   var out = {};
-  blob.l += 4;
-  blob.cf = blob.read_shift(2);
+  blob2.l += 4;
+  blob2.cf = blob2.read_shift(2);
   return out;
 }
-function parse_FtSkip(blob) {
-  blob.l += 2;
-  blob.l += blob.read_shift(2);
+function parse_FtSkip(blob2) {
+  blob2.l += 2;
+  blob2.l += blob2.read_shift(2);
 }
 var FtTab = {
   /*::[*/
@@ -9112,30 +9112,30 @@ var FtTab = {
   /*::[*/
   21: parse_FtCmo
 };
-function parse_FtArray(blob, length2) {
-  var tgt = blob.l + length2;
+function parse_FtArray(blob2, length2) {
+  var tgt = blob2.l + length2;
   var fts = [];
-  while (blob.l < tgt) {
-    var ft = blob.read_shift(2);
-    blob.l -= 2;
+  while (blob2.l < tgt) {
+    var ft = blob2.read_shift(2);
+    blob2.l -= 2;
     try {
-      fts[ft] = FtTab[ft](blob, tgt - blob.l);
+      fts[ft] = FtTab[ft](blob2, tgt - blob2.l);
     } catch (e) {
-      blob.l = tgt;
+      blob2.l = tgt;
       return fts;
     }
   }
-  if (blob.l != tgt)
-    blob.l = tgt;
+  if (blob2.l != tgt)
+    blob2.l = tgt;
   return fts;
 }
-function parse_BOF(blob, length2) {
+function parse_BOF(blob2, length2) {
   var o = { BIFFVer: 0, dt: 0 };
-  o.BIFFVer = blob.read_shift(2);
+  o.BIFFVer = blob2.read_shift(2);
   length2 -= 2;
   if (length2 >= 2) {
-    o.dt = blob.read_shift(2);
-    blob.l -= 2;
+    o.dt = blob2.read_shift(2);
+    blob2.l -= 2;
   }
   switch (o.BIFFVer) {
     case 1536:
@@ -9150,7 +9150,7 @@ function parse_BOF(blob, length2) {
       if (length2 > 6)
         throw new Error("Unexpected BIFF Ver " + o.BIFFVer);
   }
-  blob.read_shift(length2);
+  blob2.read_shift(length2);
   return o;
 }
 function write_BOF(wb, t, o) {
@@ -9194,21 +9194,21 @@ function write_BOF(wb, t, o) {
   }
   return out;
 }
-function parse_InterfaceHdr(blob, length2) {
+function parse_InterfaceHdr(blob2, length2) {
   if (length2 === 0)
     return 1200;
-  if (blob.read_shift(2) !== 1200)
+  if (blob2.read_shift(2) !== 1200)
     ;
   return 1200;
 }
-function parse_WriteAccess(blob, length2, opts) {
+function parse_WriteAccess(blob2, length2, opts) {
   if (opts.enc) {
-    blob.l += length2;
+    blob2.l += length2;
     return "";
   }
-  var l = blob.l;
-  var UserName = parse_XLUnicodeString2(blob, 0, opts);
-  blob.read_shift(length2 + l - blob.l);
+  var l = blob2.l;
+  var UserName = parse_XLUnicodeString2(blob2, 0, opts);
+  blob2.read_shift(length2 + l - blob2.l);
   return UserName;
 }
 function write_WriteAccess(s, opts) {
@@ -9223,14 +9223,14 @@ function write_WriteAccess(s, opts) {
     o.write_shift(1, b8 ? 0 : 32);
   return o;
 }
-function parse_WsBool(blob, length2, opts) {
-  var flags = opts && opts.biff == 8 || length2 == 2 ? blob.read_shift(2) : (blob.l += length2, 0);
+function parse_WsBool(blob2, length2, opts) {
+  var flags = opts && opts.biff == 8 || length2 == 2 ? blob2.read_shift(2) : (blob2.l += length2, 0);
   return { fDialog: flags & 16, fBelow: flags & 64, fRight: flags & 128 };
 }
-function parse_BoundSheet8(blob, length2, opts) {
-  var pos = blob.read_shift(4);
-  var hidden = blob.read_shift(1) & 3;
-  var dt = blob.read_shift(1);
+function parse_BoundSheet8(blob2, length2, opts) {
+  var pos = blob2.read_shift(4);
+  var hidden = blob2.read_shift(1) & 3;
+  var dt = blob2.read_shift(1);
   switch (dt) {
     case 0:
       dt = "Worksheet";
@@ -9245,7 +9245,7 @@ function parse_BoundSheet8(blob, length2, opts) {
       dt = "VBAModule";
       break;
   }
-  var name = parse_ShortXLUnicodeString(blob, 0, opts);
+  var name = parse_ShortXLUnicodeString(blob2, 0, opts);
   if (name.length === 0)
     name = "Sheet1";
   return { pos, hs: hidden, dt, name };
@@ -9264,13 +9264,13 @@ function write_BoundSheet8(data, opts) {
   out.l = o.l;
   return out;
 }
-function parse_SST(blob, length2) {
-  var end = blob.l + length2;
-  var cnt = blob.read_shift(4);
-  var ucnt = blob.read_shift(4);
+function parse_SST(blob2, length2) {
+  var end = blob2.l + length2;
+  var cnt = blob2.read_shift(4);
+  var ucnt = blob2.read_shift(4);
   var strs2 = [];
-  for (var i = 0; i != ucnt && blob.l < end; ++i) {
-    strs2.push(parse_XLUnicodeRichExtendedString(blob));
+  for (var i = 0; i != ucnt && blob2.l < end; ++i) {
+    strs2.push(parse_XLUnicodeRichExtendedString(blob2));
   }
   strs2.Count = cnt;
   strs2.Unique = ucnt;
@@ -9289,21 +9289,21 @@ function write_SST(sst, opts) {
   }));
   return o;
 }
-function parse_ExtSST(blob, length2) {
+function parse_ExtSST(blob2, length2) {
   var extsst = {};
-  extsst.dsst = blob.read_shift(2);
-  blob.l += length2 - 2;
+  extsst.dsst = blob2.read_shift(2);
+  blob2.l += length2 - 2;
   return extsst;
 }
-function parse_Row(blob) {
+function parse_Row(blob2) {
   var z = {};
-  z.r = blob.read_shift(2);
-  z.c = blob.read_shift(2);
-  z.cnt = blob.read_shift(2) - z.c;
-  var miyRw = blob.read_shift(2);
-  blob.l += 4;
-  var flags = blob.read_shift(1);
-  blob.l += 3;
+  z.r = blob2.read_shift(2);
+  z.c = blob2.read_shift(2);
+  z.cnt = blob2.read_shift(2) - z.c;
+  var miyRw = blob2.read_shift(2);
+  blob2.l += 4;
+  var flags = blob2.read_shift(1);
+  blob2.l += 3;
   if (flags & 7)
     z.level = flags & 7;
   if (flags & 32)
@@ -9312,23 +9312,23 @@ function parse_Row(blob) {
     z.hpt = miyRw / 20;
   return z;
 }
-function parse_ForceFullCalculation(blob) {
-  var header = parse_frtHeader(blob);
+function parse_ForceFullCalculation(blob2) {
+  var header = parse_frtHeader(blob2);
   if (header.type != 2211)
     throw new Error("Invalid Future Record " + header.type);
-  var fullcalc = blob.read_shift(4);
+  var fullcalc = blob2.read_shift(4);
   return fullcalc !== 0;
 }
-function parse_RecalcId(blob) {
-  blob.read_shift(2);
-  return blob.read_shift(4);
+function parse_RecalcId(blob2) {
+  blob2.read_shift(2);
+  return blob2.read_shift(4);
 }
-function parse_DefaultRowHeight(blob, length2, opts) {
+function parse_DefaultRowHeight(blob2, length2, opts) {
   var f = 0;
   if (!(opts && opts.biff == 2)) {
-    f = blob.read_shift(2);
+    f = blob2.read_shift(2);
   }
-  var miyRw = blob.read_shift(2);
+  var miyRw = blob2.read_shift(2);
   if (opts && opts.biff == 2) {
     f = 1 - (miyRw >> 15);
     miyRw &= 32767;
@@ -9336,10 +9336,10 @@ function parse_DefaultRowHeight(blob, length2, opts) {
   var fl = { Unsynced: f & 1, DyZero: (f & 2) >> 1, ExAsc: (f & 4) >> 2, ExDsc: (f & 8) >> 3 };
   return [fl, miyRw];
 }
-function parse_Window1(blob) {
-  var xWn = blob.read_shift(2), yWn = blob.read_shift(2), dxWn = blob.read_shift(2), dyWn = blob.read_shift(2);
-  var flags = blob.read_shift(2), iTabCur = blob.read_shift(2), iTabFirst = blob.read_shift(2);
-  var ctabSel = blob.read_shift(2), wTabRatio = blob.read_shift(2);
+function parse_Window1(blob2) {
+  var xWn = blob2.read_shift(2), yWn = blob2.read_shift(2), dxWn = blob2.read_shift(2), dyWn = blob2.read_shift(2);
+  var flags = blob2.read_shift(2), iTabCur = blob2.read_shift(2), iTabFirst = blob2.read_shift(2);
+  var ctabSel = blob2.read_shift(2), wTabRatio = blob2.read_shift(2);
   return {
     Pos: [xWn, yWn],
     Dim: [dxWn, dyWn],
@@ -9363,10 +9363,10 @@ function write_Window1() {
   o.write_shift(2, 500);
   return o;
 }
-function parse_Window2(blob, length2, opts) {
+function parse_Window2(blob2, length2, opts) {
   if (opts && opts.biff >= 2 && opts.biff < 5)
     return {};
-  var f = blob.read_shift(2);
+  var f = blob2.read_shift(2);
   return { RTL: f & 64 };
 }
 function write_Window2(view) {
@@ -9382,23 +9382,23 @@ function write_Window2(view) {
 }
 function parse_Pane() {
 }
-function parse_Font(blob, length2, opts) {
+function parse_Font(blob2, length2, opts) {
   var o = {
-    dyHeight: blob.read_shift(2),
-    fl: blob.read_shift(2)
+    dyHeight: blob2.read_shift(2),
+    fl: blob2.read_shift(2)
   };
   switch (opts && opts.biff || 8) {
     case 2:
       break;
     case 3:
     case 4:
-      blob.l += 2;
+      blob2.l += 2;
       break;
     default:
-      blob.l += 10;
+      blob2.l += 10;
       break;
   }
-  o.name = parse_ShortXLUnicodeString(blob, 0, opts);
+  o.name = parse_ShortXLUnicodeString(blob2, 0, opts);
   return o;
 }
 function write_Font(data, opts) {
@@ -9416,9 +9416,9 @@ function write_Font(data, opts) {
   o.write_shift((b5 ? 1 : 2) * name.length, name, b5 ? "sbcs" : "utf16le");
   return o;
 }
-function parse_LabelSst(blob) {
-  var cell = parse_XLSCell(blob);
-  cell.isst = blob.read_shift(4);
+function parse_LabelSst(blob2) {
+  var cell = parse_XLSCell(blob2);
+  cell.isst = blob2.read_shift(4);
   return cell;
 }
 function write_LabelSst(R, C, v, os) {
@@ -9427,14 +9427,14 @@ function write_LabelSst(R, C, v, os) {
   o.write_shift(4, v);
   return o;
 }
-function parse_Label(blob, length2, opts) {
+function parse_Label(blob2, length2, opts) {
   if (opts.biffguess && opts.biff == 2)
     opts.biff = 5;
-  var target = blob.l + length2;
-  var cell = parse_XLSCell(blob);
+  var target = blob2.l + length2;
+  var cell = parse_XLSCell(blob2);
   if (opts.biff == 2)
-    blob.l++;
-  var str = parse_XLUnicodeString(blob, target - blob.l, opts);
+    blob2.l++;
+  var str = parse_XLUnicodeString(blob2, target - blob2.l, opts);
   cell.val = str;
   return cell;
 }
@@ -9448,9 +9448,9 @@ function write_Label(R, C, v, os, opts) {
   o.write_shift((1 + b8) * v.length, v, b8 ? "utf16le" : "sbcs");
   return o;
 }
-function parse_Format(blob, length2, opts) {
-  var numFmtId = blob.read_shift(2);
-  var fmtstr = parse_XLUnicodeString2(blob, 0, opts);
+function parse_Format(blob2, length2, opts) {
+  var numFmtId = blob2.read_shift(2);
+  var fmtstr = parse_XLUnicodeString2(blob2, 0, opts);
   return [numFmtId, fmtstr];
 }
 function write_Format(i, f, opts, o) {
@@ -9468,12 +9468,12 @@ function write_Format(i, f, opts, o) {
   return out;
 }
 var parse_BIFF2Format = parse_XLUnicodeString2;
-function parse_Dimensions(blob, length2, opts) {
-  var end = blob.l + length2;
+function parse_Dimensions(blob2, length2, opts) {
+  var end = blob2.l + length2;
   var w2 = opts.biff == 8 || !opts.biff ? 4 : 2;
-  var r = blob.read_shift(w2), R = blob.read_shift(w2);
-  var c = blob.read_shift(2), C = blob.read_shift(2);
-  blob.l = end;
+  var r = blob2.read_shift(w2), R = blob2.read_shift(w2);
+  var c = blob2.read_shift(2), C = blob2.read_shift(2);
+  blob2.l = end;
   return { s: { r, c }, e: { r: R, c: C } };
 }
 function write_Dimensions(range, opts) {
@@ -9486,41 +9486,41 @@ function write_Dimensions(range, opts) {
   o.write_shift(2, 0);
   return o;
 }
-function parse_RK(blob) {
-  var rw = blob.read_shift(2), col = blob.read_shift(2);
-  var rkrec = parse_RkRec(blob);
+function parse_RK(blob2) {
+  var rw = blob2.read_shift(2), col = blob2.read_shift(2);
+  var rkrec = parse_RkRec(blob2);
   return { r: rw, c: col, ixfe: rkrec[0], rknum: rkrec[1] };
 }
-function parse_MulRk(blob, length2) {
-  var target = blob.l + length2 - 2;
-  var rw = blob.read_shift(2), col = blob.read_shift(2);
+function parse_MulRk(blob2, length2) {
+  var target = blob2.l + length2 - 2;
+  var rw = blob2.read_shift(2), col = blob2.read_shift(2);
   var rkrecs = [];
-  while (blob.l < target)
-    rkrecs.push(parse_RkRec(blob));
-  if (blob.l !== target)
+  while (blob2.l < target)
+    rkrecs.push(parse_RkRec(blob2));
+  if (blob2.l !== target)
     throw new Error("MulRK read error");
-  var lastcol = blob.read_shift(2);
+  var lastcol = blob2.read_shift(2);
   if (rkrecs.length != lastcol - col + 1)
     throw new Error("MulRK length mismatch");
   return { r: rw, c: col, C: lastcol, rkrec: rkrecs };
 }
-function parse_MulBlank(blob, length2) {
-  var target = blob.l + length2 - 2;
-  var rw = blob.read_shift(2), col = blob.read_shift(2);
+function parse_MulBlank(blob2, length2) {
+  var target = blob2.l + length2 - 2;
+  var rw = blob2.read_shift(2), col = blob2.read_shift(2);
   var ixfes = [];
-  while (blob.l < target)
-    ixfes.push(blob.read_shift(2));
-  if (blob.l !== target)
+  while (blob2.l < target)
+    ixfes.push(blob2.read_shift(2));
+  if (blob2.l !== target)
     throw new Error("MulBlank read error");
-  var lastcol = blob.read_shift(2);
+  var lastcol = blob2.read_shift(2);
   if (ixfes.length != lastcol - col + 1)
     throw new Error("MulBlank length mismatch");
   return { r: rw, c: col, C: lastcol, ixfe: ixfes };
 }
-function parse_CellStyleXF(blob, length2, style, opts) {
+function parse_CellStyleXF(blob2, length2, style, opts) {
   var o = {};
-  var a = blob.read_shift(4), b = blob.read_shift(4);
-  var c = blob.read_shift(4), d = blob.read_shift(2);
+  var a = blob2.read_shift(4), b = blob2.read_shift(4);
+  var c = blob2.read_shift(4), d = blob2.read_shift(2);
   o.patternType = XLSFillPattern[c >> 26];
   if (!opts.cellStyles)
     return o;
@@ -9554,14 +9554,14 @@ function parse_CellStyleXF(blob, length2, style, opts) {
   o.fsxButton = d >> 14 & 1;
   return o;
 }
-function parse_XF(blob, length2, opts) {
+function parse_XF(blob2, length2, opts) {
   var o = {};
-  o.ifnt = blob.read_shift(2);
-  o.numFmtId = blob.read_shift(2);
-  o.flags = blob.read_shift(2);
+  o.ifnt = blob2.read_shift(2);
+  o.numFmtId = blob2.read_shift(2);
+  o.flags = blob2.read_shift(2);
   o.fStyle = o.flags >> 2 & 1;
   length2 -= 6;
-  o.data = parse_CellStyleXF(blob, length2, o.fStyle, opts);
+  o.data = parse_CellStyleXF(blob2, length2, o.fStyle, opts);
   return o;
 }
 function write_XF(data, ixfeP, opts, o) {
@@ -9586,9 +9586,9 @@ function write_XF(data, ixfeP, opts, o) {
   o.write_shift(2, 0);
   return o;
 }
-function parse_Guts(blob) {
-  blob.l += 4;
-  var out = [blob.read_shift(2), blob.read_shift(2)];
+function parse_Guts(blob2) {
+  blob2.l += 4;
+  var out = [blob2.read_shift(2), blob2.read_shift(2)];
   if (out[0] !== 0)
     out[0]--;
   if (out[1] !== 0)
@@ -9604,11 +9604,11 @@ function write_Guts(guts) {
   o.write_shift(2, guts[1] ? guts[1] + 1 : 0);
   return o;
 }
-function parse_BoolErr(blob, length2, opts) {
-  var cell = parse_XLSCell(blob);
+function parse_BoolErr(blob2, length2, opts) {
+  var cell = parse_XLSCell(blob2);
   if (opts.biff == 2 || length2 == 9)
-    ++blob.l;
-  var val = parse_Bes(blob);
+    ++blob2.l;
+  var val = parse_Bes(blob2);
   cell.val = val;
   cell.t = val === true || val === false ? "b" : "e";
   return cell;
@@ -9619,11 +9619,11 @@ function write_BoolErr(R, C, v, os, opts, t) {
   write_Bes(v, t, o);
   return o;
 }
-function parse_Number(blob, length2, opts) {
+function parse_Number(blob2, length2, opts) {
   if (opts.biffguess && opts.biff == 2)
     opts.biff = 5;
-  var cell = parse_XLSCell(blob);
-  var xnum = parse_Xnum(blob);
+  var cell = parse_XLSCell(blob2);
+  var xnum = parse_Xnum(blob2);
   cell.val = xnum;
   return cell;
 }
@@ -9634,23 +9634,23 @@ function write_Number(R, C, v, os) {
   return o;
 }
 var parse_XLHeaderFooter = parse_OptXLUnicodeString;
-function parse_SupBook(blob, length2, opts) {
-  var end = blob.l + length2;
-  var ctab = blob.read_shift(2);
-  var cch = blob.read_shift(2);
+function parse_SupBook(blob2, length2, opts) {
+  var end = blob2.l + length2;
+  var ctab = blob2.read_shift(2);
+  var cch = blob2.read_shift(2);
   opts.sbcch = cch;
   if (cch == 1025 || cch == 14849)
     return [cch, ctab];
   if (cch < 1 || cch > 255)
     throw new Error("Unexpected SupBook type: " + cch);
-  var virtPath = parse_XLUnicodeStringNoCch(blob, cch);
+  var virtPath = parse_XLUnicodeStringNoCch(blob2, cch);
   var rgst = [];
-  while (end > blob.l)
-    rgst.push(parse_XLUnicodeString(blob));
+  while (end > blob2.l)
+    rgst.push(parse_XLUnicodeString(blob2));
   return [cch, ctab, virtPath, rgst];
 }
-function parse_ExternName(blob, length2, opts) {
-  var flags = blob.read_shift(2);
+function parse_ExternName(blob2, length2, opts) {
+  var flags = blob2.read_shift(2);
   var body;
   var o = {
     fBuiltIn: flags & 1,
@@ -9662,34 +9662,34 @@ function parse_ExternName(blob, length2, opts) {
     fIcon: flags >>> 15 & 1
   };
   if (opts.sbcch === 14849)
-    body = parse_AddinUdf(blob, length2 - 2, opts);
-  o.body = body || blob.read_shift(length2 - 2);
+    body = parse_AddinUdf(blob2, length2 - 2, opts);
+  o.body = body || blob2.read_shift(length2 - 2);
   if (typeof body === "string")
     o.Name = body;
   return o;
 }
-function parse_Lbl(blob, length2, opts) {
-  var target = blob.l + length2;
-  var flags = blob.read_shift(2);
-  var chKey = blob.read_shift(1);
-  var cch = blob.read_shift(1);
-  var cce = blob.read_shift(opts && opts.biff == 2 ? 1 : 2);
+function parse_Lbl(blob2, length2, opts) {
+  var target = blob2.l + length2;
+  var flags = blob2.read_shift(2);
+  var chKey = blob2.read_shift(1);
+  var cch = blob2.read_shift(1);
+  var cce = blob2.read_shift(opts && opts.biff == 2 ? 1 : 2);
   var itab = 0;
   if (!opts || opts.biff >= 5) {
     if (opts.biff != 5)
-      blob.l += 2;
-    itab = blob.read_shift(2);
+      blob2.l += 2;
+    itab = blob2.read_shift(2);
     if (opts.biff == 5)
-      blob.l += 2;
-    blob.l += 4;
+      blob2.l += 2;
+    blob2.l += 4;
   }
-  var name = parse_XLUnicodeStringNoCch(blob, cch, opts);
+  var name = parse_XLUnicodeStringNoCch(blob2, cch, opts);
   if (flags & 32)
     name = XLSLblBuiltIn[name.charCodeAt(0)];
-  var npflen = target - blob.l;
+  var npflen = target - blob2.l;
   if (opts && opts.biff == 2)
     --npflen;
-  var rgce = target == blob.l || cce === 0 || !(npflen > 0) ? [] : parse_NameParsedFormula(blob, npflen, opts, cce);
+  var rgce = target == blob2.l || cce === 0 || !(npflen > 0) ? [] : parse_NameParsedFormula(blob2, npflen, opts, cce);
   return {
     chKey,
     Name: name,
@@ -9697,84 +9697,84 @@ function parse_Lbl(blob, length2, opts) {
     rgce
   };
 }
-function parse_ExternSheet(blob, length2, opts) {
+function parse_ExternSheet(blob2, length2, opts) {
   if (opts.biff < 8)
-    return parse_BIFF5ExternSheet(blob, length2, opts);
-  if (!(opts.biff > 8) && length2 == blob[blob.l] + (blob[blob.l + 1] == 3 ? 1 : 0) + 1)
-    return parse_BIFF5ExternSheet(blob, length2, opts);
-  var o = [], target = blob.l + length2, len = blob.read_shift(opts.biff > 8 ? 4 : 2);
+    return parse_BIFF5ExternSheet(blob2, length2, opts);
+  if (!(opts.biff > 8) && length2 == blob2[blob2.l] + (blob2[blob2.l + 1] == 3 ? 1 : 0) + 1)
+    return parse_BIFF5ExternSheet(blob2, length2, opts);
+  var o = [], target = blob2.l + length2, len = blob2.read_shift(opts.biff > 8 ? 4 : 2);
   while (len-- !== 0)
-    o.push(parse_XTI(blob, opts.biff > 8 ? 12 : 6, opts));
-  if (blob.l != target)
-    throw new Error("Bad ExternSheet: " + blob.l + " != " + target);
+    o.push(parse_XTI(blob2, opts.biff > 8 ? 12 : 6, opts));
+  if (blob2.l != target)
+    throw new Error("Bad ExternSheet: " + blob2.l + " != " + target);
   return o;
 }
-function parse_BIFF5ExternSheet(blob, length2, opts) {
-  if (blob[blob.l + 1] == 3)
-    blob[blob.l]++;
-  var o = parse_ShortXLUnicodeString(blob, length2, opts);
+function parse_BIFF5ExternSheet(blob2, length2, opts) {
+  if (blob2[blob2.l + 1] == 3)
+    blob2[blob2.l]++;
+  var o = parse_ShortXLUnicodeString(blob2, length2, opts);
   return o.charCodeAt(0) == 3 ? o.slice(1) : o;
 }
-function parse_NameCmt(blob, length2, opts) {
+function parse_NameCmt(blob2, length2, opts) {
   if (opts.biff < 8) {
-    blob.l += length2;
+    blob2.l += length2;
     return;
   }
-  var cchName = blob.read_shift(2);
-  var cchComment = blob.read_shift(2);
-  var name = parse_XLUnicodeStringNoCch(blob, cchName, opts);
-  var comment2 = parse_XLUnicodeStringNoCch(blob, cchComment, opts);
+  var cchName = blob2.read_shift(2);
+  var cchComment = blob2.read_shift(2);
+  var name = parse_XLUnicodeStringNoCch(blob2, cchName, opts);
+  var comment2 = parse_XLUnicodeStringNoCch(blob2, cchComment, opts);
   return [name, comment2];
 }
-function parse_ShrFmla(blob, length2, opts) {
-  var ref = parse_RefU(blob);
-  blob.l++;
-  var cUse = blob.read_shift(1);
+function parse_ShrFmla(blob2, length2, opts) {
+  var ref = parse_RefU(blob2);
+  blob2.l++;
+  var cUse = blob2.read_shift(1);
   length2 -= 8;
-  return [parse_SharedParsedFormula(blob, length2, opts), cUse, ref];
+  return [parse_SharedParsedFormula(blob2, length2, opts), cUse, ref];
 }
-function parse_Array(blob, length2, opts) {
-  var ref = parse_Ref(blob);
+function parse_Array(blob2, length2, opts) {
+  var ref = parse_Ref(blob2);
   switch (opts.biff) {
     case 2:
-      blob.l++;
+      blob2.l++;
       length2 -= 7;
       break;
     case 3:
     case 4:
-      blob.l += 2;
+      blob2.l += 2;
       length2 -= 8;
       break;
     default:
-      blob.l += 6;
+      blob2.l += 6;
       length2 -= 12;
   }
-  return [ref, parse_ArrayParsedFormula(blob, length2, opts)];
+  return [ref, parse_ArrayParsedFormula(blob2, length2, opts)];
 }
-function parse_MTRSettings(blob) {
-  var fMTREnabled = blob.read_shift(4) !== 0;
-  var fUserSetThreadCount = blob.read_shift(4) !== 0;
-  var cUserThreadCount = blob.read_shift(4);
+function parse_MTRSettings(blob2) {
+  var fMTREnabled = blob2.read_shift(4) !== 0;
+  var fUserSetThreadCount = blob2.read_shift(4) !== 0;
+  var cUserThreadCount = blob2.read_shift(4);
   return [fMTREnabled, fUserSetThreadCount, cUserThreadCount];
 }
-function parse_NoteSh(blob, length2, opts) {
+function parse_NoteSh(blob2, length2, opts) {
   if (opts.biff < 8)
     return;
-  var row = blob.read_shift(2), col = blob.read_shift(2);
-  var flags = blob.read_shift(2), idObj = blob.read_shift(2);
-  var stAuthor = parse_XLUnicodeString2(blob, 0, opts);
+  var row = blob2.read_shift(2), col = blob2.read_shift(2);
+  var flags = blob2.read_shift(2), idObj = blob2.read_shift(2);
+  var stAuthor = parse_XLUnicodeString2(blob2, 0, opts);
   if (opts.biff < 8)
-    blob.read_shift(1);
+    blob2.read_shift(1);
   return [{ r: row, c: col }, stAuthor, idObj, flags];
 }
-function parse_Note(blob, length2, opts) {
-  return parse_NoteSh(blob, length2, opts);
+function parse_Note(blob2, length2, opts) {
+  return parse_NoteSh(blob2, length2, opts);
 }
-function parse_MergeCells(blob, length2) {
+function parse_MergeCells(blob2, length2) {
   var merges = [];
-  var cmcs = blob.read_shift(2);
+  var cmcs = blob2.read_shift(2);
   while (cmcs--)
-    merges.push(parse_Ref8U(blob));
+    merges.push(parse_Ref8U(blob2));
   return merges;
 }
 function write_MergeCells(merges) {
@@ -9784,70 +9784,70 @@ function write_MergeCells(merges) {
     write_Ref8U(merges[i], o);
   return o;
 }
-function parse_Obj(blob, length2, opts) {
+function parse_Obj(blob2, length2, opts) {
   if (opts && opts.biff < 8)
-    return parse_BIFF5Obj(blob, length2, opts);
-  var cmo = parse_FtCmo(blob);
-  var fts = parse_FtArray(blob, length2 - 22, cmo[1]);
+    return parse_BIFF5Obj(blob2, length2, opts);
+  var cmo = parse_FtCmo(blob2);
+  var fts = parse_FtArray(blob2, length2 - 22, cmo[1]);
   return { cmo, ft: fts };
 }
 var parse_BIFF5OT = {
-  8: function(blob, length2) {
-    var tgt = blob.l + length2;
-    blob.l += 10;
-    var cf = blob.read_shift(2);
-    blob.l += 4;
-    blob.l += 2;
-    blob.l += 2;
-    blob.l += 2;
-    blob.l += 4;
-    var cchName = blob.read_shift(1);
-    blob.l += cchName;
-    blob.l = tgt;
+  8: function(blob2, length2) {
+    var tgt = blob2.l + length2;
+    blob2.l += 10;
+    var cf = blob2.read_shift(2);
+    blob2.l += 4;
+    blob2.l += 2;
+    blob2.l += 2;
+    blob2.l += 2;
+    blob2.l += 4;
+    var cchName = blob2.read_shift(1);
+    blob2.l += cchName;
+    blob2.l = tgt;
     return { fmt: cf };
   }
 };
-function parse_BIFF5Obj(blob, length2, opts) {
-  blob.l += 4;
-  var ot = blob.read_shift(2);
-  var id = blob.read_shift(2);
-  var grbit = blob.read_shift(2);
-  blob.l += 2;
-  blob.l += 2;
-  blob.l += 2;
-  blob.l += 2;
-  blob.l += 2;
-  blob.l += 2;
-  blob.l += 2;
-  blob.l += 2;
-  blob.l += 2;
-  blob.l += 6;
+function parse_BIFF5Obj(blob2, length2, opts) {
+  blob2.l += 4;
+  var ot = blob2.read_shift(2);
+  var id = blob2.read_shift(2);
+  var grbit = blob2.read_shift(2);
+  blob2.l += 2;
+  blob2.l += 2;
+  blob2.l += 2;
+  blob2.l += 2;
+  blob2.l += 2;
+  blob2.l += 2;
+  blob2.l += 2;
+  blob2.l += 2;
+  blob2.l += 2;
+  blob2.l += 6;
   length2 -= 36;
   var fts = [];
-  fts.push((parse_BIFF5OT[ot] || parsenoop)(blob, length2, opts));
+  fts.push((parse_BIFF5OT[ot] || parsenoop)(blob2, length2, opts));
   return { cmo: [id, ot, grbit], ft: fts };
 }
-function parse_TxO(blob, length2, opts) {
-  var s = blob.l;
+function parse_TxO(blob2, length2, opts) {
+  var s = blob2.l;
   var texts = "";
   try {
-    blob.l += 4;
+    blob2.l += 4;
     var ot = (opts.lastobj || { cmo: [0, 0] }).cmo[1];
     var controlInfo;
     if ([0, 5, 7, 11, 12, 14].indexOf(ot) == -1)
-      blob.l += 6;
+      blob2.l += 6;
     else
-      controlInfo = parse_ControlInfo(blob, 6, opts);
-    var cchText = blob.read_shift(2);
-    blob.read_shift(2);
-    parseuint16(blob, 2);
-    var len = blob.read_shift(2);
-    blob.l += len;
-    for (var i = 1; i < blob.lens.length - 1; ++i) {
-      if (blob.l - s != blob.lens[i])
+      controlInfo = parse_ControlInfo(blob2, 6, opts);
+    var cchText = blob2.read_shift(2);
+    blob2.read_shift(2);
+    parseuint16(blob2, 2);
+    var len = blob2.read_shift(2);
+    blob2.l += len;
+    for (var i = 1; i < blob2.lens.length - 1; ++i) {
+      if (blob2.l - s != blob2.lens[i])
         throw new Error("TxO: bad continue record");
-      var hdr = blob[blob.l];
-      var t = parse_XLUnicodeStringNoCch(blob, blob.lens[i + 1] - blob.lens[i] - 1);
+      var hdr = blob2[blob2.l];
+      var t = parse_XLUnicodeStringNoCch(blob2, blob2.lens[i + 1] - blob2.lens[i] - 1);
       texts += t;
       if (texts.length >= (hdr ? cchText : 2 * cchText))
         break;
@@ -9855,17 +9855,17 @@ function parse_TxO(blob, length2, opts) {
     if (texts.length !== cchText && texts.length !== cchText * 2) {
       throw new Error("cchText: " + cchText + " != " + texts.length);
     }
-    blob.l = s + length2;
+    blob2.l = s + length2;
     return { t: texts };
   } catch (e) {
-    blob.l = s + length2;
+    blob2.l = s + length2;
     return { t: texts };
   }
 }
-function parse_HLink(blob, length2) {
-  var ref = parse_Ref8U(blob);
-  blob.l += 16;
-  var hlink = parse_Hyperlink(blob, length2 - 24);
+function parse_HLink(blob2, length2) {
+  var ref = parse_Ref8U(blob2);
+  blob2.l += 16;
+  var hlink = parse_Hyperlink(blob2, length2 - 24);
   return [ref, hlink];
 }
 function write_HLink(hl) {
@@ -9880,10 +9880,10 @@ function write_HLink(hl) {
     O.write_shift(1, parseInt(clsid[i], 16));
   return bconcat([O, write_Hyperlink(hl[1])]);
 }
-function parse_HLinkTooltip(blob, length2) {
-  blob.read_shift(2);
-  var ref = parse_Ref8U(blob);
-  var wzTooltip = blob.read_shift((length2 - 10) / 2, "dbcs-cont");
+function parse_HLinkTooltip(blob2, length2) {
+  blob2.read_shift(2);
+  var ref = parse_Ref8U(blob2);
+  var wzTooltip = blob2.read_shift((length2 - 10) / 2, "dbcs-cont");
   wzTooltip = wzTooltip.replace(chr0, "");
   return [ref, wzTooltip];
 }
@@ -9901,11 +9901,11 @@ function write_HLinkTooltip(hl) {
   O.write_shift(2, 0);
   return O;
 }
-function parse_Country(blob) {
+function parse_Country(blob2) {
   var o = [0, 0], d;
-  d = blob.read_shift(2);
+  d = blob2.read_shift(2);
   o[0] = CountryEnum[d] || d;
-  d = blob.read_shift(2);
+  d = blob2.read_shift(2);
   o[1] = CountryEnum[d] || d;
   return o;
 }
@@ -9916,38 +9916,38 @@ function write_Country(o) {
   o.write_shift(2, 1);
   return o;
 }
-function parse_ClrtClient(blob) {
-  var ccv = blob.read_shift(2);
+function parse_ClrtClient(blob2) {
+  var ccv = blob2.read_shift(2);
   var o = [];
   while (ccv-- > 0)
-    o.push(parse_LongRGB(blob));
+    o.push(parse_LongRGB(blob2));
   return o;
 }
-function parse_Palette(blob) {
-  var ccv = blob.read_shift(2);
+function parse_Palette(blob2) {
+  var ccv = blob2.read_shift(2);
   var o = [];
   while (ccv-- > 0)
-    o.push(parse_LongRGB(blob));
+    o.push(parse_LongRGB(blob2));
   return o;
 }
-function parse_XFCRC(blob) {
-  blob.l += 2;
+function parse_XFCRC(blob2) {
+  blob2.l += 2;
   var o = { cxfs: 0, crc: 0 };
-  o.cxfs = blob.read_shift(2);
-  o.crc = blob.read_shift(4);
+  o.cxfs = blob2.read_shift(2);
+  o.crc = blob2.read_shift(4);
   return o;
 }
-function parse_ColInfo(blob, length2, opts) {
+function parse_ColInfo(blob2, length2, opts) {
   if (!opts.cellStyles)
-    return parsenoop(blob, length2);
+    return parsenoop(blob2, length2);
   var w2 = opts && opts.biff >= 12 ? 4 : 2;
-  var colFirst = blob.read_shift(w2);
-  var colLast = blob.read_shift(w2);
-  var coldx = blob.read_shift(w2);
-  var ixfe = blob.read_shift(w2);
-  var flags = blob.read_shift(2);
+  var colFirst = blob2.read_shift(w2);
+  var colLast = blob2.read_shift(w2);
+  var coldx = blob2.read_shift(w2);
+  var ixfe = blob2.read_shift(w2);
+  var flags = blob2.read_shift(2);
   if (w2 == 2)
-    blob.l += 2;
+    blob2.l += 2;
   var o = { s: colFirst, e: colLast, w: coldx, ixfe, flags };
   if (opts.biff >= 5 || !opts.biff)
     o.level = flags >> 8 & 7;
@@ -9968,24 +9968,24 @@ function write_ColInfo(col, idx) {
   o.write_shift(2, 0);
   return o;
 }
-function parse_Setup(blob, length2) {
+function parse_Setup(blob2, length2) {
   var o = {};
   if (length2 < 32)
     return o;
-  blob.l += 16;
-  o.header = parse_Xnum(blob);
-  o.footer = parse_Xnum(blob);
-  blob.l += 2;
+  blob2.l += 16;
+  o.header = parse_Xnum(blob2);
+  o.footer = parse_Xnum(blob2);
+  blob2.l += 2;
   return o;
 }
-function parse_ShtProps(blob, length2, opts) {
+function parse_ShtProps(blob2, length2, opts) {
   var def = { area: false };
   if (opts.biff != 5) {
-    blob.l += length2;
+    blob2.l += length2;
     return def;
   }
-  var d = blob.read_shift(1);
-  blob.l += 3;
+  var d = blob2.read_shift(1);
+  blob2.l += 3;
   if (d & 16)
     def.area = true;
   return def;
@@ -9999,28 +9999,28 @@ function write_RRTabId(n) {
 var parse_Blank = parse_XLSCell;
 var parse_Scl = parseuint16a;
 var parse_String = parse_XLUnicodeString;
-function parse_ImData(blob) {
-  var cf = blob.read_shift(2);
-  var env = blob.read_shift(2);
-  var lcb = blob.read_shift(4);
-  var o = { fmt: cf, env, len: lcb, data: blob.slice(blob.l, blob.l + lcb) };
-  blob.l += lcb;
+function parse_ImData(blob2) {
+  var cf = blob2.read_shift(2);
+  var env = blob2.read_shift(2);
+  var lcb = blob2.read_shift(4);
+  var o = { fmt: cf, env, len: lcb, data: blob2.slice(blob2.l, blob2.l + lcb) };
+  blob2.l += lcb;
   return o;
 }
-function parse_BIFF2STR(blob, length2, opts) {
+function parse_BIFF2STR(blob2, length2, opts) {
   if (opts.biffguess && opts.biff == 5)
     opts.biff = 2;
-  var cell = parse_XLSCell(blob);
-  ++blob.l;
-  var str = parse_XLUnicodeString2(blob, length2 - 7, opts);
+  var cell = parse_XLSCell(blob2);
+  ++blob2.l;
+  var str = parse_XLUnicodeString2(blob2, length2 - 7, opts);
   cell.t = "str";
   cell.val = str;
   return cell;
 }
-function parse_BIFF2NUM(blob) {
-  var cell = parse_XLSCell(blob);
-  ++blob.l;
-  var num = parse_Xnum(blob);
+function parse_BIFF2NUM(blob2) {
+  var cell = parse_XLSCell(blob2);
+  ++blob2.l;
+  var num = parse_Xnum(blob2);
   cell.t = "n";
   cell.val = num;
   return cell;
@@ -10031,10 +10031,10 @@ function write_BIFF2NUM(r, c, val) {
   out.write_shift(8, val, "f");
   return out;
 }
-function parse_BIFF2INT(blob) {
-  var cell = parse_XLSCell(blob);
-  ++blob.l;
-  var num = blob.read_shift(2);
+function parse_BIFF2INT(blob2) {
+  var cell = parse_XLSCell(blob2);
+  ++blob2.l;
+  var num = blob2.read_shift(2);
   cell.t = "n";
   cell.val = num;
   return cell;
@@ -10045,28 +10045,28 @@ function write_BIFF2INT(r, c, val) {
   out.write_shift(2, val);
   return out;
 }
-function parse_BIFF2STRING(blob) {
-  var cch = blob.read_shift(1);
+function parse_BIFF2STRING(blob2) {
+  var cch = blob2.read_shift(1);
   if (cch === 0) {
-    blob.l++;
+    blob2.l++;
     return "";
   }
-  return blob.read_shift(cch, "sbcs-cont");
+  return blob2.read_shift(cch, "sbcs-cont");
 }
-function parse_BIFF2FONTXTRA(blob, length2) {
-  blob.l += 6;
-  blob.l += 2;
-  blob.l += 1;
-  blob.l += 3;
-  blob.l += 1;
-  blob.l += length2 - 13;
+function parse_BIFF2FONTXTRA(blob2, length2) {
+  blob2.l += 6;
+  blob2.l += 2;
+  blob2.l += 1;
+  blob2.l += 3;
+  blob2.l += 1;
+  blob2.l += length2 - 13;
 }
-function parse_RString(blob, length2, opts) {
-  var end = blob.l + length2;
-  var cell = parse_XLSCell(blob);
-  var cch = blob.read_shift(2);
-  var str = parse_XLUnicodeStringNoCch(blob, cch, opts);
-  blob.l = end;
+function parse_RString(blob2, length2, opts) {
+  var end = blob2.l + length2;
+  var cell = parse_XLSCell(blob2);
+  var cch = blob2.read_shift(2);
+  var str = parse_XLUnicodeStringNoCch(blob2, cch, opts);
+  blob2.l = end;
   cell.t = "str";
   cell.val = str;
   return cell;
@@ -12025,25 +12025,25 @@ var WK_ = /* @__PURE__ */ function() {
     out.write_shift(4, 0);
     return out;
   }
-  function parse_RANGE(blob, length2, opts) {
+  function parse_RANGE(blob2, length2, opts) {
     var o = { s: { c: 0, r: 0 }, e: { c: 0, r: 0 } };
     if (length2 == 8 && opts.qpro) {
-      o.s.c = blob.read_shift(1);
-      blob.l++;
-      o.s.r = blob.read_shift(2);
-      o.e.c = blob.read_shift(1);
-      blob.l++;
-      o.e.r = blob.read_shift(2);
+      o.s.c = blob2.read_shift(1);
+      blob2.l++;
+      o.s.r = blob2.read_shift(2);
+      o.e.c = blob2.read_shift(1);
+      blob2.l++;
+      o.e.r = blob2.read_shift(2);
       return o;
     }
-    o.s.c = blob.read_shift(2);
-    o.s.r = blob.read_shift(2);
+    o.s.c = blob2.read_shift(2);
+    o.s.r = blob2.read_shift(2);
     if (length2 == 12 && opts.qpro)
-      blob.l += 2;
-    o.e.c = blob.read_shift(2);
-    o.e.r = blob.read_shift(2);
+      blob2.l += 2;
+    o.e.c = blob2.read_shift(2);
+    o.e.r = blob2.read_shift(2);
     if (length2 == 12 && opts.qpro)
-      blob.l += 2;
+      blob2.l += 2;
     if (o.s.c == 65535)
       o.s.c = o.e.c = o.s.r = o.e.r = 0;
     return o;
@@ -12056,37 +12056,37 @@ var WK_ = /* @__PURE__ */ function() {
     out.write_shift(2, range.e.r);
     return out;
   }
-  function parse_cell(blob, length2, opts) {
+  function parse_cell(blob2, length2, opts) {
     var o = [{ c: 0, r: 0 }, { t: "n", v: 0 }, 0, 0];
     if (opts.qpro && opts.vers != 20768) {
-      o[0].c = blob.read_shift(1);
-      o[3] = blob.read_shift(1);
-      o[0].r = blob.read_shift(2);
-      blob.l += 2;
+      o[0].c = blob2.read_shift(1);
+      o[3] = blob2.read_shift(1);
+      o[0].r = blob2.read_shift(2);
+      blob2.l += 2;
     } else if (opts.works) {
-      o[0].c = blob.read_shift(2);
-      o[0].r = blob.read_shift(2);
-      o[2] = blob.read_shift(2);
+      o[0].c = blob2.read_shift(2);
+      o[0].r = blob2.read_shift(2);
+      o[2] = blob2.read_shift(2);
     } else {
-      o[2] = blob.read_shift(1);
-      o[0].c = blob.read_shift(2);
-      o[0].r = blob.read_shift(2);
+      o[2] = blob2.read_shift(1);
+      o[0].c = blob2.read_shift(2);
+      o[0].r = blob2.read_shift(2);
     }
     return o;
   }
-  function parse_LABEL(blob, length2, opts) {
-    var tgt = blob.l + length2;
-    var o = parse_cell(blob, length2, opts);
+  function parse_LABEL(blob2, length2, opts) {
+    var tgt = blob2.l + length2;
+    var o = parse_cell(blob2, length2, opts);
     o[1].t = "s";
     if (opts.vers == 20768) {
-      blob.l++;
-      var len = blob.read_shift(1);
-      o[1].v = blob.read_shift(len, "utf8");
+      blob2.l++;
+      var len = blob2.read_shift(1);
+      o[1].v = blob2.read_shift(len, "utf8");
       return o;
     }
     if (opts.qpro)
-      blob.l++;
-    o[1].v = blob.read_shift(tgt - blob.l, "cstr");
+      blob2.l++;
+    o[1].v = blob2.read_shift(tgt - blob2.l, "cstr");
     return o;
   }
   function write_LABEL(R, C, s) {
@@ -12102,21 +12102,21 @@ var WK_ = /* @__PURE__ */ function() {
     o.write_shift(1, 0);
     return o;
   }
-  function parse_STRING(blob, length2, opts) {
-    var tgt = blob.l + length2;
-    var o = parse_cell(blob, length2, opts);
+  function parse_STRING(blob2, length2, opts) {
+    var tgt = blob2.l + length2;
+    var o = parse_cell(blob2, length2, opts);
     o[1].t = "s";
     if (opts.vers == 20768) {
-      var len = blob.read_shift(1);
-      o[1].v = blob.read_shift(len, "utf8");
+      var len = blob2.read_shift(1);
+      o[1].v = blob2.read_shift(len, "utf8");
       return o;
     }
-    o[1].v = blob.read_shift(tgt - blob.l, "cstr");
+    o[1].v = blob2.read_shift(tgt - blob2.l, "cstr");
     return o;
   }
-  function parse_INTEGER(blob, length2, opts) {
-    var o = parse_cell(blob, length2, opts);
-    o[1].v = blob.read_shift(2, "i");
+  function parse_INTEGER(blob2, length2, opts) {
+    var o = parse_cell(blob2, length2, opts);
+    o[1].v = blob2.read_shift(2, "i");
     return o;
   }
   function write_INTEGER(R, C, v) {
@@ -12127,9 +12127,9 @@ var WK_ = /* @__PURE__ */ function() {
     o.write_shift(2, v, "i");
     return o;
   }
-  function parse_NUMBER(blob, length2, opts) {
-    var o = parse_cell(blob, length2, opts);
-    o[1].v = blob.read_shift(8, "f");
+  function parse_NUMBER(blob2, length2, opts) {
+    var o = parse_cell(blob2, length2, opts);
+    o[1].v = blob2.read_shift(8, "f");
     return o;
   }
   function write_NUMBER(R, C, v) {
@@ -12140,16 +12140,16 @@ var WK_ = /* @__PURE__ */ function() {
     o.write_shift(8, v, "f");
     return o;
   }
-  function parse_FORMULA(blob, length2, opts) {
-    var tgt = blob.l + length2;
-    var o = parse_cell(blob, length2, opts);
-    o[1].v = blob.read_shift(8, "f");
+  function parse_FORMULA(blob2, length2, opts) {
+    var tgt = blob2.l + length2;
+    var o = parse_cell(blob2, length2, opts);
+    o[1].v = blob2.read_shift(8, "f");
     if (opts.qpro)
-      blob.l = tgt;
+      blob2.l = tgt;
     else {
-      var flen = blob.read_shift(2);
-      wk1_fmla_to_csf(blob.slice(blob.l, blob.l + flen), o);
-      blob.l += flen;
+      var flen = blob2.read_shift(2);
+      wk1_fmla_to_csf(blob2.slice(blob2.l, blob2.l + flen), o);
+      blob2.l += flen;
     }
     return o;
   }
@@ -12281,33 +12281,33 @@ var WK_ = /* @__PURE__ */ function() {
     ""
     // eslint-disable-line no-mixed-spaces-and-tabs
   ];
-  function wk1_fmla_to_csf(blob, o) {
-    prep_blob(blob, 0);
+  function wk1_fmla_to_csf(blob2, o) {
+    prep_blob(blob2, 0);
     var out = [], argc = 0, R = "", C = "", argL = "", argR = "";
-    while (blob.l < blob.length) {
-      var cc = blob[blob.l++];
+    while (blob2.l < blob2.length) {
+      var cc = blob2[blob2.l++];
       switch (cc) {
         case 0:
-          out.push(blob.read_shift(8, "f"));
+          out.push(blob2.read_shift(8, "f"));
           break;
         case 1:
           {
-            C = wk1_parse_rc(o[0].c, blob.read_shift(2), true);
-            R = wk1_parse_rc(o[0].r, blob.read_shift(2), false);
+            C = wk1_parse_rc(o[0].c, blob2.read_shift(2), true);
+            R = wk1_parse_rc(o[0].r, blob2.read_shift(2), false);
             out.push(C + R);
           }
           break;
         case 2:
           {
-            var c = wk1_parse_rc(o[0].c, blob.read_shift(2), true);
-            var r = wk1_parse_rc(o[0].r, blob.read_shift(2), false);
-            C = wk1_parse_rc(o[0].c, blob.read_shift(2), true);
-            R = wk1_parse_rc(o[0].r, blob.read_shift(2), false);
+            var c = wk1_parse_rc(o[0].c, blob2.read_shift(2), true);
+            var r = wk1_parse_rc(o[0].r, blob2.read_shift(2), false);
+            C = wk1_parse_rc(o[0].c, blob2.read_shift(2), true);
+            R = wk1_parse_rc(o[0].r, blob2.read_shift(2), false);
             out.push(c + r + ":" + C + R);
           }
           break;
         case 3:
-          if (blob.l < blob.length) {
+          if (blob2.l < blob2.length) {
             console.error("WK1 premature formula end");
             return;
           }
@@ -12316,12 +12316,12 @@ var WK_ = /* @__PURE__ */ function() {
           out.push("(" + out.pop() + ")");
           break;
         case 5:
-          out.push(blob.read_shift(2));
+          out.push(blob2.read_shift(2));
           break;
         case 6:
           {
             var Z = "";
-            while (cc = blob[blob.l++])
+            while (cc = blob2[blob2.l++])
               Z += String.fromCharCode(cc);
             out.push('"' + Z.replace(/"/g, '""') + '"');
           }
@@ -12351,7 +12351,7 @@ var WK_ = /* @__PURE__ */ function() {
           } else if (FuncTab[cc]) {
             argc = FuncTab[cc][1];
             if (argc == 69)
-              argc = blob[blob.l++];
+              argc = blob2[blob2.l++];
             if (argc > out.length) {
               console.error("WK1 bad formula parse 0x" + cc.toString(16) + ":|" + out.join("|") + "|");
               return;
@@ -12376,17 +12376,17 @@ var WK_ = /* @__PURE__ */ function() {
     else
       console.error("WK1 bad formula parse |" + out.join("|") + "|");
   }
-  function parse_cell_3(blob) {
+  function parse_cell_3(blob2) {
     var o = [{ c: 0, r: 0 }, { t: "n", v: 0 }, 0];
-    o[0].r = blob.read_shift(2);
-    o[3] = blob[blob.l++];
-    o[0].c = blob[blob.l++];
+    o[0].r = blob2.read_shift(2);
+    o[3] = blob2[blob2.l++];
+    o[0].c = blob2[blob2.l++];
     return o;
   }
-  function parse_LABEL_16(blob, length2) {
-    var o = parse_cell_3(blob);
+  function parse_LABEL_16(blob2, length2) {
+    var o = parse_cell_3(blob2);
     o[1].t = "s";
-    o[1].v = blob.read_shift(length2 - 4, "cstr");
+    o[1].v = blob2.read_shift(length2 - 4, "cstr");
     return o;
   }
   function write_LABEL_16(R, C, wsidx, s) {
@@ -12402,9 +12402,9 @@ var WK_ = /* @__PURE__ */ function() {
     o.write_shift(1, 0);
     return o;
   }
-  function parse_NUMBER_18(blob, length2) {
-    var o = parse_cell_3(blob);
-    o[1].v = blob.read_shift(2);
+  function parse_NUMBER_18(blob2, length2) {
+    var o = parse_cell_3(blob2);
+    o[1].v = blob2.read_shift(2);
     var v = o[1].v >> 1;
     if (o[1].v & 1) {
       switch (v & 7) {
@@ -12437,11 +12437,11 @@ var WK_ = /* @__PURE__ */ function() {
     o[1].v = v;
     return o;
   }
-  function parse_NUMBER_17(blob, length2) {
-    var o = parse_cell_3(blob);
-    var v1 = blob.read_shift(4);
-    var v2 = blob.read_shift(4);
-    var e = blob.read_shift(2);
+  function parse_NUMBER_17(blob2, length2) {
+    var o = parse_cell_3(blob2);
+    var v1 = blob2.read_shift(4);
+    var v2 = blob2.read_shift(4);
+    var e = blob2.read_shift(2);
     if (e == 65535) {
       if (v1 === 0 && v2 === 3221225472) {
         o[1].t = "e";
@@ -12493,62 +12493,62 @@ var WK_ = /* @__PURE__ */ function() {
     o.write_shift(2, e);
     return o;
   }
-  function parse_FORMULA_19(blob, length2) {
-    var o = parse_NUMBER_17(blob);
-    blob.l += length2 - 14;
+  function parse_FORMULA_19(blob2, length2) {
+    var o = parse_NUMBER_17(blob2);
+    blob2.l += length2 - 14;
     return o;
   }
-  function parse_NUMBER_25(blob, length2) {
-    var o = parse_cell_3(blob);
-    var v1 = blob.read_shift(4);
+  function parse_NUMBER_25(blob2, length2) {
+    var o = parse_cell_3(blob2);
+    var v1 = blob2.read_shift(4);
     o[1].v = v1 >> 6;
     return o;
   }
-  function parse_NUMBER_27(blob, length2) {
-    var o = parse_cell_3(blob);
-    var v1 = blob.read_shift(8, "f");
+  function parse_NUMBER_27(blob2, length2) {
+    var o = parse_cell_3(blob2);
+    var v1 = blob2.read_shift(8, "f");
     o[1].v = v1;
     return o;
   }
-  function parse_FORMULA_28(blob, length2) {
-    var o = parse_NUMBER_27(blob);
-    blob.l += length2 - 12;
+  function parse_FORMULA_28(blob2, length2) {
+    var o = parse_NUMBER_27(blob2);
+    blob2.l += length2 - 12;
     return o;
   }
-  function parse_SHEETNAMECS(blob, length2) {
-    return blob[blob.l + length2 - 1] == 0 ? blob.read_shift(length2, "cstr") : "";
+  function parse_SHEETNAMECS(blob2, length2) {
+    return blob2[blob2.l + length2 - 1] == 0 ? blob2.read_shift(length2, "cstr") : "";
   }
-  function parse_SHEETNAMELP(blob, length2) {
-    var len = blob[blob.l++];
+  function parse_SHEETNAMELP(blob2, length2) {
+    var len = blob2[blob2.l++];
     if (len > length2 - 1)
       len = length2 - 1;
     var o = "";
     while (o.length < len)
-      o += String.fromCharCode(blob[blob.l++]);
+      o += String.fromCharCode(blob2[blob2.l++]);
     return o;
   }
-  function parse_SHEETINFOQP(blob, length2, opts) {
+  function parse_SHEETINFOQP(blob2, length2, opts) {
     if (!opts.qpro || length2 < 21)
       return;
-    var id = blob.read_shift(1);
-    blob.l += 17;
-    blob.l += 1;
-    blob.l += 2;
-    var nm = blob.read_shift(length2 - 21, "cstr");
+    var id = blob2.read_shift(1);
+    blob2.l += 17;
+    blob2.l += 1;
+    blob2.l += 2;
+    var nm = blob2.read_shift(length2 - 21, "cstr");
     return [id, nm];
   }
-  function parse_XFORMAT(blob, length2) {
-    var o = {}, tgt = blob.l + length2;
-    while (blob.l < tgt) {
-      var dt = blob.read_shift(2);
+  function parse_XFORMAT(blob2, length2) {
+    var o = {}, tgt = blob2.l + length2;
+    while (blob2.l < tgt) {
+      var dt = blob2.read_shift(2);
       if (dt == 14e3) {
         o[dt] = [0, ""];
-        o[dt][0] = blob.read_shift(2);
-        while (blob[blob.l]) {
-          o[dt][1] += String.fromCharCode(blob[blob.l]);
-          blob.l++;
+        o[dt][0] = blob2.read_shift(2);
+        while (blob2[blob2.l]) {
+          o[dt][1] += String.fromCharCode(blob2[blob2.l]);
+          blob2.l++;
         }
-        blob.l++;
+        blob2.l++;
       }
     }
     return o;
@@ -13487,78 +13487,78 @@ function _JS2ANSI(str) {
     o[i] = oo[i].charCodeAt(0);
   return o;
 }
-function parse_CRYPTOVersion(blob, length2) {
+function parse_CRYPTOVersion(blob2, length2) {
   var o = {};
-  o.Major = blob.read_shift(2);
-  o.Minor = blob.read_shift(2);
+  o.Major = blob2.read_shift(2);
+  o.Minor = blob2.read_shift(2);
   if (length2 >= 4)
-    blob.l += length2 - 4;
+    blob2.l += length2 - 4;
   return o;
 }
-function parse_DataSpaceVersionInfo(blob) {
+function parse_DataSpaceVersionInfo(blob2) {
   var o = {};
-  o.id = blob.read_shift(0, "lpp4");
-  o.R = parse_CRYPTOVersion(blob, 4);
-  o.U = parse_CRYPTOVersion(blob, 4);
-  o.W = parse_CRYPTOVersion(blob, 4);
+  o.id = blob2.read_shift(0, "lpp4");
+  o.R = parse_CRYPTOVersion(blob2, 4);
+  o.U = parse_CRYPTOVersion(blob2, 4);
+  o.W = parse_CRYPTOVersion(blob2, 4);
   return o;
 }
-function parse_DataSpaceMapEntry(blob) {
-  var len = blob.read_shift(4);
-  var end = blob.l + len - 4;
+function parse_DataSpaceMapEntry(blob2) {
+  var len = blob2.read_shift(4);
+  var end = blob2.l + len - 4;
   var o = {};
-  var cnt = blob.read_shift(4);
+  var cnt = blob2.read_shift(4);
   var comps = [];
   while (cnt-- > 0)
-    comps.push({ t: blob.read_shift(4), v: blob.read_shift(0, "lpp4") });
-  o.name = blob.read_shift(0, "lpp4");
+    comps.push({ t: blob2.read_shift(4), v: blob2.read_shift(0, "lpp4") });
+  o.name = blob2.read_shift(0, "lpp4");
   o.comps = comps;
-  if (blob.l != end)
-    throw new Error("Bad DataSpaceMapEntry: " + blob.l + " != " + end);
+  if (blob2.l != end)
+    throw new Error("Bad DataSpaceMapEntry: " + blob2.l + " != " + end);
   return o;
 }
-function parse_DataSpaceMap(blob) {
+function parse_DataSpaceMap(blob2) {
   var o = [];
-  blob.l += 4;
-  var cnt = blob.read_shift(4);
+  blob2.l += 4;
+  var cnt = blob2.read_shift(4);
   while (cnt-- > 0)
-    o.push(parse_DataSpaceMapEntry(blob));
+    o.push(parse_DataSpaceMapEntry(blob2));
   return o;
 }
-function parse_DataSpaceDefinition(blob) {
+function parse_DataSpaceDefinition(blob2) {
   var o = [];
-  blob.l += 4;
-  var cnt = blob.read_shift(4);
+  blob2.l += 4;
+  var cnt = blob2.read_shift(4);
   while (cnt-- > 0)
-    o.push(blob.read_shift(0, "lpp4"));
+    o.push(blob2.read_shift(0, "lpp4"));
   return o;
 }
-function parse_TransformInfoHeader(blob) {
+function parse_TransformInfoHeader(blob2) {
   var o = {};
-  blob.read_shift(4);
-  blob.l += 4;
-  o.id = blob.read_shift(0, "lpp4");
-  o.name = blob.read_shift(0, "lpp4");
-  o.R = parse_CRYPTOVersion(blob, 4);
-  o.U = parse_CRYPTOVersion(blob, 4);
-  o.W = parse_CRYPTOVersion(blob, 4);
+  blob2.read_shift(4);
+  blob2.l += 4;
+  o.id = blob2.read_shift(0, "lpp4");
+  o.name = blob2.read_shift(0, "lpp4");
+  o.R = parse_CRYPTOVersion(blob2, 4);
+  o.U = parse_CRYPTOVersion(blob2, 4);
+  o.W = parse_CRYPTOVersion(blob2, 4);
   return o;
 }
-function parse_Primary(blob) {
-  var hdr = parse_TransformInfoHeader(blob);
-  hdr.ename = blob.read_shift(0, "8lpp4");
-  hdr.blksz = blob.read_shift(4);
-  hdr.cmode = blob.read_shift(4);
-  if (blob.read_shift(4) != 4)
+function parse_Primary(blob2) {
+  var hdr = parse_TransformInfoHeader(blob2);
+  hdr.ename = blob2.read_shift(0, "8lpp4");
+  hdr.blksz = blob2.read_shift(4);
+  hdr.cmode = blob2.read_shift(4);
+  if (blob2.read_shift(4) != 4)
     throw new Error("Bad !Primary record");
   return hdr;
 }
-function parse_EncryptionHeader(blob, length2) {
-  var tgt = blob.l + length2;
+function parse_EncryptionHeader(blob2, length2) {
+  var tgt = blob2.l + length2;
   var o = {};
-  o.Flags = blob.read_shift(4) & 63;
-  blob.l += 4;
-  o.AlgID = blob.read_shift(4);
+  o.Flags = blob2.read_shift(4) & 63;
+  blob2.l += 4;
+  o.AlgID = blob2.read_shift(4);
   var valid = false;
   switch (o.AlgID) {
     case 26126:
@@ -13577,54 +13577,54 @@ function parse_EncryptionHeader(blob, length2) {
   }
   if (!valid)
     throw new Error("Encryption Flags/AlgID mismatch");
-  o.AlgIDHash = blob.read_shift(4);
-  o.KeySize = blob.read_shift(4);
-  o.ProviderType = blob.read_shift(4);
-  blob.l += 8;
-  o.CSPName = blob.read_shift(tgt - blob.l >> 1, "utf16le");
-  blob.l = tgt;
+  o.AlgIDHash = blob2.read_shift(4);
+  o.KeySize = blob2.read_shift(4);
+  o.ProviderType = blob2.read_shift(4);
+  blob2.l += 8;
+  o.CSPName = blob2.read_shift(tgt - blob2.l >> 1, "utf16le");
+  blob2.l = tgt;
   return o;
 }
-function parse_EncryptionVerifier(blob, length2) {
-  var o = {}, tgt = blob.l + length2;
-  blob.l += 4;
-  o.Salt = blob.slice(blob.l, blob.l + 16);
-  blob.l += 16;
-  o.Verifier = blob.slice(blob.l, blob.l + 16);
-  blob.l += 16;
-  blob.read_shift(4);
-  o.VerifierHash = blob.slice(blob.l, tgt);
-  blob.l = tgt;
+function parse_EncryptionVerifier(blob2, length2) {
+  var o = {}, tgt = blob2.l + length2;
+  blob2.l += 4;
+  o.Salt = blob2.slice(blob2.l, blob2.l + 16);
+  blob2.l += 16;
+  o.Verifier = blob2.slice(blob2.l, blob2.l + 16);
+  blob2.l += 16;
+  blob2.read_shift(4);
+  o.VerifierHash = blob2.slice(blob2.l, tgt);
+  blob2.l = tgt;
   return o;
 }
-function parse_EncryptionInfo(blob) {
-  var vers = parse_CRYPTOVersion(blob);
+function parse_EncryptionInfo(blob2) {
+  var vers = parse_CRYPTOVersion(blob2);
   switch (vers.Minor) {
     case 2:
-      return [vers.Minor, parse_EncInfoStd(blob)];
+      return [vers.Minor, parse_EncInfoStd(blob2)];
     case 3:
       return [vers.Minor, parse_EncInfoExt()];
     case 4:
-      return [vers.Minor, parse_EncInfoAgl(blob)];
+      return [vers.Minor, parse_EncInfoAgl(blob2)];
   }
   throw new Error("ECMA-376 Encrypted file unrecognized Version: " + vers.Minor);
 }
-function parse_EncInfoStd(blob) {
-  var flags = blob.read_shift(4);
+function parse_EncInfoStd(blob2) {
+  var flags = blob2.read_shift(4);
   if ((flags & 63) != 36)
     throw new Error("EncryptionInfo mismatch");
-  var sz = blob.read_shift(4);
-  var hdr = parse_EncryptionHeader(blob, sz);
-  var verifier = parse_EncryptionVerifier(blob, blob.length - blob.l);
+  var sz = blob2.read_shift(4);
+  var hdr = parse_EncryptionHeader(blob2, sz);
+  var verifier = parse_EncryptionVerifier(blob2, blob2.length - blob2.l);
   return { t: "Std", h: hdr, v: verifier };
 }
 function parse_EncInfoExt() {
   throw new Error("File is password-protected: ECMA-376 Extensible");
 }
-function parse_EncInfoAgl(blob) {
+function parse_EncInfoAgl(blob2) {
   var KeyData = ["saltSize", "blockSize", "keyBits", "hashSize", "cipherAlgorithm", "cipherChaining", "hashAlgorithm", "saltValue"];
-  blob.l += 4;
-  var xml = blob.read_shift(blob.length - blob.l, "utf8");
+  blob2.l += 4;
+  var xml = blob2.read_shift(blob2.length - blob2.l, "utf8");
   var o = {};
   xml.replace(tagregex, function xml_agile(x) {
     var y = parsexmltag(x);
@@ -13663,31 +13663,31 @@ function parse_EncInfoAgl(blob) {
   });
   return o;
 }
-function parse_RC4CryptoHeader(blob, length2) {
+function parse_RC4CryptoHeader(blob2, length2) {
   var o = {};
-  var vers = o.EncryptionVersionInfo = parse_CRYPTOVersion(blob, 4);
+  var vers = o.EncryptionVersionInfo = parse_CRYPTOVersion(blob2, 4);
   length2 -= 4;
   if (vers.Minor != 2)
     throw new Error("unrecognized minor version code: " + vers.Minor);
   if (vers.Major > 4 || vers.Major < 2)
     throw new Error("unrecognized major version code: " + vers.Major);
-  o.Flags = blob.read_shift(4);
+  o.Flags = blob2.read_shift(4);
   length2 -= 4;
-  var sz = blob.read_shift(4);
+  var sz = blob2.read_shift(4);
   length2 -= 4;
-  o.EncryptionHeader = parse_EncryptionHeader(blob, sz);
+  o.EncryptionHeader = parse_EncryptionHeader(blob2, sz);
   length2 -= sz;
-  o.EncryptionVerifier = parse_EncryptionVerifier(blob, length2);
+  o.EncryptionVerifier = parse_EncryptionVerifier(blob2, length2);
   return o;
 }
-function parse_RC4Header(blob) {
+function parse_RC4Header(blob2) {
   var o = {};
-  var vers = o.EncryptionVersionInfo = parse_CRYPTOVersion(blob, 4);
+  var vers = o.EncryptionVersionInfo = parse_CRYPTOVersion(blob2, 4);
   if (vers.Major != 1 || vers.Minor != 1)
     throw "unrecognized version code " + vers.Major + " : " + vers.Minor;
-  o.Salt = blob.read_shift(16);
-  o.EncryptedVerifier = blob.read_shift(16);
-  o.EncryptedVerifierHash = blob.read_shift(16);
+  o.Salt = blob2.read_shift(16);
+  o.EncryptedVerifier = blob2.read_shift(16);
+  o.EncryptedVerifierHash = blob2.read_shift(16);
   return o;
 }
 function crypto_CreatePasswordVerifier_Method1(Password) {
@@ -13794,8 +13794,8 @@ var crypto_MakeXorDecryptor = function(password) {
     return O[0];
   };
 };
-function parse_XORObfuscation(blob, length2, opts, out) {
-  var o = { key: parseuint16(blob), verificationBytes: parseuint16(blob) };
+function parse_XORObfuscation(blob2, length2, opts, out) {
+  var o = { key: parseuint16(blob2), verificationBytes: parseuint16(blob2) };
   if (opts.password)
     o.verifier = crypto_CreatePasswordVerifier_Method1(opts.password);
   out.valid = o.verificationBytes === o.verifier;
@@ -13803,22 +13803,22 @@ function parse_XORObfuscation(blob, length2, opts, out) {
     out.insitu = crypto_MakeXorDecryptor(opts.password);
   return o;
 }
-function parse_FilePassHeader(blob, length2, oo) {
+function parse_FilePassHeader(blob2, length2, oo) {
   var o = oo || {};
-  o.Info = blob.read_shift(2);
-  blob.l -= 2;
+  o.Info = blob2.read_shift(2);
+  blob2.l -= 2;
   if (o.Info === 1)
-    o.Data = parse_RC4Header(blob);
+    o.Data = parse_RC4Header(blob2);
   else
-    o.Data = parse_RC4CryptoHeader(blob, length2);
+    o.Data = parse_RC4CryptoHeader(blob2, length2);
   return o;
 }
-function parse_FilePass(blob, length2, opts) {
-  var o = { Type: opts.biff >= 8 ? blob.read_shift(2) : 0 };
+function parse_FilePass(blob2, length2, opts) {
+  var o = { Type: opts.biff >= 8 ? blob2.read_shift(2) : 0 };
   if (o.Type)
-    parse_FilePassHeader(blob, length2 - 2, o);
+    parse_FilePassHeader(blob2, length2 - 2, o);
   else
-    parse_XORObfuscation(blob, opts.biff >= 8 ? length2 : length2 - 2, opts, o);
+    parse_XORObfuscation(blob2, opts.biff >= 8 ? length2 : length2 - 2, opts, o);
   return o;
 }
 function rtf_to_sheet(d, opts) {
@@ -15326,17 +15326,17 @@ function write_theme(Themes, opts) {
   o[o.length] = "</a:theme>";
   return o.join("");
 }
-function parse_Theme(blob, length2, opts) {
-  var end = blob.l + length2;
-  var dwThemeVersion = blob.read_shift(4);
+function parse_Theme(blob2, length2, opts) {
+  var end = blob2.l + length2;
+  var dwThemeVersion = blob2.read_shift(4);
   if (dwThemeVersion === 124226)
     return;
   if (!opts.cellStyles) {
-    blob.l = end;
+    blob2.l = end;
     return;
   }
-  var data = blob.slice(blob.l);
-  blob.l = end;
+  var data = blob2.slice(blob2.l);
+  blob2.l = end;
   var zip;
   try {
     zip = zip_read(data, { type: "array" });
@@ -15348,42 +15348,42 @@ function parse_Theme(blob, length2, opts) {
     return;
   return parse_theme_xml(themeXML, opts);
 }
-function parse_ColorTheme(blob) {
-  return blob.read_shift(4);
+function parse_ColorTheme(blob2) {
+  return blob2.read_shift(4);
 }
-function parse_FullColorExt(blob) {
+function parse_FullColorExt(blob2) {
   var o = {};
-  o.xclrType = blob.read_shift(2);
-  o.nTintShade = blob.read_shift(2);
+  o.xclrType = blob2.read_shift(2);
+  o.nTintShade = blob2.read_shift(2);
   switch (o.xclrType) {
     case 0:
-      blob.l += 4;
+      blob2.l += 4;
       break;
     case 1:
-      o.xclrValue = parse_IcvXF(blob, 4);
+      o.xclrValue = parse_IcvXF(blob2, 4);
       break;
     case 2:
-      o.xclrValue = parse_LongRGBA(blob);
+      o.xclrValue = parse_LongRGBA(blob2);
       break;
     case 3:
-      o.xclrValue = parse_ColorTheme(blob);
+      o.xclrValue = parse_ColorTheme(blob2);
       break;
     case 4:
-      blob.l += 4;
+      blob2.l += 4;
       break;
   }
-  blob.l += 8;
+  blob2.l += 8;
   return o;
 }
-function parse_IcvXF(blob, length2) {
-  return parsenoop(blob, length2);
+function parse_IcvXF(blob2, length2) {
+  return parsenoop(blob2, length2);
 }
-function parse_XFExtGradient(blob, length2) {
-  return parsenoop(blob, length2);
+function parse_XFExtGradient(blob2, length2) {
+  return parsenoop(blob2, length2);
 }
-function parse_ExtProp(blob) {
-  var extType = blob.read_shift(2);
-  var cb = blob.read_shift(2) - 4;
+function parse_ExtProp(blob2) {
+  var extType = blob2.read_shift(2);
+  var cb = blob2.read_shift(2) - 4;
   var o = [extType];
   switch (extType) {
     case 4:
@@ -15394,29 +15394,29 @@ function parse_ExtProp(blob) {
     case 10:
     case 11:
     case 13:
-      o[1] = parse_FullColorExt(blob);
+      o[1] = parse_FullColorExt(blob2);
       break;
     case 6:
-      o[1] = parse_XFExtGradient(blob, cb);
+      o[1] = parse_XFExtGradient(blob2, cb);
       break;
     case 14:
     case 15:
-      o[1] = blob.read_shift(cb === 1 ? 1 : 2);
+      o[1] = blob2.read_shift(cb === 1 ? 1 : 2);
       break;
     default:
       throw new Error("Unrecognized ExtProp type: " + extType + " " + cb);
   }
   return o;
 }
-function parse_XFExt(blob, length2) {
-  var end = blob.l + length2;
-  blob.l += 2;
-  var ixfe = blob.read_shift(2);
-  blob.l += 2;
-  var cexts = blob.read_shift(2);
+function parse_XFExt(blob2, length2) {
+  var end = blob2.l + length2;
+  blob2.l += 2;
+  var ixfe = blob2.read_shift(2);
+  blob2.l += 2;
+  var cexts = blob2.read_shift(2);
   var ext = [];
   while (cexts-- > 0)
-    ext.push(parse_ExtProp(blob, end - blob.l));
+    ext.push(parse_ExtProp(blob2, end - blob2.l));
   return { ixfe, ext };
 }
 function update_xfext(xf, xfext) {
@@ -16292,64 +16292,64 @@ function fuzzyfmla(f) {
 function _xlfn(f) {
   return f.replace(/_xlfn\./g, "");
 }
-function parseread1(blob) {
-  blob.l += 1;
+function parseread1(blob2) {
+  blob2.l += 1;
   return;
 }
-function parse_ColRelU(blob, length2) {
-  var c = blob.read_shift(length2 == 1 ? 1 : 2);
+function parse_ColRelU(blob2, length2) {
+  var c = blob2.read_shift(length2 == 1 ? 1 : 2);
   return [c & 16383, c >> 14 & 1, c >> 15 & 1];
 }
-function parse_RgceArea(blob, length2, opts) {
+function parse_RgceArea(blob2, length2, opts) {
   var w2 = 2;
   if (opts) {
     if (opts.biff >= 2 && opts.biff <= 5)
-      return parse_RgceArea_BIFF2(blob);
+      return parse_RgceArea_BIFF2(blob2);
     else if (opts.biff == 12)
       w2 = 4;
   }
-  var r = blob.read_shift(w2), R = blob.read_shift(w2);
-  var c = parse_ColRelU(blob, 2);
-  var C = parse_ColRelU(blob, 2);
+  var r = blob2.read_shift(w2), R = blob2.read_shift(w2);
+  var c = parse_ColRelU(blob2, 2);
+  var C = parse_ColRelU(blob2, 2);
   return { s: { r, c: c[0], cRel: c[1], rRel: c[2] }, e: { r: R, c: C[0], cRel: C[1], rRel: C[2] } };
 }
-function parse_RgceArea_BIFF2(blob) {
-  var r = parse_ColRelU(blob, 2), R = parse_ColRelU(blob, 2);
-  var c = blob.read_shift(1);
-  var C = blob.read_shift(1);
+function parse_RgceArea_BIFF2(blob2) {
+  var r = parse_ColRelU(blob2, 2), R = parse_ColRelU(blob2, 2);
+  var c = blob2.read_shift(1);
+  var C = blob2.read_shift(1);
   return { s: { r: r[0], c, cRel: r[1], rRel: r[2] }, e: { r: R[0], c: C, cRel: R[1], rRel: R[2] } };
 }
-function parse_RgceAreaRel(blob, length2, opts) {
+function parse_RgceAreaRel(blob2, length2, opts) {
   if (opts.biff < 8)
-    return parse_RgceArea_BIFF2(blob);
-  var r = blob.read_shift(opts.biff == 12 ? 4 : 2), R = blob.read_shift(opts.biff == 12 ? 4 : 2);
-  var c = parse_ColRelU(blob, 2);
-  var C = parse_ColRelU(blob, 2);
+    return parse_RgceArea_BIFF2(blob2);
+  var r = blob2.read_shift(opts.biff == 12 ? 4 : 2), R = blob2.read_shift(opts.biff == 12 ? 4 : 2);
+  var c = parse_ColRelU(blob2, 2);
+  var C = parse_ColRelU(blob2, 2);
   return { s: { r, c: c[0], cRel: c[1], rRel: c[2] }, e: { r: R, c: C[0], cRel: C[1], rRel: C[2] } };
 }
-function parse_RgceLoc(blob, length2, opts) {
+function parse_RgceLoc(blob2, length2, opts) {
   if (opts && opts.biff >= 2 && opts.biff <= 5)
-    return parse_RgceLoc_BIFF2(blob);
-  var r = blob.read_shift(opts && opts.biff == 12 ? 4 : 2);
-  var c = parse_ColRelU(blob, 2);
+    return parse_RgceLoc_BIFF2(blob2);
+  var r = blob2.read_shift(opts && opts.biff == 12 ? 4 : 2);
+  var c = parse_ColRelU(blob2, 2);
   return { r, c: c[0], cRel: c[1], rRel: c[2] };
 }
-function parse_RgceLoc_BIFF2(blob) {
-  var r = parse_ColRelU(blob, 2);
-  var c = blob.read_shift(1);
+function parse_RgceLoc_BIFF2(blob2) {
+  var r = parse_ColRelU(blob2, 2);
+  var c = blob2.read_shift(1);
   return { r: r[0], c, cRel: r[1], rRel: r[2] };
 }
-function parse_RgceElfLoc(blob) {
-  var r = blob.read_shift(2);
-  var c = blob.read_shift(2);
+function parse_RgceElfLoc(blob2) {
+  var r = blob2.read_shift(2);
+  var c = blob2.read_shift(2);
   return { r, c: c & 255, fQuoted: !!(c & 16384), cRel: c >> 15, rRel: c >> 15 };
 }
-function parse_RgceLocRel(blob, length2, opts) {
+function parse_RgceLocRel(blob2, length2, opts) {
   var biff = opts && opts.biff ? opts.biff : 8;
   if (biff >= 2 && biff <= 5)
-    return parse_RgceLocRel_BIFF2(blob);
-  var r = blob.read_shift(biff >= 12 ? 4 : 2);
-  var cl = blob.read_shift(2);
+    return parse_RgceLocRel_BIFF2(blob2);
+  var r = blob2.read_shift(biff >= 12 ? 4 : 2);
+  var cl = blob2.read_shift(2);
   var cRel = (cl & 16384) >> 14, rRel = (cl & 32768) >> 15;
   cl &= 16383;
   if (rRel == 1)
@@ -16360,9 +16360,9 @@ function parse_RgceLocRel(blob, length2, opts) {
       cl = cl - 16384;
   return { r, c: cl, cRel, rRel };
 }
-function parse_RgceLocRel_BIFF2(blob) {
-  var rl = blob.read_shift(2);
-  var c = blob.read_shift(1);
+function parse_RgceLocRel_BIFF2(blob2) {
+  var rl = blob2.read_shift(2);
+  var c = blob2.read_shift(1);
   var rRel = (rl & 32768) >> 15, cRel = (rl & 16384) >> 14;
   rl &= 16383;
   if (rRel == 1 && rl >= 8192)
@@ -16371,175 +16371,175 @@ function parse_RgceLocRel_BIFF2(blob) {
     c = c - 256;
   return { r: rl, c, cRel, rRel };
 }
-function parse_PtgArea(blob, length2, opts) {
-  var type = (blob[blob.l++] & 96) >> 5;
-  var area = parse_RgceArea(blob, opts.biff >= 2 && opts.biff <= 5 ? 6 : 8, opts);
+function parse_PtgArea(blob2, length2, opts) {
+  var type = (blob2[blob2.l++] & 96) >> 5;
+  var area = parse_RgceArea(blob2, opts.biff >= 2 && opts.biff <= 5 ? 6 : 8, opts);
   return [type, area];
 }
-function parse_PtgArea3d(blob, length2, opts) {
-  var type = (blob[blob.l++] & 96) >> 5;
-  var ixti = blob.read_shift(2, "i");
+function parse_PtgArea3d(blob2, length2, opts) {
+  var type = (blob2[blob2.l++] & 96) >> 5;
+  var ixti = blob2.read_shift(2, "i");
   var w2 = 8;
   if (opts)
     switch (opts.biff) {
       case 5:
-        blob.l += 12;
+        blob2.l += 12;
         w2 = 6;
         break;
       case 12:
         w2 = 12;
         break;
     }
-  var area = parse_RgceArea(blob, w2, opts);
+  var area = parse_RgceArea(blob2, w2, opts);
   return [type, ixti, area];
 }
-function parse_PtgAreaErr(blob, length2, opts) {
-  var type = (blob[blob.l++] & 96) >> 5;
-  blob.l += opts && opts.biff > 8 ? 12 : opts.biff < 8 ? 6 : 8;
+function parse_PtgAreaErr(blob2, length2, opts) {
+  var type = (blob2[blob2.l++] & 96) >> 5;
+  blob2.l += opts && opts.biff > 8 ? 12 : opts.biff < 8 ? 6 : 8;
   return [type];
 }
-function parse_PtgAreaErr3d(blob, length2, opts) {
-  var type = (blob[blob.l++] & 96) >> 5;
-  var ixti = blob.read_shift(2);
+function parse_PtgAreaErr3d(blob2, length2, opts) {
+  var type = (blob2[blob2.l++] & 96) >> 5;
+  var ixti = blob2.read_shift(2);
   var w2 = 8;
   if (opts)
     switch (opts.biff) {
       case 5:
-        blob.l += 12;
+        blob2.l += 12;
         w2 = 6;
         break;
       case 12:
         w2 = 12;
         break;
     }
-  blob.l += w2;
+  blob2.l += w2;
   return [type, ixti];
 }
-function parse_PtgAreaN(blob, length2, opts) {
-  var type = (blob[blob.l++] & 96) >> 5;
-  var area = parse_RgceAreaRel(blob, length2 - 1, opts);
+function parse_PtgAreaN(blob2, length2, opts) {
+  var type = (blob2[blob2.l++] & 96) >> 5;
+  var area = parse_RgceAreaRel(blob2, length2 - 1, opts);
   return [type, area];
 }
-function parse_PtgArray(blob, length2, opts) {
-  var type = (blob[blob.l++] & 96) >> 5;
-  blob.l += opts.biff == 2 ? 6 : opts.biff == 12 ? 14 : 7;
+function parse_PtgArray(blob2, length2, opts) {
+  var type = (blob2[blob2.l++] & 96) >> 5;
+  blob2.l += opts.biff == 2 ? 6 : opts.biff == 12 ? 14 : 7;
   return [type];
 }
-function parse_PtgAttrBaxcel(blob) {
-  var bitSemi = blob[blob.l + 1] & 1;
+function parse_PtgAttrBaxcel(blob2) {
+  var bitSemi = blob2[blob2.l + 1] & 1;
   var bitBaxcel = 1;
-  blob.l += 4;
+  blob2.l += 4;
   return [bitSemi, bitBaxcel];
 }
-function parse_PtgAttrChoose(blob, length2, opts) {
-  blob.l += 2;
-  var offset = blob.read_shift(opts && opts.biff == 2 ? 1 : 2);
+function parse_PtgAttrChoose(blob2, length2, opts) {
+  blob2.l += 2;
+  var offset = blob2.read_shift(opts && opts.biff == 2 ? 1 : 2);
   var o = [];
   for (var i = 0; i <= offset; ++i)
-    o.push(blob.read_shift(opts && opts.biff == 2 ? 1 : 2));
+    o.push(blob2.read_shift(opts && opts.biff == 2 ? 1 : 2));
   return o;
 }
-function parse_PtgAttrGoto(blob, length2, opts) {
-  var bitGoto = blob[blob.l + 1] & 255 ? 1 : 0;
-  blob.l += 2;
-  return [bitGoto, blob.read_shift(opts && opts.biff == 2 ? 1 : 2)];
+function parse_PtgAttrGoto(blob2, length2, opts) {
+  var bitGoto = blob2[blob2.l + 1] & 255 ? 1 : 0;
+  blob2.l += 2;
+  return [bitGoto, blob2.read_shift(opts && opts.biff == 2 ? 1 : 2)];
 }
-function parse_PtgAttrIf(blob, length2, opts) {
-  var bitIf = blob[blob.l + 1] & 255 ? 1 : 0;
-  blob.l += 2;
-  return [bitIf, blob.read_shift(opts && opts.biff == 2 ? 1 : 2)];
+function parse_PtgAttrIf(blob2, length2, opts) {
+  var bitIf = blob2[blob2.l + 1] & 255 ? 1 : 0;
+  blob2.l += 2;
+  return [bitIf, blob2.read_shift(opts && opts.biff == 2 ? 1 : 2)];
 }
-function parse_PtgAttrIfError(blob) {
-  var bitIf = blob[blob.l + 1] & 255 ? 1 : 0;
-  blob.l += 2;
-  return [bitIf, blob.read_shift(2)];
+function parse_PtgAttrIfError(blob2) {
+  var bitIf = blob2[blob2.l + 1] & 255 ? 1 : 0;
+  blob2.l += 2;
+  return [bitIf, blob2.read_shift(2)];
 }
-function parse_PtgAttrSemi(blob, length2, opts) {
-  var bitSemi = blob[blob.l + 1] & 255 ? 1 : 0;
-  blob.l += opts && opts.biff == 2 ? 3 : 4;
+function parse_PtgAttrSemi(blob2, length2, opts) {
+  var bitSemi = blob2[blob2.l + 1] & 255 ? 1 : 0;
+  blob2.l += opts && opts.biff == 2 ? 3 : 4;
   return [bitSemi];
 }
-function parse_PtgAttrSpaceType(blob) {
-  var type = blob.read_shift(1), cch = blob.read_shift(1);
+function parse_PtgAttrSpaceType(blob2) {
+  var type = blob2.read_shift(1), cch = blob2.read_shift(1);
   return [type, cch];
 }
-function parse_PtgAttrSpace(blob) {
-  blob.read_shift(2);
-  return parse_PtgAttrSpaceType(blob);
+function parse_PtgAttrSpace(blob2) {
+  blob2.read_shift(2);
+  return parse_PtgAttrSpaceType(blob2);
 }
-function parse_PtgAttrSpaceSemi(blob) {
-  blob.read_shift(2);
-  return parse_PtgAttrSpaceType(blob);
+function parse_PtgAttrSpaceSemi(blob2) {
+  blob2.read_shift(2);
+  return parse_PtgAttrSpaceType(blob2);
 }
-function parse_PtgRef(blob, length2, opts) {
-  var type = (blob[blob.l] & 96) >> 5;
-  blob.l += 1;
-  var loc = parse_RgceLoc(blob, 0, opts);
+function parse_PtgRef(blob2, length2, opts) {
+  var type = (blob2[blob2.l] & 96) >> 5;
+  blob2.l += 1;
+  var loc = parse_RgceLoc(blob2, 0, opts);
   return [type, loc];
 }
-function parse_PtgRefN(blob, length2, opts) {
-  var type = (blob[blob.l] & 96) >> 5;
-  blob.l += 1;
-  var loc = parse_RgceLocRel(blob, 0, opts);
+function parse_PtgRefN(blob2, length2, opts) {
+  var type = (blob2[blob2.l] & 96) >> 5;
+  blob2.l += 1;
+  var loc = parse_RgceLocRel(blob2, 0, opts);
   return [type, loc];
 }
-function parse_PtgRef3d(blob, length2, opts) {
-  var type = (blob[blob.l] & 96) >> 5;
-  blob.l += 1;
-  var ixti = blob.read_shift(2);
+function parse_PtgRef3d(blob2, length2, opts) {
+  var type = (blob2[blob2.l] & 96) >> 5;
+  blob2.l += 1;
+  var ixti = blob2.read_shift(2);
   if (opts && opts.biff == 5)
-    blob.l += 12;
-  var loc = parse_RgceLoc(blob, 0, opts);
+    blob2.l += 12;
+  var loc = parse_RgceLoc(blob2, 0, opts);
   return [type, ixti, loc];
 }
-function parse_PtgFunc(blob, length2, opts) {
-  var type = (blob[blob.l] & 96) >> 5;
-  blob.l += 1;
-  var iftab = blob.read_shift(opts && opts.biff <= 3 ? 1 : 2);
+function parse_PtgFunc(blob2, length2, opts) {
+  var type = (blob2[blob2.l] & 96) >> 5;
+  blob2.l += 1;
+  var iftab = blob2.read_shift(opts && opts.biff <= 3 ? 1 : 2);
   return [FtabArgc[iftab], Ftab[iftab], type];
 }
-function parse_PtgFuncVar(blob, length2, opts) {
-  var type = blob[blob.l++];
-  var cparams = blob.read_shift(1), tab = opts && opts.biff <= 3 ? [type == 88 ? -1 : 0, blob.read_shift(1)] : parsetab(blob);
+function parse_PtgFuncVar(blob2, length2, opts) {
+  var type = blob2[blob2.l++];
+  var cparams = blob2.read_shift(1), tab = opts && opts.biff <= 3 ? [type == 88 ? -1 : 0, blob2.read_shift(1)] : parsetab(blob2);
   return [cparams, (tab[0] === 0 ? Ftab : Cetab)[tab[1]]];
 }
-function parsetab(blob) {
-  return [blob[blob.l + 1] >> 7, blob.read_shift(2) & 32767];
+function parsetab(blob2) {
+  return [blob2[blob2.l + 1] >> 7, blob2.read_shift(2) & 32767];
 }
-function parse_PtgAttrSum(blob, length2, opts) {
-  blob.l += opts && opts.biff == 2 ? 3 : 4;
+function parse_PtgAttrSum(blob2, length2, opts) {
+  blob2.l += opts && opts.biff == 2 ? 3 : 4;
   return;
 }
-function parse_PtgExp(blob, length2, opts) {
-  blob.l++;
+function parse_PtgExp(blob2, length2, opts) {
+  blob2.l++;
   if (opts && opts.biff == 12)
-    return [blob.read_shift(4, "i"), 0];
-  var row = blob.read_shift(2);
-  var col = blob.read_shift(opts && opts.biff == 2 ? 1 : 2);
+    return [blob2.read_shift(4, "i"), 0];
+  var row = blob2.read_shift(2);
+  var col = blob2.read_shift(opts && opts.biff == 2 ? 1 : 2);
   return [row, col];
 }
-function parse_PtgErr(blob) {
-  blob.l++;
-  return BErr[blob.read_shift(1)];
+function parse_PtgErr(blob2) {
+  blob2.l++;
+  return BErr[blob2.read_shift(1)];
 }
-function parse_PtgInt(blob) {
-  blob.l++;
-  return blob.read_shift(2);
+function parse_PtgInt(blob2) {
+  blob2.l++;
+  return blob2.read_shift(2);
 }
-function parse_PtgBool(blob) {
-  blob.l++;
-  return blob.read_shift(1) !== 0;
+function parse_PtgBool(blob2) {
+  blob2.l++;
+  return blob2.read_shift(1) !== 0;
 }
-function parse_PtgNum(blob) {
-  blob.l++;
-  return parse_Xnum(blob);
+function parse_PtgNum(blob2) {
+  blob2.l++;
+  return parse_Xnum(blob2);
 }
-function parse_PtgStr(blob, length2, opts) {
-  blob.l++;
-  return parse_ShortXLUnicodeString(blob, length2 - 1, opts);
+function parse_PtgStr(blob2, length2, opts) {
+  blob2.l++;
+  return parse_ShortXLUnicodeString(blob2, length2 - 1, opts);
 }
-function parse_SerAr(blob, biff) {
-  var val = [blob.read_shift(1)];
+function parse_SerAr(blob2, biff) {
+  var val = [blob2.read_shift(1)];
   if (biff == 12)
     switch (val[0]) {
       case 2:
@@ -16557,44 +16557,44 @@ function parse_SerAr(blob, biff) {
     }
   switch (val[0]) {
     case 4:
-      val[1] = parsebool(blob, 1) ? "TRUE" : "FALSE";
+      val[1] = parsebool(blob2, 1) ? "TRUE" : "FALSE";
       if (biff != 12)
-        blob.l += 7;
+        blob2.l += 7;
       break;
     case 37:
     case 16:
-      val[1] = BErr[blob[blob.l]];
-      blob.l += biff == 12 ? 4 : 8;
+      val[1] = BErr[blob2[blob2.l]];
+      blob2.l += biff == 12 ? 4 : 8;
       break;
     case 0:
-      blob.l += 8;
+      blob2.l += 8;
       break;
     case 1:
-      val[1] = parse_Xnum(blob);
+      val[1] = parse_Xnum(blob2);
       break;
     case 2:
-      val[1] = parse_XLUnicodeString2(blob, 0, { biff: biff > 0 && biff < 8 ? 2 : biff });
+      val[1] = parse_XLUnicodeString2(blob2, 0, { biff: biff > 0 && biff < 8 ? 2 : biff });
       break;
     default:
       throw new Error("Bad SerAr: " + val[0]);
   }
   return val;
 }
-function parse_PtgExtraMem(blob, cce, opts) {
-  var count = blob.read_shift(opts.biff == 12 ? 4 : 2);
+function parse_PtgExtraMem(blob2, cce, opts) {
+  var count = blob2.read_shift(opts.biff == 12 ? 4 : 2);
   var out = [];
   for (var i = 0; i != count; ++i)
-    out.push((opts.biff == 12 ? parse_UncheckedRfX : parse_Ref8U)(blob));
+    out.push((opts.biff == 12 ? parse_UncheckedRfX : parse_Ref8U)(blob2));
   return out;
 }
-function parse_PtgExtraArray(blob, length2, opts) {
+function parse_PtgExtraArray(blob2, length2, opts) {
   var rows = 0, cols = 0;
   if (opts.biff == 12) {
-    rows = blob.read_shift(4);
-    cols = blob.read_shift(4);
+    rows = blob2.read_shift(4);
+    cols = blob2.read_shift(4);
   } else {
-    cols = 1 + blob.read_shift(1);
-    rows = 1 + blob.read_shift(2);
+    cols = 1 + blob2.read_shift(1);
+    rows = 1 + blob2.read_shift(2);
   }
   if (opts.biff >= 2 && opts.biff < 8) {
     --rows;
@@ -16603,66 +16603,66 @@ function parse_PtgExtraArray(blob, length2, opts) {
   }
   for (var i = 0, o = []; i != rows && (o[i] = []); ++i)
     for (var j = 0; j != cols; ++j)
-      o[i][j] = parse_SerAr(blob, opts.biff);
+      o[i][j] = parse_SerAr(blob2, opts.biff);
   return o;
 }
-function parse_PtgName(blob, length2, opts) {
-  var type = blob.read_shift(1) >>> 5 & 3;
+function parse_PtgName(blob2, length2, opts) {
+  var type = blob2.read_shift(1) >>> 5 & 3;
   var w2 = !opts || opts.biff >= 8 ? 4 : 2;
-  var nameindex = blob.read_shift(w2);
+  var nameindex = blob2.read_shift(w2);
   switch (opts.biff) {
     case 2:
-      blob.l += 5;
+      blob2.l += 5;
       break;
     case 3:
     case 4:
-      blob.l += 8;
+      blob2.l += 8;
       break;
     case 5:
-      blob.l += 12;
+      blob2.l += 12;
       break;
   }
   return [type, 0, nameindex];
 }
-function parse_PtgNameX(blob, length2, opts) {
+function parse_PtgNameX(blob2, length2, opts) {
   if (opts.biff == 5)
-    return parse_PtgNameX_BIFF5(blob);
-  var type = blob.read_shift(1) >>> 5 & 3;
-  var ixti = blob.read_shift(2);
-  var nameindex = blob.read_shift(4);
+    return parse_PtgNameX_BIFF5(blob2);
+  var type = blob2.read_shift(1) >>> 5 & 3;
+  var ixti = blob2.read_shift(2);
+  var nameindex = blob2.read_shift(4);
   return [type, ixti, nameindex];
 }
-function parse_PtgNameX_BIFF5(blob) {
-  var type = blob.read_shift(1) >>> 5 & 3;
-  var ixti = blob.read_shift(2, "i");
-  blob.l += 8;
-  var nameindex = blob.read_shift(2);
-  blob.l += 12;
+function parse_PtgNameX_BIFF5(blob2) {
+  var type = blob2.read_shift(1) >>> 5 & 3;
+  var ixti = blob2.read_shift(2, "i");
+  blob2.l += 8;
+  var nameindex = blob2.read_shift(2);
+  blob2.l += 12;
   return [type, ixti, nameindex];
 }
-function parse_PtgMemArea(blob, length2, opts) {
-  var type = blob.read_shift(1) >>> 5 & 3;
-  blob.l += opts && opts.biff == 2 ? 3 : 4;
-  var cce = blob.read_shift(opts && opts.biff == 2 ? 1 : 2);
+function parse_PtgMemArea(blob2, length2, opts) {
+  var type = blob2.read_shift(1) >>> 5 & 3;
+  blob2.l += opts && opts.biff == 2 ? 3 : 4;
+  var cce = blob2.read_shift(opts && opts.biff == 2 ? 1 : 2);
   return [type, cce];
 }
-function parse_PtgMemFunc(blob, length2, opts) {
-  var type = blob.read_shift(1) >>> 5 & 3;
-  var cce = blob.read_shift(opts && opts.biff == 2 ? 1 : 2);
+function parse_PtgMemFunc(blob2, length2, opts) {
+  var type = blob2.read_shift(1) >>> 5 & 3;
+  var cce = blob2.read_shift(opts && opts.biff == 2 ? 1 : 2);
   return [type, cce];
 }
-function parse_PtgRefErr(blob, length2, opts) {
-  var type = blob.read_shift(1) >>> 5 & 3;
-  blob.l += 4;
+function parse_PtgRefErr(blob2, length2, opts) {
+  var type = blob2.read_shift(1) >>> 5 & 3;
+  blob2.l += 4;
   if (opts.biff < 8)
-    blob.l--;
+    blob2.l--;
   if (opts.biff == 12)
-    blob.l += 2;
+    blob2.l += 2;
   return [type];
 }
-function parse_PtgRefErr3d(blob, length2, opts) {
-  var type = (blob[blob.l++] & 96) >> 5;
-  var ixti = blob.read_shift(2);
+function parse_PtgRefErr3d(blob2, length2, opts) {
+  var type = (blob2[blob2.l++] & 96) >> 5;
+  var ixti = blob2.read_shift(2);
   var w2 = 4;
   if (opts)
     switch (opts.biff) {
@@ -16673,27 +16673,27 @@ function parse_PtgRefErr3d(blob, length2, opts) {
         w2 = 6;
         break;
     }
-  blob.l += w2;
+  blob2.l += w2;
   return [type, ixti];
 }
 var parse_PtgMemErr = parsenoop;
 var parse_PtgMemNoMem = parsenoop;
 var parse_PtgTbl = parsenoop;
-function parse_PtgElfLoc(blob, length2, opts) {
-  blob.l += 2;
-  return [parse_RgceElfLoc(blob)];
+function parse_PtgElfLoc(blob2, length2, opts) {
+  blob2.l += 2;
+  return [parse_RgceElfLoc(blob2)];
 }
-function parse_PtgElfNoop(blob) {
-  blob.l += 6;
+function parse_PtgElfNoop(blob2) {
+  blob2.l += 6;
   return [];
 }
 var parse_PtgElfCol = parse_PtgElfLoc;
 var parse_PtgElfColS = parse_PtgElfNoop;
 var parse_PtgElfColSV = parse_PtgElfNoop;
 var parse_PtgElfColV = parse_PtgElfLoc;
-function parse_PtgElfLel(blob) {
-  blob.l += 2;
-  return [parseuint16(blob), blob.read_shift(2) & 1];
+function parse_PtgElfLel(blob2) {
+  blob2.l += 2;
+  return [parseuint16(blob2), blob2.read_shift(2) & 1];
 }
 var parse_PtgElfRadical = parse_PtgElfLoc;
 var parse_PtgElfRadicalLel = parse_PtgElfLel;
@@ -16719,42 +16719,42 @@ var PtgListRT = [
   "??",
   "?Current"
 ];
-function parse_PtgList(blob) {
-  blob.l += 2;
-  var ixti = blob.read_shift(2);
-  var flags = blob.read_shift(2);
-  var idx = blob.read_shift(4);
-  var c = blob.read_shift(2);
-  var C = blob.read_shift(2);
+function parse_PtgList(blob2) {
+  blob2.l += 2;
+  var ixti = blob2.read_shift(2);
+  var flags = blob2.read_shift(2);
+  var idx = blob2.read_shift(4);
+  var c = blob2.read_shift(2);
+  var C = blob2.read_shift(2);
   var rt = PtgListRT[flags >> 2 & 31];
   return { ixti, coltype: flags & 3, rt, idx, c, C };
 }
-function parse_PtgSxName(blob) {
-  blob.l += 2;
-  return [blob.read_shift(4)];
+function parse_PtgSxName(blob2) {
+  blob2.l += 2;
+  return [blob2.read_shift(4)];
 }
-function parse_PtgSheet(blob, length2, opts) {
-  blob.l += 5;
-  blob.l += 2;
-  blob.l += opts.biff == 2 ? 1 : 4;
+function parse_PtgSheet(blob2, length2, opts) {
+  blob2.l += 5;
+  blob2.l += 2;
+  blob2.l += opts.biff == 2 ? 1 : 4;
   return ["PTGSHEET"];
 }
-function parse_PtgEndSheet(blob, length2, opts) {
-  blob.l += opts.biff == 2 ? 4 : 5;
+function parse_PtgEndSheet(blob2, length2, opts) {
+  blob2.l += opts.biff == 2 ? 4 : 5;
   return ["PTGENDSHEET"];
 }
-function parse_PtgMemAreaN(blob) {
-  var type = blob.read_shift(1) >>> 5 & 3;
-  var cce = blob.read_shift(2);
+function parse_PtgMemAreaN(blob2) {
+  var type = blob2.read_shift(1) >>> 5 & 3;
+  var cce = blob2.read_shift(2);
   return [type, cce];
 }
-function parse_PtgMemNoMemN(blob) {
-  var type = blob.read_shift(1) >>> 5 & 3;
-  var cce = blob.read_shift(2);
+function parse_PtgMemNoMemN(blob2) {
+  var type = blob2.read_shift(1) >>> 5 & 3;
+  var cce = blob2.read_shift(2);
   return [type, cce];
 }
-function parse_PtgAttrNoop(blob) {
-  blob.l += 4;
+function parse_PtgAttrNoop(blob2) {
+  blob2.l += 4;
   return [0, 0];
 }
 var PtgTypes = {
@@ -17005,24 +17005,24 @@ var Ptg19 = {
   /*::[*/
   255: {}
 };
-function parse_RgbExtra(blob, length2, rgce, opts) {
+function parse_RgbExtra(blob2, length2, rgce, opts) {
   if (opts.biff < 8)
-    return parsenoop(blob, length2);
-  var target = blob.l + length2;
+    return parsenoop(blob2, length2);
+  var target = blob2.l + length2;
   var o = [];
   for (var i = 0; i !== rgce.length; ++i) {
     switch (rgce[i][0]) {
       case "PtgArray":
-        rgce[i][1] = parse_PtgExtraArray(blob, 0, opts);
+        rgce[i][1] = parse_PtgExtraArray(blob2, 0, opts);
         o.push(rgce[i][1]);
         break;
       case "PtgMemArea":
-        rgce[i][2] = parse_PtgExtraMem(blob, rgce[i][1], opts);
+        rgce[i][2] = parse_PtgExtraMem(blob2, rgce[i][1], opts);
         o.push(rgce[i][2]);
         break;
       case "PtgExp":
         if (opts && opts.biff == 12) {
-          rgce[i][1][1] = blob.read_shift(4);
+          rgce[i][1][1] = blob2.read_shift(4);
           o.push(rgce[i][1]);
         }
         break;
@@ -17033,24 +17033,24 @@ function parse_RgbExtra(blob, length2, rgce, opts) {
         throw "Unsupported " + rgce[i][0];
     }
   }
-  length2 = target - blob.l;
+  length2 = target - blob2.l;
   if (length2 !== 0)
-    o.push(parsenoop(blob, length2));
+    o.push(parsenoop(blob2, length2));
   return o;
 }
-function parse_Rgce(blob, length2, opts) {
-  var target = blob.l + length2;
+function parse_Rgce(blob2, length2, opts) {
+  var target = blob2.l + length2;
   var R, id, ptgs = [];
-  while (target != blob.l) {
-    length2 = target - blob.l;
-    id = blob[blob.l];
+  while (target != blob2.l) {
+    length2 = target - blob2.l;
+    id = blob2[blob2.l];
     R = PtgTypes[id] || PtgTypes[PtgDupes[id]];
     if (id === 24 || id === 25)
-      R = (id === 24 ? Ptg18 : Ptg19)[blob[blob.l + 1]];
+      R = (id === 24 ? Ptg18 : Ptg19)[blob2[blob2.l + 1]];
     if (!R || !R.f) {
-      parsenoop(blob, length2);
+      parsenoop(blob2, length2);
     } else {
-      ptgs.push([R.n, R.f(blob, length2, opts)]);
+      ptgs.push([R.n, R.f(blob2, length2, opts)]);
     }
   }
   return ptgs;
@@ -17488,64 +17488,64 @@ function stringify_formula(formula, range, cell, supbooks, opts) {
     return false;
   return stack[0];
 }
-function parse_ArrayParsedFormula(blob, length2, opts) {
-  var target = blob.l + length2, len = opts.biff == 2 ? 1 : 2;
-  var rgcb, cce = blob.read_shift(len);
+function parse_ArrayParsedFormula(blob2, length2, opts) {
+  var target = blob2.l + length2, len = opts.biff == 2 ? 1 : 2;
+  var rgcb, cce = blob2.read_shift(len);
   if (cce == 65535)
-    return [[], parsenoop(blob, length2 - 2)];
-  var rgce = parse_Rgce(blob, cce, opts);
+    return [[], parsenoop(blob2, length2 - 2)];
+  var rgce = parse_Rgce(blob2, cce, opts);
   if (length2 !== cce + len)
-    rgcb = parse_RgbExtra(blob, length2 - cce - len, rgce, opts);
-  blob.l = target;
+    rgcb = parse_RgbExtra(blob2, length2 - cce - len, rgce, opts);
+  blob2.l = target;
   return [rgce, rgcb];
 }
-function parse_XLSCellParsedFormula(blob, length2, opts) {
-  var target = blob.l + length2, len = opts.biff == 2 ? 1 : 2;
-  var rgcb, cce = blob.read_shift(len);
+function parse_XLSCellParsedFormula(blob2, length2, opts) {
+  var target = blob2.l + length2, len = opts.biff == 2 ? 1 : 2;
+  var rgcb, cce = blob2.read_shift(len);
   if (cce == 65535)
-    return [[], parsenoop(blob, length2 - 2)];
-  var rgce = parse_Rgce(blob, cce, opts);
+    return [[], parsenoop(blob2, length2 - 2)];
+  var rgce = parse_Rgce(blob2, cce, opts);
   if (length2 !== cce + len)
-    rgcb = parse_RgbExtra(blob, length2 - cce - len, rgce, opts);
-  blob.l = target;
+    rgcb = parse_RgbExtra(blob2, length2 - cce - len, rgce, opts);
+  blob2.l = target;
   return [rgce, rgcb];
 }
-function parse_NameParsedFormula(blob, length2, opts, cce) {
-  var target = blob.l + length2;
-  var rgce = parse_Rgce(blob, cce, opts);
+function parse_NameParsedFormula(blob2, length2, opts, cce) {
+  var target = blob2.l + length2;
+  var rgce = parse_Rgce(blob2, cce, opts);
   var rgcb;
-  if (target !== blob.l)
-    rgcb = parse_RgbExtra(blob, target - blob.l, rgce, opts);
+  if (target !== blob2.l)
+    rgcb = parse_RgbExtra(blob2, target - blob2.l, rgce, opts);
   return [rgce, rgcb];
 }
-function parse_SharedParsedFormula(blob, length2, opts) {
-  var target = blob.l + length2;
-  var rgcb, cce = blob.read_shift(2);
-  var rgce = parse_Rgce(blob, cce, opts);
+function parse_SharedParsedFormula(blob2, length2, opts) {
+  var target = blob2.l + length2;
+  var rgcb, cce = blob2.read_shift(2);
+  var rgce = parse_Rgce(blob2, cce, opts);
   if (cce == 65535)
-    return [[], parsenoop(blob, length2 - 2)];
+    return [[], parsenoop(blob2, length2 - 2)];
   if (length2 !== cce + 2)
-    rgcb = parse_RgbExtra(blob, target - cce - 2, rgce, opts);
+    rgcb = parse_RgbExtra(blob2, target - cce - 2, rgce, opts);
   return [rgce, rgcb];
 }
-function parse_FormulaValue(blob) {
+function parse_FormulaValue(blob2) {
   var b;
-  if (__readUInt16LE(blob, blob.l + 6) !== 65535)
-    return [parse_Xnum(blob), "n"];
-  switch (blob[blob.l]) {
+  if (__readUInt16LE(blob2, blob2.l + 6) !== 65535)
+    return [parse_Xnum(blob2), "n"];
+  switch (blob2[blob2.l]) {
     case 0:
-      blob.l += 8;
+      blob2.l += 8;
       return ["String", "s"];
     case 1:
-      b = blob[blob.l + 2] === 1;
-      blob.l += 8;
+      b = blob2[blob2.l + 2] === 1;
+      blob2.l += 8;
       return [b, "b"];
     case 2:
-      b = blob[blob.l + 2];
-      blob.l += 8;
+      b = blob2[blob2.l + 2];
+      blob2.l += 8;
       return [b, "e"];
     case 3:
-      blob.l += 8;
+      blob2.l += 8;
       return ["", "s"];
   }
   return [];
@@ -17563,20 +17563,20 @@ function write_FormulaValue(value) {
     return write_Xnum(value);
   return write_Xnum(0);
 }
-function parse_Formula(blob, length2, opts) {
-  var end = blob.l + length2;
-  var cell = parse_XLSCell(blob);
+function parse_Formula(blob2, length2, opts) {
+  var end = blob2.l + length2;
+  var cell = parse_XLSCell(blob2);
   if (opts.biff == 2)
-    ++blob.l;
-  var val = parse_FormulaValue(blob);
-  var flags = blob.read_shift(1);
+    ++blob2.l;
+  var val = parse_FormulaValue(blob2);
+  var flags = blob2.read_shift(1);
   if (opts.biff != 2) {
-    blob.read_shift(1);
+    blob2.read_shift(1);
     if (opts.biff >= 5) {
-      blob.read_shift(4);
+      blob2.read_shift(4);
     }
   }
-  var cbf = parse_XLSCellParsedFormula(blob, end - blob.l, opts);
+  var cbf = parse_XLSCellParsedFormula(blob2, end - blob2.l, opts);
   return { cell, val: val[0], formula: cbf, shared: flags >> 3 & 1, tt: val[1] };
 }
 function write_Formula(cell, R, C, opts, os) {
@@ -23801,10 +23801,10 @@ function parse_compobj(obj) {
   v.Reserved2 = o.read_shift(0, "lpwstr");
 }
 var CONTINUE_RT = [60, 1084, 2066, 2165, 2175];
-function slurp(RecordType, R, blob, length2, opts) {
+function slurp(RecordType, R, blob2, length2, opts) {
   var l = length2;
   var bufs = [];
-  var d = blob.slice(blob.l, blob.l + l);
+  var d = blob2.slice(blob2.l, blob2.l + l);
   if (opts && opts.enc && opts.enc.insitu && d.length > 0)
     switch (RecordType) {
       case 9:
@@ -23825,21 +23825,21 @@ function slurp(RecordType, R, blob, length2, opts) {
         opts.enc.insitu(d);
     }
   bufs.push(d);
-  blob.l += l;
-  var nextrt = __readUInt16LE(blob, blob.l), next2 = XLSRecordEnum[nextrt];
+  blob2.l += l;
+  var nextrt = __readUInt16LE(blob2, blob2.l), next2 = XLSRecordEnum[nextrt];
   var start = 0;
   while (next2 != null && CONTINUE_RT.indexOf(nextrt) > -1) {
-    l = __readUInt16LE(blob, blob.l + 2);
-    start = blob.l + 4;
+    l = __readUInt16LE(blob2, blob2.l + 2);
+    start = blob2.l + 4;
     if (nextrt == 2066)
       start += 4;
     else if (nextrt == 2165 || nextrt == 2175) {
       start += 12;
     }
-    d = blob.slice(start, blob.l + 4 + l);
+    d = blob2.slice(start, blob2.l + 4 + l);
     bufs.push(d);
-    blob.l += 4 + l;
-    next2 = XLSRecordEnum[nextrt = __readUInt16LE(blob, blob.l)];
+    blob2.l += 4 + l;
+    next2 = XLSRecordEnum[nextrt = __readUInt16LE(blob2, blob2.l)];
   }
   var b = bconcat(bufs);
   prep_blob(b, 0);
@@ -23896,7 +23896,7 @@ function safe_format_xf(p, opts, date1904) {
 function make_cell(val, ixfe, t) {
   return { v: val, ixfe, t };
 }
-function parse_workbook(blob, options2) {
+function parse_workbook(blob2, options2) {
   var wb = { opts: {} };
   var Sheets = {};
   var out = {};
@@ -24026,12 +24026,12 @@ function parse_workbook(blob, options2) {
   opts.codepage = 1200;
   set_cp(1200);
   var seen_codepage = false;
-  while (blob.l < blob.length - 1) {
-    var s = blob.l;
-    var RecordType = blob.read_shift(2);
+  while (blob2.l < blob2.length - 1) {
+    var s = blob2.l;
+    var RecordType = blob2.read_shift(2);
     if (RecordType === 0 && last_RT === 10)
       break;
-    var length2 = blob.l === blob.length ? 0 : blob.read_shift(2);
+    var length2 = blob2.l === blob2.length ? 0 : blob2.read_shift(2);
     var R = XLSRecordEnum[RecordType];
     if (file_depth == 0 && [9, 521, 1033, 2057].indexOf(RecordType) == -1)
       break;
@@ -24042,22 +24042,22 @@ function parse_workbook(blob, options2) {
       }
       last_RT = RecordType;
       if (R.r === 2 || R.r == 12) {
-        var rt = blob.read_shift(2);
+        var rt = blob2.read_shift(2);
         length2 -= 2;
         if (!opts.enc && rt !== RecordType && ((rt & 255) << 8 | rt >> 8) !== RecordType)
           throw new Error("rt mismatch: " + rt + "!=" + RecordType);
         if (R.r == 12) {
-          blob.l += 10;
+          blob2.l += 10;
           length2 -= 10;
         }
       }
       var val = {};
       if (RecordType === 10)
         val = /*::(*/
-        R.f(blob, length2, opts);
+        R.f(blob2, length2, opts);
       else
         val = /*::(*/
-        slurp(RecordType, R, blob, length2, opts);
+        slurp(RecordType, R, blob2, length2, opts);
       if (file_depth == 0 && [9, 521, 1033, 2057].indexOf(last_RT) === -1)
         continue;
       switch (RecordType) {
@@ -24069,7 +24069,7 @@ function parse_workbook(blob, options2) {
           break;
         case 47:
           if (!opts.enc)
-            blob.l = 0;
+            blob2.l = 0;
           opts.enc = val;
           if (!options2.password)
             throw new Error("File is password-protected");
@@ -24286,7 +24286,7 @@ function parse_workbook(blob, options2) {
               if (cur_sheet === "")
                 cur_sheet = "Sheet1";
               range = { s: { r: 0, c: 0 }, e: { r: 0, c: 0 } };
-              var fakebs8 = { pos: blob.l - length2, name: cur_sheet };
+              var fakebs8 = { pos: blob2.l - length2, name: cur_sheet };
               Directory[fakebs8.pos] = fakebs8;
               opts.snames.push(cur_sheet);
             } else
@@ -24634,7 +24634,7 @@ function parse_workbook(blob, options2) {
     } else {
       if (!R)
         console.error("Missing Info for XLS Record 0x" + RecordType.toString(16));
-      blob.l += length2;
+      blob2.l += length2;
     }
   }
   wb.SheetNames = keys(Directory).sort(function(a, b) {
@@ -36661,6 +36661,21 @@ var utils = {
     SHEET_VERY_HIDDEN: 2
   }
 };
+const encodedJs = "KGZ1bmN0aW9uKCkgewogICJ1c2Ugc3RyaWN0IjsKICBzZWxmLm9ubWVzc2FnZSA9IGZ1bmN0aW9uKGV2ZW50KSB7CiAgICB2YXIgX2EsIF9iLCBfYywgX2QsIF9lLCBfZiwgX2c7CiAgICBjb25zdCB7CiAgICAgIG1lc3NhZ2VzLAogICAgICBkZWZhdWx0R3JpZERhdGFUbXAsCiAgICAgIGluZGVudGlmZXJDb2x1bW4sCiAgICAgIHByb3BzLAogICAgICBpZ25vcmVkQ29sUHJvcGVydGllcywKICAgICAgTWVzc2FnZUJhclR5cGUsCiAgICAgIERlcENvbFR5cGVzCiAgICB9ID0gZXZlbnQuZGF0YTsKICAgIGxldCBsb2NhbEVycm9yID0gZmFsc2U7CiAgICBjb25zdCBtc2dNYXAgPSBuZXcgTWFwKG1lc3NhZ2VzKTsKICAgIGNvbnN0IHRtcEluc2VydFRvTWVzc2FnZU1hcCA9IChrZXksIHZhbHVlKSA9PiB7CiAgICAgIG1zZ01hcC5zZXQoa2V5LCB2YWx1ZSk7CiAgICB9OwogICAgZnVuY3Rpb24gZmluZER1cGxpY2F0ZXMoYXJyYXkpIHsKICAgICAgY29uc3QgZHVwbGljYXRlczIgPSBbXTsKICAgICAgY29uc3Qgc2VlbiA9IHt9OwogICAgICBjb25zdCBtYWtlRXZlcnl0aGluZ0FTdHJpbmcgPSBhcnJheS5tYXAoKG9iaikgPT4gewogICAgICAgIGNvbnN0IGNvbnZlcnRlZE9iaiA9IHt9OwogICAgICAgIGZvciAoY29uc3Qga2V5MiBpbiBvYmopIHsKICAgICAgICAgIGlmIChvYmpba2V5Ml0gPT0gbnVsbCB8fCBvYmpba2V5Ml0gPT0gdm9pZCAwKQogICAgICAgICAgICBjb252ZXJ0ZWRPYmpba2V5Ml0gPSAiIjsKICAgICAgICAgIGVsc2UgewogICAgICAgICAgICBjb252ZXJ0ZWRPYmpba2V5Ml0gPSBTdHJpbmcob2JqW2tleTJdKS50b0xvd2VyQ2FzZSgpOwogICAgICAgICAgfQogICAgICAgIH0KICAgICAgICByZXR1cm4gY29udmVydGVkT2JqOwogICAgICB9KTsKICAgICAgY29uc3QgaWdub3JlZFByb3BlcnRpZXMgPSBbLi4uaWdub3JlZENvbFByb3BlcnRpZXNdOwogICAgICBpZiAoaW5kZW50aWZlckNvbHVtbiAhPT0gbnVsbCAmJiBpbmRlbnRpZmVyQ29sdW1uICE9PSB2b2lkIDApIHsKICAgICAgICBpZ25vcmVkUHJvcGVydGllcy5wdXNoKGluZGVudGlmZXJDb2x1bW4pOwogICAgICB9CiAgICAgIGlmIChwcm9wcy5jdXN0b21PcGVyYXRpb25zS2V5KSB7CiAgICAgICAgaWdub3JlZFByb3BlcnRpZXMucHVzaChwcm9wcy5jdXN0b21PcGVyYXRpb25zS2V5LmNvbEtleSk7CiAgICAgIH0KICAgICAgaWYgKHByb3BzLmN1c3RvbUtleXNUb0FkZE9uTmV3Um93KSB7CiAgICAgICAgZm9yIChsZXQgaW5kZXggPSAwOyBpbmRleCA8IHByb3BzLmN1c3RvbUtleXNUb0FkZE9uTmV3Um93Lmxlbmd0aDsgaW5kZXgrKykgewogICAgICAgICAgY29uc3QgZWxlbWVudCA9IHByb3BzLmN1c3RvbUtleXNUb0FkZE9uTmV3Um93W2luZGV4XTsKICAgICAgICAgIGlmICgoZWxlbWVudC51c2VLZXlXaGVuRGV0ZXJtaW5pbmdEdXBsaWNhdGVkUm93cyA/PyBmYWxzZSkgPT0gdHJ1ZSkKICAgICAgICAgICAgaWdub3JlZFByb3BlcnRpZXMucHVzaChlbGVtZW50LmtleSk7CiAgICAgICAgfQogICAgICB9CiAgICAgIGxldCBrZXkgPSAiIjsKICAgICAgbWFrZUV2ZXJ5dGhpbmdBU3RyaW5nLmZvckVhY2goKHJvdywgaW5kZXgpID0+IHsKICAgICAgICBpZiAoZGVmYXVsdEdyaWREYXRhVG1wID09IG51bGwgPyB2b2lkIDAgOiBkZWZhdWx0R3JpZERhdGFUbXBbMF0pIHsKICAgICAgICAgIGtleSA9IEpTT04uc3RyaW5naWZ5KAogICAgICAgICAgICBPYmplY3QuZW50cmllcyhyb3cpLmZpbHRlcigoW3Byb3BdKSA9PiBPYmplY3Qua2V5cyhkZWZhdWx0R3JpZERhdGFUbXBbMF0pLmluY2x1ZGVzKHByb3ApKS5maWx0ZXIoCiAgICAgICAgICAgICAgKFtwcm9wXSkgPT4gcHJvcHMuY29sdW1ucy5tYXAoKG9iaikgPT4gb2JqLmtleSkuaW5jbHVkZXMocHJvcCkKICAgICAgICAgICAgKS5maWx0ZXIoKFtwcm9wXSkgPT4gIWlnbm9yZWRQcm9wZXJ0aWVzLmluY2x1ZGVzKHByb3ApKS5zb3J0KCkKICAgICAgICAgICk7CiAgICAgICAgICBpZiAoc2VlbltrZXldKSB7CiAgICAgICAgICAgIGluZGVudGlmZXJDb2x1bW4gIT09IG51bGwgJiYgaW5kZW50aWZlckNvbHVtbiAhPT0gdm9pZCAwID8gc2VlbltrZXldLmlkcy5wdXNoKHJvd1tpbmRlbnRpZmVyQ29sdW1uXSkgOiBzZWVuW2tleV0uaWRzLnB1c2goaW5kZXgpOwogICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgaWYgKGluZGVudGlmZXJDb2x1bW4gIT09IG51bGwgJiYgaW5kZW50aWZlckNvbHVtbiAhPT0gdm9pZCAwKSB7CiAgICAgICAgICAgICAgc2VlbltrZXldID0gewogICAgICAgICAgICAgICAgaW5kZXg6IGR1cGxpY2F0ZXMyLmxlbmd0aCwKICAgICAgICAgICAgICAgIGlkczogW3Jvd1tpbmRlbnRpZmVyQ29sdW1uXV0KICAgICAgICAgICAgICB9OwogICAgICAgICAgICAgIGR1cGxpY2F0ZXMyLnB1c2goc2VlbltrZXldLmlkcyk7CiAgICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgICAgc2VlbltrZXldID0geyBpbmRleDogZHVwbGljYXRlczIubGVuZ3RoLCBpZHM6IFtpbmRleF0gfTsKICAgICAgICAgICAgICBkdXBsaWNhdGVzMi5wdXNoKHNlZW5ba2V5XS5pZHMpOwogICAgICAgICAgICB9CiAgICAgICAgICB9CiAgICAgICAgfQogICAgICB9KTsKICAgICAgcmV0dXJuIGR1cGxpY2F0ZXMyLmZpbHRlcigoaWRzKSA9PiBpZHMubGVuZ3RoID4gMSkubWFwKChpZHMpID0+IGlkcy5zb3J0KChhLCBiKSA9PiBhIC0gYikpOwogICAgfQogICAgY29uc3QgZHVwbGljYXRlcyA9IGZpbmREdXBsaWNhdGVzKGRlZmF1bHRHcmlkRGF0YVRtcCk7CiAgICBpZiAoZHVwbGljYXRlcy5sZW5ndGggPiAwKSB7CiAgICAgIGR1cGxpY2F0ZXMuZm9yRWFjaCgoZHVwcywgaW5kZXgpID0+IHsKICAgICAgICB2YXIgbXNnMiA9IGluZGVudGlmZXJDb2x1bW4gIT09IG51bGwgJiYgaW5kZW50aWZlckNvbHVtbiAhPT0gdm9pZCAwID8gYFJvd3MgTG9jYXRlZCBBdCBJRHM6ICR7ZHVwc30gYXJlIGR1cGxpY2F0ZWRgIDogYFJvd3MgTG9jYXRlZCBBdCBJbmRleGVzICR7ZHVwc30gYXJlIGR1cGxpY2F0ZWRgOwogICAgICAgIHRtcEluc2VydFRvTWVzc2FnZU1hcCgiZHVwcyIgKyBpbmRleCwgewogICAgICAgICAgbXNnOiBtc2cyLAogICAgICAgICAgdHlwZTogTWVzc2FnZUJhclR5cGUuZXJyb3IKICAgICAgICB9KTsKICAgICAgfSk7CiAgICAgIGxvY2FsRXJyb3IgPSB0cnVlOwogICAgfQogICAgZm9yIChsZXQgcm93ID0gMDsgcm93IDwgZGVmYXVsdEdyaWREYXRhVG1wLmxlbmd0aDsgcm93KyspIHsKICAgICAgY29uc3QgZ3JpZERhdGEgPSBkZWZhdWx0R3JpZERhdGFUbXBbcm93XTsKICAgICAgdmFyIGVsZW1lbnRDb2xOYW1lcyA9IE9iamVjdC5rZXlzKGdyaWREYXRhKTsKICAgICAgbGV0IGVtcHR5Q29sID0gW107CiAgICAgIGxldCBlbXB0eVJlcUNvbCA9IFtdOwogICAgICBmb3IgKGxldCBpbmRleElubmVyID0gMDsgaW5kZXhJbm5lciA8IGVsZW1lbnRDb2xOYW1lcy5sZW5ndGg7IGluZGV4SW5uZXIrKykgewogICAgICAgIGNvbnN0IGNvbE5hbWVzID0gZWxlbWVudENvbE5hbWVzW2luZGV4SW5uZXJdOwogICAgICAgIGdyaWREYXRhW2NvbE5hbWVzXTsKICAgICAgICBjb25zdCBjdXJyZW50Q29sID0gcHJvcHMuY29sdW1ucy5maWx0ZXIoKHgpID0+IHgua2V5ID09PSBjb2xOYW1lcyk7CiAgICAgICAgZm9yIChsZXQgaiA9IDA7IGogPCBjdXJyZW50Q29sLmxlbmd0aDsgaisrKSB7CiAgICAgICAgICBjb25zdCBlbGVtZW50ID0gY3VycmVudENvbFtqXTsKICAgICAgICAgIGNvbnN0IHJvd0NvbCA9IGdyaWREYXRhW2VsZW1lbnQua2V5XTsKICAgICAgICAgIGlmIChlbGVtZW50LnJlcXVpcmVkICYmIHR5cGVvZiBlbGVtZW50LnJlcXVpcmVkID09ICJib29sZWFuIiAmJiAocm93Q29sID09IG51bGwgfHwgcm93Q29sID09IHZvaWQgMCB8fCAocm93Q29sID09IG51bGwgPyB2b2lkIDAgOiByb3dDb2wudG9TdHJpbmcoKS5sZW5ndGgpIDw9IDAgfHwgcm93Q29sID09ICIiICYmIGVsZW1lbnQuZGF0YVR5cGUgIT0gIm51bWJlciIpKSB7CiAgICAgICAgICAgIGlmICghZW1wdHlDb2wuaW5jbHVkZXMoIiAiICsgZWxlbWVudC5uYW1lKSkKICAgICAgICAgICAgICBlbXB0eUNvbC5wdXNoKCIgIiArIGVsZW1lbnQubmFtZSk7CiAgICAgICAgICB9IGVsc2UgaWYgKHR5cGVvZiBlbGVtZW50LnJlcXVpcmVkICE9PSAiYm9vbGVhbiIgJiYgIWVsZW1lbnQucmVxdWlyZWQucmVxdWlyZWRPbmx5SWZUaGVzZUNvbHVtbnNBcmVFbXB0eSAmJiBlbGVtZW50LnJlcXVpcmVkLmVycm9yTWVzc2FnZSAmJiAocm93Q29sID09IG51bGwgfHwgcm93Q29sID09IHZvaWQgMCB8fCAocm93Q29sID09IG51bGwgPyB2b2lkIDAgOiByb3dDb2wudG9TdHJpbmcoKS5sZW5ndGgpIDw9IDAgfHwgcm93Q29sID09ICIiICYmIGVsZW1lbnQuZGF0YVR5cGUgIT0gIm51bWJlciIpKSB7CiAgICAgICAgICAgIHZhciBtc2cgPSBgUm93ICR7aW5kZW50aWZlckNvbHVtbiA/ICJXaXRoIElEOiAiICsgZ3JpZERhdGFbaW5kZW50aWZlckNvbHVtbl0gOiAiV2l0aCBJbmRleDoiICsgcm93ICsgMX0gLSAke2VsZW1lbnQucmVxdWlyZWQuZXJyb3JNZXNzYWdlfScuYDsKICAgICAgICAgICAgdG1wSW5zZXJ0VG9NZXNzYWdlTWFwKGVsZW1lbnQua2V5ICsgcm93ICsgImVtcHR5IiwgewogICAgICAgICAgICAgIG1zZywKICAgICAgICAgICAgICB0eXBlOiBNZXNzYWdlQmFyVHlwZS5lcnJvcgogICAgICAgICAgICB9KTsKICAgICAgICAgIH0gZWxzZSBpZiAodHlwZW9mIGVsZW1lbnQucmVxdWlyZWQgIT09ICJib29sZWFuIiAmJiBlbGVtZW50LnJlcXVpcmVkLnJlcXVpcmVkT25seUlmVGhlc2VDb2x1bW5zQXJlRW1wdHkgJiYgKHJvd0NvbCA9PSBudWxsIHx8IHJvd0NvbCA9PSB2b2lkIDAgfHwgKHJvd0NvbCA9PSBudWxsID8gdm9pZCAwIDogcm93Q29sLnRvU3RyaW5nKCkubGVuZ3RoKSA8PSAwIHx8IHJvd0NvbCA9PSAiIiAmJiBlbGVtZW50LmRhdGFUeXBlICE9ICJudW1iZXIiKSkgewogICAgICAgICAgICBjb25zdCBjaGVja0tleXMgPSBlbGVtZW50LnJlcXVpcmVkLnJlcXVpcmVkT25seUlmVGhlc2VDb2x1bW5zQXJlRW1wdHkuY29sS2V5czsKICAgICAgICAgICAgbGV0IHNraXBwYWJsZSA9IGZhbHNlOwogICAgICAgICAgICBmb3IgKGxldCBpbmRleCA9IDA7IGluZGV4IDwgY2hlY2tLZXlzLmxlbmd0aDsgaW5kZXgrKykgewogICAgICAgICAgICAgIGNvbnN0IGNvbHVtbktleSA9IGNoZWNrS2V5c1tpbmRleF07CiAgICAgICAgICAgICAgY29uc3Qgc3RyID0gZ3JpZERhdGFbY29sdW1uS2V5XTsKICAgICAgICAgICAgICBpZiAoZWxlbWVudC5yZXF1aXJlZC5hbHdheXNSZXF1aXJlZCkgewogICAgICAgICAgICAgICAgaWYgKHN0ciA9PSBudWxsIHx8IHN0ciA9PSB2b2lkIDAgfHwgKHN0ciA9PSBudWxsID8gdm9pZCAwIDogc3RyLnRvU3RyaW5nKCkubGVuZ3RoKSA8PSAwIHx8IHN0ciA9PSAiIiAmJiBlbGVtZW50LmRhdGFUeXBlICE9ICJudW1iZXIiKSB7CiAgICAgICAgICAgICAgICAgIGlmIChlbGVtZW50LnJlcXVpcmVkLmVycm9yTWVzc2FnZSkgewogICAgICAgICAgICAgICAgICAgIHZhciBtc2cgPSBgUm93ICR7aW5kZW50aWZlckNvbHVtbiA/ICJXaXRoIElEOiAiICsgZ3JpZERhdGFbaW5kZW50aWZlckNvbHVtbl0gOiAiV2l0aCBJbmRleDoiICsgcm93ICsgMX0gLSAke2VsZW1lbnQucmVxdWlyZWQuZXJyb3JNZXNzYWdlfScuYDsKICAgICAgICAgICAgICAgICAgICB0bXBJbnNlcnRUb01lc3NhZ2VNYXAoZWxlbWVudC5rZXkgKyByb3cgKyAiZW1wdHkiLCB7CiAgICAgICAgICAgICAgICAgICAgICBtc2csCiAgICAgICAgICAgICAgICAgICAgICB0eXBlOiBNZXNzYWdlQmFyVHlwZS5lcnJvcgogICAgICAgICAgICAgICAgICAgIH0pOwogICAgICAgICAgICAgICAgICB9IGVsc2UgaWYgKCFlbXB0eVJlcUNvbC5pbmNsdWRlcygiICIgKyBlbGVtZW50Lm5hbWUpKSB7CiAgICAgICAgICAgICAgICAgICAgZW1wdHlSZXFDb2wucHVzaCgiICIgKyBlbGVtZW50Lm5hbWUpOwogICAgICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgIGlmICgoc3RyIHx8ICgoX2EgPSBzdHIgPT0gbnVsbCA/IHZvaWQgMCA6IHN0ci50b1N0cmluZygpKSA9PSBudWxsID8gdm9pZCAwIDogX2EudHJpbSgpKSA9PSAiMCIpICYmIChzdHIgPT0gbnVsbCA/IHZvaWQgMCA6IHN0ci50b1N0cmluZygpLmxlbmd0aCkgPiAwKSB7CiAgICAgICAgICAgICAgICAgIHNraXBwYWJsZSA9IHRydWU7CiAgICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgICAgICBpZiAoIWVtcHR5UmVxQ29sLmluY2x1ZGVzKCIgIiArIGVsZW1lbnQubmFtZSkgJiYgc2tpcHBhYmxlID09IGZhbHNlKSB7CiAgICAgICAgICAgICAgaWYgKCFlbGVtZW50LnJlcXVpcmVkLmVycm9yTWVzc2FnZSkKICAgICAgICAgICAgICAgIGVtcHR5UmVxQ29sLnB1c2goIiAiICsgZWxlbWVudC5uYW1lKTsKICAgICAgICAgICAgICBlbHNlIHsKICAgICAgICAgICAgICAgIHZhciBtc2cgPSBgUm93ICR7aW5kZW50aWZlckNvbHVtbiA/ICJXaXRoIElEOiAiICsgZ3JpZERhdGFbaW5kZW50aWZlckNvbHVtbl0gOiAiV2l0aCBJbmRleDoiICsgcm93ICsgMX0gLSAke2VsZW1lbnQucmVxdWlyZWQuZXJyb3JNZXNzYWdlfScuYDsKICAgICAgICAgICAgICAgIHRtcEluc2VydFRvTWVzc2FnZU1hcChlbGVtZW50LmtleSArIHJvdyArICJlbXB0eSIsIHsKICAgICAgICAgICAgICAgICAgbXNnLAogICAgICAgICAgICAgICAgICB0eXBlOiBNZXNzYWdlQmFyVHlwZS5lcnJvcgogICAgICAgICAgICAgICAgfSk7CiAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgICB9CiAgICAgICAgICBpZiAocm93Q29sICE9PSBudWxsICYmICh0eXBlb2Ygcm93Q29sICE9PSBlbGVtZW50LmRhdGFUeXBlIHx8IHR5cGVvZiByb3dDb2wgPT09ICJudW1iZXIiKSkgewogICAgICAgICAgICBpZiAoZWxlbWVudC5kYXRhVHlwZSA9PT0gIm51bWJlciIpIHsKICAgICAgICAgICAgICBpZiAocm93Q29sICYmIGlzTmFOKHBhcnNlSW50KHJvd0NvbCkpICYmIHJvd0NvbCAhPT0gIiIpIHsKICAgICAgICAgICAgICAgIHZhciBtc2cgPSBgUm93ICR7aW5kZW50aWZlckNvbHVtbiA/ICJXaXRoIElEOiAiICsgZ3JpZERhdGFbaW5kZW50aWZlckNvbHVtbl0gOiAiV2l0aCBJbmRleDoiICsgcm93ICsgMX0gQ29sOiAke2VsZW1lbnQubmFtZX0gLSBWYWx1ZSBpcyBub3QgYSAnJHtlbGVtZW50LmRhdGFUeXBlfScuYDsKICAgICAgICAgICAgICAgIHRtcEluc2VydFRvTWVzc2FnZU1hcChlbGVtZW50LmtleSArIHJvdywgewogICAgICAgICAgICAgICAgICBtc2csCiAgICAgICAgICAgICAgICAgIHR5cGU6IE1lc3NhZ2VCYXJUeXBlLmVycm9yCiAgICAgICAgICAgICAgICB9KTsKICAgICAgICAgICAgICAgIGxvY2FsRXJyb3IgPSB0cnVlOwogICAgICAgICAgICAgIH0gZWxzZSBpZiAoZWxlbWVudC52YWxpZGF0aW9ucyAmJiBlbGVtZW50LnZhbGlkYXRpb25zLm51bWJlckJvdW5kYXJpZXMpIHsKICAgICAgICAgICAgICAgIGNvbnN0IG1pbiA9IGVsZW1lbnQudmFsaWRhdGlvbnMubnVtYmVyQm91bmRhcmllcy5taW5SYW5nZTsKICAgICAgICAgICAgICAgIGNvbnN0IG1heCA9IGVsZW1lbnQudmFsaWRhdGlvbnMubnVtYmVyQm91bmRhcmllcy5tYXhSYW5nZTsKICAgICAgICAgICAgICAgIGlmIChtaW4gJiYgbWF4KSB7CiAgICAgICAgICAgICAgICAgIGlmICghKG1pbiA8PSBwYXJzZUludChyb3dDb2wpICYmIG1heCA+PSBwYXJzZUludChyb3dDb2wpKSkgewogICAgICAgICAgICAgICAgICAgIHZhciBtc2cgPSBgUm93ICR7aW5kZW50aWZlckNvbHVtbiA/ICJXaXRoIElEOiAiICsgZ3JpZERhdGFbaW5kZW50aWZlckNvbHVtbl0gOiAiV2l0aCBJbmRleDoiICsgcm93ICsgMX0gQ29sOiAke2VsZW1lbnQubmFtZX0gLSBWYWx1ZSBvdXRzaWRlIG9mIHJhbmdlICcke21pbn0gLSAke21heH0nLiBFbnRlcmVkIHZhbHVlICR7cm93Q29sfWA7CiAgICAgICAgICAgICAgICAgICAgdG1wSW5zZXJ0VG9NZXNzYWdlTWFwKGVsZW1lbnQua2V5ICsgcm93LCB7CiAgICAgICAgICAgICAgICAgICAgICBtc2csCiAgICAgICAgICAgICAgICAgICAgICB0eXBlOiBNZXNzYWdlQmFyVHlwZS5lcnJvcgogICAgICAgICAgICAgICAgICAgIH0pOwogICAgICAgICAgICAgICAgICAgIGxvY2FsRXJyb3IgPSB0cnVlOwogICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9IGVsc2UgaWYgKG1pbikgewogICAgICAgICAgICAgICAgICBpZiAoIShtaW4gPD0gcGFyc2VJbnQocm93Q29sKSkpIHsKICAgICAgICAgICAgICAgICAgICB2YXIgbXNnID0gYFJvdyAke2luZGVudGlmZXJDb2x1bW4gPyAiV2l0aCBJRDogIiArIGdyaWREYXRhW2luZGVudGlmZXJDb2x1bW5dIDogIldpdGggSW5kZXg6IiArIHJvdyArIDF9IENvbDogJHtlbGVtZW50Lm5hbWV9IC0gVmFsdWUgaXMgbG93ZXIgdGhhbiByZXF1aXJlZCByYW5nZTogJyR7bWlufScuIEVudGVyZWQgdmFsdWUgJHtyb3dDb2x9YDsKICAgICAgICAgICAgICAgICAgICB0bXBJbnNlcnRUb01lc3NhZ2VNYXAoZWxlbWVudC5rZXkgKyByb3csIHsKICAgICAgICAgICAgICAgICAgICAgIG1zZywKICAgICAgICAgICAgICAgICAgICAgIHR5cGU6IE1lc3NhZ2VCYXJUeXBlLmVycm9yCiAgICAgICAgICAgICAgICAgICAgfSk7CiAgICAgICAgICAgICAgICAgICAgbG9jYWxFcnJvciA9IHRydWU7CiAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0gZWxzZSBpZiAobWF4KSB7CiAgICAgICAgICAgICAgICAgIGlmICghKG1heCA+PSBwYXJzZUludChyb3dDb2wpKSkgewogICAgICAgICAgICAgICAgICAgIHZhciBtc2cgPSBgUm93ICR7aW5kZW50aWZlckNvbHVtbiA/ICJXaXRoIElEOiAiICsgZ3JpZERhdGFbaW5kZW50aWZlckNvbHVtbl0gOiAiV2l0aCBJbmRleDoiICsgcm93ICsgMX0gQ29sOiAke2VsZW1lbnQubmFtZX0gLSBWYWx1ZSBpcyBncmVhdGVyIHRoYW4gcmVxdWlyZWQgcmFuZ2U6ICcke21heH0nLiBFbnRlcmVkIHZhbHVlICR7cm93Q29sfWA7CiAgICAgICAgICAgICAgICAgICAgdG1wSW5zZXJ0VG9NZXNzYWdlTWFwKGVsZW1lbnQua2V5ICsgcm93LCB7CiAgICAgICAgICAgICAgICAgICAgICBtc2csCiAgICAgICAgICAgICAgICAgICAgICB0eXBlOiBNZXNzYWdlQmFyVHlwZS5lcnJvcgogICAgICAgICAgICAgICAgICAgIH0pOwogICAgICAgICAgICAgICAgICAgIGxvY2FsRXJyb3IgPSB0cnVlOwogICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgfQogICAgICAgICAgICB9IGVsc2UgaWYgKGVsZW1lbnQuZGF0YVR5cGUgPT09ICJib29sZWFuIikgewogICAgICAgICAgICAgIHRyeSB7CiAgICAgICAgICAgICAgICBCb29sZWFuKHJvd0NvbCk7CiAgICAgICAgICAgICAgfSBjYXRjaCAoZXJyb3IpIHsKICAgICAgICAgICAgICAgIHZhciBtc2cgPSBgUm93ICR7aW5kZW50aWZlckNvbHVtbiA/ICJXaXRoIElEOiAiICsgZ3JpZERhdGFbaW5kZW50aWZlckNvbHVtbl0gOiAiV2l0aCBJbmRleDoiICsgcm93ICsgMX0gQ29sOiAke2VsZW1lbnQubmFtZX0gLSBWYWx1ZSBpcyBub3QgYSAnJHtlbGVtZW50LmRhdGFUeXBlfScuYDsKICAgICAgICAgICAgICAgIHRtcEluc2VydFRvTWVzc2FnZU1hcChlbGVtZW50LmtleSArIHJvdywgewogICAgICAgICAgICAgICAgICBtc2csCiAgICAgICAgICAgICAgICAgIHR5cGU6IE1lc3NhZ2VCYXJUeXBlLmVycm9yCiAgICAgICAgICAgICAgICB9KTsKICAgICAgICAgICAgICAgIGxvY2FsRXJyb3IgPSB0cnVlOwogICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSBlbHNlIGlmIChlbGVtZW50LmRhdGFUeXBlID09PSAiZGF0ZSIpIHsKICAgICAgICAgICAgICB0cnkgewogICAgICAgICAgICAgICAgaWYgKCFpc1ZhbGlkRGF0ZShyb3dDb2wpKSB7CiAgICAgICAgICAgICAgICAgIHRocm93IHt9OwogICAgICAgICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgICAgY29udGludWU7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgfSBjYXRjaCAoZXJyb3IpIHsKICAgICAgICAgICAgICAgIHZhciBtc2cgPSBgUm93ICR7aW5kZW50aWZlckNvbHVtbiA/ICJXaXRoIElEOiAiICsgZ3JpZERhdGFbaW5kZW50aWZlckNvbHVtbl0gOiAiV2l0aCBJbmRleDoiICsgcm93ICsgMX0gQ29sOiAke2VsZW1lbnQubmFtZX0gLSBWYWx1ZSBpcyBub3QgYSAnJHtlbGVtZW50LmRhdGFUeXBlfScuYDsKICAgICAgICAgICAgICAgIHRtcEluc2VydFRvTWVzc2FnZU1hcChlbGVtZW50LmtleSArIHJvdywgewogICAgICAgICAgICAgICAgICBtc2csCiAgICAgICAgICAgICAgICAgIHR5cGU6IE1lc3NhZ2VCYXJUeXBlLmVycm9yCiAgICAgICAgICAgICAgICB9KTsKICAgICAgICAgICAgICAgIGxvY2FsRXJyb3IgPSB0cnVlOwogICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgICAgfQogICAgICAgICAgaWYgKGVsZW1lbnQudmFsaWRhdGlvbnMgJiYgZWxlbWVudC52YWxpZGF0aW9ucy5jb2x1bW5EZXBlbmRlbnQpIHsKICAgICAgICAgICAgZm9yIChsZXQgaW5kZXggPSAwOyBpbmRleCA8IGVsZW1lbnQudmFsaWRhdGlvbnMuY29sdW1uRGVwZW5kZW50Lmxlbmd0aDsgaW5kZXgrKykgewogICAgICAgICAgICAgIGNvbnN0IGNvbERlcCA9IGVsZW1lbnQudmFsaWRhdGlvbnMuY29sdW1uRGVwZW5kZW50W2luZGV4XTsKICAgICAgICAgICAgICBpZiAoZ3JpZERhdGFbY29sRGVwLmRlcGVuZGVudENvbHVtbktleV0gfHwgZ3JpZERhdGFbY29sRGVwLmRlcGVuZGVudENvbHVtbktleV0gIT09IHZvaWQgMCkgewogICAgICAgICAgICAgICAgY29uc3Qgc3RyID0gZ3JpZERhdGFbY29sRGVwLmRlcGVuZGVudENvbHVtbktleV07CiAgICAgICAgICAgICAgICBsZXQgc2tpcCA9IGZhbHNlOwogICAgICAgICAgICAgICAgaWYgKGNvbERlcC5za2lwQ2hlY2tJZlRoZXNlQ29sdW1uc0hhdmVEYXRhICYmIGNvbERlcC5za2lwQ2hlY2tJZlRoZXNlQ29sdW1uc0hhdmVEYXRhLmNvbEtleXMpIHsKICAgICAgICAgICAgICAgICAgZm9yIChjb25zdCBza2lwRm9yS2V5IG9mIGNvbERlcC5za2lwQ2hlY2tJZlRoZXNlQ29sdW1uc0hhdmVEYXRhLmNvbEtleXMpIHsKICAgICAgICAgICAgICAgICAgICBpZiAoKF9iID0gY29sRGVwLnNraXBDaGVja0lmVGhlc2VDb2x1bW5zSGF2ZURhdGEpID09IG51bGwgPyB2b2lkIDAgOiBfYi5wYXJ0aWFsKSB7CiAgICAgICAgICAgICAgICAgICAgICBjb25zdCBzdHIyID0gZ3JpZERhdGFbc2tpcEZvcktleV07CiAgICAgICAgICAgICAgICAgICAgICBpZiAoc3RyMiAmJiBzdHIyICE9PSBudWxsICYmIHN0cjIgIT09IHZvaWQgMCAmJiAoc3RyMiA9PSBudWxsID8gdm9pZCAwIDogc3RyMi50b1N0cmluZygpLmxlbmd0aCkgPiAwKSB7CiAgICAgICAgICAgICAgICAgICAgICAgIHNraXAgPSB0cnVlOwogICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgICAgICAgY29uc3Qgc3RyMiA9IGdyaWREYXRhW3NraXBGb3JLZXldOwogICAgICAgICAgICAgICAgICAgICAgaWYgKHN0cjIgJiYgc3RyMiAhPT0gbnVsbCAmJiBzdHIyICE9PSB2b2lkIDAgJiYgKHN0cjIgPT0gbnVsbCA/IHZvaWQgMCA6IHN0cjIudG9TdHJpbmcoKS5sZW5ndGgpID4gMCkgewogICAgICAgICAgICAgICAgICAgICAgICBza2lwID0gdHJ1ZTsKICAgICAgICAgICAgICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgICAgICAgICAgICAgIHNraXAgPSBmYWxzZTsKICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBpZiAoIXNraXApIHsKICAgICAgICAgICAgICAgICAgaWYgKHN0ciAhPT0gdm9pZCAwICYmIHN0ciAhPT0gbnVsbCkgewogICAgICAgICAgICAgICAgICAgIGlmICgoc3RyID09IG51bGwgPyB2b2lkIDAgOiBzdHIudG9TdHJpbmcoKS5sZW5ndGgpID4gMCAmJiBjb2xEZXAudHlwZSA9PT0gRGVwQ29sVHlwZXMuTXVzdEJlRW1wdHkpIHsKICAgICAgICAgICAgICAgICAgICAgIGlmIChyb3dDb2wgIT09IG51bGwgJiYgKHJvd0NvbCA9PSBudWxsID8gdm9pZCAwIDogcm93Q29sLnRvU3RyaW5nKCkubGVuZ3RoKSA+IDApIHsKICAgICAgICAgICAgICAgICAgICAgICAgdmFyIG1zZyA9IGBSb3cgJHtpbmRlbnRpZmVyQ29sdW1uID8gIldpdGggSUQ6ICIgKyBncmlkRGF0YVtpbmRlbnRpZmVyQ29sdW1uXSA6ICJXaXRoIEluZGV4OiIgKyByb3cgKyAxfSAtIGAgKyAoY29sRGVwLmVycm9yTWVzc2FnZSA/PyBgRGF0YSBjYW5ub3QgYmUgZW50ZXJlZCBpbiAke2VsZW1lbnQubmFtZX0gYW5kIGluICR7Y29sRGVwLmRlcGVuZGVudENvbHVtbk5hbWV9IENvbHVtbi4gUmVtb3ZlIGRhdGEgaW4gJHtjb2xEZXAuZGVwZW5kZW50Q29sdW1uTmFtZX0gQ29sdW1uIHRvIGVudGVyIGRhdGEgaGVyZS5gKTsKICAgICAgICAgICAgICAgICAgICAgICAgdG1wSW5zZXJ0VG9NZXNzYWdlTWFwKHJvdyArICJDb2xEZXAiLCB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgbXNnLAogICAgICAgICAgICAgICAgICAgICAgICAgIHR5cGU6IE1lc3NhZ2VCYXJUeXBlLmVycm9yCiAgICAgICAgICAgICAgICAgICAgICAgIH0pOwogICAgICAgICAgICAgICAgICAgICAgICBsb2NhbEVycm9yID0gdHJ1ZTsKICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgaWYgKChzdHIgPT0gdm9pZCAwIHx8IHN0ciA9PSBudWxsIHx8IHN0ciA9PSAiIiAmJiBlbGVtZW50LmRhdGFUeXBlICE9ICJudW1iZXIiIHx8IHN0ciAmJiAoc3RyID09IG51bGwgPyB2b2lkIDAgOiBzdHIudG9TdHJpbmcoKS5sZW5ndGgpIDw9IDApICYmIGNvbERlcC50eXBlID09PSBEZXBDb2xUeXBlcy5NdXN0SGF2ZURhdGEpIHsKICAgICAgICAgICAgICAgICAgICB2YXIgbXNnID0gYFJvdyAke2luZGVudGlmZXJDb2x1bW4gPyAiV2l0aCBJRDogIiArIGdyaWREYXRhW2luZGVudGlmZXJDb2x1bW5dIDogIldpdGggSW5kZXg6IiArIHJvdyArIDF9IC0gYCArIChjb2xEZXAuZXJyb3JNZXNzYWdlID8/IGAgRGF0YSBuZWVkcyB0byBlbnRlcmVkIGluICR7Y29sRGVwLmRlcGVuZGVudENvbHVtbk5hbWV9IGFuZCBpbiAke2VsZW1lbnQubmFtZX0gQ29sdW1uLmApOwogICAgICAgICAgICAgICAgICAgIHRtcEluc2VydFRvTWVzc2FnZU1hcChyb3cgKyAiQ29sRGVwIiwgewogICAgICAgICAgICAgICAgICAgICAgbXNnLAogICAgICAgICAgICAgICAgICAgICAgdHlwZTogTWVzc2FnZUJhclR5cGUuZXJyb3IKICAgICAgICAgICAgICAgICAgICB9KTsKICAgICAgICAgICAgICAgICAgICBsb2NhbEVycm9yID0gdHJ1ZTsKICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgICAgfQogICAgICAgICAgaWYgKGVsZW1lbnQudmFsaWRhdGlvbnMgJiYgZWxlbWVudC52YWxpZGF0aW9ucy5yZWdleFZhbGlkYXRpb24pIHsKICAgICAgICAgICAgZm9yIChsZXQgaW5kZXggPSAwOyBpbmRleCA8IGVsZW1lbnQudmFsaWRhdGlvbnMucmVnZXhWYWxpZGF0aW9uLmxlbmd0aDsgaW5kZXgrKykgewogICAgICAgICAgICAgIGNvbnN0IGRhdGEgPSBlbGVtZW50LnZhbGlkYXRpb25zLnJlZ2V4VmFsaWRhdGlvbltpbmRleF07CiAgICAgICAgICAgICAgaWYgKCFkYXRhLnJlZ2V4LnRlc3Qocm93Q29sKSkgewogICAgICAgICAgICAgICAgdmFyIG1zZyA9IGBSb3cgJHtpbmRlbnRpZmVyQ29sdW1uID8gIldpdGggSUQ6ICIgKyBncmlkRGF0YVtpbmRlbnRpZmVyQ29sdW1uXSA6ICJXaXRoIEluZGV4OiIgKyByb3cgKyAxfSAtICR7ZGF0YS5lcnJvck1lc3NhZ2V9YDsKICAgICAgICAgICAgICAgIHRtcEluc2VydFRvTWVzc2FnZU1hcChlbGVtZW50LmtleSArIHJvdywgewogICAgICAgICAgICAgICAgICBtc2csCiAgICAgICAgICAgICAgICAgIHR5cGU6IE1lc3NhZ2VCYXJUeXBlLmVycm9yCiAgICAgICAgICAgICAgICB9KTsKICAgICAgICAgICAgICAgIGxvY2FsRXJyb3IgPSB0cnVlOwogICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgICAgfQogICAgICAgICAgaWYgKGVsZW1lbnQudmFsaWRhdGlvbnMgJiYgZWxlbWVudC52YWxpZGF0aW9ucy5zdHJpbmdWYWxpZGF0aW9ucykgewogICAgICAgICAgICBjb25zdCBjYXNlSW5zZW5zaXRpdmUgPSBlbGVtZW50LnZhbGlkYXRpb25zLnN0cmluZ1ZhbGlkYXRpb25zLmNhc2VJbnNlbnNpdGl2ZTsKICAgICAgICAgICAgaWYgKGNhc2VJbnNlbnNpdGl2ZSkgewogICAgICAgICAgICAgIGlmIChyb3dDb2wgIT09IG51bGwgJiYgKChfZCA9IChfYyA9IGVsZW1lbnQudmFsaWRhdGlvbnMuc3RyaW5nVmFsaWRhdGlvbnMpID09IG51bGwgPyB2b2lkIDAgOiBfYy5jb25kaXRpb25DYW50RXF1YWwpID09IG51bGwgPyB2b2lkIDAgOiBfZC50b0xvd2VyQ2FzZSgpKSA9PT0gKHJvd0NvbCA9PSBudWxsID8gdm9pZCAwIDogcm93Q29sLnRvU3RyaW5nKCkudG9Mb3dlckNhc2UoKSkpIHsKICAgICAgICAgICAgICAgIHZhciBtc2cgPSBgUm93ICR7aW5kZW50aWZlckNvbHVtbiA/ICJXaXRoIElEOiAiICsgZ3JpZERhdGFbaW5kZW50aWZlckNvbHVtbl0gOiAiV2l0aCBJbmRleDoiICsgcm93ICsgMX0gLSAkeyhfZSA9IGVsZW1lbnQudmFsaWRhdGlvbnMuc3RyaW5nVmFsaWRhdGlvbnMpID09IG51bGwgPyB2b2lkIDAgOiBfZS5lcnJNc2d9YDsKICAgICAgICAgICAgICAgIHRtcEluc2VydFRvTWVzc2FnZU1hcChlbGVtZW50LmtleSArIHJvdywgewogICAgICAgICAgICAgICAgICBtc2csCiAgICAgICAgICAgICAgICAgIHR5cGU6IE1lc3NhZ2VCYXJUeXBlLmVycm9yCiAgICAgICAgICAgICAgICB9KTsKICAgICAgICAgICAgICAgIGxvY2FsRXJyb3IgPSB0cnVlOwogICAgICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgICAgICBpZiAocm93Q29sICE9PSBudWxsICYmICgoX2YgPSBlbGVtZW50LnZhbGlkYXRpb25zLnN0cmluZ1ZhbGlkYXRpb25zKSA9PSBudWxsID8gdm9pZCAwIDogX2YuY29uZGl0aW9uQ2FudEVxdWFsKSA9PT0gKHJvd0NvbCA9PSBudWxsID8gdm9pZCAwIDogcm93Q29sLnRvU3RyaW5nKCkpKSB7CiAgICAgICAgICAgICAgICAgIHZhciBtc2cgPSBgUm93ICR7aW5kZW50aWZlckNvbHVtbiA/ICJXaXRoIElEOiAiICsgZ3JpZERhdGFbaW5kZW50aWZlckNvbHVtbl0gOiAiV2l0aCBJbmRleDoiICsgcm93ICsgMX0gLSAkeyhfZyA9IGVsZW1lbnQudmFsaWRhdGlvbnMuc3RyaW5nVmFsaWRhdGlvbnMpID09IG51bGwgPyB2b2lkIDAgOiBfZy5lcnJNc2d9YDsKICAgICAgICAgICAgICAgICAgdG1wSW5zZXJ0VG9NZXNzYWdlTWFwKGVsZW1lbnQua2V5ICsgcm93LCB7CiAgICAgICAgICAgICAgICAgICAgbXNnLAogICAgICAgICAgICAgICAgICAgIHR5cGU6IE1lc3NhZ2VCYXJUeXBlLmVycm9yCiAgICAgICAgICAgICAgICAgIH0pOwogICAgICAgICAgICAgICAgICBsb2NhbEVycm9yID0gdHJ1ZTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIH0KICAgICAgaWYgKGVtcHR5UmVxQ29sLmxlbmd0aCA+IDEpIHsKICAgICAgICB2YXIgbXNnID0gYFJvdyAke2luZGVudGlmZXJDb2x1bW4gPyAiV2l0aCBJRDogIiArIGdyaWREYXRhW2luZGVudGlmZXJDb2x1bW5dIDogIldpdGggSW5kZXg6IiArIHJvdyArIDF9IC0gJHtlbXB0eVJlcUNvbH0gY2Fubm90IGFsbCBiZSBlbXB0eWA7CiAgICAgICAgdG1wSW5zZXJ0VG9NZXNzYWdlTWFwKHJvdyArICJlcmMiLCB7CiAgICAgICAgICBtc2csCiAgICAgICAgICB0eXBlOiBNZXNzYWdlQmFyVHlwZS5lcnJvcgogICAgICAgIH0pOwogICAgICAgIGxvY2FsRXJyb3IgPSB0cnVlOwogICAgICB9IGVsc2UgaWYgKGVtcHR5UmVxQ29sLmxlbmd0aCA9PSAxKSB7CiAgICAgICAgdmFyIG1zZyA9IGBSb3c6ICR7aW5kZW50aWZlckNvbHVtbiA/ICJXaXRoIElEOiAiICsgZ3JpZERhdGFbaW5kZW50aWZlckNvbHVtbl0gOiByb3cgKyAxfSAtICR7ZW1wdHlSZXFDb2x9IGNhbm5vdCBiZSBlbXB0eWA7CiAgICAgICAgdG1wSW5zZXJ0VG9NZXNzYWdlTWFwKHJvdyArICJlcmMiLCB7CiAgICAgICAgICBtc2csCiAgICAgICAgICB0eXBlOiBNZXNzYWdlQmFyVHlwZS5lcnJvcgogICAgICAgIH0pOwogICAgICAgIGxvY2FsRXJyb3IgPSB0cnVlOwogICAgICB9CiAgICAgIGlmIChlbXB0eUNvbC5sZW5ndGggPiAxKSB7CiAgICAgICAgdmFyIG1zZyA9IGBSb3cgJHtpbmRlbnRpZmVyQ29sdW1uID8gIldpdGggSUQ6ICIgKyBncmlkRGF0YVtpbmRlbnRpZmVyQ29sdW1uXSA6ICJXaXRoIEluZGV4OiAiICsgcm93ICsgMX0gLSAke2VtcHR5Q29sID09IG51bGwgPyB2b2lkIDAgOiBlbXB0eUNvbC50b1N0cmluZygpfSBjYW5ub3QgYmUgZW1wdHkgYXQgYWxsYDsKICAgICAgICB0bXBJbnNlcnRUb01lc3NhZ2VNYXAocm93ICsgImVjIiwgewogICAgICAgICAgbXNnLAogICAgICAgICAgdHlwZTogTWVzc2FnZUJhclR5cGUuZXJyb3IKICAgICAgICB9KTsKICAgICAgICBsb2NhbEVycm9yID0gdHJ1ZTsKICAgICAgfSBlbHNlIGlmIChlbXB0eUNvbC5sZW5ndGggPT0gMSkgewogICAgICAgIHZhciBtc2cgPSBgUm93ICR7aW5kZW50aWZlckNvbHVtbiA/ICJXaXRoIElEOiAiICsgZ3JpZERhdGFbaW5kZW50aWZlckNvbHVtbl0gOiAiV2l0aCBJbmRleDogIiArIHJvdyArIDF9IC0gJHtlbXB0eUNvbCA9PSBudWxsID8gdm9pZCAwIDogZW1wdHlDb2wudG9TdHJpbmcoKX0gY2Fubm90IGJlIGVtcHR5YDsKICAgICAgICB0bXBJbnNlcnRUb01lc3NhZ2VNYXAocm93ICsgImVjIiwgewogICAgICAgICAgbXNnLAogICAgICAgICAgdHlwZTogTWVzc2FnZUJhclR5cGUuZXJyb3IKICAgICAgICB9KTsKICAgICAgICBsb2NhbEVycm9yID0gdHJ1ZTsKICAgICAgfQogICAgfQogICAgc2VsZi5wb3N0TWVzc2FnZSh7IGlzRXJyb3I6IGxvY2FsRXJyb3IsIG1lc3NhZ2VzOiBtc2dNYXAgfSk7CiAgICBzZWxmLmNsb3NlKCk7CiAgfTsKfSkoKTsKLy8jIHNvdXJjZU1hcHBpbmdVUkw9cnVuR3JpZFZhbGlkYXRpb25zLndvcmtlci03MDU4ZDhkOS5qcy5tYXAK";
+const blob = typeof window !== "undefined" && window.Blob && new Blob([atob(encodedJs)], { type: "text/javascript;charset=utf-8" });
+function WorkerWrapper() {
+  let objURL;
+  try {
+    objURL = blob && (window.URL || window.webkitURL).createObjectURL(blob);
+    if (!objURL)
+      throw "";
+    return new Worker(objURL);
+  } catch (e) {
+    return new Worker("data:application/javascript;base64," + encodedJs);
+  } finally {
+    objURL && (window.URL || window.webkitURL).revokeObjectURL(objURL);
+  }
+}
 var packagesCache = {};
 var _win = void 0;
 try {
@@ -81574,13 +81589,13 @@ const ExportToCSVUtil = (exportData, fileName) => {
       return cell;
     }).join(separator);
   }).join("\n");
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const blob2 = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   if (navigator.msSaveBlob) {
-    navigator.msSaveBlob(blob, fileName);
+    navigator.msSaveBlob(blob2, fileName);
   } else {
     const link = document.createElement("a");
     if (link.download !== void 0) {
-      const url = URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob2);
       link.setAttribute("href", url);
       link.setAttribute("download", fileName);
       link.style.visibility = "hidden";
@@ -82109,12 +82124,7 @@ const EditableGrid = (props) => {
     let localError = false;
     return new Promise((resolve, reject) => {
       if (parseInt(getGridRecordLength(true)) > 0) {
-        const runGridValidationsWorker = new Worker(
-          new URL("/assets/runGridValidations.worker-e1fe0257.js", self.location),
-          {
-            type: "module"
-          }
-        );
+        const runGridValidationsWorker = new WorkerWrapper();
         const defaultGridDataTmp = defaultGridData.length > 0 ? defaultGridData.filter(
           (x) => x._grid_row_operation_ != _Operation.Delete
         ) : [];
@@ -82132,6 +82142,14 @@ const EditableGrid = (props) => {
             ignoredColProperties: ignoredProperties,
             MessageBarType,
             DepColTypes
+          };
+          runGridValidationsWorker.onmessageerror = function(event) {
+            console.error(event);
+            reject("error with message returned by 'runGridValidationsWorker'");
+          };
+          runGridValidationsWorker.onerror = function(event) {
+            console.error(event);
+            reject("error with 'runGridValidationsWorker'");
           };
           runGridValidationsWorker.postMessage(args);
           runGridValidationsWorker.onmessage = function(event) {
@@ -82157,12 +82175,6 @@ const EditableGrid = (props) => {
             }
             resolve(localError);
           };
-          runGridValidationsWorker.onmessageerror = function() {
-            reject("error");
-          };
-          runGridValidationsWorker.onerror = function() {
-            reject("error");
-          };
         } catch (error) {
           console.error(error);
           reject(error);
@@ -82176,7 +82188,9 @@ const EditableGrid = (props) => {
     if (props.onGridUpdate) {
       let updatedItems = defaultGridData;
       if (props.ignoreInternalPropertiesOnGridUpdateCallback) {
-        const ignoredProperties = [...InternalEditableGridPropertiesKeys];
+        const ignoredProperties = [
+          ...InternalEditableGridPropertiesKeys
+        ];
         const removeIgnoredProperties = (obj) => {
           return Object.keys(obj).reduce((acc, key) => {
             if (!ignoredProperties.includes(key)) {

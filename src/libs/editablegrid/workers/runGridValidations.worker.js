@@ -1,6 +1,5 @@
 self.onmessage = function (event) {
   const {
-    inError,
     messages,
     defaultGridDataTmp,
     indentiferColumn,
@@ -10,10 +9,9 @@ self.onmessage = function (event) {
     DepColTypes,
   } = event.data;
 
-  let localError = inError;
+  let localError = false;
   const msgMap = new Map(messages);
 
-  const ignoredProperties = this.structuredClone(ignoredColProperties);
 
   const tmpInsertToMessageMap = (key, value) => {
     msgMap.set(key, value);
@@ -33,6 +31,8 @@ self.onmessage = function (event) {
       }
       return convertedObj;
     });
+    const ignoredProperties = [...ignoredColProperties]
+
 
     if (indentiferColumn !== null && indentiferColumn !== undefined) {
       ignoredProperties.push(indentiferColumn);
