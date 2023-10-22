@@ -69,6 +69,7 @@ import {
 import {
   InitializeInternalGrid,
   InitializeInternalGridEditStructure,
+  InternalEditableGridPropertiesKeys,
   ResetGridRowID,
   ShallowCopyDefaultGridToEditGrid,
   ShallowCopyEditGridToDefaultGrid,
@@ -94,6 +95,7 @@ import {
   IsValidDataType,
   isValidDate,
   ParseType,
+  removeFunctionsFromArrayObjects,
 } from "../editablegrid/helper";
 import MessageDialog from "../editablegrid/messagedialog";
 import PickerControl from "../editablegrid/pickercontrol/picker";
@@ -597,99 +599,9 @@ const EditableGrid = (props: EditableGridProps) => {
       props.onGridInErrorCallback(gridInError, GlobalMessagesState);
   }, [gridInError, GlobalMessagesState]);
 
-  function findDuplicates(array: any) {
-    const duplicates: any[] = [];
-    const seen: any = {};
-
-    const makeEverythingAString = array.map((obj: any) => {
-      const convertedObj = {} as any;
-      for (const key in obj) {
-        if (obj[key] == null || obj[key] == undefined) convertedObj[key] = "";
-        else {
-          convertedObj[key] = String(obj[key]).toLowerCase();
-        }
-      }
-      return convertedObj;
-    });
-
-    const ignoredProperties = [
-      "_grid_row_id_",
-      "_grid_row_operation_",
-      "_is_filtered_in_",
-      "_is_filtered_in_grid_search_",
-      "_is_filtered_in_column_filter_",
-      "_is_data_transformed",
-      "_udf_custom_vaule_store_a",
-      "_udf_custom_vaule_store_b",
-    ];
-
-    if (indentiferColumn.current !== null) {
-      ignoredProperties.push(indentiferColumn.current);
-    }
-
-    if (props.customKeysToAddOnNewRow) {
-      for (
-        let index = 0;
-        index < props.customKeysToAddOnNewRow.length;
-        index++
-      ) {
-        const element = props.customKeysToAddOnNewRow[index];
-        if ((element.useKeyWhenDeterminingDuplicatedRows ?? false) == true)
-          ignoredProperties.push(element.key);
-      }
-    }
-
-    let key = "";
-
-    makeEverythingAString.forEach((row: any, index: number) => {
-      if (defaultGridData[0]) {
-        key = JSON.stringify(
-          Object.entries(row)
-            .filter(([prop]) => Object.keys(defaultGridData[0]).includes(prop))
-            .filter(([prop]) =>
-              props.columns.map((obj) => obj.key).includes(prop)
-            )
-            .filter(([prop]) => !ignoredProperties.includes(prop))
-            .sort()
-        );
-
-        if (seen[key]) {
-          // Duplicate row found
-          indentiferColumn.current !== null
-            ? seen[key].ids.push(row[indentiferColumn.current])
-            : seen[key].ids.push(index);
-        } else {
-          if (indentiferColumn.current !== null) {
-            seen[key] = {
-              index: duplicates.length,
-              ids: [row[indentiferColumn.current]],
-            };
-            duplicates.push(seen[key].ids);
-          } else {
-            seen[key] = { index: duplicates.length, ids: [index] };
-            duplicates.push(seen[key].ids);
-          }
-        }
-      }
-    });
-
-    return duplicates
-      .filter((ids) => ids.length > 1)
-      .map((ids) => ids.sort((a: any, b: any) => a - b));
-  }
-
   function isRowBlank(obj: any) {
     if (!obj || obj.length < 0) return;
-    const ignoredProperties = [
-      "_grid_row_id_",
-      "_grid_row_operation_",
-      "_is_filtered_in_",
-      "_is_filtered_in_grid_search_",
-      "_is_filtered_in_column_filter_",
-      "_is_data_transformed",
-      "_udf_custom_vaule_store_a",
-      "_udf_custom_vaule_store_b",
-    ];
+    const ignoredProperties:string[] = [...InternalEditableGridPropertiesKeys]
     if (indentiferColumn.current !== null) {
       ignoredProperties.push(indentiferColumn.current);
     }
@@ -729,10 +641,7 @@ const EditableGrid = (props: EditableGridProps) => {
     return true;
   }
 
-  const runGridValidations = (): {
-    isError: boolean;
-    messages: Map<any, any>;
-  } => {
+  /*   const runGridValidationsNonWorker = () => {
     let localError = false;
     const msgMap = new Map();
 
@@ -764,8 +673,6 @@ const EditableGrid = (props: EditableGridProps) => {
 
       localError = true;
     }
-
-    return { isError: localError, messages: msgMap };
 
     // Grid Validations - Non Worker
     // for (let row = 0; row < defaultGridDataTmp.length; row++) {
@@ -1250,11 +1157,13 @@ const EditableGrid = (props: EditableGridProps) => {
     //     localError = true;
     //   }
     // }
-  };
+
+    console.log(msgMap)
+  }; */
 
   useEffect(() => {
     if (props.GridSaveAction && defaultGridData !== undefined) {
-      props.GridSaveAction(() =>  onGridSave);
+      props.GridSaveAction(() => onGridSave);
     }
   }, [defaultGridData]);
 
@@ -1265,6 +1174,13 @@ const EditableGrid = (props: EditableGridProps) => {
     setMessagesState(Messages.current);
     setGridInError(false);
     setInteralMessagesState(new Map());
+    setEditMode(false);
+    setGridEditState(false);
+
+    const msgMap = new Map();
+    const tmpInsertToMessageMap = (key: any, value: any) => {
+      msgMap.set(key, value);
+    };
 
     if (!props.enableSaveGridOnCellValueChange) {
       ShowGridEditMode(false);
@@ -1291,27 +1207,15 @@ const EditableGrid = (props: EditableGridProps) => {
         blankNonDeletedRowsCount == 1 ? "" : "s"
       }`;
 
-      insertToMessageMap(Messages.current, "blanks", {
+      tmpInsertToMessageMap("blanks", {
         msg: msg,
         type: MessageBarType.warning,
       });
     }
 
-    setEditMode(false);
-    setGridEditState(false);
-
     const defaultGridDataTmpWithDeletedData = [...defaultGridData] ?? [];
 
-    const ignoredProperties = [
-      "_grid_row_id_",
-      "_grid_row_operation_",
-      "_is_filtered_in_",
-      "_is_filtered_in_grid_search_",
-      "_is_filtered_in_column_filter_",
-      "_is_data_transformed",
-      "_udf_custom_vaule_store_a",
-      "_udf_custom_vaule_store_b",
-    ];
+    const ignoredProperties:string[] = [...InternalEditableGridPropertiesKeys]
 
     const removeIgnoredProperties = (obj: any) => {
       return Object.keys(obj).reduce((acc: any, key: any) => {
@@ -1326,88 +1230,90 @@ const EditableGrid = (props: EditableGridProps) => {
       defaultGridDataTmpWithDeletedData.map(removeIgnoredProperties);
 
     let localError = false;
-    return new Promise((resolve) => {
-
-    if (parseInt(getGridRecordLength(true)) > 0) {
-      const results = runGridValidations();
-
-      const runGridValidationsWorker = new Worker(
-        new URL("./workers/runGridValidations.worker.js", import.meta.url)
-      );
-
-      const defaultGridDataTmp =
-        defaultGridData.length > 0
-          ? defaultGridData.filter(
-              (x) => x._grid_row_operation_ != _Operation.Delete
-            )
-          : [];
-
-
-
-        const args = {
-          inError: results.isError,
-          messages: results.messages,
-          defaultGridDataTmp,
-          indentiferColumn: indentiferColumn.current,
-          propColumns: props.columns.map((x) => {
-            return { ...x, onChange: undefined, linkOptions: undefined };
-          }),
-          MessageBarType,
-          DepColTypes,
-        };
-        runGridValidationsWorker.postMessage(args);
-  
-        runGridValidationsWorker.onmessage = function (event) {
-          localError = event.data.isError;
-  
-          event.data.messages.forEach(function (value: any, key: string) {
-            insertToMessageMap(Messages.current, key, value);
-          });
-  
-          if (localError === true) setGridInError(true);
-  
-          if (!localError) {
-            if (props.onBeforeGridSave) {
-              props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
-            }
-  
-            if (props.onGridSave) {
-              props.onGridSave(
-                defaultGridData,
-                defaultGridDataTmpWithInternalPropsIgnored
-              );
-            }
-  
-            onGridFiltered();
+    return new Promise<boolean>((resolve, reject) => {
+      if (parseInt(getGridRecordLength(true)) > 0) {
+        const runGridValidationsWorker = new Worker(
+          new URL("./workers/runGridValidations.worker.js", import.meta.url),
+          {
+            type: "module",
           }
+        );
 
-          resolve(localError);
+        const defaultGridDataTmp =
+          defaultGridData.length > 0
+            ? defaultGridData.filter(
+                (x) => x._grid_row_operation_ != _Operation.Delete
+              )
+            : [];
 
-        };
-  
+        try {
+          const args = {
+            messages: msgMap,
+            defaultGridDataTmp,
+            indentiferColumn: indentiferColumn.current,
+            props: {
+              // Any property in the column object that has a typeof == 'function' will be drop from the columns sent to the worker
+              columns: removeFunctionsFromArrayObjects(props.columns),
+              customKeysToAddOnNewRow: props.customKeysToAddOnNewRow,
+              customOperationsKey: props.customOperationsKey,
+            },
+            ignoredColProperties: ignoredProperties,
+            MessageBarType,
+            DepColTypes,
+          };
+          runGridValidationsWorker.postMessage(args);
 
-    }else{
-      resolve(false)
-    }
-    
-  });
+          runGridValidationsWorker.onmessage = function (event) {
+            localError = event.data.isError;
 
+            event.data.messages.forEach(function (value: any, key: string) {
+              insertToMessageMap(Messages.current, key, value);
+            });
+
+            if (localError === true) setGridInError(true);
+
+            if (!localError) {
+              if (props.onBeforeGridSave) {
+                props.onBeforeGridSave(
+                  defaultGridDataTmpWithInternalPropsIgnored
+                );
+              }
+
+              if (props.onGridSave) {
+                props.onGridSave(
+                  defaultGridData,
+                  defaultGridDataTmpWithInternalPropsIgnored
+                );
+              }
+
+              onGridFiltered();
+            }
+
+            resolve(localError);
+          };
+
+          runGridValidationsWorker.onmessageerror = function (/* event */) {
+            reject("error");
+          };
+          runGridValidationsWorker.onerror = function (/* event */) {
+            reject("error");
+          };
+        } catch (error) {
+          console.error(error);
+          reject(error);
+        }
+      } else {
+        resolve(false);
+      }
+    });
   };
 
   const onGridUpdate = async (): Promise<void> => {
     if (props.onGridUpdate) {
       let updatedItems = defaultGridData;
       if (props.ignoreInternalPropertiesOnGridUpdateCallback) {
-        const ignoredProperties = [
-          "_grid_row_id_",
-          "_grid_row_operation_",
-          "_is_filtered_in_",
-          "_is_filtered_in_grid_search_",
-          "_is_filtered_in_column_filter_",
-          "_is_data_transformed",
-          "_udf_custom_vaule_store_a",
-          "_udf_custom_vaule_store_b",
-        ];
+        const ignoredProperties:string[] = [...InternalEditableGridPropertiesKeys]
+
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const removeIgnoredProperties = (obj: any) => {
@@ -1595,10 +1501,10 @@ const EditableGrid = (props: EditableGridProps) => {
   }, []);
   const tempAutoGenId = useRef(0);
 
-  const GetDefaultRowObject = (rowCount: number): any[] => {
+  const GetDefaultRowObject = (rowCount: number, _tmp_overide_grid_row_id_?:number ): any[] => {
     let obj: any = {};
     let addedRows: any[] = [];
-    let _new_grid_row_id_ = Math.max.apply(
+    let _new_grid_row_id_ = _tmp_overide_grid_row_id_ !== null && _tmp_overide_grid_row_id_ !== undefined ? _tmp_overide_grid_row_id_ : Math.max.apply(
       Math,
       defaultGridData.map(function (o) {
         return o._grid_row_id_;
@@ -2965,7 +2871,7 @@ const EditableGrid = (props: EditableGridProps) => {
       return clipboardItems.length === 0;
     } catch (error) {
       const newMap = new Map(interalMessagesState).set(props.id.toString(), {
-        msg: "Failed To Get Clipboard. Make sure permissions have been given.",
+        msg: "Failed To Get Clipboard. Make sure permissions have been given. If you just now pressed allow, then please re-paste the data ",
         type: MessageBarType.error,
       });
       setInteralMessagesState(newMap);
@@ -3119,7 +3025,7 @@ const EditableGrid = (props: EditableGridProps) => {
       return row;
     });
 
-    return addedRows;
+    return addedRows[0];
   };
 
   const pasteRef = useRef<any>(null);
@@ -3244,19 +3150,27 @@ const EditableGrid = (props: EditableGridProps) => {
               continue;
             }
 
-            var pushsingleRow = undefined;
+            var pushSingleRow = undefined;
             if (
               columnKeyPasteRef.current &&
               overwriteFirstRow &&
               singleColChange
             )
-              pushsingleRow =
+            pushSingleRow =
                 newGridData[columnKeyPasteRef.current._grid_row_id_];
+
+                let _temp_new_grid_row_id_ = Math.max.apply(
+                  Math,
+                  defaultGridData.map(function (o) {
+                    return o._grid_row_id_ + index + 1;
+                  })
+                );
 
             const startPush = setupPastedData(
               [...rowData],
-              GetDefaultRowObject(1)
+              GetDefaultRowObject(1, _temp_new_grid_row_id_)
             );
+
             if (startPush !== null) {
               ui.push(startPush);
             } else {
@@ -3265,7 +3179,7 @@ const EditableGrid = (props: EditableGridProps) => {
           }
 
           ui.forEach((i) => {
-            newGridData.splice(0, 0, i[0]);
+            newGridData.splice(0, 0, i);
           });
 
           // Use To Reverse Pastings
@@ -3303,8 +3217,8 @@ const EditableGrid = (props: EditableGridProps) => {
 
             setInteralMessagesState(newMap);
 
-            if (singleColChange && pushsingleRow) {
-              ui[0].splice(0, 0, pushsingleRow);
+            if (singleColChange && pushSingleRow) {
+              ui.push(pushSingleRow);
             }
 
             SetGridItems(
@@ -3314,7 +3228,7 @@ const EditableGrid = (props: EditableGridProps) => {
                   {}
                 ),
                 newGridData,
-                ui[0]
+                ui
               )
             );
             clearSelectedItems();
@@ -5784,7 +5698,8 @@ const EditableGrid = (props: EditableGridProps) => {
                 triggerkey: column.key,
                 activatetriggercell: false,
               };
-              column.linkOptions!.onClick(params);
+              if (column.linkOptions?.onClick)
+                column.linkOptions!.onClick(params);
             }}
           >
             {item[column.key]}

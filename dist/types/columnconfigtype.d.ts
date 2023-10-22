@@ -3,6 +3,7 @@ import { CalculationType } from "./calculationtype";
 import { ICellStyleRulesType, StringOperators } from "./cellstyleruletype";
 import { EditControlType } from "./editcontroltype";
 import { NumberFormatBaseProps, NumericFormatProps } from "react-number-format";
+import { ICallBackParams } from "./callbackparams";
 export interface IComboBoxOptionsMulit {
     key: string | number;
     text: string;
@@ -21,7 +22,7 @@ export interface IColumnConfig extends IColumn {
     /** Tells the valdation engine that runs on save if the column is required to have data or not */
     required: boolean | IRequiredColumnsOptions;
     /** Default value you desire to see on add row */
-    defaultOnAddRow?: any;
+    defaultOnAddRow?: string | number | null | undefined | string[] | number[];
     /** Majority of properties to be set for the validation engine to run against during save */
     validations?: {
         /** Column Dependent: If two columns can NOT have data or If two columns MUST have data */
@@ -176,7 +177,7 @@ export interface IRegexValidation {
 }
 export interface ILinkOptions {
     href?: string;
-    onClick?: any;
+    onClick?: (params: ICallBackParams) => any;
     disabled?: boolean;
 }
 export interface IHoverOptions {

@@ -13,6 +13,7 @@ import { CalculationType } from "./calculationtype";
 import { ICellStyleRulesType, StringOperators } from "./cellstyleruletype";
 import { EditControlType } from "./editcontroltype";
 import { NumberFormatBaseProps, NumericFormatProps } from "react-number-format";
+import { ICallBackParams } from "./callbackparams";
 
 export interface IComboBoxOptionsMulit {
   key: string | number;
@@ -47,7 +48,7 @@ export interface IColumnConfig extends IColumn {
   required: boolean | IRequiredColumnsOptions;
 
   /** Default value you desire to see on add row */
-  defaultOnAddRow?: any;
+  defaultOnAddRow?: string | number | null  | undefined | string[] | number[];
 
   /** Majority of properties to be set for the validation engine to run against during save */
   validations?: {
@@ -239,7 +240,7 @@ export interface IRegexValidation {
 }
 export interface ILinkOptions {
   href?: string;
-  onClick?: any;
+  onClick?: (params: ICallBackParams)=> any;
   disabled?: boolean;
 }
 

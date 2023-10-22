@@ -233,6 +233,7 @@ const Consumer = () => {
     for (var i = 1; i <= 4; i++) {
       var randomInt = GetRandomInt(1, 3);
       dummyData.push({
+        //@ts-ignore true error, but ignoring as it's just for testing items manipulations
         operationType: "None",
         id: i,
         combo: "1010",
@@ -347,8 +348,6 @@ const Consumer = () => {
       );
       for (let i = 0; i < filteredItems.length; i++) {
         const item = filteredItems[i];
-        item._udf_custom_vaule_store_a = item._udf_custom_vaule_store_a + 99;
-
         item.salary = 888;
       }
     }
@@ -364,6 +363,7 @@ const Consumer = () => {
       callbackRequestParamObj.data["name"].error = "User Alias is duplicated";
     }
 
+    //@ts-ignore
     return Object.assign(
       { errorMessage: "", data: callbackRequestParamObj.data },
       callbackRequestParamObj
@@ -794,7 +794,8 @@ const Consumer = () => {
         <Stack horizontal tokens={{childrenGap: 5}}>
           <PrimaryButton
             text="Save Grid"
-            onClick={() => saveAction && saveAction()/*. then((x)=> console.log(x)) */}
+            onClick={() => saveAction && saveAction().catch((x)=> {alert('Saving Action Crashed: ' + x)}
+            )}
           />
           <PrimaryButton
             text="Clear All Grid Messages"

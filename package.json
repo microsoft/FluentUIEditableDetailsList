@@ -1,12 +1,13 @@
 {
   "name": "fluentui.editablegrid.lib",
   "private": false,
-  "version": "5.0.6",
+  "version": "5.1.0",
   "description": "Wrapper over the existing DetailsList that makes in-place editability work like a dream(among many other new features)",
   "license": "MIT",
   "homepage": "https://github.com/microsoft/FluentUIEditableDetailsList#readme",
   "author": "",
-  "main": "./dist/js/fluentui.editablegrid.lib.js",
+  "main": "./dist/fluentui.editablegrid.lib.cjs",
+  "module": "./dist/fluentui.editablegrid.lib.js",
   "type": "module",
   "typings": "./dist/index.d.ts",
   "files": [
@@ -14,7 +15,8 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/js/fluentui.editablegrid.lib.js",
+      "import": "./dist/fluentui.editablegrid.lib.js",
+      "require": "./dist/fluentui.editablegrid.lib.cjs",
       "types": "./dist/index.d.ts"
     }
   },
@@ -34,7 +36,8 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "watch": "vite build --watch"
   },
   "dependencies": {
     "@fluentui/react": "^8.26.0",

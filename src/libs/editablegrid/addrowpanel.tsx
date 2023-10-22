@@ -27,6 +27,7 @@ import {
   GetDefault,
   IsValidDataType,
   ParseType,
+  isArrayOfStrings,
   isValidDate,
 } from "../editablegrid/helper";
 import PickerControl from "../editablegrid/pickercontrol/picker";
@@ -40,6 +41,7 @@ import {
 import { EditControlType } from "../types/editcontroltype";
 import { createRef, useCallback, useEffect, useRef, useState } from "react";
 import { NumericFormat } from "react-number-format";
+import { isArray } from "util";
 
 interface Props {
   onSubmit: any;
@@ -690,7 +692,7 @@ const AddRowPanel = (props: Props) => {
     var currentKey = keys[0];
     var remainingKeys = keys.slice(1);
 
-    if (typeof obj[currentKey] != "object") {
+    if (Array.isArray(obj[currentKey]) == false) {
       obj[currentKey] = [obj[currentKey]];
     }
     obj[currentKey].forEach(function (value: any) {
@@ -1239,7 +1241,7 @@ const AddRowPanel = (props: Props) => {
             <div key={item.key}>
               <span className={controlClass.pickerLabel}>{item.text}</span>
               <PickerControl
-                defaultTags={item.defaultOnAddRow}
+                defaultTags={typeof item.defaultOnAddRow  == 'string' ? [item.defaultOnAddRow] : isArrayOfStrings(item.defaultOnAddRow) ? item.defaultOnAddRow as string[] : undefined}
                 arialabel={item.text}
                 selectedItemsLimit={1}
                 pickerTags={item.pickerOptions?.pickerTags ?? []}

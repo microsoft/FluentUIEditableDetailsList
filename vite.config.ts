@@ -18,47 +18,36 @@ export default defineConfig({
     dts({ insertTypesEntry: true }),
     viteStaticCopy({
       targets: [
-          {
-              src: 'package.json',
-              dest: './'
-          },
-          {
-              src: 'README.md',
-              dest: './'
-          }
-      ]
-  })
+        {
+          src: "package.json",
+          dest: "./",
+        },
+        {
+          src: "README.md",
+          dest: "./",
+        },
+      ],
+    }),
   ],
   build: {
-    minify: true,
+    minify: false,
     manifest: true,
     reportCompressedSize: true,
     sourcemap: true,
     copyPublicDir: false,
     lib: {
       entry: path.resolve(__dirname, "src/libs/index.ts"),
-      formats: ["es"],
+      formats: ["es", "cjs"],
     },
     rollupOptions: {
-      input:{
-        [packageJson.name]: path.resolve(__dirname, "src/libs/index.ts"),
-        'runGridValidations.worker': "src/libs/editablegrid/workers/runGridValidations.worker.js"
-      },
       external: ["react", "react-dom"],
       output: {
-        
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
         },
-        assetFileNames: 'assets/[name].js',
-        entryFileNames: assetInfo => {
-          return assetInfo.name === 'runGridValidations.worker'
-             ? '[name].js'
-             :  'js/[name].js'
-        }
-
       },
     },
-  },
+    
+  }
 });

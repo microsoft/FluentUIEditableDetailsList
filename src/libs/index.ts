@@ -1,9 +1,10 @@
-
 export { default as EditableGrid } from "./editablegrid/editablegrid";
 export { EventEmitter, EventType } from "./eventemitter/EventEmitter";
 export { CellHover } from "./editablegrid/hoverComponent";
 export { _Operation } from "./types/operation";
 export { GridToastTypes } from "./types/gridToastTypes";
+export type { InternalEditableGridProperties } from "./editablegrid/editablegridinitialize";
+export { InternalEditableGridPropertiesKeys } from "./editablegrid/editablegridinitialize";
 export type {
   ICallBackParams,
   ICallBackRequestParams,
@@ -19,7 +20,7 @@ export type {
   IRegexValidation,
   IColumnConfig,
   IDisableDropCellOptions,
-  IComboBoxOptionsMulit
+  IComboBoxOptionsMulit,
 } from "./types/columnconfigtype";
 export type { IDetailsColumnRenderTooltipPropsExtra } from "./types/columnconfigtype";
 export { DepColTypes, DisableColTypes } from "./types/columnconfigtype";

@@ -220,3 +220,34 @@ export const ConvertTextToObject = (
 
   return objArr;
 };
+
+
+
+export function isArrayOfStrings(variable: any) {
+  if (!Array.isArray(variable)) {
+      return false; 
+  }
+  return variable.every(function(element) {
+      return typeof element === 'string';
+  });
+}
+
+export function removeFunctionsFromArrayObjects(arr: any) {
+  return arr.map((obj:any) => {
+      if (typeof obj === 'object' && obj !== null) {
+          for (let prop in obj) {
+              if (obj.hasOwnProperty(prop)) {
+                  // If the property type is a function, remove it from the object
+                  if (typeof obj[prop] === 'function') {
+                      delete obj[prop];
+                  }
+                  // If the property type is an object, recursively remove functions from it
+                  else if (typeof obj[prop] === 'object') {
+                      obj[prop] = removeFunctionsFromArrayObjects([obj[prop]])[0];
+                  }
+              }
+          }
+      }
+      return obj;
+  });
+}

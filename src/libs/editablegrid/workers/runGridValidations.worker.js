@@ -1,12 +1,115 @@
 self.onmessage = function (event) {
-  const { inError, messages, defaultGridDataTmp, indentiferColumn, propColumns, MessageBarType, DepColTypes  } = event.data;
+  const {
+    inError,
+    messages,
+    defaultGridDataTmp,
+    indentiferColumn,
+    props,
+    ignoredColProperties,
+    MessageBarType,
+    DepColTypes,
+  } = event.data;
 
   let localError = inError;
   const msgMap = new Map(messages);
 
+  const ignoredProperties = this.structuredClone(ignoredColProperties);
+
   const tmpInsertToMessageMap = (key, value) => {
     msgMap.set(key, value);
   };
+
+  function findDuplicates(array) {
+    const duplicates = [];
+    const seen = {};
+
+    const makeEverythingAString = array.map((obj) => {
+      const convertedObj = {};
+      for (const key in obj) {
+        if (obj[key] == null || obj[key] == undefined) convertedObj[key] = "";
+        else {
+          convertedObj[key] = String(obj[key]).toLowerCase();
+        }
+      }
+      return convertedObj;
+    });
+
+    if (indentiferColumn !== null && indentiferColumn !== undefined) {
+      ignoredProperties.push(indentiferColumn);
+    }
+
+    if (props.customOperationsKey) {
+      ignoredProperties.push(props.customOperationsKey.colKey);
+    }
+
+    if (props.customKeysToAddOnNewRow) {
+      for (
+        let index = 0;
+        index < props.customKeysToAddOnNewRow.length;
+        index++
+      ) {
+        const element = props.customKeysToAddOnNewRow[index];
+        if ((element.useKeyWhenDeterminingDuplicatedRows ?? false) == true)
+          ignoredProperties.push(element.key);
+      }
+    }
+
+    let key = "";
+
+    makeEverythingAString.forEach((row, index) => {
+      if (defaultGridDataTmp?.[0]) {
+        key = JSON.stringify(
+          Object.entries(row)
+            .filter(([prop]) => Object.keys(defaultGridDataTmp[0]).includes(prop))
+            .filter(([prop]) =>
+              props.columns.map((obj) => obj.key).includes(prop)
+            )
+            .filter(([prop]) => !ignoredProperties.includes(prop))
+            .sort()
+        );
+
+        if (seen[key]) {
+          // Duplicate row found
+          indentiferColumn !== null && indentiferColumn !== undefined
+            ? seen[key].ids.push(row[indentiferColumn])
+            : seen[key].ids.push(index);
+        } else {
+          if (indentiferColumn !== null && indentiferColumn !== undefined) {
+            seen[key] = {
+              index: duplicates.length,
+              ids: [row[indentiferColumn]],
+            };
+            duplicates.push(seen[key].ids);
+          } else {
+            seen[key] = { index: duplicates.length, ids: [index] };
+            duplicates.push(seen[key].ids);
+          }
+        }
+      }
+    });
+
+    return duplicates
+      .filter((ids) => ids.length > 1)
+      .map((ids) => ids.sort((a, b) => a - b));
+  }
+
+  //Duplicate Rows Check
+  const duplicates = findDuplicates(defaultGridDataTmp);
+  if (duplicates.length > 0) {
+    duplicates.forEach((dups, index) => {
+      var msg =
+        indentiferColumn !== null && indentiferColumn !== undefined
+          ? `Rows Located At IDs: ${dups} are duplicated`
+          : `Rows Located At Indexes ${dups} are duplicated`;
+
+      tmpInsertToMessageMap("dups" + index, {
+        msg: msg,
+        type: MessageBarType.error,
+      });
+    });
+
+    localError = true;
+  }
 
   for (let row = 0; row < defaultGridDataTmp.length; row++) {
     const gridData = defaultGridDataTmp[row];
@@ -20,7 +123,7 @@ self.onmessage = function (event) {
     ) {
       const colNames = elementColNames[indexInner];
       const rowCol = gridData[colNames];
-      const currentCol = propColumns.filter((x) => x.key === colNames);
+      const currentCol = props.columns.filter((x) => x.key === colNames);
 
       // ValidDataTypeCheck
       for (let j = 0; j < currentCol.length; j++) {
@@ -427,9 +530,7 @@ self.onmessage = function (event) {
       localError = true;
     } else if (emptyReqCol.length == 1) {
       var msg = `Row: ${
-        indentiferColumn
-          ? "With ID: " + gridData[indentiferColumn]
-          : row + 1
+        indentiferColumn ? "With ID: " + gridData[indentiferColumn] : row + 1
       } - ${emptyReqCol} cannot be empty`;
 
       tmpInsertToMessageMap(row + "erc", {
@@ -469,6 +570,6 @@ self.onmessage = function (event) {
     }
   }
 
-  self.postMessage({isError: localError, messages: msgMap});
+  self.postMessage({ isError: localError, messages: msgMap });
   self.close();
 };

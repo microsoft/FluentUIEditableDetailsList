@@ -13,3 +13,5 @@ export declare function isValidDate(value: any): boolean;
 export declare const GetDefault: (type: string | undefined) => any;
 export declare const IsValidRegex: (regexExpression: RegExp, text: string) => boolean;
 export declare const ConvertTextToObject: (text: string, columns: IColumnConfig[]) => any[];
+export declare function isArrayOfStrings(variable: any): boolean;
+export declare function removeFunctionsFromArrayObjects(arr: any): any;

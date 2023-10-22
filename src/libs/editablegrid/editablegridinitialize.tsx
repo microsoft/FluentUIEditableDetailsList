@@ -8,11 +8,29 @@ import { initializeIcons } from "@fluentui/react/lib/Icons";
 
 initializeIcons(undefined, { disableWarnings: true });
 
+export type InternalEditableGridProperties = {
+  _grid_row_id_: number;
+  _grid_row_operation_: number | string;
+  _is_filtered_in_: boolean;
+  _is_filtered_in_grid_search_: boolean;
+  _is_filtered_in_column_filter_: boolean;
+  _is_data_transformed: boolean;
+};
+
+export const InternalEditableGridPropertiesKeys: readonly(keyof InternalEditableGridProperties)[] = [
+  "_grid_row_id_",
+  "_grid_row_operation_",
+  "_is_filtered_in_",
+  "_is_filtered_in_grid_search_",
+  "_is_filtered_in_column_filter_",
+  "_is_data_transformed"
+] as const;
+
 export const InitializeInternalGrid = (
   items: any[],
   customOperationsKey: IUserDefinedOperationKey | undefined
 ): any[] => {
-  return items.map((obj, index) => {
+  return items.map((obj: InternalEditableGridProperties, index) => {
     if (
       Object.keys(obj).indexOf("_grid_row_id_") == -1 &&
       Object.keys(obj).indexOf("_grid_row_operation_") == -1
@@ -21,9 +39,7 @@ export const InitializeInternalGrid = (
       obj._is_filtered_in_ = true;
       obj._is_filtered_in_grid_search_ = true;
       obj._is_filtered_in_column_filter_ = true;
-      (obj._is_data_transformed = false),
-        (obj._udf_custom_vaule_store_a = 0),
-        (obj._udf_custom_vaule_store_b = 0);
+      obj._is_data_transformed = false;
 
       if (
         customOperationsKey &&
