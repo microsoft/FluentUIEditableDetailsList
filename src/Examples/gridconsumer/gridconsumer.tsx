@@ -372,9 +372,9 @@ const Consumer = () => {
   const attachGridValueChangeCallbacks = (
     columnConfig: IColumnConfig[]
   ): IColumnConfig[] => {
-    columnConfig
-      .filter((item) => item.key == "designation")
-      .map((item) => (item.onChange = onDesignationChangedTest));
+    // columnConfig
+    //   .filter((item) => item.key == "designation")
+    //   .map((item) => (item.onChange = onDesignationChangedTest));
 
     // columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChanged);
     columnConfig

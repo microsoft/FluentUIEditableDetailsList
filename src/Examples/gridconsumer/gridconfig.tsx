@@ -138,7 +138,6 @@ export const GridColumnConfig: IColumnConfig[] = [
       // numberBoundaries: {
       //   minRange: 10,
       //   maxRange: 20,
-      //   trimDecimalPointBy: 4,
       // },
     },
     minWidth: 100,
@@ -180,6 +179,11 @@ export const GridColumnConfig: IColumnConfig[] = [
     applyColumnFilter: true,
     inputType: EditControlType.NumericFormat,
     validations: {
+      numberBoundaries: {
+        validateOnPastingOnly: true,
+        maxRange: 40,
+        minRange: 0
+      },
       columnDependent: [
         {
           dependentColumnKey: "age",

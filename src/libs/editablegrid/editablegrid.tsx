@@ -4,7 +4,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
-import GridValidationsWorker from './workers/runGridValidations.worker.js?worker&inline'
+import GridValidationsWorker from "./workers/runGridValidations.worker.js?worker&inline";
 
 import {
   Announced,
@@ -1233,7 +1233,7 @@ const EditableGrid = (props: EditableGridProps) => {
     let localError = false;
     return new Promise<boolean>((resolve, reject) => {
       if (parseInt(getGridRecordLength(true)) > 0) {
-        const runGridValidationsWorker = new GridValidationsWorker()
+        const runGridValidationsWorker = new GridValidationsWorker();
 
         const defaultGridDataTmp =
           defaultGridData.length > 0
@@ -1854,6 +1854,9 @@ const EditableGrid = (props: EditableGridProps) => {
         columnEditable: item?.editable ?? false,
         defaultValueOnNewRow: item?.defaultOnAddRow ?? null,
         dataType: item.dataType,
+        validations: {
+          numberBoundaries: item.validations?.numberBoundaries
+        }
       };
     });
     setColumnValuesObj(tmpColumnValuesObj);
@@ -2983,15 +2986,48 @@ const EditableGrid = (props: EditableGridProps) => {
         continue;
       }
 
+      const trimmedCurrentVal = currentVal?.toString()?.toLowerCase()?.trim();
+
       if (columnValuesObj?.[colKeysVal]?.columnEditable) {
-        if (currentVal?.toLowerCase()?.trim() === "false") {
+        if (trimmedCurrentVal === "false") {
           newColObj[colKeysVal] = false;
-        } else if (currentVal?.toLowerCase()?.trim() === "true") {
+        } else if (trimmedCurrentVal === "true") {
           newColObj[colKeysVal] = true;
+        } else if (columnValuesObj?.[colKeysVal]?.dataType == "number") {
+          const modifiedValue = parseFloat(
+            (trimmedCurrentVal ?? "0").replaceAll(",", "") ?? "0"
+          );
+          let value = Number(Number(modifiedValue ?? 0).toFixed(4)) ?? 0;
+
+          if (isNaN(value) == false) {
+            if (columnValuesObj?.[colKeysVal]?.validations?.numberBoundaries) {
+              const minRange =
+                columnValuesObj?.[colKeysVal]?.validations?.numberBoundaries
+                  .minRange;
+              const maxRange =
+                columnValuesObj?.[colKeysVal]?.validations?.numberBoundaries
+                  .maxRange;
+
+              
+              if (value < minRange) {
+                value = minRange;
+              } else if (value > maxRange) {
+                value = maxRange;
+              }
+            }
+          } else {
+            value = 0;
+          }
+          newColObj[colKeysVal] = value;
         } else {
           if (columnValuesObj?.[colKeysVal]?.dataType == "boolean") {
-            newColObj[colKeysVal] =
-              (currentVal?.toString()?.trim() == "1" ? true : false) ?? false;
+            if (trimmedCurrentVal == "1" || trimmedCurrentVal == "0") {
+              newColObj[colKeysVal] =
+                trimmedCurrentVal == "1" ? true : false ?? false;
+            } else if (trimmedCurrentVal == "y" || trimmedCurrentVal == "n") {
+              newColObj[colKeysVal] =
+                trimmedCurrentVal == "y" ? true : false ?? false;
+            }
           } else {
             newColObj[colKeysVal] = currentVal?.toString()?.trim() ?? null;
           }
@@ -3000,6 +3036,15 @@ const EditableGrid = (props: EditableGridProps) => {
         if (columnValuesObj?.[colKeysVal]?.dataType == "boolean") {
           newColObj[colKeysVal] =
             columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? false;
+        } else if (columnValuesObj?.[colKeysVal]?.dataType == "number") {
+          const modifiedValue = parseFloat(
+            (
+              columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow?.toString() ??
+              "0"
+            ).replaceAll(",", "") ?? "0"
+          );
+          const value = Number(Number(modifiedValue ?? 0).toFixed(4)) ?? 0;
+          newColObj[colKeysVal] = isNaN(value) ? 0 : value;
         } else if (columnValuesObj?.[colKeysVal]?.dataType == "string") {
           newColObj[colKeysVal] =
             columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? "";
@@ -3120,34 +3165,79 @@ const EditableGrid = (props: EditableGridProps) => {
                 if (columnKeyPasteRef.current) {
                   if (i >= valueIndex) {
                     if (column.editable) {
+                      const trimmedRowValue = rowData[currentElement]
+                        ?.toString()
+                        ?.toLowerCase()
+                        ?.trim();
                       singleColChange = true;
-                      if (
-                        rowData[currentElement]?.toLowerCase()?.trim() ===
-                        "false"
-                      ) {
+                      if (trimmedRowValue === "false") {
                         newGridData[columnKeyPasteRef.current._grid_row_id_][
                           column.key
                         ] = false;
-                      } else if (
-                        rowData[currentElement]?.toLowerCase()?.trim() ===
-                        "true"
-                      ) {
+                      } else if (trimmedRowValue === "true") {
                         newGridData[columnKeyPasteRef.current._grid_row_id_][
                           column.key
                         ] = true;
-                      } else {
+                      } else if (column?.dataType == "number") {
+                        const modifiedValue = parseFloat(
+                          (trimmedRowValue ?? "0").replaceAll(",", "") ?? "0"
+                        );
+
+                        let value =
+                          Number(Number(modifiedValue ?? 0).toFixed(4)) ?? 0;
+
+                        if (isNaN(value) == false) {
+                          if (column?.validations?.numberBoundaries) {
+                            const minRange =
+                              column?.validations?.numberBoundaries.minRange;
+                            const maxRange =
+                              column?.validations?.numberBoundaries.maxRange;
+
+                            if (value < minRange) {
+                              value = minRange;
+                            } else if (value > maxRange) {
+                              value = maxRange;
+                            }
+                          }
+                        } else {
+                          value = 0;
+                        }
                         newGridData[columnKeyPasteRef.current._grid_row_id_][
                           column.key
-                        ] =
-                          forceKeyMappingOptimized(
-                            column.key,
-                            rowData[currentElement],
-                            "text",
-                            false
-                          ) ??
+                        ] = value;
+                      } else {
+                        if (column.dataType == "boolean") {
+                          if (
+                            trimmedRowValue == "1" ||
+                            trimmedRowValue == "0"
+                          ) {
+                            newGridData[
+                              columnKeyPasteRef.current._grid_row_id_
+                            ][column.key] =
+                              trimmedRowValue == "1" ? true : false ?? false;
+                          } else if (
+                            trimmedRowValue == "y" ||
+                            trimmedRowValue == "n"
+                          ) {
+                            newGridData[
+                              columnKeyPasteRef.current._grid_row_id_
+                            ][column.key] =
+                              trimmedRowValue == "y" ? true : false ?? false;
+                          }
+                        } else {
                           newGridData[columnKeyPasteRef.current._grid_row_id_][
                             column.key
-                          ];
+                          ] =
+                            forceKeyMappingOptimized(
+                              column.key,
+                              rowData[currentElement],
+                              "text",
+                              false
+                            ) ??
+                            newGridData[
+                              columnKeyPasteRef.current._grid_row_id_
+                            ][column.key];
+                        }
                       }
                     }
                     currentElement++;

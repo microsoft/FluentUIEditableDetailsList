@@ -246,7 +246,7 @@ self.onmessage = function (event) {
               localError = true;
             } else if (
               element.validations &&
-              element.validations.numberBoundaries
+              element.validations.numberBoundaries &&  element.validations.numberBoundaries.validateOnPastingOnly == false
             ) {
               const min = element.validations.numberBoundaries.minRange;
               const max = element.validations.numberBoundaries.maxRange;

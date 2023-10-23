@@ -67,9 +67,10 @@ export interface IColumnConfig extends IColumn {
 
     /** If Datatype is a number, this will run a validation on save grid to see if the numbers inputted are within the ranges */
     numberBoundaries?: {
-      minRange?: number;
-      maxRange?: number;
-      trimDecimalPointBy?: number;
+      /**Will not report if number is out of range during save / during grid validations. Will default values below min to 'minRange' value and values above 'maxRange' to maxRange'*/
+      validateOnPastingOnly: boolean
+      minRange: number;
+      maxRange: number;
     };
 
     /** If `inputType` is `EditControlType.NumericFormat`, send props here to set number restrictions*/
