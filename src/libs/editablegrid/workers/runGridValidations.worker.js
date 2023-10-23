@@ -15,7 +15,6 @@ self.onmessage = function (event) {
   const msgMap = new Map(messages);
 
   if (changesHaveBeenMade == false) {
-    console.log('no changes')
     self.postMessage({ isError: localError, messages: msgMap });
     self.close();
   }
