@@ -82190,6 +82190,18 @@ const EditableGrid = (props) => {
           reject(error);
         }
       } else {
+        if (props.onBeforeGridSave) {
+          props.onBeforeGridSave(
+            defaultGridDataTmpWithInternalPropsIgnored
+          );
+        }
+        if (props.onGridSave) {
+          props.onGridSave(
+            defaultGridData,
+            defaultGridDataTmpWithInternalPropsIgnored
+          );
+        }
+        onGridFiltered();
         resolve(false);
       }
     });

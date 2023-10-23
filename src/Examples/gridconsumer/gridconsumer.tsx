@@ -251,7 +251,7 @@ const Consumer = () => {
         // employeelink: "Link",
       });
     }
-    setItems(dummyData);
+    setItems();
   };
 
   useEffect(() => {
@@ -837,7 +837,7 @@ const Consumer = () => {
               Update: "Update",
             },
           }}
-          onBeforeGridSave={(upd) => console.log(upd)}
+          onBeforeGridSave={(upd) => console.log('upd')}
           disableInlineCellEdit={gridConfigOptions.disableInlineCellEdit}
           enableInlineGridAdd={gridConfigOptions.enableInlineGridAdd}
           disableAllRowActions={gridConfigOptions.disableAllRowActions}
