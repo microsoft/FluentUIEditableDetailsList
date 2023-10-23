@@ -1,5 +1,6 @@
 self.onmessage = function (event) {
   const {
+    changesHaveBeenMade,
     messages,
     defaultGridDataTmp,
     indentiferColumn,
@@ -7,11 +8,17 @@ self.onmessage = function (event) {
     ignoredColProperties,
     MessageBarType,
     DepColTypes,
+    _Operation
   } = event.data;
 
   let localError = false;
   const msgMap = new Map(messages);
 
+  if (changesHaveBeenMade == false) {
+    console.log('no changes')
+    self.postMessage({ isError: localError, messages: msgMap });
+    self.close();
+  }
 
   const tmpInsertToMessageMap = (key, value) => {
     msgMap.set(key, value);
@@ -31,8 +38,7 @@ self.onmessage = function (event) {
       }
       return convertedObj;
     });
-    const ignoredProperties = [...ignoredColProperties]
-
+    const ignoredProperties = [...ignoredColProperties];
 
     if (indentiferColumn !== null && indentiferColumn !== undefined) {
       ignoredProperties.push(indentiferColumn);
@@ -60,7 +66,9 @@ self.onmessage = function (event) {
       if (defaultGridDataTmp?.[0]) {
         key = JSON.stringify(
           Object.entries(row)
-            .filter(([prop]) => Object.keys(defaultGridDataTmp[0]).includes(prop))
+            .filter(([prop]) =>
+              Object.keys(defaultGridDataTmp[0]).includes(prop)
+            )
             .filter(([prop]) =>
               props.columns.map((obj) => obj.key).includes(prop)
             )
@@ -111,7 +119,21 @@ self.onmessage = function (event) {
     localError = true;
   }
 
-  for (let row = 0; row < defaultGridDataTmp.length; row++) {
+  for (
+    let row = 0;
+    row <
+    defaultGridDataTmp?.filter((x) => {
+      if (props.customOperationsKey) {
+        return (
+          x._grid_row_operation_ != _Operation.None &&
+          x._grid_row_operation_ != props.customOperationsKey.options.None
+        );
+      } else {
+        return x._grid_row_operation_ != _Operation.None;
+      }
+    }).length;
+    row++
+  ) {
     const gridData = defaultGridDataTmp[row];
     var elementColNames = Object.keys(gridData);
     let emptyCol = [];
@@ -246,7 +268,9 @@ self.onmessage = function (event) {
               localError = true;
             } else if (
               element.validations &&
-              element.validations.numberBoundaries &&  element.validations.numberBoundaries.validateOnPastingOnly == false
+              element.validations.numberBoundaries &&
+              element.validations.numberBoundaries.validateOnPastingOnly ==
+                false
             ) {
               const min = element.validations.numberBoundaries.minRange;
               const max = element.validations.numberBoundaries.maxRange;

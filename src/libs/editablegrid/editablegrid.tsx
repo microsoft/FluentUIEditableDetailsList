@@ -151,6 +151,7 @@ const EditableGrid = (props: EditableGridProps) => {
   const [cancellableRows, setCancellableRows] = useState<any[]>([]);
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
   const [isGridInEdit, setIsGridInEdit] = useState(false);
+
   const [dialogContent, setDialogContent] = useState<JSX.Element | undefined>(
     undefined
   );
@@ -1243,7 +1244,16 @@ const EditableGrid = (props: EditableGridProps) => {
             : [];
 
         try {
+          const changesHaveBeenMade =
+            defaultGridDataTmp?.filter((x) => {
+              if (props.customOperationsKey) {
+                return x._grid_row_operation_ != _Operation.None && x._grid_row_operation_ != props.customOperationsKey.options.None
+              } else {
+                return x._grid_row_operation_ != _Operation.None;
+              }
+            })?.length > 0 ?? false;
           const args = {
+            changesHaveBeenMade,
             messages: msgMap,
             defaultGridDataTmp,
             indentiferColumn: indentiferColumn.current,
@@ -1256,6 +1266,7 @@ const EditableGrid = (props: EditableGridProps) => {
             ignoredColProperties: ignoredProperties,
             MessageBarType,
             DepColTypes,
+            _Operation
           };
 
           runGridValidationsWorker.onmessageerror = function (event) {
@@ -1855,8 +1866,8 @@ const EditableGrid = (props: EditableGridProps) => {
         defaultValueOnNewRow: item?.defaultOnAddRow ?? null,
         dataType: item.dataType,
         validations: {
-          numberBoundaries: item.validations?.numberBoundaries
-        }
+          numberBoundaries: item.validations?.numberBoundaries,
+        },
       };
     });
     setColumnValuesObj(tmpColumnValuesObj);
@@ -3008,7 +3019,6 @@ const EditableGrid = (props: EditableGridProps) => {
                 columnValuesObj?.[colKeysVal]?.validations?.numberBoundaries
                   .maxRange;
 
-              
               if (value < minRange) {
                 value = minRange;
               } else if (value > maxRange) {
