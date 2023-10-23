@@ -1247,7 +1247,11 @@ const EditableGrid = (props: EditableGridProps) => {
           const changesHaveBeenMade =
             defaultGridDataTmp?.filter((x) => {
               if (props.customOperationsKey) {
-                return x._grid_row_operation_ != _Operation.None && x._grid_row_operation_ != props.customOperationsKey.options.None
+                return (
+                  x._grid_row_operation_ != _Operation.None &&
+                  x._grid_row_operation_ !=
+                    props.customOperationsKey.options.None
+                );
               } else {
                 return x._grid_row_operation_ != _Operation.None;
               }
@@ -1266,7 +1270,7 @@ const EditableGrid = (props: EditableGridProps) => {
             ignoredColProperties: ignoredProperties,
             MessageBarType,
             DepColTypes,
-            _Operation
+            _Operation,
           };
 
           runGridValidationsWorker.onmessageerror = function (event) {
@@ -1313,21 +1317,36 @@ const EditableGrid = (props: EditableGridProps) => {
           reject(error);
         }
       } else {
-        if (props.onBeforeGridSave) {
-          props.onBeforeGridSave(
-            defaultGridDataTmpWithInternalPropsIgnored
-          );
-        }
+        new Promise<true>((resolve) => {
+          if (props.onBeforeGridSave && props.onGridSave) {
+            props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
 
-        if (props.onGridSave) {
-          props.onGridSave(
-            defaultGridData,
-            defaultGridDataTmpWithInternalPropsIgnored
-          );
-        }
+            props.onGridSave(
+              defaultGridData,
+              defaultGridDataTmpWithInternalPropsIgnored
+            );
+            onGridFiltered();
 
-        onGridFiltered();
-        resolve(false);
+            resolve(true);
+          } else {
+            if (props.onBeforeGridSave) {
+              props.onBeforeGridSave(
+                defaultGridDataTmpWithInternalPropsIgnored
+              );
+            }
+            if (props.onGridSave) {
+              props.onGridSave(
+                defaultGridData,
+                defaultGridDataTmpWithInternalPropsIgnored
+              );
+            }
+            onGridFiltered();
+
+            resolve(true);
+          }
+        }).then(() => {
+          resolve(false);
+        });
       }
     });
   };

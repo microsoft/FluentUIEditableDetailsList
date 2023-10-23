@@ -82190,19 +82190,33 @@ const EditableGrid = (props) => {
           reject(error);
         }
       } else {
-        if (props.onBeforeGridSave) {
-          props.onBeforeGridSave(
-            defaultGridDataTmpWithInternalPropsIgnored
-          );
-        }
-        if (props.onGridSave) {
-          props.onGridSave(
-            defaultGridData,
-            defaultGridDataTmpWithInternalPropsIgnored
-          );
-        }
-        onGridFiltered();
-        resolve(false);
+        new Promise((resolve2) => {
+          if (props.onBeforeGridSave && props.onGridSave) {
+            props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
+            props.onGridSave(
+              defaultGridData,
+              defaultGridDataTmpWithInternalPropsIgnored
+            );
+            onGridFiltered();
+            resolve2(true);
+          } else {
+            if (props.onBeforeGridSave) {
+              props.onBeforeGridSave(
+                defaultGridDataTmpWithInternalPropsIgnored
+              );
+            }
+            if (props.onGridSave) {
+              props.onGridSave(
+                defaultGridData,
+                defaultGridDataTmpWithInternalPropsIgnored
+              );
+            }
+            onGridFiltered();
+            resolve2(true);
+          }
+        }).then(() => {
+          resolve(false);
+        });
       }
     });
   };
