@@ -82208,33 +82208,17 @@ const EditableGrid = (props) => {
           reject(error);
         }
       } else {
-        new Promise((resolve2) => {
-          if (props.onBeforeGridSave && props.onGridSave) {
-            props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
-            props.onGridSave(
-              defaultGridData,
-              defaultGridDataTmpWithInternalPropsIgnored
-            );
-            onGridFiltered();
-            resolve2(true);
-          } else {
-            if (props.onBeforeGridSave) {
-              props.onBeforeGridSave(
-                defaultGridDataTmpWithInternalPropsIgnored
-              );
-            }
-            if (props.onGridSave) {
-              props.onGridSave(
-                defaultGridData,
-                defaultGridDataTmpWithInternalPropsIgnored
-              );
-            }
-            onGridFiltered();
-            resolve2(true);
-          }
-        }).then(() => {
-          resolve(false);
-        });
+        if (props.onBeforeGridSave) {
+          props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
+        }
+        if (props.onGridSave) {
+          props.onGridSave(
+            defaultGridData,
+            defaultGridDataTmpWithInternalPropsIgnored
+          );
+        }
+        onGridFiltered();
+        resolve(false);
       }
     });
   };
@@ -82605,8 +82589,8 @@ const EditableGrid = (props) => {
         IconButton,
         {
           onClick: handleClick,
-          label: "Import From Excel",
-          "aria-label": "Import From Excel",
+          label: "Import Into Grid From Excel",
+          "aria-label": "Import Into Grid From Excel",
           iconProps: { iconName: "PageCheckedOut" }
         }
       ),
@@ -82614,7 +82598,7 @@ const EditableGrid = (props) => {
         "label",
         {
           onClick: handleClick,
-          "aria-label": "Import From Excel",
+          "aria-label": "Import Excel -",
           style: { cursor: "pointer" },
           children: "Import From Excel"
         }
@@ -83493,6 +83477,7 @@ const EditableGrid = (props) => {
     try {
       var newGridData = [...defaultGridData];
       await navigator.clipboard.readText().then((text) => {
+        var _a3;
         pastedData = text;
         lines = text.split("\n");
         if (lines.length <= 0) {
@@ -83518,21 +83503,25 @@ const EditableGrid = (props) => {
             return;
           }
           rowData = row.split("	");
+          for (let index22 = 0; index22 < rowData.length; index22++) {
+            const text2 = rowData[index22];
+            rowData[index22] = ((_a3 = text2 == null ? void 0 : text2.toString()) == null ? void 0 : _a3.trim()) ?? "                   ";
+          }
           if (overwriteFirstRow && index2 == 0 && columnKeyPasteRef.current !== null) {
             var colKeys = Object.keys(columnValuesObj);
             const valueIndex = colKeys.findIndex(
               (element) => {
-                var _a3;
-                return element == ((_a3 = columnKeyPasteRef.current) == null ? void 0 : _a3.key);
+                var _a4;
+                return element == ((_a4 = columnKeyPasteRef.current) == null ? void 0 : _a4.key);
               }
             );
             let currentElement = 0;
             props.columns.forEach((column2, i) => {
-              var _a3, _b3, _c3, _d2, _e2, _f;
+              var _a4, _b3, _c3, _d2, _e2, _f;
               if (columnKeyPasteRef.current) {
                 if (i >= valueIndex) {
                   if (column2.editable) {
-                    const trimmedRowValue = (_c3 = (_b3 = (_a3 = rowData[currentElement]) == null ? void 0 : _a3.toString()) == null ? void 0 : _b3.toLowerCase()) == null ? void 0 : _c3.trim();
+                    const trimmedRowValue = (_c3 = (_b3 = (_a4 = rowData[currentElement]) == null ? void 0 : _a4.toString()) == null ? void 0 : _b3.toLowerCase()) == null ? void 0 : _c3.trim();
                     singleColChange = true;
                     if (trimmedRowValue === "false") {
                       newGridData[columnKeyPasteRef.current._grid_row_id_][column2.key] = false;
@@ -83604,14 +83593,17 @@ const EditableGrid = (props) => {
         });
         let newMap = new Map(interalMessagesState);
         if ((ui == null ? void 0 : ui.length) > 0) {
+          const pastedTotal = ui.length + (pushSingleRow != void 0 ? 1 : 0);
+          const rowGrammer = pastedTotal > 1 ? "rows" : "row";
+          const rowGrammerSentenceCase = pastedTotal > 1 ? "Rows" : "Row";
           if (rowData.length > colKeys.length) {
             newMap.set(props.id.toString(), {
-              msg: `Pasted ${ui.length} ${ui.length > 1 ? "rows" : "row"} from clipboard. You pasted in more columns than this grid contains. ${rowData.length - colKeys.length} ${rowData.length - colKeys.length > 1 ? "columns have" : "column has"} been removed.`,
+              msg: `Pasted ${pastedTotal} ${rowGrammer} from clipboard. You pasted in more columns than this grid contains. ${rowData.length - colKeys.length} ${rowData.length - colKeys.length > 1 ? "columns have" : "column has"} been removed.`,
               type: MessageBarType.success
             });
           } else {
             newMap.set(props.id.toString(), {
-              msg: `Pasted ${ui.length} ${ui.length > 1 ? "Rows" : "Row"} From Clipboard`,
+              msg: `Pasted ${pastedTotal} ${rowGrammerSentenceCase} From Clipboard`,
               type: MessageBarType.success
             });
           }
@@ -83643,8 +83635,8 @@ const EditableGrid = (props) => {
                 [
                   newGridData.filter(
                     (x) => {
-                      var _a3;
-                      return x._grid_row_id_ == ((_a3 = columnKeyPasteRef.current) == null ? void 0 : _a3._grid_row_id_);
+                      var _a4;
+                      return x._grid_row_id_ == ((_a4 = columnKeyPasteRef.current) == null ? void 0 : _a4._grid_row_id_);
                     }
                   )[0]
                 ]
@@ -84976,7 +84968,7 @@ const EditableGrid = (props) => {
       commandBarItems.push({
         key: "importFromExcel",
         text: (CommandBarTitles == null ? void 0 : CommandBarTitles.ImportFromExcel) ?? "Import From Excel",
-        ariaLabel: (CommandBarTitles == null ? void 0 : CommandBarTitles.ImportFromExcel) ?? "Import From Excel",
+        ariaLabel: (CommandBarTitles == null ? void 0 : CommandBarTitles.ImportFromExcel) ?? "Import Excel",
         disabled: isGridInEdit && !props.enableSaveGridOnCellValueChange || editMode,
         cacheKey: "myCacheKey",
         onRender: renderItem

@@ -1317,36 +1317,19 @@ const EditableGrid = (props: EditableGridProps) => {
           reject(error);
         }
       } else {
-        new Promise<true>((resolve) => {
-          if (props.onBeforeGridSave && props.onGridSave) {
-            props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
+        if (props.onBeforeGridSave) {
+          props.onBeforeGridSave(defaultGridDataTmpWithInternalPropsIgnored);
+        }
 
-            props.onGridSave(
-              defaultGridData,
-              defaultGridDataTmpWithInternalPropsIgnored
-            );
-            onGridFiltered();
+        if (props.onGridSave) {
+          props.onGridSave(
+            defaultGridData,
+            defaultGridDataTmpWithInternalPropsIgnored
+          );
+        }
 
-            resolve(true);
-          } else {
-            if (props.onBeforeGridSave) {
-              props.onBeforeGridSave(
-                defaultGridDataTmpWithInternalPropsIgnored
-              );
-            }
-            if (props.onGridSave) {
-              props.onGridSave(
-                defaultGridData,
-                defaultGridDataTmpWithInternalPropsIgnored
-              );
-            }
-            onGridFiltered();
-
-            resolve(true);
-          }
-        }).then(() => {
-          resolve(false);
-        });
+        onGridFiltered();
+        resolve(false);
       }
     });
   };
@@ -1858,13 +1841,13 @@ const EditableGrid = (props: EditableGridProps) => {
       <Stack horizontal horizontalAlign="center" verticalAlign="center">
         <IconButton
           onClick={handleClick}
-          label="Import From Excel"
-          aria-label="Import From Excel"
+          label="Import Into Grid From Excel"
+          aria-label="Import Into Grid From Excel"
           iconProps={{ iconName: "PageCheckedOut" }}
         />
         <label
           onClick={handleClick}
-          aria-label="Import From Excel"
+          aria-label="Import Excel -"
           style={{ cursor: "pointer" }}
         >
           Import From Excel
@@ -3192,6 +3175,11 @@ const EditableGrid = (props: EditableGridProps) => {
             //  October 2, 2023 - Changed Pasting Triming
             //rowData = row.trim().split("\t");
             rowData = row.split("\t");
+            for (let index = 0; index < rowData.length; index++) {
+              const text = rowData[index];
+              rowData[index] =
+                text?.toString()?.trim() ?? "                   ";
+            }
 
             if (
               overwriteFirstRow &&
@@ -3333,11 +3321,14 @@ const EditableGrid = (props: EditableGridProps) => {
           let newMap = new Map(interalMessagesState);
 
           if (ui?.length > 0) {
+            const pastedTotal =
+              ui.length + (pushSingleRow != undefined ? 1 : 0);
+            const rowGrammer = pastedTotal > 1 ? "rows" : "row";
+            const rowGrammerSentenceCase = pastedTotal > 1 ? "Rows" : "Row";
+
             if (rowData.length > colKeys.length) {
               newMap.set(props.id.toString(), {
-                msg: `Pasted ${ui.length} ${
-                  ui.length > 1 ? "rows" : "row"
-                } from clipboard. You pasted in more columns than this grid contains. ${
+                msg: `Pasted ${pastedTotal} ${rowGrammer} from clipboard. You pasted in more columns than this grid contains. ${
                   rowData.length - colKeys.length
                 } ${
                   rowData.length - colKeys.length > 1
@@ -3348,8 +3339,8 @@ const EditableGrid = (props: EditableGridProps) => {
               });
             } else {
               newMap.set(props.id.toString(), {
-                msg: `Pasted ${ui.length} ${
-                  ui.length > 1 ? "Rows" : "Row"
+                msg: `Pasted ${pastedTotal} ${
+                  rowGrammerSentenceCase
                 } From Clipboard`,
                 type: MessageBarType.success,
               });
@@ -5406,7 +5397,7 @@ const EditableGrid = (props: EditableGridProps) => {
       commandBarItems.push({
         key: "importFromExcel",
         text: CommandBarTitles?.ImportFromExcel ?? "Import From Excel",
-        ariaLabel: CommandBarTitles?.ImportFromExcel ?? "Import From Excel",
+        ariaLabel: CommandBarTitles?.ImportFromExcel ?? "Import Excel",
         disabled:
           (isGridInEdit && !props.enableSaveGridOnCellValueChange) || editMode,
         cacheKey: "myCacheKey",
