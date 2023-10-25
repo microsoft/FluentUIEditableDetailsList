@@ -20,7 +20,6 @@ import Select from "react-select";
 import {
   controlClass,
   horizontalGapStackTokens,
-  textFieldStyles,
   verticalGapStackTokens,
 } from "../editablegrid/editablegridstyles";
 import {
@@ -1270,7 +1269,6 @@ const AddRowPanel = (props: Props) => {
               rows={1}
               id={item.key}
               label={item.text}
-              styles={textFieldStyles}
               onChange={(ev, text) => onTextUpdate(ev, text!, item)}
               value={columnValuesObj[item.key].value ?? undefined}
             />
@@ -1287,7 +1285,6 @@ const AddRowPanel = (props: Props) => {
               name={item.text}
               id={item.key}
               label={item.text}
-              styles={textFieldStyles}
               onChange={(ev, text) => onTextUpdate(ev, text!, item)}
               value={columnValuesObj[item.key].value ?? undefined}
               type="password"
@@ -1381,7 +1378,6 @@ const AddRowPanel = (props: Props) => {
                 name={item.text}
                 id={item.key}
                 label={item.text}
-                styles={textFieldStyles}
                 value={columnValuesObj[item.key].value ?? undefined}
                 readOnly
                 disabled
@@ -1399,7 +1395,6 @@ const AddRowPanel = (props: Props) => {
                 name={item.text}
                 id={item.key}
                 label={item.text}
-                styles={textFieldStyles}
                 onChange={(ev, text) => onTextUpdate(ev, text!, item)}
               />
             );

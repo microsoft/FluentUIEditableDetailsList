@@ -79966,7 +79966,6 @@ const AddRowPanel = (props) => {
                 rows: 1,
                 id: item.key,
                 label: item.text,
-                styles: textFieldStyles$1,
                 onChange: (ev, text) => onTextUpdate(ev, text, item),
                 value: columnValuesObj[item.key].value ?? void 0
               },
@@ -79984,7 +79983,6 @@ const AddRowPanel = (props) => {
                 name: item.text,
                 id: item.key,
                 label: item.text,
-                styles: textFieldStyles$1,
                 onChange: (ev, text) => onTextUpdate(ev, text, item),
                 value: columnValuesObj[item.key].value ?? void 0,
                 type: "password",
@@ -80045,7 +80043,6 @@ const AddRowPanel = (props) => {
                   name: item.text,
                   id: item.key,
                   label: item.text,
-                  styles: textFieldStyles$1,
                   value: columnValuesObj[item.key].value ?? void 0,
                   readOnly: true,
                   disabled: true
@@ -80064,7 +80061,6 @@ const AddRowPanel = (props) => {
                   name: item.text,
                   id: item.key,
                   label: item.text,
-                  styles: textFieldStyles$1,
                   onChange: (ev, text) => onTextUpdate(ev, text, item)
                 },
                 item.key
