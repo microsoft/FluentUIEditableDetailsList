@@ -1,7 +1,7 @@
-import { ICellStyleRulesType } from "../types/cellstyleruletype";
-import { IColumnConfig } from "../types/columnconfigtype";
-import { IGridColumnFilter } from "../types/columnfilterstype";
-import { IFilter } from "../types/filterstype";
+import { ICellStyleRulesType } from '../types/cellstyleruletype';
+import { IColumnConfig } from '../types/columnconfigtype';
+import { IGridColumnFilter } from '../types/columnfilterstype';
+import { IFilter } from '../types/filterstype';
 export declare const filterGridData: (data: any[], filters: IFilter[]) => any[];
 export declare const applyGridColumnFilter: (data: any[], gridColumnFilterArr: IGridColumnFilter[]) => any[];
 export declare const isColumnDataTypeSupportedForFilter: (datatype: string | undefined) => boolean;
@@ -15,3 +15,4 @@ export declare const IsValidRegex: (regexExpression: RegExp, text: string) => bo
 export declare const ConvertTextToObject: (text: string, columns: IColumnConfig[]) => any[];
 export declare function isArrayOfStrings(variable: any): boolean;
 export declare function removeFunctionsFromArrayObjects(arr: any): any;
+export declare const pasteMappingHelper: (allowPastingIntoNonEditableFields: boolean, pastedValue: any, columnValuesObj: any, colKeysVal: string, useForceKeyMappingOptimization?: ((key: string, valueToCompare: any, mapOn?: 'key' | 'text', looseMapping?: boolean) => any) | undefined) => any;

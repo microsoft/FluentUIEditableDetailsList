@@ -12,9 +12,6 @@ import {
 } from "../../libs/types/columnconfigtype";
 import { EditControlType } from "../../libs/types/editcontroltype";
 
-const getValues = (str:string) => {
-  return true
-}
 
 export const GridColumnConfig: IColumnConfig[] = [
   {

@@ -23,6 +23,10 @@ export interface IColumnConfig extends IColumn {
     required: boolean | IRequiredColumnsOptions;
     /** Default value you desire to see on add row */
     defaultOnAddRow?: boolean | string | number | null | undefined | string[] | number[];
+    /**
+     *If a null or undefined value is given on pasting and datatype is set to 'number', default to 0
+     * @default false */
+    forceNumberValue?: boolean;
     /** Majority of properties to be set for the validation engine to run against during save */
     validations?: {
         /** Column Dependent: If two columns can NOT have data or If two columns MUST have data */
@@ -54,15 +58,22 @@ export interface IColumnConfig extends IColumn {
     isResizable?: boolean;
     /** Determines if the user needs to include this column when importing from Excel, CSV, etc. */
     columnNeededInImport?: boolean;
-    /** Determines if the user needs to include this column when importing from Excel, CSV, etc. @default true*/
-    columnNeededInPaste?: boolean;
     /** Determines if you want this column to show up when you do export to excel, CSV, etc */
     includeColumnInExport?: boolean;
     /** Determines if you want this column to show up when you do a grid or row copy @default true */
     includeColumnInCopy?: boolean;
     /** Determines if you want this column to show up when you search*/
     includeColumnInSearch?: boolean;
-    /** Determines the inputType / rendering of JSX Element used when editing the grid*/
+    /** Determines the inputType / rendering of JSX Element used when editing the grid
+     *
+     * Types:
+     * EditControlType.MultilineTextField:
+     * EditControlType.Password:
+     * EditControlType.Date:
+     *
+     * DO NOT SUPPORT INLINE GRID PASTING
+     *
+    */
     inputType?: EditControlType;
     calculatedColumn?: {
         type: CalculationType;

@@ -77881,6 +77881,7 @@ const ParseType = (type, text, isTextModified) => {
   }
   switch (type) {
     case "number":
+      console.log(text);
       if (!isNaN(parseFloat(text == null ? void 0 : text.toString().replace(",", "")))) {
         const newNum = parseFloat(text == null ? void 0 : text.toString().replace(",", ""));
         return newNum;
@@ -77929,6 +77930,55 @@ function removeFunctionsFromArrayObjects(arr) {
     return obj;
   });
 }
+const pasteMappingHelper = (allowPastingIntoNonEditableFields, pastedValue, columnValuesObj, colKeysVal, useForceKeyMappingOptimization) => {
+  var _a2, _b2, _c2, _d2, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v;
+  const trimmedCurrentVal = (_b2 = (_a2 = pastedValue == null ? void 0 : pastedValue.toString()) == null ? void 0 : _a2.toLowerCase()) == null ? void 0 : _b2.trim();
+  if (((_c2 = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _c2.columnEditable) || allowPastingIntoNonEditableFields) {
+    if (trimmedCurrentVal === "false") {
+      return false;
+    } else if (trimmedCurrentVal === "true") {
+      return true;
+    } else if (((_d2 = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _d2.dataType) == "number") {
+      const numberBoundaries = (_f = (_e2 = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _e2.validations) == null ? void 0 : _f.numberBoundaries;
+      const modifiedValue = parseFloat(trimmedCurrentVal.replaceAll(",", ""));
+      let value = Number((_g = Number(modifiedValue)) == null ? void 0 : _g.toFixed(4));
+      if (numberBoundaries && isNaN(value) == false) {
+        const minRange = numberBoundaries.minRange;
+        const maxRange = numberBoundaries.maxRange;
+        if (value < minRange) {
+          value = minRange;
+        } else if (value > maxRange) {
+          value = maxRange;
+        }
+      }
+      return isNaN(value) ? ((_i = (_h = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _h.props) == null ? void 0 : _i.forceNumberValue) ? 0 : null : value;
+    } else {
+      if (((_j = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _j.dataType) == "boolean") {
+        if (trimmedCurrentVal == "1" || trimmedCurrentVal == "0") {
+          return trimmedCurrentVal == "1" ? true : false;
+        } else if (trimmedCurrentVal == "y" || trimmedCurrentVal == "n") {
+          return trimmedCurrentVal == "y" ? true : false;
+        }
+      } else {
+        return useForceKeyMappingOptimization ?? trimmedCurrentVal ?? null;
+      }
+    }
+  } else {
+    if (((_k = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _k.dataType) == "boolean") {
+      return ((_l = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _l.defaultValueOnNewRow) ?? false;
+    } else if (((_m = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _m.dataType) == "number") {
+      const modifiedValue = parseFloat(
+        (_p = (_o = (_n = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _n.defaultValueOnNewRow) == null ? void 0 : _o.toString()) == null ? void 0 : _p.replaceAll(",", "")
+      );
+      const value = Number((_q = Number(modifiedValue)) == null ? void 0 : _q.toFixed(4));
+      return isNaN(value) ? ((_s = (_r = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _r.props) == null ? void 0 : _s.forceNumberValue) ? 0 : null : value;
+    } else if (((_t = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _t.dataType) == "string") {
+      return ((_u = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _u.defaultValueOnNewRow) ?? "";
+    } else {
+      return ((_v = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _v.defaultValueOnNewRow) ?? null;
+    }
+  }
+};
 const stackStyles = { root: { width: 500 } };
 const controlClass$1 = mergeStyleSets({
   control: {
@@ -81709,9 +81759,7 @@ const EditableGrid = (props) => {
   const [dialogContent, setDialogContent] = useState(
     void 0
   );
-  const [announced, setAnnounced] = useState(
-    void 0
-  );
+  const [announced, setAnnounced] = useState(void 0);
   const [isUpdateColumnClicked, setIsUpdateColumnClicked] = useState(false);
   const [isColumnFilterClicked, setIsColumnFilterClicked] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
@@ -81990,7 +82038,7 @@ const EditableGrid = (props) => {
         for (let index2 = 0; index2 < quickGrab.values.length; index2++) {
           const element = quickGrab.values[index2];
           const compareWith = mapOn == "key" ? (_c3 = (_b3 = element == null ? void 0 : element.key) == null ? void 0 : _b3.toString()) == null ? void 0 : _c3.toLowerCase() : (_e2 = (_d2 = element == null ? void 0 : element.text) == null ? void 0 : _d2.toString()) == null ? void 0 : _e2.toLowerCase();
-          if (compareWith === (((_f = valueToCompare == null ? void 0 : valueToCompare.toString()) == null ? void 0 : _f.toLowerCase()) ?? "")) {
+          if (compareWith === (((_f = valueToCompare == null ? void 0 : valueToCompare.toString()) == null ? void 0 : _f.toLowerCase().trim()) ?? "")) {
             valueToCompare = looseMapping ? element == null ? void 0 : element.text : element == null ? void 0 : element.key;
           }
         }
@@ -82612,6 +82660,9 @@ const EditableGrid = (props) => {
         columnEditable: (item == null ? void 0 : item.editable) ?? false,
         defaultValueOnNewRow: (item == null ? void 0 : item.defaultOnAddRow) ?? null,
         dataType: item.dataType,
+        props: {
+          forceNumberValue: item.forceNumberValue
+        },
         validations: {
           numberBoundaries: (_a3 = item.validations) == null ? void 0 : _a3.numberBoundaries
         }
@@ -82633,9 +82684,7 @@ const EditableGrid = (props) => {
     var _a3;
     var ImportedHeader = Object.keys(excelKeys);
     var CurrentHeaders = Object.keys(columnValuesObj);
-    const autoGenerateCol = props.columns.filter(
-      (x) => x.autoGenerate === true
-    );
+    const autoGenerateCol = props.columns.filter((x) => x.autoGenerate === true);
     const unImportableCol = props.columns.filter(
       (x) => x.columnNeededInImport === false
     );
@@ -83280,13 +83329,33 @@ const EditableGrid = (props) => {
     };
   }, [cursorFlashing, selectedIndices]);
   const CopyGridRows = () => {
-    var _a3;
     if (selectedIndices.length == 0) {
-      const newMap = new Map(interalMessagesState).set((_a3 = props.id) == null ? void 0 : _a3.toString(), {
-        msg: "No Rows Selected - Please select some rows to perform this operation ",
-        type: MessageBarType.info
+      var copyText = "";
+      const allRows = defaultGridData.filter(
+        (x) => x._grid_row_operation_ != _Operation.Delete
+      );
+      allRows.filter((x) => x._grid_row_operation_ != _Operation.Delete).forEach((i) => {
+        copyText += ConvertObjectToText(
+          forceKeyMapping(defaultGridData, "key").filter(
+            (x) => x["_grid_row_id_"] == i["_grid_row_id_"]
+          )[0],
+          props.columns.filter((x) => x.includeColumnInCopy ?? true)
+        ) + "\r\n";
       });
-      setInteralMessagesState(newMap);
+      navigator.clipboard.writeText(copyText).then(
+        function() {
+          const newMap = new Map(interalMessagesState).set(
+            props.id.toString(),
+            {
+              msg: `Entire Grid Copied To Clipboard`,
+              type: MessageBarType.success
+            }
+          );
+          setInteralMessagesState(newMap);
+        },
+        function() {
+        }
+      );
       return;
     }
     var copyText = "";
@@ -83324,7 +83393,7 @@ const EditableGrid = (props) => {
     }
   };
   const setupPastedData = (rowData, addedRows) => {
-    var _a3, _b3, _c3, _d2, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v;
+    var _a3, _b3;
     const newColObj = {};
     var colKeys = Object.keys(columnValuesObj);
     if (columnKeyPasteRef.current && ((_a3 = columnKeyPasteRef.current) == null ? void 0 : _a3.key)) {
@@ -83355,68 +83424,13 @@ const EditableGrid = (props) => {
       if (indentiferColumn.current && colKeysVal == indentiferColumn.current) {
         continue;
       }
-      const trimmedCurrentVal = (_d2 = (_c3 = currentVal == null ? void 0 : currentVal.toString()) == null ? void 0 : _c3.toLowerCase()) == null ? void 0 : _d2.trim();
-      if ((_e2 = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _e2.columnEditable) {
-        if (trimmedCurrentVal === "false") {
-          newColObj[colKeysVal] = false;
-        } else if (trimmedCurrentVal === "true") {
-          newColObj[colKeysVal] = true;
-        } else if (((_f = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _f.dataType) == "number") {
-          const modifiedValue = parseFloat(
-            (trimmedCurrentVal ?? "0").replaceAll(",", "") ?? "0"
-          );
-          let value = Number(Number(modifiedValue ?? 0).toFixed(4)) ?? 0;
-          if (isNaN(value) == false) {
-            if ((_h = (_g = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _g.validations) == null ? void 0 : _h.numberBoundaries) {
-              const minRange = (_j = (_i = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _i.validations) == null ? void 0 : _j.numberBoundaries.minRange;
-              const maxRange = (_l = (_k = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _k.validations) == null ? void 0 : _l.numberBoundaries.maxRange;
-              if (value < minRange) {
-                value = minRange;
-              } else if (value > maxRange) {
-                value = maxRange;
-              }
-            }
-          } else {
-            value = 0;
-          }
-          newColObj[colKeysVal] = value;
-        } else {
-          if (((_m = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _m.dataType) == "boolean") {
-            if (trimmedCurrentVal == "1" || trimmedCurrentVal == "0") {
-              newColObj[colKeysVal] = trimmedCurrentVal == "1" ? true : false;
-            } else if (trimmedCurrentVal == "y" || trimmedCurrentVal == "n") {
-              newColObj[colKeysVal] = trimmedCurrentVal == "y" ? true : false;
-            }
-          } else {
-            newColObj[colKeysVal] = ((_n = currentVal == null ? void 0 : currentVal.toString()) == null ? void 0 : _n.trim()) ?? null;
-          }
-        }
-      } else {
-        if (((_o = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _o.dataType) == "boolean") {
-          newColObj[colKeysVal] = ((_p = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _p.defaultValueOnNewRow) ?? false;
-        } else if (((_q = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _q.dataType) == "number") {
-          const modifiedValue = parseFloat(
-            (((_s = (_r = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _r.defaultValueOnNewRow) == null ? void 0 : _s.toString()) ?? "0").replaceAll(",", "") ?? "0"
-          );
-          const value = Number(Number(modifiedValue ?? 0).toFixed(4)) ?? 0;
-          newColObj[colKeysVal] = isNaN(value) ? 0 : value;
-        } else if (((_t = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _t.dataType) == "string") {
-          newColObj[colKeysVal] = ((_u = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _u.defaultValueOnNewRow) ?? "";
-        } else {
-          newColObj[colKeysVal] = ((_v = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _v.defaultValueOnNewRow) ?? null;
-        }
-      }
-    }
-    if (trackTransformedData.current) {
-      trackTransformedData.current.forEach(function(value, key) {
-        var _a4, _b4, _c4, _d3;
-        for (let index2 = 0; index2 < value.values.length; index2++) {
-          const element = value.values[index2];
-          if (((_b4 = (_a4 = element == null ? void 0 : element.text) == null ? void 0 : _a4.toString()) == null ? void 0 : _b4.toLowerCase()) === (((_d3 = (_c4 = newColObj[key]) == null ? void 0 : _c4.toString()) == null ? void 0 : _d3.toLowerCase()) ?? "")) {
-            newColObj[key] = element == null ? void 0 : element.key;
-          }
-        }
-      });
+      newColObj[colKeysVal] = pasteMappingHelper(
+        props.allowPastingIntoNonEditableFields ?? false,
+        currentVal,
+        columnValuesObj,
+        colKeysVal,
+        forceKeyMappingOptimized(colKeysVal, currentVal, "text", false)
+      );
     }
     addedRows.map((row) => {
       var objectKeys = Object.keys(newColObj);
@@ -83495,51 +83509,22 @@ const EditableGrid = (props) => {
             );
             let currentElement = 0;
             props.columns.forEach((column2, i) => {
-              var _a4, _b3, _c3, _d2, _e2, _f;
               if (columnKeyPasteRef.current) {
                 if (i >= valueIndex) {
-                  if (column2.editable) {
-                    const trimmedRowValue = (_c3 = (_b3 = (_a4 = rowData[currentElement]) == null ? void 0 : _a4.toString()) == null ? void 0 : _b3.toLowerCase()) == null ? void 0 : _c3.trim();
+                  if (column2.editable || props.allowPastingIntoNonEditableFields) {
+                    newGridData[columnKeyPasteRef.current._grid_row_id_][column2.key] = pasteMappingHelper(
+                      props.allowPastingIntoNonEditableFields ?? false,
+                      rowData[currentElement],
+                      columnValuesObj,
+                      column2.key,
+                      forceKeyMappingOptimized(
+                        column2.key,
+                        rowData[currentElement],
+                        "text",
+                        false
+                      )
+                    );
                     singleColChange = true;
-                    if (trimmedRowValue === "false") {
-                      newGridData[columnKeyPasteRef.current._grid_row_id_][column2.key] = false;
-                    } else if (trimmedRowValue === "true") {
-                      newGridData[columnKeyPasteRef.current._grid_row_id_][column2.key] = true;
-                    } else if ((column2 == null ? void 0 : column2.dataType) == "number") {
-                      const modifiedValue = parseFloat(
-                        (trimmedRowValue ?? "0").replaceAll(",", "") ?? "0"
-                      );
-                      let value = Number(Number(modifiedValue ?? 0).toFixed(4)) ?? 0;
-                      if (isNaN(value) == false) {
-                        if ((_d2 = column2 == null ? void 0 : column2.validations) == null ? void 0 : _d2.numberBoundaries) {
-                          const minRange = (_e2 = column2 == null ? void 0 : column2.validations) == null ? void 0 : _e2.numberBoundaries.minRange;
-                          const maxRange = (_f = column2 == null ? void 0 : column2.validations) == null ? void 0 : _f.numberBoundaries.maxRange;
-                          if (value < minRange) {
-                            value = minRange;
-                          } else if (value > maxRange) {
-                            value = maxRange;
-                          }
-                        }
-                      } else {
-                        value = 0;
-                      }
-                      newGridData[columnKeyPasteRef.current._grid_row_id_][column2.key] = value;
-                    } else {
-                      if (column2.dataType == "boolean") {
-                        if (trimmedRowValue == "1" || trimmedRowValue == "0") {
-                          newGridData[columnKeyPasteRef.current._grid_row_id_][column2.key] = trimmedRowValue == "1" ? true : false;
-                        } else if (trimmedRowValue == "y" || trimmedRowValue == "n") {
-                          newGridData[columnKeyPasteRef.current._grid_row_id_][column2.key] = trimmedRowValue == "y" ? true : false;
-                        }
-                      } else {
-                        newGridData[columnKeyPasteRef.current._grid_row_id_][column2.key] = forceKeyMappingOptimized(
-                          column2.key,
-                          rowData[currentElement],
-                          "text",
-                          false
-                        ) ?? newGridData[columnKeyPasteRef.current._grid_row_id_][column2.key];
-                      }
-                    }
                   }
                   currentElement++;
                 }
@@ -83867,10 +83852,7 @@ const EditableGrid = (props) => {
     var filterStoreTmp = getFilterStoreRef();
     filterStoreTmp.push(filter);
     setFilterStoreRef(filterStoreTmp);
-    setFilteredColumns((filteredColumns2) => [
-      ...filteredColumns2,
-      filter.column
-    ]);
+    setFilteredColumns((filteredColumns2) => [...filteredColumns2, filter.column]);
     setDefaultTag(tags);
     CloseColumnFilterDialog();
   };
@@ -84452,9 +84434,7 @@ const EditableGrid = (props) => {
                         if (((_a5 = column2 == null ? void 0 : column2.comboBoxProps) == null ? void 0 : _a5.searchType) == "startswith") {
                           return (_e3 = (_c4 = (_b5 = item2 == null ? void 0 : item2.text) == null ? void 0 : _b5.trim()) == null ? void 0 : _c4.toLowerCase()) == null ? void 0 : _e3.startsWith((_d3 = text == null ? void 0 : text.trim()) == null ? void 0 : _d3.toLowerCase());
                         } else {
-                          return searchPattern.test(
-                            (_f2 = item2.text) == null ? void 0 : _f2.trim()
-                          );
+                          return searchPattern.test((_f2 = item2.text) == null ? void 0 : _f2.trim());
                         }
                       });
                       const newMap = /* @__PURE__ */ new Map();

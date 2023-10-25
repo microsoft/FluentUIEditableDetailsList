@@ -77,6 +77,11 @@ export interface EditableGridProps extends IDetailsListProps {
     React.Dispatch<React.SetStateAction<boolean>>
   ];
 
+    /**
+     * No pasting is allowed into non-editable fields, toggle to allow
+     * @default false*/
+  allowPastingIntoNonEditableFields?: boolean
+
   /** Triggers the onGridUpdate callback on component mount and data initialization    */
   triggerOnGridUpdateOnMount?: boolean
 
