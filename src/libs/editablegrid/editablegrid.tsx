@@ -1878,7 +1878,7 @@ const EditableGrid = (props: EditableGridProps) => {
         defaultValueOnNewRow: item?.defaultOnAddRow ?? null,
         dataType: item.dataType,
         props: {
-          forceNumberValue: item.forceNumberValue
+          defaultNullOrNaNNumbersTo: item.defaultNullOrNaNNumbersTo
         },
         validations: {
           numberBoundaries: item.validations?.numberBoundaries
@@ -2840,6 +2840,15 @@ const EditableGrid = (props: EditableGridProps) => {
 
   const CopyGridRows = (): void => {
     if (selectedIndices.length == 0) {
+      if (!props.enableSaveGridOnCellValueChange) {
+        const newMap = new Map(interalMessagesState).set(props.id?.toString(), {
+          msg: 'No Rows Selected - Please select some rows to perform this operation ',
+          type: MessageBarType.info
+        })
+        setInteralMessagesState(newMap)
+
+        return
+      }
       var copyText: string = ''
 
       const allRows = defaultGridData.filter(
@@ -5231,7 +5240,9 @@ const EditableGrid = (props: EditableGridProps) => {
         text: CommandBarTitles?.ExcelExport ?? 'Export To Excel',
         ariaLabel: CommandBarTitles?.ExcelExport ?? 'Export To Excel',
         disabled:
-          (isGridInEdit && !props.enableSaveGridOnCellValueChange) || editMode,
+          (isGridInEdit && !props.enableSaveGridOnCellValueChange) ||
+          editMode ||
+          getGridRecordLength(true) == '0',
         cacheKey: 'myCacheKey',
         iconProps: { iconName: 'ExcelDocument' },
         onClick: () => onExportClick(ExportType.XLSX)
@@ -5243,7 +5254,9 @@ const EditableGrid = (props: EditableGridProps) => {
         text: CommandBarTitles?.CSVExport ?? 'CSV Export',
         ariaLabel: CommandBarTitles?.CSVExport ?? 'CSV Export',
         disabled:
-          (isGridInEdit && !props.enableSaveGridOnCellValueChange) || editMode,
+          (isGridInEdit && !props.enableSaveGridOnCellValueChange) ||
+          editMode ||
+          getGridRecordLength(true) == '0',
         cacheKey: 'myCacheKey',
         iconProps: { iconName: 'LandscapeOrientation' },
         onClick: () => onExportClick(ExportType.CSV)
@@ -5254,7 +5267,9 @@ const EditableGrid = (props: EditableGridProps) => {
         text: CommandBarTitles?.Export ?? 'Export',
         ariaLabel: CommandBarTitles?.Export ?? 'Export',
         disabled:
-          (isGridInEdit && !props.enableSaveGridOnCellValueChange) || editMode,
+          (isGridInEdit && !props.enableSaveGridOnCellValueChange) ||
+          editMode ||
+          getGridRecordLength(true) == '0',
         cacheKey: 'myCacheKey',
         iconProps: { iconName: 'Download' },
         subMenuProps: {
@@ -5297,16 +5312,10 @@ const EditableGrid = (props: EditableGridProps) => {
         key: 'copy',
         text: CommandBarTitles?.CopyGrid ?? 'Copy Grid',
         disabled: props.enableSaveGridOnCellValueChange
-          ? undefined
-          : isGridInEdit || editMode || _selection.count == 0,
-        ariaLabel:
-          isGridInEdit || editMode || _selection.count == 0
-            ? 'Make A Selection In The Grid To Copy'
-            : 'Copy Selected Grid Row',
-        title:
-          isGridInEdit || editMode || _selection.count == 0
-            ? 'Make A Selection In The Grid To Copy'
-            : 'Copy Selected Grid Row',
+          ? getGridRecordLength(true) == '0'
+          : isGridInEdit || editMode || getGridRecordLength(true) == '0',
+        ariaLabel: 'Copy Grid',
+        title: 'Copy Grid',
         iconProps: { iconName: 'Documentation' },
         onClick: () => CopyGridRows()
       })
@@ -5365,7 +5374,7 @@ const EditableGrid = (props: EditableGridProps) => {
             ? CommandBarTitles?.DeleteRow ?? 'Delete Rows'
             : CommandBarTitles?.DeleteRow ?? 'Delete Row',
         disabled: props.enableSaveGridOnCellValueChange
-          ? undefined
+          ? getGridRecordLength(true) == '0'
           : editMode || _selection.count == 0,
         iconProps: { iconName: 'trash' },
         onClick: () => RowSelectOperations(EditType.DeleteRow, {})
@@ -5378,7 +5387,9 @@ const EditableGrid = (props: EditableGridProps) => {
         text: CommandBarTitles?.Filter ?? 'Filter',
         ariaLabel: 'Filter',
         disabled:
-          editMode || (isGridInEdit && !props.enableSaveGridOnCellValueChange),
+          editMode ||
+          (isGridInEdit && !props.enableSaveGridOnCellValueChange) ||
+          getGridRecordLength(true) == '0',
         cacheKey: 'myColumnFilterCacheKey',
         iconProps: { iconName: 'QueryList' },
         subMenuProps: {
@@ -5406,7 +5417,8 @@ const EditableGrid = (props: EditableGridProps) => {
     ) {
       commandBarItems.push({
         key: 'editmode',
-        disabled: isGridInEdit && editMode,
+        disabled:
+          (isGridInEdit && editMode) || getGridRecordLength(true) == '0',
         text: !editMode
           ? CommandBarTitles?.EditMode ?? 'Edit Mode'
           : CommandBarTitles?.Editing ?? 'Editing',

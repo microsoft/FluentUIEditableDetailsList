@@ -291,10 +291,8 @@ export const pasteMappingHelper = (
       }
 
       return isNaN(value)
-        ? columnValuesObj?.[colKeysVal]?.props?.forceNumberValue
-          ? 0
-          : null
-        : value
+        ? columnValuesObj?.[colKeysVal]?.props?.defaultNullOrNaNNumbersTo
+        : value ?? columnValuesObj?.[colKeysVal]?.props?.defaultNullOrNaNNumbersTo
     } else {
       if (columnValuesObj?.[colKeysVal]?.dataType == 'boolean') {
         if (trimmedCurrentVal == '1' || trimmedCurrentVal == '0') {
@@ -318,10 +316,9 @@ export const pasteMappingHelper = (
       const value = Number(Number(modifiedValue)?.toFixed(4))
 
       return isNaN(value)
-        ? columnValuesObj?.[colKeysVal]?.props?.forceNumberValue
-          ? 0
-          : null
-        : value
+      ? columnValuesObj?.[colKeysVal]?.props?.defaultNullOrNaNNumbersTo
+      : value ?? columnValuesObj?.[colKeysVal]?.props?.defaultNullOrNaNNumbersTo
+      
     } else if (columnValuesObj?.[colKeysVal]?.dataType == 'string') {
       return columnValuesObj?.[colKeysVal]?.defaultValueOnNewRow ?? ''
     } else {

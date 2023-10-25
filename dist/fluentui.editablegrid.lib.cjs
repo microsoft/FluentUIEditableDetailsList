@@ -77949,7 +77949,7 @@ function removeFunctionsFromArrayObjects(arr) {
   });
 }
 const pasteMappingHelper = (allowPastingIntoNonEditableFields, pastedValue, columnValuesObj, colKeysVal, useForceKeyMappingOptimization) => {
-  var _a2, _b2, _c2, _d2, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v;
+  var _a2, _b2, _c2, _d2, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
   const trimmedCurrentVal = (_b2 = (_a2 = pastedValue == null ? void 0 : pastedValue.toString()) == null ? void 0 : _a2.toLowerCase()) == null ? void 0 : _b2.trim();
   if (((_c2 = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _c2.columnEditable) || allowPastingIntoNonEditableFields) {
     if (trimmedCurrentVal === "false") {
@@ -77969,9 +77969,9 @@ const pasteMappingHelper = (allowPastingIntoNonEditableFields, pastedValue, colu
           value = maxRange;
         }
       }
-      return isNaN(value) ? ((_i = (_h = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _h.props) == null ? void 0 : _i.forceNumberValue) ? 0 : null : value;
+      return isNaN(value) ? (_i = (_h = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _h.props) == null ? void 0 : _i.defaultNullOrNaNNumbersTo : value ?? ((_k = (_j = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _j.props) == null ? void 0 : _k.defaultNullOrNaNNumbersTo);
     } else {
-      if (((_j = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _j.dataType) == "boolean") {
+      if (((_l = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _l.dataType) == "boolean") {
         if (trimmedCurrentVal == "1" || trimmedCurrentVal == "0") {
           return trimmedCurrentVal == "1" ? true : false;
         } else if (trimmedCurrentVal == "y" || trimmedCurrentVal == "n") {
@@ -77982,18 +77982,18 @@ const pasteMappingHelper = (allowPastingIntoNonEditableFields, pastedValue, colu
       }
     }
   } else {
-    if (((_k = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _k.dataType) == "boolean") {
-      return ((_l = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _l.defaultValueOnNewRow) ?? false;
-    } else if (((_m = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _m.dataType) == "number") {
+    if (((_m = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _m.dataType) == "boolean") {
+      return ((_n = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _n.defaultValueOnNewRow) ?? false;
+    } else if (((_o = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _o.dataType) == "number") {
       const modifiedValue = parseFloat(
-        (_p = (_o = (_n = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _n.defaultValueOnNewRow) == null ? void 0 : _o.toString()) == null ? void 0 : _p.replaceAll(",", "")
+        (_r = (_q = (_p = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _p.defaultValueOnNewRow) == null ? void 0 : _q.toString()) == null ? void 0 : _r.replaceAll(",", "")
       );
-      const value = Number((_q = Number(modifiedValue)) == null ? void 0 : _q.toFixed(4));
-      return isNaN(value) ? ((_s = (_r = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _r.props) == null ? void 0 : _s.forceNumberValue) ? 0 : null : value;
-    } else if (((_t = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _t.dataType) == "string") {
-      return ((_u = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _u.defaultValueOnNewRow) ?? "";
+      const value = Number((_s = Number(modifiedValue)) == null ? void 0 : _s.toFixed(4));
+      return isNaN(value) ? (_u = (_t = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _t.props) == null ? void 0 : _u.defaultNullOrNaNNumbersTo : value ?? ((_w = (_v = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _v.props) == null ? void 0 : _w.defaultNullOrNaNNumbersTo);
+    } else if (((_x = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _x.dataType) == "string") {
+      return ((_y = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _y.defaultValueOnNewRow) ?? "";
     } else {
-      return ((_v = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _v.defaultValueOnNewRow) ?? null;
+      return ((_z = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _z.defaultValueOnNewRow) ?? null;
     }
   }
 };
@@ -82679,7 +82679,7 @@ const EditableGrid = (props) => {
         defaultValueOnNewRow: (item == null ? void 0 : item.defaultOnAddRow) ?? null,
         dataType: item.dataType,
         props: {
-          forceNumberValue: item.forceNumberValue
+          defaultNullOrNaNNumbersTo: item.defaultNullOrNaNNumbersTo
         },
         validations: {
           numberBoundaries: (_a3 = item.validations) == null ? void 0 : _a3.numberBoundaries
@@ -83347,7 +83347,16 @@ const EditableGrid = (props) => {
     };
   }, [cursorFlashing, selectedIndices]);
   const CopyGridRows = () => {
+    var _a3;
     if (selectedIndices.length == 0) {
+      if (!props.enableSaveGridOnCellValueChange) {
+        const newMap = new Map(interalMessagesState).set((_a3 = props.id) == null ? void 0 : _a3.toString(), {
+          msg: "No Rows Selected - Please select some rows to perform this operation ",
+          type: MessageBarType.info
+        });
+        setInteralMessagesState(newMap);
+        return;
+      }
       var copyText = "";
       const allRows = defaultGridData.filter(
         (x) => x._grid_row_operation_ != _Operation.Delete
@@ -84898,7 +84907,7 @@ const EditableGrid = (props) => {
         key: "exportToExcel",
         text: (CommandBarTitles == null ? void 0 : CommandBarTitles.ExcelExport) ?? "Export To Excel",
         ariaLabel: (CommandBarTitles == null ? void 0 : CommandBarTitles.ExcelExport) ?? "Export To Excel",
-        disabled: isGridInEdit && !props.enableSaveGridOnCellValueChange || editMode,
+        disabled: isGridInEdit && !props.enableSaveGridOnCellValueChange || editMode || getGridRecordLength(true) == "0",
         cacheKey: "myCacheKey",
         iconProps: { iconName: "ExcelDocument" },
         onClick: () => onExportClick(ExportType.XLSX)
@@ -84909,7 +84918,7 @@ const EditableGrid = (props) => {
         key: "exportToCSV",
         text: (CommandBarTitles == null ? void 0 : CommandBarTitles.CSVExport) ?? "CSV Export",
         ariaLabel: (CommandBarTitles == null ? void 0 : CommandBarTitles.CSVExport) ?? "CSV Export",
-        disabled: isGridInEdit && !props.enableSaveGridOnCellValueChange || editMode,
+        disabled: isGridInEdit && !props.enableSaveGridOnCellValueChange || editMode || getGridRecordLength(true) == "0",
         cacheKey: "myCacheKey",
         iconProps: { iconName: "LandscapeOrientation" },
         onClick: () => onExportClick(ExportType.CSV)
@@ -84919,7 +84928,7 @@ const EditableGrid = (props) => {
         key: "exportGrid",
         text: (CommandBarTitles == null ? void 0 : CommandBarTitles.Export) ?? "Export",
         ariaLabel: (CommandBarTitles == null ? void 0 : CommandBarTitles.Export) ?? "Export",
-        disabled: isGridInEdit && !props.enableSaveGridOnCellValueChange || editMode,
+        disabled: isGridInEdit && !props.enableSaveGridOnCellValueChange || editMode || getGridRecordLength(true) == "0",
         cacheKey: "myCacheKey",
         iconProps: { iconName: "Download" },
         subMenuProps: {
@@ -84954,9 +84963,9 @@ const EditableGrid = (props) => {
       commandBarItems.push({
         key: "copy",
         text: (CommandBarTitles == null ? void 0 : CommandBarTitles.CopyGrid) ?? "Copy Grid",
-        disabled: props.enableSaveGridOnCellValueChange ? void 0 : isGridInEdit || editMode || _selection.count == 0,
-        ariaLabel: isGridInEdit || editMode || _selection.count == 0 ? "Make A Selection In The Grid To Copy" : "Copy Selected Grid Row",
-        title: isGridInEdit || editMode || _selection.count == 0 ? "Make A Selection In The Grid To Copy" : "Copy Selected Grid Row",
+        disabled: props.enableSaveGridOnCellValueChange ? getGridRecordLength(true) == "0" : isGridInEdit || editMode || getGridRecordLength(true) == "0",
+        ariaLabel: "Copy Grid",
+        title: "Copy Grid",
         iconProps: { iconName: "Documentation" },
         onClick: () => CopyGridRows()
       });
@@ -84988,7 +84997,7 @@ const EditableGrid = (props) => {
       commandBarItems.push({
         key: "deleterows",
         text: _selection.count > 1 ? (CommandBarTitles == null ? void 0 : CommandBarTitles.DeleteRow) ?? "Delete Rows" : (CommandBarTitles == null ? void 0 : CommandBarTitles.DeleteRow) ?? "Delete Row",
-        disabled: props.enableSaveGridOnCellValueChange ? void 0 : editMode || _selection.count == 0,
+        disabled: props.enableSaveGridOnCellValueChange ? getGridRecordLength(true) == "0" : editMode || _selection.count == 0,
         iconProps: { iconName: "trash" },
         onClick: () => RowSelectOperations(EditType.DeleteRow)
       });
@@ -84998,7 +85007,7 @@ const EditableGrid = (props) => {
         key: "columnFilters",
         text: (CommandBarTitles == null ? void 0 : CommandBarTitles.Filter) ?? "Filter",
         ariaLabel: "Filter",
-        disabled: editMode || isGridInEdit && !props.enableSaveGridOnCellValueChange,
+        disabled: editMode || isGridInEdit && !props.enableSaveGridOnCellValueChange || getGridRecordLength(true) == "0",
         cacheKey: "myColumnFilterCacheKey",
         iconProps: { iconName: "QueryList" },
         subMenuProps: {
@@ -85022,7 +85031,7 @@ const EditableGrid = (props) => {
     if ((!props.enableDefaultEditMode || props.enableEditAllOnCellClick) && props.enableEditMode) {
       commandBarItems.push({
         key: "editmode",
-        disabled: isGridInEdit && editMode,
+        disabled: isGridInEdit && editMode || getGridRecordLength(true) == "0",
         text: !editMode ? (CommandBarTitles == null ? void 0 : CommandBarTitles.EditMode) ?? "Edit Mode" : (CommandBarTitles == null ? void 0 : CommandBarTitles.Editing) ?? "Editing",
         iconProps: { iconName: !editMode ? "Edit" : "Save" },
         onClick: () => ShowGridEditMode()

@@ -47,13 +47,15 @@ export interface IColumnConfig extends IColumn {
   /** Tells the valdation engine that runs on save if the column is required to have data or not */
   required: boolean | IRequiredColumnsOptions;
 
-  /** Default value you desire to see on add row */
+  /** Default value you desire to see on add row 
+   * @default null
+  */
   defaultOnAddRow?: boolean | string | number | null  | undefined | string[] | number[];
 
   /**
-   *If a null or undefined value is given on pasting and datatype is set to 'number', default to 0
+   *If a null or undefined value is given on pasting and datatype is set to 'number', default to number givrn
    * @default false */
-  forceNumberValue?: boolean
+   defaultNullOrNaNNumbersTo?: number | null | ''
 
   /** Majority of properties to be set for the validation engine to run against during save */
   validations?: {
