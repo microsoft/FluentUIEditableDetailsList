@@ -3052,7 +3052,7 @@ const EditableGrid = (props: EditableGridProps) => {
         currentVal,
         columnValuesObj,
         colKeysVal,
-        forceKeyMappingOptimized(colKeysVal, currentVal, 'text', false)
+        forceKeyMappingOptimized
       )
     }
 
@@ -3166,12 +3166,7 @@ const EditableGrid = (props: EditableGridProps) => {
                         rowData[currentElement],
                         columnValuesObj,
                         column.key,
-                        forceKeyMappingOptimized(
-                          column.key,
-                          rowData[currentElement],
-                          'text',
-                          false
-                        )
+                        forceKeyMappingOptimized
                       )
                       singleColChange = true
                     }

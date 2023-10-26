@@ -15,4 +15,4 @@ export declare const IsValidRegex: (regexExpression: RegExp, text: string) => bo
 export declare const ConvertTextToObject: (text: string, columns: IColumnConfig[]) => any[];
 export declare function isArrayOfStrings(variable: any): boolean;
 export declare function removeFunctionsFromArrayObjects(arr: any): any;
-export declare const pasteMappingHelper: (allowPastingIntoNonEditableFields: boolean, pastedValue: any, columnValuesObj: any, colKeysVal: string, useForceKeyMappingOptimization?: ((key: string, valueToCompare: any, mapOn?: 'key' | 'text', looseMapping?: boolean) => any) | undefined) => any;
+export declare const pasteMappingHelper: (allowPastingIntoNonEditableFields: boolean, pastedValue: any, columnValuesObj: any, colKeysVal: string, useForceKeyMappingOptimization: (key: string, valueToCompare: any, mapOn?: 'key' | 'text', looseMapping?: boolean) => any) => any;

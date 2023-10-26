@@ -255,7 +255,8 @@ export const pasteMappingHelper = (
   pastedValue: any,
   columnValuesObj: any,
   colKeysVal: string,
-  useForceKeyMappingOptimization?: (
+
+  useForceKeyMappingOptimization: (
     key: string,
     valueToCompare: any,
     mapOn?: 'key' | 'text',
@@ -301,7 +302,7 @@ export const pasteMappingHelper = (
           return trimmedCurrentVal == 'y' ? true : false ?? false
         }
       } else {
-        return useForceKeyMappingOptimization ?? trimmedCurrentVal ?? null
+        return useForceKeyMappingOptimization(colKeysVal, trimmedCurrentVal, 'text', false) ?? trimmedCurrentVal ?? null
       }
     }
   } else {

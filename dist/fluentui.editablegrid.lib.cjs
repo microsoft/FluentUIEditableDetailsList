@@ -77978,7 +77978,7 @@ const pasteMappingHelper = (allowPastingIntoNonEditableFields, pastedValue, colu
           return trimmedCurrentVal == "y" ? true : false;
         }
       } else {
-        return useForceKeyMappingOptimization ?? trimmedCurrentVal ?? null;
+        return useForceKeyMappingOptimization(colKeysVal, trimmedCurrentVal, "text", false) ?? trimmedCurrentVal ?? null;
       }
     }
   } else {
@@ -83456,7 +83456,7 @@ const EditableGrid = (props) => {
         currentVal,
         columnValuesObj,
         colKeysVal,
-        forceKeyMappingOptimized(colKeysVal, currentVal, "text", false)
+        forceKeyMappingOptimized
       );
     }
     addedRows.map((row) => {
@@ -83544,12 +83544,7 @@ const EditableGrid = (props) => {
                       rowData[currentElement],
                       columnValuesObj,
                       column2.key,
-                      forceKeyMappingOptimized(
-                        column2.key,
-                        rowData[currentElement],
-                        "text",
-                        false
-                      )
+                      forceKeyMappingOptimized
                     );
                     singleColChange = true;
                   }
