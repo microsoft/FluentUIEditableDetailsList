@@ -263,21 +263,21 @@ export const pasteMappingHelper = (
     looseMapping?: boolean
   ) => any
 ) => {
-  const trimmedCurrentVal = pastedValue?.toString()?.toLowerCase()?.trim()
+  const trimmedCurrentVal = pastedValue?.toString()?.trim()
 
   if (
     columnValuesObj?.[colKeysVal]?.columnEditable ||
     allowPastingIntoNonEditableFields
   ) {
-    if (trimmedCurrentVal === 'false') {
+    if (trimmedCurrentVal?.toLowerCase() === 'false') {
       return false
-    } else if (trimmedCurrentVal === 'true') {
+    } else if (trimmedCurrentVal?.toLowerCase() === 'true') {
       return true
     } else if (columnValuesObj?.[colKeysVal]?.dataType == 'number') {
       const numberBoundaries =
         columnValuesObj?.[colKeysVal]?.validations?.numberBoundaries
 
-      const modifiedValue = parseFloat(trimmedCurrentVal.replaceAll(',', ''))
+      const modifiedValue = parseFloat(trimmedCurrentVal?.toLowerCase()?.replaceAll(',', ''))
       let value = Number(Number(modifiedValue)?.toFixed(4))
 
       if (numberBoundaries && isNaN(value) == false) {

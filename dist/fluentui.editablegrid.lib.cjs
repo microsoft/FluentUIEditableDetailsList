@@ -77950,15 +77950,15 @@ function removeFunctionsFromArrayObjects(arr) {
 }
 const pasteMappingHelper = (allowPastingIntoNonEditableFields, pastedValue, columnValuesObj, colKeysVal, useForceKeyMappingOptimization) => {
   var _a2, _b2, _c2, _d2, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
-  const trimmedCurrentVal = (_b2 = (_a2 = pastedValue == null ? void 0 : pastedValue.toString()) == null ? void 0 : _a2.toLowerCase()) == null ? void 0 : _b2.trim();
-  if (((_c2 = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _c2.columnEditable) || allowPastingIntoNonEditableFields) {
-    if (trimmedCurrentVal === "false") {
+  const trimmedCurrentVal = (_a2 = pastedValue == null ? void 0 : pastedValue.toString()) == null ? void 0 : _a2.trim();
+  if (((_b2 = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _b2.columnEditable) || allowPastingIntoNonEditableFields) {
+    if ((trimmedCurrentVal == null ? void 0 : trimmedCurrentVal.toLowerCase()) === "false") {
       return false;
-    } else if (trimmedCurrentVal === "true") {
+    } else if ((trimmedCurrentVal == null ? void 0 : trimmedCurrentVal.toLowerCase()) === "true") {
       return true;
-    } else if (((_d2 = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _d2.dataType) == "number") {
-      const numberBoundaries = (_f = (_e2 = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _e2.validations) == null ? void 0 : _f.numberBoundaries;
-      const modifiedValue = parseFloat(trimmedCurrentVal.replaceAll(",", ""));
+    } else if (((_c2 = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _c2.dataType) == "number") {
+      const numberBoundaries = (_e2 = (_d2 = columnValuesObj == null ? void 0 : columnValuesObj[colKeysVal]) == null ? void 0 : _d2.validations) == null ? void 0 : _e2.numberBoundaries;
+      const modifiedValue = parseFloat((_f = trimmedCurrentVal == null ? void 0 : trimmedCurrentVal.toLowerCase()) == null ? void 0 : _f.replaceAll(",", ""));
       let value = Number((_g = Number(modifiedValue)) == null ? void 0 : _g.toFixed(4));
       if (numberBoundaries && isNaN(value) == false) {
         const minRange = numberBoundaries.minRange;
