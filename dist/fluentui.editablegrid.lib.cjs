@@ -77899,7 +77899,6 @@ const ParseType = (type, text, isTextModified) => {
   }
   switch (type) {
     case "number":
-      console.log(text);
       if (!isNaN(parseFloat(text == null ? void 0 : text.toString().replace(",", "")))) {
         const newNum = parseFloat(text == null ? void 0 : text.toString().replace(",", ""));
         return newNum;

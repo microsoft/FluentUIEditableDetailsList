@@ -165,7 +165,6 @@ export const ParseType = (
 
   switch (type) {
     case 'number':
-      console.log(text)
       if (!isNaN(parseFloat(text?.toString().replace(',', '')))) {
         const newNum = parseFloat(text?.toString().replace(',', ''))
         return newNum
