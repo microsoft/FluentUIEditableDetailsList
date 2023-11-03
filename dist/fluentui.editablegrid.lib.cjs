@@ -83537,7 +83537,7 @@ const EditableGrid = (props) => {
             props.columns.forEach((column2, i) => {
               if (columnKeyPasteRef.current) {
                 if (i >= valueIndex) {
-                  if (column2.editable || props.allowPastingIntoNonEditableFields) {
+                  if ((column2.editable || props.allowPastingIntoNonEditableFields) && rowData[currentElement] != null) {
                     newGridData[columnKeyPasteRef.current._grid_row_id_][column2.key] = pasteMappingHelper(
                       props.allowPastingIntoNonEditableFields ?? false,
                       rowData[currentElement],

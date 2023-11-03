@@ -3156,8 +3156,8 @@ const EditableGrid = (props: EditableGridProps) => {
                 if (columnKeyPasteRef.current) {
                   if (i >= valueIndex) {
                     if (
-                      column.editable ||
-                      props.allowPastingIntoNonEditableFields
+                      (column.editable ||
+                      props.allowPastingIntoNonEditableFields) && rowData[currentElement] != null
                     ) {
                       newGridData[columnKeyPasteRef.current._grid_row_id_][
                         column.key
