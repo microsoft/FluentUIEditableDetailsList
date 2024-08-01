@@ -8,6 +8,7 @@ import { EditControlType } from "../types/editcontroltype";
 import { DayPickerStrings } from "./datepickerconfig";
 import { GetDefault, IsValidDataType, ParseType } from "./helper";
 import PickerControl from "./pickercontrol/picker";
+import { TimePicker } from "@fluentui/react";
 
 interface Props {
     columnConfigurationData: IColumnConfig[];
@@ -15,9 +16,9 @@ interface Props {
     onDialogSave?: any;
 }
 
-const ColumnUpdateDialog = (props : Props) => {
+const ColumnUpdateDialog = (props: Props) => {
     const controlClass = mergeStyleSets({
-        inputClass:{
+        inputClass: {
             display: 'block',
             width: '100%'
         },
@@ -27,7 +28,7 @@ const ColumnUpdateDialog = (props : Props) => {
     });
 
     const textFieldStyles: Partial<ITextFieldStyles> = { fieldGroup: {} };
-    
+
     const [gridColumn, setGridColumn] = useState('');
     const [inputValue, setInputValue] = useState<any>(null);
 
@@ -37,29 +38,29 @@ const ColumnUpdateDialog = (props : Props) => {
     };
 
     useEffect(() => {
-        let tmpColumnValuesObj : any = {};
+        let tmpColumnValuesObj: any = {};
         props.columnConfigurationData.filter(x => x.editable == true).forEach((item, index) => {
-            tmpColumnValuesObj[item.key] = { 'value' : GetDefault(item.dataType), 'isChanged' : false, 'error': null };
+            tmpColumnValuesObj[item.key] = { 'value': GetDefault(item.dataType), 'isChanged': false, 'error': null };
         })
         setInputValue(tmpColumnValuesObj);
     }, [props.columnConfigurationData]);
 
-    const SetObjValues = (key: string, value: any, isChanged: boolean = true, errorMessage: string | null = null) : void => {
-        var inputValueTmp : any = { ...inputValue };
+    const SetObjValues = (key: string, value: any, isChanged: boolean = true, errorMessage: string | null = null): void => {
+        var inputValueTmp: any = { ...inputValue };
         var objectKeys = Object.keys(inputValueTmp);
         objectKeys.forEach((objKey) => {
             inputValueTmp[objKey]['isChanged'] = false;
         });
-        inputValueTmp[key] = { 'value' :  value, 'isChanged' : isChanged, 'error': errorMessage };
+        inputValueTmp[key] = { 'value': value, 'isChanged': isChanged, 'error': errorMessage };
         setInputValue(inputValueTmp);
     }
 
-    const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, column : IColumnConfig): void => {
-        if(!IsValidDataType(column?.dataType, text)){
+    const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, column: IColumnConfig): void => {
+        if (!IsValidDataType(column?.dataType, text)) {
             SetObjValues((ev.target as Element).id, text, false, `Data should be of type '${column.dataType}'`)
             return;
         }
-        
+
         SetObjValues((ev.target as Element).id, ParseType(column.dataType, text));
     };
 
@@ -67,18 +68,53 @@ const ColumnUpdateDialog = (props : Props) => {
         <></>
     );
 
-    const onSelectDate = (date: Date | null | undefined, item : any): void => {
+    const onSelectDate = (date: Date | null | undefined, item: any): void => {
         SetObjValues(item.key, date);
     };
 
-    const onCellPickerTagListChanged = (cellPickerTagList: ITag[] | undefined, item : any) : void => {
-        if(cellPickerTagList && cellPickerTagList[0] && cellPickerTagList[0].name)
+    const onCellDateChange = (date: Date | null | undefined, item: IColumnConfig): void => {
+        let currentDate = getColumnValue(item);
+
+        if (currentDate === undefined || currentDate === null) {
+            currentDate = date;
+        } else if (date !== null && date !== undefined) {
+            currentDate.setFullYear(date.getFullYear());
+            currentDate.setMonth(date.getMonth());
+            currentDate.setDate(date.getDate());
+        }
+
+        SetObjValues(item.key, currentDate);
+    };
+
+    const onCellTimeChange = (dateTime: Date | null | undefined, item: IColumnConfig): void => {
+        let currentDate = getColumnValue(item);
+
+        if (currentDate === undefined || currentDate === null) {
+            currentDate = dateTime;
+        } else if (dateTime !== null && dateTime !== undefined) {
+            currentDate.setHours(dateTime.getHours());
+            currentDate.setMinutes(dateTime.getMinutes());
+            currentDate.setSeconds(dateTime.getSeconds());
+            currentDate.setMilliseconds(dateTime.getMilliseconds());
+        }
+
+        SetObjValues(item.key, currentDate);
+    };
+
+
+    const getColumnValue = (item: IColumnConfig) => {
+        return inputValue[item.key].value;
+    };
+
+
+    const onCellPickerTagListChanged = (cellPickerTagList: ITag[] | undefined, item: any): void => {
+        if (cellPickerTagList && cellPickerTagList[0] && cellPickerTagList[0].name)
             SetObjValues(item.key, cellPickerTagList[0].name);
         else
             SetObjValues(item.key, '');
     }
 
-    const onDropDownChange = (event: React.FormEvent<HTMLDivElement>, selectedDropdownItem: IDropdownOption | undefined, item : any): void => {
+    const onDropDownChange = (event: React.FormEvent<HTMLDivElement>, selectedDropdownItem: IDropdownOption | undefined, item: any): void => {
         SetObjValues(item.key, selectedDropdownItem?.text);
     }
 
@@ -87,21 +123,21 @@ const ColumnUpdateDialog = (props : Props) => {
     };
 
     const closeDialog = React.useCallback((): void => {
-        if(props.onDialogCancel){
+        if (props.onDialogCancel) {
             props.onDialogCancel();
         }
-        
+
         setInputFieldContent(undefined)
     }, []);
 
     const saveDialog = (): void => {
-        if(props.onDialogSave){
-            var inputValueTmp : any = {};
+        if (props.onDialogSave) {
+            var inputValueTmp: any = {};
             var objectKeys = Object.keys(inputValue);
             var BreakException = {};
-            try{
+            try {
                 objectKeys.forEach((objKey) => {
-                    if(inputValue[objKey]['isChanged']){
+                    if (inputValue[objKey]['isChanged']) {
                         inputValueTmp[objKey] = inputValue[objKey]['value'];
                         throw BreakException;
                     }
@@ -116,11 +152,11 @@ const ColumnUpdateDialog = (props : Props) => {
         setInputFieldContent(undefined);
     };
 
-    const createDropDownOptions = () : IDropdownOption[] => {
+    const createDropDownOptions = (): IDropdownOption[] => {
         let dropdownOptions: IDropdownOption[] = [];
         props.columnConfigurationData.forEach((item, index) => {
-            if(item.editable == true){
-                dropdownOptions.push({ key: item.key, text: item.text});
+            if (item.editable == true) {
+                dropdownOptions.push({ key: item.key, text: item.text });
             }
         });
 
@@ -129,10 +165,10 @@ const ColumnUpdateDialog = (props : Props) => {
 
     const options = createDropDownOptions();
 
-    const GetInputFieldContent = () : JSX.Element => {
+    const GetInputFieldContent = (): JSX.Element => {
         var column = props.columnConfigurationData.filter(x => x.key == gridColumn);
-        if(column.length > 0){
-            switch(column[0].inputType){
+        if (column.length > 0) {
+            switch (column[0].inputType) {
                 case EditControlType.Date:
                     return (<DatePicker
                         strings={DayPickerStrings}
@@ -140,18 +176,35 @@ const ColumnUpdateDialog = (props : Props) => {
                         ariaLabel="Select a date"
                         className={controlClass.inputClass}
                         onSelectDate={(date) => onSelectDate(date, column[0])}
-                        //value={new Date()}
+                    //value={new Date()}
                     />);
+                case EditControlType.DateTime:
+                    return (
+                        <Stack tokens={{ childrenGap: 8 }}>
+                            <DatePicker
+                                strings={DayPickerStrings}
+                                ariaLabel='Select a date...'
+                                placeholder="Select a date..."
+                                onSelectDate={(date) => onCellDateChange(date, column[0])}
+                            />
+                            <TimePicker
+                                ariaLabel='Select a time...'
+                                placeholder="Select a time..."
+                                showSeconds={true}
+                                useHour12={false}
+                                onChange={(event, time: Date) => { onCellTimeChange(time, column[0]) }}
+                            />
+                        </Stack>)
                 case EditControlType.Picker:
                     return (<div>
-                        <PickerControl 
+                        <PickerControl
                             arialabel={column[0].text}
                             selectedItemsLimit={1}
                             pickerTags={column[0].pickerOptions?.pickerTags ?? []}
                             minCharLimitForSuggestions={2}
                             onTaglistChanged={(selectedItem: ITag[] | undefined) => onCellPickerTagListChanged(selectedItem, column[0])}
                             pickerDescriptionOptions={column[0].pickerOptions?.pickerDescriptionOptions}
-                    /></div>);
+                        /></div>);
                 case EditControlType.DropDown:
                     return (
                         <Dropdown
@@ -171,14 +224,14 @@ const ColumnUpdateDialog = (props : Props) => {
                         styles={textFieldStyles}
                         onChange={(ev, text) => onTextUpdate(ev, text!, column[0])}
                         value={inputValue[column[0].key].value || ''}
-                        />);
+                    />);
                 default:
                     return (
                         <TextField
                             errorMessage={inputValue[column[0].key].error}
                             className={controlClass.inputClass}
                             placeholder={`Enter '${column[0].text}'...`}
-                            onChange={(ev, text) => onTextUpdate(ev, text!,column[0])}
+                            onChange={(ev, text) => onTextUpdate(ev, text!, column[0])}
                             styles={textFieldStyles}
                             id={column[0].key}
                             value={inputValue[column[0].key].value || ''}
@@ -189,8 +242,8 @@ const ColumnUpdateDialog = (props : Props) => {
 
         return (<></>);
     }
-    
-    return(
+
+    return (
         <Dialog hidden={!inputFieldContent} onDismiss={closeDialog} closeButtonAriaLabel="Close">
             <Stack grow verticalAlign="space-between" tokens={stackTokens}>
                 <Stack.Item grow={1}>
@@ -207,10 +260,10 @@ const ColumnUpdateDialog = (props : Props) => {
                 <Stack.Item>
                     <DialogFooter className={controlClass.inputClass}>
                         <PrimaryButton
-                        // eslint-disable-next-line react/jsx-no-bind
-                        onClick={saveDialog}
-                        text="Save"
-                        disabled={(gridColumn) ? (inputValue[gridColumn].error != null && inputValue[gridColumn].error.length > 0) : false}
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onClick={saveDialog}
+                            text="Save"
+                            disabled={(gridColumn) ? (inputValue[gridColumn].error != null && inputValue[gridColumn].error.length > 0) : false}
                         />
                         <DefaultButton onClick={closeDialog} text="Cancel" />
                     </DialogFooter>

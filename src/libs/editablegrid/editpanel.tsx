@@ -10,6 +10,7 @@ import { controlClass, horizontalGapStackTokens, stackStyles, textFieldStyles, v
 import { GetDefault, IsValidDataType, ParseType } from "./helper";
 import PickerControl from "./pickercontrol/picker";
 import SearchableDropdown from "./searchabledropdown/searchabledropdown";
+import { TimePicker } from "@fluentui/react";
 
 interface Props {
     onChange: any;
@@ -17,60 +18,90 @@ interface Props {
 }
 
 const EditPanel = (props: Props) => {
-    const updateObj : any = {};
+    const updateObj: any = {};
     const [columnValuesObj, setColumnValuesObj] = useState<any>(null);
 
     useEffect(() => {
-        let tmpColumnValuesObj : any = {};
+        let tmpColumnValuesObj: any = {};
         props.columnConfigurationData.filter(x => x.editable == true).forEach((item, index) => {
-            tmpColumnValuesObj[item.key] = { 'value' : GetDefault(item.dataType), 'isChanged' : false, 'error': null };
+            tmpColumnValuesObj[item.key] = { 'value': GetDefault(item.dataType), 'isChanged': false, 'error': null };
         })
         setColumnValuesObj(tmpColumnValuesObj);
     }, [props.columnConfigurationData]);
 
-    const SetObjValues = (key: string, value: any, isChanged: boolean = true, errorMessage: string | null = null) : void => {
-        setColumnValuesObj({...columnValuesObj, [key]: { 'value' :  value, 'isChanged' : isChanged, 'error': errorMessage }})
+    const SetObjValues = (key: string, value: any, isChanged: boolean = true, errorMessage: string | null = null): void => {
+        setColumnValuesObj({ ...columnValuesObj, [key]: { 'value': value, 'isChanged': isChanged, 'error': errorMessage } })
     }
 
-    const onDropDownChange = (event: React.FormEvent<HTMLDivElement>, selectedDropdownItem: IDropdownOption | undefined, item : any): void => {
+    const onDropDownChange = (event: React.FormEvent<HTMLDivElement>, selectedDropdownItem: IDropdownOption | undefined, item: any): void => {
         SetObjValues(item.key, selectedDropdownItem?.text);
     }
 
-    const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, column : IColumnConfig): void => {
-        if(!IsValidDataType(column.dataType, text)){
+    const onTextUpdate = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string, column: IColumnConfig): void => {
+        if (!IsValidDataType(column.dataType, text)) {
             SetObjValues((ev.target as Element).id, text, false, `Data should be of type '${column.dataType}'`);
             return;
         }
-        
+
         SetObjValues((ev.target as Element).id, ParseType(column.dataType, text));
     };
 
     const onPanelSubmit = (): void => {
         var objectKeys = Object.keys(columnValuesObj);
         objectKeys.forEach((objKey) => {
-            if(columnValuesObj[objKey]['isChanged']){
+            if (columnValuesObj[objKey]['isChanged']) {
                 updateObj[objKey] = columnValuesObj[objKey]['value']
             }
         });
-        
+
         props.onChange(updateObj);
     };
 
-    const onCellDateChange = (date: Date | null | undefined, item : any): void => {
-        SetObjValues(item.key, date);
+    const onCellDateChange = (date: Date | null | undefined, item: IColumnConfig): void => {
+        let currentDate = getColumnValue(item);
+
+        if (currentDate === undefined || currentDate === null) {
+            currentDate = date;
+        } else if (date !== null && date !== undefined) {
+            currentDate.setFullYear(date.getFullYear());
+            currentDate.setMonth(date.getMonth());
+            currentDate.setDate(date.getDate());
+        }
+
+        SetObjValues(item.key, currentDate);
     };
 
-    const onCellPickerTagListChanged = (cellPickerTagList: ITag[] | undefined, item : any) : void => {
-        if(cellPickerTagList && cellPickerTagList[0] && cellPickerTagList[0].name)
+    const onCellTimeChange = (dateTime: Date | null | undefined, item: IColumnConfig): void => {
+        let currentDate = getColumnValue(item);
+
+        if (currentDate === undefined || currentDate === null) {
+            currentDate = dateTime;
+        } else if (dateTime !== null && dateTime !== undefined) {
+            currentDate.setHours(dateTime.getHours());
+            currentDate.setMinutes(dateTime.getMinutes());
+            currentDate.setSeconds(dateTime.getSeconds());
+            currentDate.setMilliseconds(dateTime.getMilliseconds());
+        }
+
+        SetObjValues(item.key, currentDate);
+    };
+
+    const getColumnValue = (item: IColumnConfig) => {
+        return columnValuesObj[item.key].value;
+    };
+
+
+    const onCellPickerTagListChanged = (cellPickerTagList: ITag[] | undefined, item: any): void => {
+        if (cellPickerTagList && cellPickerTagList[0] && cellPickerTagList[0].name)
             SetObjValues(item.key, cellPickerTagList[0].name);
         else
             SetObjValues(item.key, '');
     }
 
-    const createTextFields = () : any[] => {
-        let tmpRenderObj : any[] = [];
+    const createTextFields = (): any[] => {
+        let tmpRenderObj: any[] = [];
         props.columnConfigurationData.filter(x => x.editable == true).forEach((item) => {
-            switch(item.inputType){
+            switch (item.inputType) {
                 case EditControlType.Date:
                     tmpRenderObj.push(<DatePicker
                         label={item.text}
@@ -82,17 +113,35 @@ const EditPanel = (props: Props) => {
                         value={new Date()}
                     />);
                     break;
+                case EditControlType.DateTime:
+                    tmpRenderObj.push(
+                        <Stack tokens={{ childrenGap: 8 }}>
+                            <DatePicker
+                                strings={DayPickerStrings}
+                                ariaLabel='Select a date...'
+                                placeholder="Select a date..."
+                                onSelectDate={(date) => onCellDateChange(date, item)}
+                            />
+                            <TimePicker
+                                ariaLabel='Select a time...'
+                                placeholder="Select a time..."
+                                showSeconds={true}
+                                useHour12={false}
+                                onChange={(event, time: Date) => { onCellTimeChange(time, item) }}
+                            />
+                        </Stack>);
+                    break;
                 case EditControlType.Picker:
                     tmpRenderObj.push(<div>
                         <span className={controlClass.pickerLabel}>{item.text}</span>
-                        <PickerControl 
+                        <PickerControl
                             arialabel={item.text}
                             selectedItemsLimit={1}
                             pickerTags={item.pickerOptions?.pickerTags ?? []}
                             minCharLimitForSuggestions={2}
                             onTaglistChanged={(selectedItem: ITag[] | undefined) => onCellPickerTagListChanged(selectedItem, item)}
                             pickerDescriptionOptions={item.pickerOptions?.pickerDescriptionOptions}
-                    /></div>);
+                        /></div>);
                     break;
                 case EditControlType.DropDown:
                     tmpRenderObj.push(
@@ -114,7 +163,7 @@ const EditPanel = (props: Props) => {
                         styles={textFieldStyles}
                         onChange={(ev, text) => onTextUpdate(ev, text!, item)}
                         value={columnValuesObj[item.key].value || ''}
-                        />);
+                    />);
                     break;
                 default:
                     tmpRenderObj.push(<TextField
@@ -125,7 +174,7 @@ const EditPanel = (props: Props) => {
                         styles={textFieldStyles}
                         onChange={(ev, text) => onTextUpdate(ev, text!, item)}
                         value={columnValuesObj[item.key].value || ''}
-                        />);
+                    />);
                     break;
             }
         });
@@ -138,13 +187,13 @@ const EditPanel = (props: Props) => {
                 {columnValuesObj && createTextFields()}
             </Stack>
             <Stack horizontal disableShrink styles={stackStyles} tokens={horizontalGapStackTokens}>
-            <PrimaryButton
-                text="Save To Grid"
-                className={controlClass.submitStylesEditpanel}
-                onClick={onPanelSubmit}
-                allowDisabledFocus
-                disabled={columnValuesObj && Object.keys(columnValuesObj).some(k => columnValuesObj[k] && columnValuesObj[k].error && columnValuesObj[k].error.length > 0) || false}
-            />
+                <PrimaryButton
+                    text="Save To Grid"
+                    className={controlClass.submitStylesEditpanel}
+                    onClick={onPanelSubmit}
+                    allowDisabledFocus
+                    disabled={columnValuesObj && Object.keys(columnValuesObj).some(k => columnValuesObj[k] && columnValuesObj[k].error && columnValuesObj[k].error.length > 0) || false}
+                />
             </Stack>
         </Stack>
     );

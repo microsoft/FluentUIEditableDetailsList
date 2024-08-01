@@ -41,7 +41,7 @@ const Consumer = () => {
 
     const [items, setItems] = useState<GridItemsType[]>([]);
     const [teachingBubbleVisible, { toggle: toggleTeachingBubbleVisible }] = useBoolean(true);
-    const [teachingBubblePropsConfig, setTeachingBubblePropsConfig] = useState<ITeachingBubbleConfig>({ id: 0, config: {...teachingBubbleConfig[0], footerContent: `1 of ${teachingBubbleConfig.length}`}});
+    const [teachingBubblePropsConfig, setTeachingBubblePropsConfig] = useState<ITeachingBubbleConfig>({ id: 0, config: { ...teachingBubbleConfig[0], footerContent: `1 of ${teachingBubbleConfig.length}` } });
     const [gridConfigOptions, setGridConfigOptions] = useState<GridConfigOptions>({
         enableCellEdit: true,
         enableRowEdit: true,
@@ -68,18 +68,18 @@ const Consumer = () => {
 
     const classNames = mergeStyleSets({
         controlWrapper: {
-          display: 'flex',
-          flexWrap: 'wrap',
+            display: 'flex',
+            flexWrap: 'wrap',
         },
         detailsDiv: {
             border: '3px solid black',
             margin: '5px'
         },
-        detailsValues:{
-            color:'#0078d4'
+        detailsValues: {
+            color: '#0078d4'
         },
-        checkbox:{
-            width:'250px'
+        checkbox: {
+            width: '250px'
         }
     });
 
@@ -93,8 +93,8 @@ const Consumer = () => {
         margin: "0px 0px 0px 30px"
     });
 
-    const onTeachingBubbleNavigation = (direction : string)  => {
-        switch(direction) {
+    const onTeachingBubbleNavigation = (direction: string) => {
+        switch (direction) {
             case 'previous':
                 var TeachingProps = teachingBubbleConfig[teachingBubblePropsConfig.id - 1];
                 var currentId = teachingBubblePropsConfig.id - 1;
@@ -113,9 +113,9 @@ const Consumer = () => {
                 setTeachingBubblePropsConfig({ id: 0, config: TeachingProps });
                 toggleTeachingBubbleVisible();
                 break;
-        } 
+        }
     }
-    
+
     const nextBubbleProps: IButtonProps = {
         children: 'Next',
         onClick: () => onTeachingBubbleNavigation('next'),
@@ -130,34 +130,35 @@ const Consumer = () => {
         onClick: () => onTeachingBubbleNavigation('close'),
     };
 
-    const GetRandomDate = (start : Date, end : Date) : Date => {
-        var diff =  end.getTime() - start.getTime();
+    const GetRandomDate = (start: Date, end: Date): Date => {
+        var diff = end.getTime() - start.getTime();
         var new_diff = diff * Math.random();
         var date = new Date(start.getTime() + new_diff);
         return date;
     }
 
-    const GetRandomInt = (min : number, max : number) : number => {
+    const GetRandomInt = (min: number, max: number): number => {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-    const SetDummyData = () : void => {
-        var dummyData : GridItemsType[] = []
-        for(var i = 1; i <= 100; i++){
-            var randomInt = GetRandomInt(1,3);
+    const SetDummyData = (): void => {
+        var dummyData: GridItemsType[] = []
+        for (var i = 1; i <= 100; i++) {
+            var randomInt = GetRandomInt(1, 3);
             dummyData.push({
                 id: i,
                 customerhovercol: 'Hover Me',
-                name: 'Name'+ GetRandomInt(1, 10),
+                name: 'Name' + GetRandomInt(1, 10),
                 password: "somepassword",
-                age: GetRandomInt(20,40),
+                age: GetRandomInt(20, 40),
                 designation: 'Designation' + GetRandomInt(1, 15),
                 salary: GetRandomInt(35000, 75000),
                 dateofjoining: '2010-10-10T14:57:10',
+                lasteupdatetime: '2010-10-10T14:57:11',
                 payrolltype: randomInt % 3 == 0 ? 'Weekly' : randomInt % 3 == 1 ? 'Bi-Weekly' : 'Monthly',
-                employmenttype: 'Employment Type' + GetRandomInt(1,12),
+                employmenttype: 'Employment Type' + GetRandomInt(1, 12),
                 employeelink: 'Link'
             });
         }
@@ -173,7 +174,7 @@ const Consumer = () => {
         alert('Grid Data Saved');
         LogRows(data);
         setItems([...data.filter(y => y._grid_row_operation_ != Operation.Delete).map(x => {
-            return {...x, '_grid_row_operation_': Operation.None}
+            return { ...x, '_grid_row_operation_': Operation.None }
         })]);
     };
 
@@ -182,7 +183,7 @@ const Consumer = () => {
         LogRows(data);
     };
 
-    const LogRows = (data: any[]) : void => {
+    const LogRows = (data: any[]): void => {
         console.log('Updated Rows');
         console.log(data.filter(item => item._grid_row_operation_ == Operation.Update));
         console.log('Added Rows');
@@ -193,22 +194,22 @@ const Consumer = () => {
         console.log(data.filter(item => item._grid_row_operation_ == Operation.None));
     }
 
-    const onPayrollChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
+    const onPayrollChanged = (callbackRequestParamObj: ICallBackParams): any[] => {
         alert('Payroll Changed');
         return callbackRequestParamObj.data;
     }
 
-    const onDateChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
+    const onDateChanged = (callbackRequestParamObj: ICallBackParams): any[] => {
         alert('Date Changed');
         return callbackRequestParamObj.data;
     }
 
-    const onEmploymentTypeChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
+    const onEmploymentTypeChanged = (callbackRequestParamObj: ICallBackParams): any[] => {
         alert('Employment Type Changed');
         return callbackRequestParamObj.data;
     }
 
-    const onDesignationChanged = (callbackRequestParamObj : ICallBackParams): any[] => {
+    const onDesignationChanged = (callbackRequestParamObj: ICallBackParams): any[] => {
         callbackRequestParamObj.rowindex.forEach((index) => {
             callbackRequestParamObj.data.filter((item) => item._grid_row_id_ == index).map((item) => item.salary = 30000);
         });
@@ -216,7 +217,7 @@ const Consumer = () => {
         return callbackRequestParamObj.data;
     }
 
-    const attachGridValueChangeCallbacks = (columnConfig : IColumnConfig[]) : IColumnConfig[] => {
+    const attachGridValueChangeCallbacks = (columnConfig: IColumnConfig[]): IColumnConfig[] => {
         //columnConfig.filter((item) => item.key == 'designation').map((item) => item.onChange = onDesignationChanged);
         //columnConfig.filter((item) => item.key == 'employmenttype').map((item) => item.onChange = onEmploymentTypeChanged);
         //columnConfig.filter((item) => item.key == 'payrolltype').map((item) => item.onChange = onPayrollChanged);
@@ -225,7 +226,7 @@ const Consumer = () => {
     };
 
     const onCheckboxChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean): void => {
-        setGridConfigOptions({...gridConfigOptions, [(ev!.target as Element).id]: !gridConfigOptions[(ev!.target as Element).id] })
+        setGridConfigOptions({ ...gridConfigOptions, [(ev!.target as Element).id]: !gridConfigOptions[(ev!.target as Element).id] })
     };
 
     return (
@@ -300,10 +301,10 @@ const Consumer = () => {
                 </Stack>
             </fieldset>
             <div className={classNames.controlWrapper}>
-                <TextField id="searchField" placeholder='Search Grid' className={mergeStyles({ width: '60vh', paddingBottom:'10px' })} onChange={(event) => EventEmitter.dispatch(EventType.onSearch, event)}/>
+                <TextField id="searchField" placeholder='Search Grid' className={mergeStyles({ width: '60vh', paddingBottom: '10px' })} onChange={(event) => EventEmitter.dispatch(EventType.onSearch, event)} />
                 <Link>
-                    <FontIcon 
-                        aria-label="View" 
+                    <FontIcon
+                        aria-label="View"
                         iconName="View"
                         className={iconClass}
                         onClick={toggleTeachingBubbleVisible}
@@ -336,11 +337,11 @@ const Consumer = () => {
                 enableGridReset={gridConfigOptions.enableGridReset}
                 enableColumnFilters={gridConfigOptions.enableColumnFilters}
                 enableColumnFilterRules={gridConfigOptions.enableColumnFilterRules}
-                enableRowAddWithValues={{enable : gridConfigOptions.enableRowAddWithValues, enableRowsCounterInPanel : true}}
-                gridCopyOptions={{enableGridCopy: gridConfigOptions.enableGridCopy, enableRowCopy: gridConfigOptions.enableRowCopy}}
+                enableRowAddWithValues={{ enable: gridConfigOptions.enableRowAddWithValues, enableRowsCounterInPanel: true }}
+                gridCopyOptions={{ enableGridCopy: gridConfigOptions.enableGridCopy, enableRowCopy: gridConfigOptions.enableRowCopy }}
                 onGridStatusMessageCallback={(str) => {
                     toast.info(str, {
-                      position: toast.POSITION.TOP_CENTER
+                        position: toast.POSITION.TOP_CENTER
                     })
                 }}
                 onGridUpdate={onGridUpdate}
@@ -351,7 +352,7 @@ const Consumer = () => {
                         name: "Custom Command Bar Item1",
                         iconProps: { iconName: "Download" },
                         onClick: () => {
-                          alert('Clicked');
+                            alert('Clicked');
                         },
                     }
                 ]}
@@ -359,19 +360,19 @@ const Consumer = () => {
 
             {teachingBubbleVisible && (
                 <TeachingBubble
-                target={teachingBubblePropsConfig?.config.target}
-                primaryButtonProps={teachingBubblePropsConfig?.id < teachingBubbleConfig.length - 1 ? nextBubbleProps : closeButtonProps}
-                secondaryButtonProps={teachingBubblePropsConfig?.id > 0 ? previousBubbleProps : undefined}
-                onDismiss={toggleTeachingBubbleVisible}
-                footerContent={teachingBubblePropsConfig?.config.footerContent} 
-                headline={teachingBubblePropsConfig?.config.headline}
-                hasCloseButton={true}
-                isWide={teachingBubblePropsConfig?.config.isWide == null ? true : teachingBubblePropsConfig?.config.isWide}
-                calloutProps={{
-                    directionalHint:DirectionalHint.bottomLeftEdge,
-                }}
+                    target={teachingBubblePropsConfig?.config.target}
+                    primaryButtonProps={teachingBubblePropsConfig?.id < teachingBubbleConfig.length - 1 ? nextBubbleProps : closeButtonProps}
+                    secondaryButtonProps={teachingBubblePropsConfig?.id > 0 ? previousBubbleProps : undefined}
+                    onDismiss={toggleTeachingBubbleVisible}
+                    footerContent={teachingBubblePropsConfig?.config.footerContent}
+                    headline={teachingBubblePropsConfig?.config.headline}
+                    hasCloseButton={true}
+                    isWide={teachingBubblePropsConfig?.config.isWide == null ? true : teachingBubblePropsConfig?.config.isWide}
+                    calloutProps={{
+                        directionalHint: DirectionalHint.bottomLeftEdge,
+                    }}
                 >
-                {teachingBubblePropsConfig?.config.innerText}
+                    {teachingBubblePropsConfig?.config.innerText}
                 </TeachingBubble>
             )}
         </Fabric>
