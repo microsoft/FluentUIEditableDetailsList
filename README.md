@@ -3,7 +3,7 @@
 ## Overview
 FluentUI is a great UI library with some really cool controls, all adhering to Accessibility Standards.
 
-DetailsList control of FluidUI is great when your requirement is a read-only grid. However, it does not offer any in-place editability functionality just yet.
+DetailsList control of FluentUI is great when your requirement is a read-only grid. However, it does not offer any in-place editability functionality just yet.
 
 This component(Editable DetailsList) is a wrapper over the existing DetailsList that makes in-place editability work like a dream(among many other new features).
 
@@ -21,7 +21,7 @@ Some of the features of the Editable Grid are:-
 >- Ability to Plug In Custom Component for Cell Hover
 >- Default Data Export (to Excel, CSV)
 >- Implement Custom Export functionality
->- Callback hook to recieve grid data in the consuming component(for Save etc.)
+>- Callback hook to receive grid data in the consuming component(for Save etc.)
 >- Support for various controls in grid in-place edit like TextField, Multiline TextField, DatePicker (Support for Dropdown will be released soon)
 >- Flexibility to implement onChange callback on any cell value change (For cases like calculating summation of a column etc)
 >- Length Validations during edit
