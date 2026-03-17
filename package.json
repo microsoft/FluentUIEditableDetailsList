@@ -1,10 +1,18 @@
 {
-  "name": "fluentui-editable-grid",
+  "name": "@microsoft/fluentui-editable-grid",
   "version": "1.12.1",
   "license": "MIT",
   "description": "Wrapper over the existing DetailsList that makes in-place editability work like a dream(among many other new features)",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/microsoft/FluentUIEditableDetailsList"
@@ -17,10 +25,10 @@
   ],
   "bugs": "https://github.com/microsoft/FluentUIEditableDetailsList/issues",
   "peerDependencies": {
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0",
     "@fluentui/react": "^8.0.0",
-    "office-ui-fabric-react": "^7.0.0"
+    "office-ui-fabric-react": "^7.0.0",
+    "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "dependencies": {
     "file-saver": "^2.0.2",
@@ -44,16 +52,19 @@
     "@types/react": "^17.0.15",
     "@types/react-dom": "^17.0.9",
     "cpx": "^1.5.0",
+    "cross-env": "^7.0.3",
     "immer": ">=9.0.6",
     "just-scripts": "^0.27.0",
     "just-stack-react": "^1.0.0",
     "marked": ">=4.0.10",
+    "mkdirp": "^3.0.1",
     "nth-check": ">=2.0.1",
     "office-ui-fabric-react": "^7.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
     "react-toastify": "^7.0.4",
+    "rimraf": "^5.0.10",
     "tar": ">=6.1.9",
     "typescript": "^4.3.5",
     "web-vitals": "^1.1.2",
@@ -65,11 +76,10 @@
     "build-site": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "clean": "if exist dist rd /s /q dist",
-    "prepareBuild": "npm run clean && mkdir dist",
-    "compile": "set NODE_ENV=production & babel src/libs --out-dir dist --extensions \".ts,.tsx\" --copy-files",
-    "copy": "cpx \"{package.json,README.md}\" dist",
-    "build": "npm run prepareBuild && npm run compile && tsc && npm run copy",
+    "clean": "rimraf dist",
+    "prepareBuild": "npm run clean && mkdirp dist",
+    "compile": "cross-env NODE_ENV=production babel src/libs --out-dir dist --extensions \".ts,.tsx\" --copy-files",
+    "build": "npm run prepareBuild && npm run compile && tsc",
     "prepare": "npm run build"
   },
   "babel": {

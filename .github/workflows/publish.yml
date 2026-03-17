@@ -1,0 +1,39 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Build library
+        run: npm run build
+
+      - name: Verify dist output
+        run: |
+          test -f dist/index.js || (echo "dist/index.js not found" && exit 1)
+          test -f dist/index.d.ts || (echo "dist/index.d.ts not found" && exit 1)
+          echo "✅ dist/ output verified"
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
