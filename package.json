@@ -16,7 +16,17 @@
     "fluentui"
   ],
   "bugs": "https://github.com/microsoft/FluentUIEditableDetailsList/issues",
+  "peerDependencies": {
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
+    "@fluentui/react": "^8.0.0",
+    "office-ui-fabric-react": "^7.0.0"
+  },
   "dependencies": {
+    "file-saver": "^2.0.2",
+    "xlsx": "^0.17.0"
+  },
+  "devDependencies": {
     "@babel/cli": "7.12.1",
     "@babel/core": "^7.14.8",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.14.5",
@@ -34,25 +44,21 @@
     "@types/react": "^17.0.15",
     "@types/react-dom": "^17.0.9",
     "cpx": "^1.5.0",
-    "file-saver": "^2.0.2",
-    "office-ui-fabric-react": "^7.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "5.0.0",
-    "react-toastify": "^7.0.4",
-    "typescript": "^4.3.5",
-    "web-vitals": "^1.1.2",
-    "webpack-cli": "^4.7.2",
-    "xlsx": "^0.17.0",
-    "y18n": "^3.2.2"
-  },
-  "devDependencies": {
     "immer": ">=9.0.6",
     "just-scripts": "^0.27.0",
     "just-stack-react": "^1.0.0",
     "marked": ">=4.0.10",
     "nth-check": ">=2.0.1",
-    "tar": ">=6.1.9"
+    "office-ui-fabric-react": "^7.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "5.0.0",
+    "react-toastify": "^7.0.4",
+    "tar": ">=6.1.9",
+    "typescript": "^4.3.5",
+    "web-vitals": "^1.1.2",
+    "webpack-cli": "^4.7.2",
+    "y18n": "^3.2.2"
   },
   "scripts": {
     "start": "react-scripts start",
