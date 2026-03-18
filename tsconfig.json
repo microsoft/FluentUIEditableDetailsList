@@ -21,7 +21,8 @@
     "jsx": "react-jsx",
     "downlevelIteration": true,
     "declaration": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "types": ["node", "react", "react-dom", "file-saver", "jest"]
   },
   "include": [
     "src/libs"
